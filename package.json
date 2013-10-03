@@ -8,6 +8,6 @@
 	],
 	"dependencies": {
     "derelict-sdl2" : "~master",
-    "derelict-gl3" : "~master"
+    "derelict-gl3" : "~master"    
 	}
 }

@@ -16,12 +16,12 @@ void main()
   {
     handleEvents();
 
-    swapWindow();
+    swapWindow(window);
   }
 }
 
 
-void swapWindow()
+void swapWindow(SDL_Window* window)
 {
   SDL_GL_SwapWindow(window);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
