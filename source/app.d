@@ -8,7 +8,7 @@ import derelict.sdl2.sdl;
 
 void main()
 {
-  setupDisplay();
+  auto window = getWindow();
   
   bool keepRunning = true;
   SDL_Event event;
@@ -39,11 +39,14 @@ void main()
           break;
       }
     }
+    
+    SDL_GL_SwapWindow(window);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
 }
 
 
-void setupDisplay()
+SDL_Window* getWindow()
 {
   DerelictSDL2.load();
   DerelictGL3.load();
@@ -67,6 +70,13 @@ void setupDisplay()
   SDL_GL_SetSwapInterval(1);
   
   // setup gl viewport and etc
+  glClearColor(0.0, 0.0, 0.5, 1.0);
+  
+  glViewport(0, 0, screenWidth, screenHeight);
+  
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   
   DerelictGL3.reload();
+  
+  return window;
 }
