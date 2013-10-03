@@ -5,6 +5,10 @@ import std.stdio;
 import derelict.opengl3.gl3;
 import derelict.sdl2.sdl;
 
+import glamour.shader;
+import glamour.vao;
+import glamour.vbo;
+
 
 bool keepRunning = true;
 
@@ -12,10 +16,62 @@ void main()
 {
   auto window = getWindow();
   
+  static immutable string shaderSource = `
+    #version 120
+    
+    vertex:
+      attribute vec2 position;
+      void main(void)
+      {
+        gl_Position = vec4(position, 0, 1);
+      }
+    
+    fragment:
+      void main(void)
+      {
+        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+      }
+  `;
+  
+  auto vertices = [-0.3, -0.3, 
+                    0.3, -0.3, 
+                   -0.3,  0.3, 
+                    0.3,  0.3];
+  auto indices = [0, 1, 2, 3];
+  
+  auto vao = new VAO();
+  vao.bind();
+  
+  auto vbo = new Buffer(vertices);
+  auto ibo = new ElementBuffer(indices);
+  
+  auto program = new Shader("test", shaderSource);
+  program.bind();
+  auto position = program.get_attrib_location("position");
+  
+  scope (exit)
+  {
+    program.remove();
+    ibo.remove();
+    vbo.remove();
+    vao.remove();
+  }
+  
   while (keepRunning)
   {
     handleEvents();
-
+    
+    vbo.bind();
+    glEnableVertexAttribArray(position);
+    
+    glVertexAttribPointer(position, 2, GL_FLOAT, GL_FALSE, 0, null);
+    
+    ibo.bind();
+    
+    glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, null);
+    
+    glDisableVertexAttribArray(position);
+    
     swapWindow(window);
   }
 }
