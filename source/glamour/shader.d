@@ -29,9 +29,9 @@ private {
     import std.exception : enforceEx;
     import std.typecons : Tuple;
     
-    version(gl3n) {
+    //version(gl3n) {
         import gl3n.util : is_vector, is_matrix, is_quaternion;
-    }
+    //}
 
     debug import std.stdio : stderr;
 }
@@ -287,7 +287,7 @@ class Shader {
     }
 
     // gl3n integration
-    version(gl3n) {
+    //version(gl3n) {
         /// If glamour gets compiled with version=gl3n support for
         /// vectors, matrices and quaternions is added
         void uniform(T)(string name, T value) if(is_vector!T) {
@@ -337,11 +337,11 @@ class Shader {
         void uniform(S : string, T)(S name, T value) if(is_quaternion!T) {
             checkgl!glUniform4fv(get_uniform_location(name), 1, value.value_ptr);
         } 
-    } else {
+    /*} else {
         void uniform(S, T)(S name, T value) {
             static assert(false, "you have to compile glamour with version=gl3n to use Shader.uniform");
         }
-    }
+    }*/
     
     /// Sets a shader uniform. Consider the corresponding OpenGL for more information.
     void uniform1i(string name, int value) {

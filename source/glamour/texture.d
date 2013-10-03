@@ -9,13 +9,13 @@ private {
                         GL_PROXY_TEXTURE_3D, GL_TEXTURE_3D, GL_TEXTURE_BORDER_COLOR,
                         GL_RGBA8, GL_RGB, GL_RGBA, glGenerateMipmap;
     
-    version(stb) {
+    /*version(stb) {
         import stb_image : stbi_load, stbi_image_free;
     } else version(SDLImage) {
-        version (Derelict3) {
+        version (Derelict3) {*/
             import derelict.sdl2.sdl;
             import derelict.sdl2.image;
-        } else {
+        /*} else {
             import derelict.sdl.sdl;
             import derelict.sdl.image;
         }
@@ -23,7 +23,7 @@ private {
         import derelict.devil.il : ILuint, ilGenImages, ilBindImage, ilLoadImage, ilConvertImage,
                                    ilGetData, ilGetInteger, IL_RGB, IL_UNSIGNED_BYTE,
                                    IL_IMAGE_FORMAT, IL_IMAGE_TYPE, IL_IMAGE_WIDTH, IL_IMAGE_HEIGHT;
-    }
+    }*/
     
     import glamour.util : glenum2size, checkgl;
     import std.traits : isPointer;
@@ -279,7 +279,7 @@ class Texture2D : ITexture {
     static Texture2D from_image(string filename) {
         auto tex = new Texture2D();
 
-        version(stb) {        
+        /*version(stb) {        
             int x;
             int y;
             int comp;
@@ -298,7 +298,7 @@ class Texture2D : ITexture {
             }
 
             tex.set_data(data, image_format, x, y, image_format, GL_UNSIGNED_BYTE);
-        } else version (SDLImage) {
+        } else version (SDLImage) {*/
             // make sure the texture has the right side up
             //thanks to tito http://stackoverflow.com/questions/5862097/sdl-opengl-screenshot-is-black 
             SDL_Surface* flip(SDL_Surface* surface) { 
@@ -336,7 +336,7 @@ class Texture2D : ITexture {
             auto flipped = flip(surface);
             tex.set_data(flipped.pixels, image_format, surface.w, surface.h, image_format, GL_UNSIGNED_BYTE);
             SDL_FreeSurface(flipped);
-        } else {
+        /*} else {
             /// DevIl is default choice
             ILuint id;
             ilGenImages(1, &id);
@@ -349,7 +349,7 @@ class Texture2D : ITexture {
             tex.set_data(ilGetData(), ilGetInteger(IL_IMAGE_FORMAT),
                                       ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT),
                                       ilGetInteger(IL_IMAGE_FORMAT), ilGetInteger(IL_IMAGE_TYPE));
-        }
+        }*/
 
         return tex;
     }
