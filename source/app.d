@@ -6,42 +6,49 @@ import derelict.opengl3.gl3;
 import derelict.sdl2.sdl;
 
 
+bool keepRunning = true;
+
 void main()
 {
   auto window = getWindow();
   
-  bool keepRunning = true;
-  SDL_Event event;
-  
   while (keepRunning)
   {
-    while (SDL_PollEvent(&event))
-    {
-      switch (event.type)
-      {
-        case SDL_QUIT:
-          keepRunning = false;
-          break;
-          
-        case SDL_KEYUP:
-          switch (event.key.keysym.sym)
-          {
-            case SDLK_ESCAPE:
-              keepRunning = false;
-              break;
-            
-            default:
-              break;
-          }
-          break;
-          
-        default:
-          break;
-      }
-    }
+    handleEvents();
     
     SDL_GL_SwapWindow(window);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  }
+}
+
+
+void handleEvents()
+{
+  SDL_Event event;
+
+  while (SDL_PollEvent(&event))
+  {
+    switch (event.type)
+    {
+      case SDL_QUIT:
+        keepRunning = false;
+        break;
+        
+      case SDL_KEYUP:
+        switch (event.key.keysym.sym)
+        {
+          case SDLK_ESCAPE:
+            keepRunning = false;
+            break;
+          
+          default:
+            break;
+        }
+        break;
+        
+      default:
+        break;
+    }
   }
 }
 
