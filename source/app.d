@@ -15,10 +15,16 @@ void main()
   while (keepRunning)
   {
     handleEvents();
-    
-    SDL_GL_SwapWindow(window);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    swapWindow();
   }
+}
+
+
+void swapWindow()
+{
+  SDL_GL_SwapWindow(window);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 
