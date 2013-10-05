@@ -6,3 +6,6 @@
 *.exe
 *.dll
 /.dub
+/Frame*
+/Shaders
+gli*
