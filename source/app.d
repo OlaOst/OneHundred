@@ -5,7 +5,6 @@ import std.range;
 import std.stdio;
 
 import artemisd.all;
-import derelict.opengl3.gl3;
 import derelict.sdl2.sdl;
 
 import component.position;
@@ -15,13 +14,13 @@ import component.drawable;
 import system.movement;
 import system.renderer;
 import system.physics;
-
+import window;
 
 bool keepRunning = true;
 
 void main()
 {
-  auto window = getWindow();
+  auto window = getWindow(1024, 768);
   auto renderer = new Renderer();
   
   auto world = new World();
@@ -96,36 +95,4 @@ void handleEvents()
         break;
     }
   }
-}
-
-
-SDL_Window* getWindow()
-{
-  DerelictSDL2.load();
-  DerelictGL3.load();
-  
-  enforce(SDL_Init(SDL_INIT_VIDEO) == 0, "Failed to initialize SDL: " ~ SDL_GetError().to!string);
-  
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-  SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-  
-  int screenWidth = 800;
-  int screenHeight = 600;
-  
-  auto window = SDL_CreateWindow("greenfield", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-  enforce(window !is null, "Error creating window");
-  
-  auto context = SDL_GL_CreateContext(window);
-  enforce(context !is null, "Error creating OpenGL context");
-  
-  SDL_GL_SetSwapInterval(1);
-  
-  // setup gl viewport and etc
-  glViewport(0, 0, screenWidth, screenHeight);
-  
-  DerelictGL3.reload();
-  
-  return window;
 }
