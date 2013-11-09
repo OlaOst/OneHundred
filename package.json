@@ -7,8 +7,36 @@
 		"Your Name"
 	],
 	"dependencies": {
-    "derelict-sdl2" : "~master",
-    "derelict-gl3" : "~master",
-    "gl3n" : "~master"
-	}
+    "derelict-sdl2": "~master",
+    "derelict-gl3": "~master",
+    "gl3n": "~master",
+    
+	},
+  "versions": ["Derelict3", "SDLImage", "gl3n"],
+  
+  "configurations": [
+    {
+      "name": "default",
+      "targetType": "executable",
+    },
+    {
+			"name": "example",
+			"targetType": "executable",
+			"targetName": "example-app",
+			"sourcePaths": [
+				"example",
+			],
+			"excludedSourceFiles": [
+				"example/example_texture.d",
+        "source/app.d",
+			],
+			"versions": [
+				"Derelict3", "SDLImage", "gl3n",
+			],
+			"dependencies": {
+				"derelict-sdl2": "~master",
+        "derelict-gl3": "~master",
+			}
+		},
+  ],
 }

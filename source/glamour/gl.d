@@ -6,11 +6,11 @@ If glamour gets compiled with Derelict3, you can not load textures from images w
 
 module glamour.gl;
 
-//version(Derelict3) {
+version(Derelict3) {
     public import derelict.opengl3.gl3;
-/*} else version(glad) {
+} else version(glad) {
     public import glad.gl.gl;
 } else {
     public import derelict.opengl.gl;
     public import derelict.opengl.glext;
-}*/
+}
