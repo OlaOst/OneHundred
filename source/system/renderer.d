@@ -64,6 +64,8 @@ final class Renderer : EntityProcessingSystem
   public void draw()
   {
     // create new vbo from new vertices built up in process
+    // TODO: make vbo with max amount of vertices drawable, to prevent reinitalizing every frame. 
+    //       but would be a premature optimization without profiling
     vbo = new Buffer(vertices);
   
     glClearColor(0.0, 0.0, 0.33, 1.0);
