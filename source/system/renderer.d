@@ -2,6 +2,7 @@ module system.renderer;
 
 import std.algorithm;
 import std.array;
+import std.file;
 
 import artemisd.all;
 import derelict.opengl3.gl3;
@@ -22,29 +23,10 @@ final class Renderer : EntityProcessingSystem
   {
     super(Aspect.getAspectForAll!(Drawable));
     
-    static immutable string shaderSource = `
-      #version 330 core
-      
-      vertex:
-        layout(location = 0) in vec2 position;
-        void main(void)
-        {
-          gl_Position = vec4(position, 0, 1);
-        }
-      
-      fragment:
-        out vec3 color;
-        void main(void)
-        {
-          color = vec3(1, 0, 0);
-        }
-    `;
+    immutable string shaderSource = readText("shader/default.shader");
   
     vao = new VAO();
     vao.bind();
-    
-    //vbo = new Buffer(vertices);
-    //ibo = new ElementBuffer(indices);
     
     shader = new Shader("shader", shaderSource);
     shader.bind();
@@ -56,7 +38,6 @@ final class Renderer : EntityProcessingSystem
   public void close()
   {
     if (shader !is null) shader.remove();
-    if (ibo !is null) ibo.remove();
     if (vbo !is null) vbo.remove();
     if (vao !is null) vao.remove();
   }
@@ -78,11 +59,7 @@ final class Renderer : EntityProcessingSystem
     
     glVertexAttribPointer(position, 2, GL_FLOAT, GL_FALSE, 0, null);
     
-    //ibo.bind();
-    
     glDrawArrays(GL_TRIANGLES, 0, vertices.length);
-    
-    //glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, null);
     
     glDisableVertexAttribArray(position);
     
@@ -112,7 +89,6 @@ private:
   
   VAO vao;
   Buffer vbo;
-  ElementBuffer ibo;
   Shader shader;
   GLint position = 0;
 }
