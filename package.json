@@ -10,7 +10,7 @@
     "derelict-sdl2": "~master",
     "derelict-gl3": "~master",
     "gl3n": "~master",
-    
+    "artemisd": "~master",
 	},
   "versions": ["Derelict3", "SDLImage", "gl3n"],
   

@@ -1,11 +1,18 @@
 import std.exception;
 import std.conv;
+import std.math;
+import std.range;
 import std.stdio;
 
+import artemisd.all;
 import derelict.opengl3.gl3;
 import derelict.sdl2.sdl;
 
-import renderer;
+import component.position;
+import component.velocity;
+import component.drawable;
+import system.movement;
+import system.renderer;
 
 
 bool keepRunning = true;
@@ -15,6 +22,25 @@ void main()
   auto window = getWindow();
   auto renderer = new Renderer();
   
+  auto world = new World();
+  world.setSystem(new Movement(world));
+  world.setSystem(renderer);
+  world.initialize();
+  
+  auto elements = 10;
+  foreach (float index; iota(0, elements))
+  {
+    debug writeln("adding element with index " ~ index.to!string);
+    
+    auto angle = (index/elements) * PI * 2.0;
+    
+    Entity entity = world.createEntity();
+    entity.addComponent(new Position(cos(angle) * 0.1, sin(angle) * 0.1));
+    entity.addComponent(new Velocity(sin(angle) * 0.1, cos(angle) * 0.1));
+    entity.addComponent(new Drawable(0.1));
+    entity.addToWorld();
+  }
+  
   scope (exit)
   {
     renderer.close();
@@ -22,6 +48,9 @@ void main()
   
   while (keepRunning)
   {
+    world.setDelta(1.0/60.0);
+    world.process();
+  
     handleEvents();
     
     renderer.draw();
