@@ -24,7 +24,6 @@ class Renderer
       #version 330 core
       
       vertex:
-        //attribute vec2 position;
         layout(location = 0) in vec2 position;
         void main(void)
         {
@@ -35,7 +34,6 @@ class Renderer
         out vec3 color;
         void main(void)
         {
-          //gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
           color = vec3(1, 0, 0);
         }
     `;
