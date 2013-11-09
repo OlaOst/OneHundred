@@ -28,7 +28,7 @@ final class Renderer : EntityProcessingSystem
     vao = new VAO();
     vao.bind();
     
-    shader = new Shader("shader", shaderSource);
+    shader = new Shader("defaultshader", shaderSource);
     shader.bind();
     position = shader.get_attrib_location("position");
     

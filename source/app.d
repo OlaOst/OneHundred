@@ -31,9 +31,7 @@ void main()
   
   auto elements = 1500;
   foreach (float index; iota(0, elements))
-  {
-    debug writeln("adding element with index " ~ index.to!string);
-    
+  {    
     auto angle = (index/elements) * PI * 2.0;
     
     Entity entity = world.createEntity();
