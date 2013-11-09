@@ -77,10 +77,6 @@ final class Renderer : EntityProcessingSystem
     assert(position !is null);
     
     vertices ~= drawable.vertices.map!(vertex => vertex + position.position).array();
-    
-    //import std.stdio;
-    //import std.conv;
-    //writeln("processing components, vertices so far: " ~ vertices.length.to!string);
   }
 
   
