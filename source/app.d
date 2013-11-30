@@ -1,6 +1,8 @@
+import std.algorithm;
 import std.exception;
 import std.conv;
 import std.math;
+import std.random;
 import std.range;
 import std.stdio;
 
@@ -8,10 +10,11 @@ import artemisd.all;
 import derelict.sdl2.sdl;
 import gl3n.linalg;
 
-import component.position;
-import component.velocity;
-import component.mass;
 import component.drawable;
+import component.mass;
+import component.position;
+import component.relation;
+import component.velocity;
 import system.movement;
 import system.renderer;
 import system.physics;
@@ -30,20 +33,28 @@ void main()
   world.setSystem(renderer);
   world.initialize();
   
-  auto elements = 12;
+  Entity[] entities;
+  
+  auto elements = 50;
   foreach (float index; iota(0, elements))
   {
     auto angle = (index/elements) * PI * 2.0;
+    auto size = 0.1 + sin(angle*5.0) * 0.05;
     
     Entity entity = world.createEntity();
-    entity.addComponent(new Position(cos(angle) * 0.5, sin(angle) * 0.5, 0.0));
-    entity.addComponent(new Velocity(sin(angle) * 0.2, cos(angle) * 0.2, 0.0));
     
-    auto size = 0.1 + sin(angle*5.0) * 0.1;
-    
+    //entity.addComponent(new Position(cos(angle) * 0.5, sin(angle) * 0.5, 0.0));
+    entity.addComponent(new Position(uniform(-1.0, 1.0), uniform(-1.0, 1.0), 0.0));
+    entity.addComponent(new Velocity(sin(angle) * 0.5, cos(angle) * 0.5, 0.0));
     entity.addComponent(new Mass(0.1 + size ^^ 2));
-    
     entity.addComponent(new Drawable(size, vec3(1.0, sin(angle*5.0)*0.5+0.5, 0.0)));
+    
+    entities ~= entity;
+  }
+  
+  foreach (entity; entities)
+  {
+    entity.addComponent(new Relation(entities.filter!(checkEntity => checkEntity != entity).array));
     entity.addToWorld();
   }
 

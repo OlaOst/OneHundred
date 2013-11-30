@@ -20,5 +20,6 @@ fragment:
   void main(void)
   {
     color = fragmentColor;
+    //color = gl_FragCoord * 0.001;
   }
   

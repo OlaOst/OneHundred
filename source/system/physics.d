@@ -1,8 +1,14 @@
 module system.physics;
 
+import std.algorithm;
+import std.conv;
+import std.math;
+import std.stdio;
+    
 import artemisd.all;
 import gl3n.linalg;
 
+import component.drawable;
 import component.mass;
 import component.position;
 import component.relation;
@@ -38,26 +44,47 @@ final class Physics : EntityProcessingSystem
     assert(mass !is null);
     
     // damping force and torque
-    auto force = position * -1;
+    auto force = velocity * -0.0;
     auto torque = velocity.rotation * -1;
+    
+    // attract to center
+    force += position * -0.1;
     
     // attraction force to other components
     if (relation !is null)
     {
-      foreach (relationEntity; relation.relations)
+      //debug writeln("setting force from " ~ relation.relations.length.to!string ~ " relations");
+    
+      vec2 gravityForce = relation.relations.filter!(relation => relation.getComponent!Position !is null && relation.getComponent!Mass !is null)
+                                            .map!(relation => (relation.getComponent!Position - position).normalized * 
+                                                              ((mass*relation.getComponent!Mass)/(relation.getComponent!Position - position).magnitude^^2))
+                                            //.reduce!((relativePosition, forceSum) => forceSum + relativePosition);
+                                            .reduce!"a+b";
+    
+      gravityForce *= 1.0 / relation.relations.length;
+      
+      force += gravityForce * 0.1;
+      
+      // collisions
+      // TODO: make separate subsystem and components
+      auto colliders = relation.relations.filter!(relation => relation.getComponent!Position !is null && relation.getComponent!Drawable !is null)
+                               .filter!(relation => (relation.getComponent!Position - position).magnitude < (relation.getComponent!Drawable.size + entity.getComponent!Drawable.size));
+                               
+      foreach (collider; colliders)
       {
-        auto relationPosition = relationEntity.getComponent!Position;
+        auto relativePosition = collider.getComponent!Position - position;
         
-        assert(relationPosition !is null);
+        auto normalizedContactPoint = relativePosition.normalized();
         
-        auto relativePosition = relationPosition - position;
+        auto contactPoint = normalizedContactPoint * (entity.getComponent!Drawable.size^^2 / (entity.getComponent!Drawable.size + collider.getComponent!Drawable.size));
         
-        force -= relativePosition * 0.1;
+        if (velocity.velocity.dot(contactPoint.normalized) > 0.0)
+        {
+          velocity.velocity = velocity.velocity + (2.0 * -velocity.velocity.dot(contactPoint.normalized).abs * contactPoint.normalized);
+        }
       }
     }
     
-    //import std.stdio;
-    //import std.conv;
     //debug writeln("setting force to " ~ force.to!string);
     
     velocity += force * (1.0/mass) * world.getDelta();
