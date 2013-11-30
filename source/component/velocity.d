@@ -9,16 +9,18 @@ final class Velocity : Component
   mixin TypeDecl;
   
   vec2 velocity;
+  float rotation;
   
   alias velocity this;
   
-  this(vec2 velocity)
+  this(vec2 velocity, float rotation)
   {
     this.velocity = velocity;
+    this.rotation = rotation;
   }
   
-  this(float x, float y)
+  this(float x, float y, float rotation)
   {
-    this.velocity = vec2(x, y);
+    this(vec2(x, y), rotation);
   }
 }

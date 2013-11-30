@@ -30,7 +30,6 @@ final class Renderer : EntityProcessingSystem
     
     shader = new Shader("defaultshader", shaderSource);
     shader.bind();
-    position = shader.get_attrib_location("position");
     
     import std.stdio;
   }
@@ -38,7 +37,8 @@ final class Renderer : EntityProcessingSystem
   public void close()
   {
     if (shader !is null) shader.remove();
-    if (vbo !is null) vbo.remove();
+    if (verticesVbo !is null) verticesVbo.remove();
+    if (colorsVbo !is null) colorsVbo.remove();
     if (vao !is null) vao.remove();
   }
   
@@ -47,25 +47,24 @@ final class Renderer : EntityProcessingSystem
     // create new vbo from new vertices built up in process
     // TODO: make vbo with max amount of vertices drawable, to prevent reinitalizing every frame. 
     //       but would be a premature optimization without profiling
-    vbo = new Buffer(vertices);
+    verticesVbo = new Buffer(vertices);
+    colorsVbo = new Buffer(colors ~ colors ~ colors);
   
-    glClearColor(0.0, 0.0, 0.33, 1.0);
+    glClearColor(0.0, 0.0, 0.33, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     shader.bind();
     
-    vbo.bind();
-    glEnableVertexAttribArray(position);
-    
-    glVertexAttribPointer(position, 2, GL_FLOAT, GL_FALSE, 0, null);
+    verticesVbo.bind(shader, "position", GL_FLOAT, 2, 0, 0);
+    colorsVbo.bind(shader, "color", GL_FLOAT, 3, 0, 0);
     
     glDrawArrays(GL_TRIANGLES, 0, vertices.length);
     
-    glDisableVertexAttribArray(position);
-    
     // clear vertices and vbo for the next frame
     vertices.length = 0;
-    vbo.remove();
+    colors.length = 0;
+    verticesVbo.remove();
+    colorsVbo.remove();
   }
   
   override void process(Entity entity)
@@ -76,15 +75,18 @@ final class Renderer : EntityProcessingSystem
     assert(drawable !is null);
     assert(position !is null);
     
-    vertices ~= drawable.vertices.map!(vertex => vertex + position.position).array();
+    vertices ~= drawable.vertices.map!(vertex => (vec3(vertex, 0.0) * mat3.zrotation(position.angle)).xy + position.position).array();
+    colors ~= [drawable.color, drawable.color, drawable.color];
+    //colors ~= drawable.color;
   }
 
   
 private:
   vec2[] vertices;
+  vec3[] colors;
   
   VAO vao;
-  Buffer vbo;
+  Buffer verticesVbo;
+  Buffer colorsVbo;
   Shader shader;
-  GLint position = 0;
 }
