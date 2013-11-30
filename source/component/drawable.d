@@ -13,9 +13,17 @@ final class Drawable : Component
   
   float size;
   
-  vec2[] baseTriangle = [vec2(-1.0, -1.0),
-                         vec2( 1.0, -1.0),
-                         vec2( 0.0,  1.0)];
+  static immutable vec2[] baseTriangle = [vec2(-1.0, -1.0),
+                                          vec2( 1.0, -1.0),
+                                          vec2( 0.0,  1.0)];
+                                          
+  static immutable vec2[] baseSquare = [vec2(-1.0, -1.0),
+                                        vec2( 1.0, -1.0),
+                                        vec2( 1.0,  1.0),
+                                        vec2( 1.0,  1.0),
+                                        vec2(-1.0,  1.0),
+                                        vec2(-1.0, -1.0)];
+  
   vec2[] vertices;
   vec3 color;
   
@@ -23,7 +31,8 @@ final class Drawable : Component
   {
     this.size = size;
     
-    this.vertices = this.baseTriangle.map!(vertex => vertex * size).array();
+    //this.vertices = this.baseTriangle.map!(vertex => vertex * size).array();
+    this.vertices = this.baseSquare.map!(vertex => vertex * size).array();
     this.color = color;
   }
 }

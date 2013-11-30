@@ -35,11 +35,11 @@ void main()
   
   Entity[] entities;
   
-  auto elements = 50;
+  auto elements = 150;
   foreach (float index; iota(0, elements))
   {
     auto angle = (index/elements) * PI * 2.0;
-    auto size = 0.1 + sin(angle*5.0) * 0.05;
+    auto size = uniform(0.01, 0.05);
     
     Entity entity = world.createEntity();
     

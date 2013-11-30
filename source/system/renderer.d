@@ -3,6 +3,7 @@ module system.renderer;
 import std.algorithm;
 import std.array;
 import std.file;
+import std.range;
 
 import artemisd.all;
 import derelict.opengl3.gl3;
@@ -13,6 +14,7 @@ import glamour.vbo;
 
 import component.drawable;
 import component.position;
+import component.velocity;
 
 
 final class Renderer : EntityProcessingSystem
@@ -48,7 +50,8 @@ final class Renderer : EntityProcessingSystem
     // TODO: make vbo with max amount of vertices drawable, to prevent reinitalizing every frame. 
     //       but would be a premature optimization without profiling
     verticesVbo = new Buffer(vertices);
-    colorsVbo = new Buffer(colors ~ colors ~ colors);
+    //colorsVbo = new Buffer(colors ~ colors ~ colors);
+    colorsVbo = new Buffer(colors);
   
     glClearColor(0.0, 0.0, 0.33, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -71,13 +74,16 @@ final class Renderer : EntityProcessingSystem
   {
     auto drawable = entity.getComponent!Drawable;
     auto position = entity.getComponent!Position;
+    auto velocity = entity.getComponent!Velocity;
     
     assert(drawable !is null);
     assert(position !is null);
+    assert(velocity !is null);
+    
+    vec3 color = vec3(velocity.magnitude^^2, (velocity.magnitude * 0.5).sqrt, (velocity.magnitude * 0.1).sqrt.sqrt);
     
     vertices ~= drawable.vertices.map!(vertex => (vec3(vertex, 0.0) * mat3.zrotation(position.angle)).xy + position.position).array();
-    colors ~= [drawable.color, drawable.color, drawable.color];
-    //colors ~= drawable.color;
+    colors ~= color.repeat(drawable.vertices.length).array();
   }
 
   

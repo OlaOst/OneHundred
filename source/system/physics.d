@@ -44,7 +44,7 @@ final class Physics : EntityProcessingSystem
     assert(mass !is null);
     
     // damping force and torque
-    auto force = velocity * -0.0;
+    auto force = velocity * -0.01;
     auto torque = velocity.rotation * -1;
     
     // attract to center
