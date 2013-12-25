@@ -13,6 +13,7 @@ import gl3n.linalg;
 import component.drawable;
 import component.mass;
 import component.position;
+import component.relations.collision;
 import component.relations.gravity;
 import component.size;
 import component.velocity;
@@ -36,6 +37,7 @@ void main()
   auto world = new World();
   world.setSystem(new Movement(world));
   world.setSystem(new Physics(world));
+  world.setSystem(new CollisionHandler(world));
   world.setSystem(renderer);
   world.initialize();
   
@@ -62,6 +64,7 @@ void main()
   foreach (entity; entities)
   {
     entity.addComponent(new Gravity(entities.filter!(checkEntity => checkEntity != entity).array));
+    entity.addComponent(new Collision(entities.filter!(checkEntity => checkEntity != entity).array));
     entity.addToWorld();
   }
 
