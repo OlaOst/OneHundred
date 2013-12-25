@@ -64,25 +64,6 @@ final class Physics : EntityProcessingSystem
       gravityForce *= 1.0 / relation.relations.length;
       
       force += gravityForce * 0.1;
-      
-      // collisions
-      // TODO: make separate subsystem and components
-      auto colliders = relation.relations.filter!(relation => relation.getComponent!Position !is null && relation.getComponent!Drawable !is null)
-                               .filter!(relation => (relation.getComponent!Position - position).magnitude < (relation.getComponent!Drawable.size + entity.getComponent!Drawable.size));
-                               
-      foreach (collider; colliders)
-      {
-        auto relativePosition = collider.getComponent!Position - position;
-        
-        auto normalizedContactPoint = relativePosition.normalized();
-        
-        auto contactPoint = normalizedContactPoint * (entity.getComponent!Drawable.size^^2 / (entity.getComponent!Drawable.size + collider.getComponent!Drawable.size));
-        
-        if (velocity.velocity.dot(contactPoint.normalized) > 0.0)
-        {
-          velocity.velocity = velocity.velocity + (2.0 * -velocity.velocity.dot(contactPoint.normalized).abs * contactPoint.normalized);
-        }
-      }
     }
     
     //debug writeln("setting force to " ~ force.to!string);
