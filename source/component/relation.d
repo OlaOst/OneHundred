@@ -1,13 +1,10 @@
 module component.relation;
 
 import artemisd.all;
-import gl3n.linalg;
 
 
-abstract class Relation : Component
+mixin template Relation()
 {
-  mixin TypeDecl;
-  
   Entity[] relations;
   
   alias relations this;

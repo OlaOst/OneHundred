@@ -6,12 +6,13 @@ import gl3n.linalg;
 import component.relation;
 
 
-final class Gravity : Relation
+final class Gravity : Component
 {
   mixin TypeDecl;
+  mixin Relation;
   
-  this(Entity[] relations)
+  /*this(Entity[] relations)
   {
     super(relations);
-  }
+  }*/
 }

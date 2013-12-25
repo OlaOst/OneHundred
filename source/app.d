@@ -14,10 +14,14 @@ import component.drawable;
 import component.mass;
 import component.position;
 import component.relations.gravity;
+import component.size;
 import component.velocity;
+
+import system.collisionhandler;
 import system.movement;
 import system.renderer;
 import system.physics;
+
 import window;
 
 
@@ -48,6 +52,7 @@ void main()
     //entity.addComponent(new Position(cos(angle) * 0.5, sin(angle) * 0.5, 0.0));
     entity.addComponent(new Position(uniform(-1.0, 1.0), uniform(-1.0, 1.0), 0.0));
     entity.addComponent(new Velocity(sin(angle) * 0.5, cos(angle) * 0.5, 0.0));
+    entity.addComponent(new Size(size));
     entity.addComponent(new Mass(0.1 + size ^^ 2));
     entity.addComponent(new Drawable(size, vec3(1.0, sin(angle*5.0)*0.5+0.5, 0.0)));
     
