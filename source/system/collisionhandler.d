@@ -36,14 +36,9 @@ final class CollisionHandler : EntityProcessingSystem
     auto mass = entity.getComponent!Mass;
     auto collision = entity.getComponent!Collision;
     
-    // TODO: workaround for buggy getAspectForAll
-    //if (position is null || velocity is null || mass is null)
-      //return;
-      
     auto radius = (size !is null) ? size.radius : 0.0;
       
     assert(position !is null);
-    //assert(size !is null);
     assert(collision !is null);
     
     // attraction force to other components
@@ -67,10 +62,5 @@ final class CollisionHandler : EntityProcessingSystem
         }
       }
     }
-    
-    //debug writeln("setting force to " ~ force.to!string);
-    
-    //velocity += force * (1.0/mass) * world.getDelta();
-    //velocity.rotation += torque * (1.0/mass) * world.getDelta();
   }
 }
