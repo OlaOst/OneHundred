@@ -4,7 +4,7 @@ import artemisd.all;
 import gl3n.linalg;
 
 
-final class Relation : Component
+abstract class Relation : Component
 {
   mixin TypeDecl;
   

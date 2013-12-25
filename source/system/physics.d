@@ -11,7 +11,7 @@ import gl3n.linalg;
 import component.drawable;
 import component.mass;
 import component.position;
-import component.relation;
+import component.relations.gravity;
 import component.velocity;
 
 
@@ -33,7 +33,7 @@ final class Physics : EntityProcessingSystem
     auto position = entity.getComponent!Position;
     auto velocity = entity.getComponent!Velocity;
     auto mass = entity.getComponent!Mass;
-    auto relation = entity.getComponent!Relation;
+    auto relation = entity.getComponent!Gravity;
     
     // TODO: workaround for buggy getAspectForAll
     //if (position is null || velocity is null || mass is null)

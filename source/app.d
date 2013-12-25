@@ -13,14 +13,16 @@ import gl3n.linalg;
 import component.drawable;
 import component.mass;
 import component.position;
-import component.relation;
+import component.relations.gravity;
 import component.velocity;
 import system.movement;
 import system.renderer;
 import system.physics;
 import window;
 
+
 bool keepRunning = true;
+
 
 void main()
 {
@@ -54,7 +56,7 @@ void main()
   
   foreach (entity; entities)
   {
-    entity.addComponent(new Relation(entities.filter!(checkEntity => checkEntity != entity).array));
+    entity.addComponent(new Gravity(entities.filter!(checkEntity => checkEntity != entity).array));
     entity.addToWorld();
   }
 
