@@ -48,7 +48,7 @@ final class Physics : EntityProcessingSystem
     auto torque = velocity.rotation * -1;
     
     // attract to center
-    force += position * -0.1;
+    force += position * -0.01;
     
     // attraction force to other components
     if (relation !is null)
@@ -63,7 +63,7 @@ final class Physics : EntityProcessingSystem
     
       gravityForce *= 1.0 / relation.relations.length;
       
-      force += gravityForce * 0.1;
+      force += gravityForce * 1.1;
     }
     
     //debug writeln("setting force to " ~ force.to!string);

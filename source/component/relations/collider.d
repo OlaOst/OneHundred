@@ -1,4 +1,4 @@
-module component.relations.collision;
+module component.relations.collider;
 
 import artemisd.all;
 import gl3n.linalg;
@@ -6,7 +6,7 @@ import gl3n.linalg;
 import component.relation;
 
 
-final class Collision : Component
+final class Collider : Component
 {
   mixin TypeDecl;
   mixin Relation;
