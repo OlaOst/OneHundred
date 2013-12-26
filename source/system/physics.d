@@ -45,7 +45,7 @@ final class Physics : EntityProcessingSystem
     
     // damping force and torque
     auto force = velocity * -0.01;
-    auto torque = velocity.rotation * -1;
+    auto torque = 0.0; //velocity.rotation * -0.01;
     
     // attract to center
     force += position * -0.01;

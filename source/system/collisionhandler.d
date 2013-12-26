@@ -64,7 +64,7 @@ final class CollisionHandler : EntityProcessingSystem
         
         if (velocity.velocity.dot(contactPoint.normalized) > 0.0)
         {
-          velocity += (2.0 * -velocity.velocity.dot(contactPoint.normalized).abs * contactPoint.normalized) * 0.9;
+          velocity += (2.0 * -velocity.velocity.dot(contactPoint.normalized).abs * contactPoint.normalized) * 0.99;
         }
       }
     }
