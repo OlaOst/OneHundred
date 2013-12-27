@@ -50,7 +50,6 @@ final class Renderer : EntityProcessingSystem
     // TODO: make vbo with max amount of vertices drawable, to prevent reinitalizing every frame. 
     //       but would be a premature optimization without profiling
     verticesVbo = new Buffer(vertices);
-    //colorsVbo = new Buffer(colors ~ colors ~ colors);
     colorsVbo = new Buffer(colors);
   
     glClearColor(0.0, 0.0, 0.33, 0.0);
@@ -68,6 +67,8 @@ final class Renderer : EntityProcessingSystem
     colors.length = 0;
     verticesVbo.remove();
     colorsVbo.remove();
+    
+    cameraPosition = vec2(0.0, 0.0);
   }
   
   override void process(Entity entity)
@@ -82,7 +83,7 @@ final class Renderer : EntityProcessingSystem
     
     vec3 color = vec3(velocity.magnitude^^2, (velocity.magnitude * 0.5).sqrt, (velocity.magnitude * 0.1).sqrt.sqrt);
     
-    vertices ~= drawable.vertices.map!(vertex => (vec3(vertex, 0.0) * mat3.zrotation(position.angle)).xy + position.position).array();
+    vertices ~= drawable.vertices.map!(vertex => ((vec3(vertex, 0.0) * mat3.zrotation(position.angle)).xy + position - cameraPosition) * zoom).array();
     colors ~= color.repeat(drawable.vertices.length).array();
   }
 
@@ -90,6 +91,9 @@ final class Renderer : EntityProcessingSystem
 private:
   vec2[] vertices;
   vec3[] colors;
+  
+  vec2 cameraPosition = vec2(0.0, 0.0);
+  float zoom = 0.3;
   
   VAO vao;
   Buffer verticesVbo;
