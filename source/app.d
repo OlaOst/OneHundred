@@ -26,11 +26,13 @@ import system.physics;
 import window;
 
 
-bool keepRunning = true;
-
-
 void main()
 {
+  // TODO: put these in separate input module
+  bool keepRunning = true;
+  bool zoomIn = false;
+  bool zoomOut = false;
+  
   auto window = getWindow(1024, 768);
   auto renderer = new Renderer();
   
@@ -78,7 +80,12 @@ void main()
     world.setDelta(1.0/60.0);
     world.process();
   
-    handleEvents();
+    handleEvents(keepRunning, renderer, zoomIn, zoomOut);
+    
+    if (zoomIn)
+      renderer.zoom += renderer.zoom * 1.0/60.0;
+    if (zoomOut)
+      renderer.zoom -= renderer.zoom * 1.0/60.0;
     
     renderer.draw();
 
@@ -87,7 +94,7 @@ void main()
 }
 
 
-void handleEvents()
+void handleEvents(ref bool keepRunning, ref Renderer renderer, ref bool zoomIn, ref bool zoomOut)
 {
   SDL_Event event;
 
@@ -104,6 +111,34 @@ void handleEvents()
         {
           case SDLK_ESCAPE:
             keepRunning = false;
+            break;
+
+          case SDLK_PAGEDOWN:
+            //renderer.zoom -= renderer.zoom * 1.0/60.0;
+            zoomOut = false;
+            break;
+          
+          case SDLK_PAGEUP:
+            //renderer.zoom += renderer.zoom * 1.0/60.0;
+            zoomIn = false;
+            break;
+            
+          default:
+            break;
+        }
+        break;
+        
+      case SDL_KEYDOWN:
+        switch (event.key.keysym.sym)
+        {
+          case SDLK_PAGEDOWN:
+            //renderer.zoom -= renderer.zoom * 1.0/60.0;
+            zoomOut = true;
+            break;
+          
+          case SDLK_PAGEUP:
+            //renderer.zoom += renderer.zoom * 1.0/60.0;
+            zoomIn = true;
             break;
           
           default:

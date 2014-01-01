@@ -48,7 +48,7 @@ final class Physics : EntityProcessingSystem
     auto torque = 0.0; //velocity.rotation * -0.01;
     
     // attract to center
-    force += position * -0.01;
+    //force += position * -0.01;
     
     // attraction force to other components
     if (relation !is null)

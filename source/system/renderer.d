@@ -88,12 +88,13 @@ final class Renderer : EntityProcessingSystem
   }
 
   
+public:
+  vec2 cameraPosition = vec2(0.0, 0.0);
+  float zoom = 0.3;
+  
 private:
   vec2[] vertices;
   vec3[] colors;
-  
-  vec2 cameraPosition = vec2(0.0, 0.0);
-  float zoom = 0.3;
   
   VAO vao;
   Buffer verticesVbo;
