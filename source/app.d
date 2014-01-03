@@ -23,16 +23,12 @@ import system.movement;
 import system.renderer;
 import system.physics;
 
+import input;
 import window;
 
 
 void main()
 {
-  // TODO: put these in separate input module
-  bool keepRunning = true;
-  bool zoomIn = false;
-  bool zoomOut = false;
-  
   auto window = getWindow(1024, 768);
   auto renderer = new Renderer();
   
@@ -75,79 +71,20 @@ void main()
     renderer.close();
   }
   
-  while (keepRunning)
+  while (input.keepRunning)
   {
     world.setDelta(1.0/60.0);
     world.process();
   
-    handleEvents(keepRunning, renderer, zoomIn, zoomOut);
+    input.handleEvents();
     
-    if (zoomIn)
+    if (input.zoomIn)
       renderer.zoom += renderer.zoom * 1.0/60.0;
-    if (zoomOut)
+    if (input.zoomOut)
       renderer.zoom -= renderer.zoom * 1.0/60.0;
     
     renderer.draw();
 
     SDL_GL_SwapWindow(window);
-  }
-}
-
-
-void handleEvents(ref bool keepRunning, ref Renderer renderer, ref bool zoomIn, ref bool zoomOut)
-{
-  SDL_Event event;
-
-  while (SDL_PollEvent(&event))
-  {
-    switch (event.type)
-    {
-      case SDL_QUIT:
-        keepRunning = false;
-        break;
-        
-      case SDL_KEYUP:
-        switch (event.key.keysym.sym)
-        {
-          case SDLK_ESCAPE:
-            keepRunning = false;
-            break;
-
-          case SDLK_PAGEDOWN:
-            //renderer.zoom -= renderer.zoom * 1.0/60.0;
-            zoomOut = false;
-            break;
-          
-          case SDLK_PAGEUP:
-            //renderer.zoom += renderer.zoom * 1.0/60.0;
-            zoomIn = false;
-            break;
-            
-          default:
-            break;
-        }
-        break;
-        
-      case SDL_KEYDOWN:
-        switch (event.key.keysym.sym)
-        {
-          case SDLK_PAGEDOWN:
-            //renderer.zoom -= renderer.zoom * 1.0/60.0;
-            zoomOut = true;
-            break;
-          
-          case SDLK_PAGEUP:
-            //renderer.zoom += renderer.zoom * 1.0/60.0;
-            zoomIn = true;
-            break;
-          
-          default:
-            break;
-        }
-        break;
-        
-      default:
-        break;
-    }
   }
 }
