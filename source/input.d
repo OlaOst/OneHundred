@@ -28,12 +28,10 @@ void handleEvents()
             break;
 
           case SDLK_PAGEDOWN:
-            //renderer.zoom -= renderer.zoom * 1.0/60.0;
             zoomOut = false;
             break;
           
           case SDLK_PAGEUP:
-            //renderer.zoom += renderer.zoom * 1.0/60.0;
             zoomIn = false;
             break;
             
@@ -46,12 +44,10 @@ void handleEvents()
         switch (event.key.keysym.sym)
         {
           case SDLK_PAGEDOWN:
-            //renderer.zoom -= renderer.zoom * 1.0/60.0;
             zoomOut = true;
             break;
           
           case SDLK_PAGEUP:
-            //renderer.zoom += renderer.zoom * 1.0/60.0;
             zoomIn = true;
             break;
           
