@@ -81,7 +81,8 @@ final class Renderer : EntityProcessingSystem
     assert(position !is null);
     assert(velocity !is null);
     
-    vec3 color = vec3(velocity.magnitude^^2, (velocity.magnitude * 0.5).sqrt, (velocity.magnitude * 0.1).sqrt.sqrt);
+    vec3 color = drawable.color + vec3((velocity.magnitude * 0.5).sqrt, velocity.magnitude^^2, (velocity.magnitude * 0.1).sqrt.sqrt);
+    color *= 0.5;
     
     vertices ~= drawable.vertices.map!(vertex => ((vec3(vertex, 0.0) * mat3.zrotation(position.angle)).xy + position - cameraPosition) * zoom).array();
     colors ~= color.repeat(drawable.vertices.length).array();
