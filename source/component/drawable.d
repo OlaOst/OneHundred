@@ -28,7 +28,7 @@ final class Drawable : Component
                                         vec2(-1.0, -1.0)];
   
   vec2[] vertices;
-  vec3 color;
+  vec3[] colors;
   
   this(float size, vec3 color)
   {
@@ -43,9 +43,8 @@ final class Drawable : Component
     {
       auto nextangle = angle + (PI*2.0) / points;
       
-      this.vertices ~= [vec2(0.0, 0.0), vec2(cos(angle), sin(angle)) * size, vec2(cos(nextangle), sin(nextangle)) * size];
+      vertices ~= [vec2(0.0, 0.0), vec2(cos(angle), sin(angle)) * size, vec2(cos(nextangle), sin(nextangle)) * size];
+      colors ~= [vec3(1.0, 1.0, 1.0), color, color];
     }
-    
-    this.color = color;
   }
 }

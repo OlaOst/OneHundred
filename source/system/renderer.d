@@ -32,8 +32,6 @@ final class Renderer : EntityProcessingSystem
     
     shader = new Shader("defaultshader", shaderSource);
     shader.bind();
-    
-    import std.stdio;
   }
   
   public void close()
@@ -63,12 +61,9 @@ final class Renderer : EntityProcessingSystem
     glDrawArrays(GL_TRIANGLES, 0, vertices.length);
     
     // clear vertices and vbo for the next frame
-    vertices.length = 0;
-    colors.length = 0;
+    vertices.length = colors.length = 0;
     verticesVbo.remove();
     colorsVbo.remove();
-    
-    cameraPosition = vec2(0.0, 0.0);
   }
   
   override void process(Entity entity)
@@ -81,11 +76,11 @@ final class Renderer : EntityProcessingSystem
     assert(position !is null);
     assert(velocity !is null);
     
-    vec3 color = drawable.color + vec3((velocity.magnitude * 0.5).sqrt, velocity.magnitude^^2, (velocity.magnitude * 0.1).sqrt.sqrt);
-    color *= 0.5;
+    auto colorOffset = vec3((velocity.magnitude * 0.5).sqrt, velocity.magnitude^^2, (velocity.magnitude * 0.1).sqrt.sqrt);
+    auto offsetWeight = 0.0;
     
     vertices ~= drawable.vertices.map!(vertex => ((vec3(vertex, 0.0) * mat3.zrotation(position.angle)).xy + position - cameraPosition) * zoom).array();
-    colors ~= color.repeat(drawable.vertices.length).array();
+    colors ~= drawable.colors.map!(color => color * (1.0-offsetWeight) + colorOffset * offsetWeight).array();
   }
 
   
