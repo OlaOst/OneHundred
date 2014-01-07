@@ -14,6 +14,8 @@ import component.position;
 import component.relations.gravity;
 import component.velocity;
 
+import integrator;
+
 
 final class Physics : EntityProcessingSystem
 {
@@ -44,14 +46,14 @@ final class Physics : EntityProcessingSystem
     assert(mass !is null);
     
     // damping force and torque
-    auto force = velocity * -0.01;
-    auto torque = 0.0; //velocity.rotation * -0.01;
+    //auto force = velocity * -0.002;
+    //auto torque = 0.0; //velocity.rotation * -0.01;
     
     // attract to center
     //force += position * -0.01;
     
     // attraction force to other components
-    if (relation !is null)
+    /*if (relation !is null)
     {
       //debug writeln("setting force from " ~ relation.relations.length.to!string ~ " relations");
     
@@ -61,14 +63,24 @@ final class Physics : EntityProcessingSystem
                                             //.reduce!((relativePosition, forceSum) => forceSum + relativePosition);
                                             .reduce!"a+b";
     
-      gravityForce *= 1.0 / relation.relations.length;
+      //gravityForce *= 1.0 / relation.relations.length;
+      gravityForce *= 0.05;
       
-      force += gravityForce * 1.1;
-    }
+      force += gravityForce * 1.5;
+    }*/
     
     //debug writeln("setting force to " ~ force.to!string);
     
-    velocity += force * (1.0/mass) * world.getDelta();
-    velocity.rotation += torque * (1.0/mass) * world.getDelta();
+    //velocity += force * (1.0/mass) * world.getDelta();
+    //velocity.rotation += torque * (1.0/mass) * world.getDelta();
+    
+    State state;
+    state.position = position.position;
+    state.velocity = velocity.velocity;
+    
+    integrate(state, 0.0, 1.0/60.0);
+
+    position.position = state.position;
+    velocity.velocity = state.velocity;
   }
 }

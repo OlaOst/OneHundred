@@ -28,7 +28,7 @@ final class Movement : EntityProcessingSystem
     assert(position !is null);
     assert(velocity !is null);
     
-    position += velocity * world.getDelta();
-    position.angle += velocity.rotation * world.getDelta();
+    //position += velocity * world.getDelta();
+    //position.angle += velocity.rotation * world.getDelta();
   }
 }

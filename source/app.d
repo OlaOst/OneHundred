@@ -33,7 +33,7 @@ void main()
   auto renderer = new Renderer();
   
   auto world = new World();
-  world.setSystem(new Movement(world));
+  //world.setSystem(new Movement(world));
   world.setSystem(new Physics(world));
   world.setSystem(new CollisionHandler(world));
   world.setSystem(renderer);
@@ -41,16 +41,16 @@ void main()
   
   Entity[] entities;
   
-  auto elements = 150;
+  auto elements = 10;
   foreach (float index; iota(0, elements))
   {
     auto angle = (index/elements) * PI * 2.0;
-    auto size = uniform(0.01, 0.025);
+    auto size = uniform(0.01, 0.1);
     
     Entity entity = world.createEntity();
     
-    //entity.addComponent(new Position(cos(angle) * 0.5, sin(angle) * 0.5, 0.0));
-    entity.addComponent(new Position(uniform(-1.0, 1.0), uniform(-1.0, 1.0), uniform(-PI, PI)));
+    entity.addComponent(new Position(cos(angle) * 1.5, sin(angle) * 1.5, 0.0));
+    //entity.addComponent(new Position(uniform(-5.0, 5.0), uniform(-5.0, 5.0), uniform(-PI, PI)));
     entity.addComponent(new Velocity(sin(angle) * 0.5, cos(angle) * 0.5, uniform(-PI, PI)));
     entity.addComponent(new Size(size));
     entity.addComponent(new Mass(0.1 + size ^^ 2));
