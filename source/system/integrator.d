@@ -7,30 +7,41 @@ struct State
 {
   vec2 position;
   vec2 velocity;
+  float mass = 0.0;
+  
+  invariant()
+  {
+    assert(position.ok);
+    assert(velocity.ok);
+    assert(!mass.isNaN);
+  }
 }
 
 struct Derivative
 {
   vec2 position = vec2(0.0, 0.0);
   vec2 velocity = vec2(0.0, 0.0);
+  
+  invariant()
+  {
+    assert(position.ok);
+    assert(velocity.ok);
+  }
 }
 
 Derivative evaluate(const State initial, float time, float timestep, const Derivative derivative)
 in
 {
-  assert(initial.position.ok);
-  assert(initial.velocity.ok);
+  assert(&initial);
   
   assert(!time.isNaN);
   assert(!timestep.isNaN);
   
-  assert(derivative.position.ok);
-  assert(derivative.velocity.ok);    
+  assert(&derivative);
 }
 out(result)
 {
-  assert(result.position.ok);
-  assert(result.velocity.ok);
+  assert(&result);
 }
 body
 {
@@ -50,8 +61,7 @@ body
 vec2 calculateForce(const State state, float time)
 in
 {
-  assert(state.position.ok);
-  assert(state.velocity.ok);
+  assert(&state);
 }
 out(result)
 {
@@ -66,16 +76,14 @@ body
 void integrate(ref State state, float time, float timestep)
 in
 {
-  assert(state.position.ok);
-  assert(state.velocity.ok);
+  assert(&state);
   
   assert(!time.isNaN);
   assert(!timestep.isNaN);
 }
 out
 {
-  assert(state.position.ok);
-  assert(state.velocity.ok);
+  assert(&state);
 }
 body
 {
