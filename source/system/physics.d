@@ -77,6 +77,7 @@ final class Physics : EntityProcessingSystem
     State state;
     state.position = position.position;
     state.velocity = velocity.velocity;
+    state.mass = mass.mass;
     
     integrate(state, 0.0, 1.0/60.0);
 

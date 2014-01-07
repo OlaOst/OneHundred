@@ -7,13 +7,13 @@ struct State
 {
   vec2 position;
   vec2 velocity;
-  float mass = 0.0;
+  float mass;
   
   invariant()
   {
     assert(position.ok);
     assert(velocity.ok);
-    assert(!mass.isNaN);
+    assert(mass > 0.0, "Must have positive nonzero mass");
   }
 }
 
@@ -49,11 +49,12 @@ body
   
   state.position = initial.position + derivative.position * timestep;
   state.velocity = initial.velocity + derivative.velocity * timestep;
+  state.mass = initial.mass;
   
   Derivative output;
   
   output.position = state.velocity;
-  output.velocity = calculateForce(state, time + timestep);
+  output.velocity = calculateForce(state, time + timestep) * (1.0 / state.mass);
   
   return output;
 }
@@ -70,7 +71,7 @@ out(result)
 body
 {
   //debug writeln("calculateForce returning " ~ (state.position * -0.2).to!string);
-  return state.position * -22.2;
+  return state.position * -2.2;
 }
 
 void integrate(ref State state, float time, float timestep)
