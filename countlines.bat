@@ -1,0 +1,1 @@
+for /r %%f in (*.d) do @wc -lL %%f
