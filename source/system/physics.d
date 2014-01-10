@@ -61,11 +61,20 @@ final class Physics : EntityProcessingSystem
     auto force = state.position * -2.0; // spring force to center
     force += state.velocity * -0.2; // damping force
     
-    vec2 gravityForce = state.relation.relations.filter!(relation => relation.getComponent!Position !is null && relation.getComponent!Mass !is null)
-                                                .map!(relation => (relation.getComponent!Position - state.position).normalized * 
-                                                                  ((state.mass*relation.getComponent!Mass)/(relation.getComponent!Position - state.position).magnitude^^2))
-                                                //.reduce!((relativePosition, forceSum) => forceSum + relativePosition);
-                                                .reduce!"a+b";
+    vec2 getGravityForce(vec2 firstPosition, vec2 otherPosition, float firstMass, float otherMass)
+    {
+      return (firstPosition-otherPosition).normalized * 
+             ((firstMass*otherMass) / (firstPosition-otherPosition).magnitude^^2);
+    }
+    
+    vec2 gravityForce = 
+      state.relation.relations.filter!(relation => relation.getComponent!Position !is null && 
+                                                   relation.getComponent!Mass !is null)
+                              .map!(relation => getGravityForce(relation.getComponent!Position, 
+                                                                state.position, 
+                                                                relation.getComponent!Mass, 
+                                                                state.mass))
+                              .reduce!"a+b";
 
     gravityForce *= 0.05;
     
