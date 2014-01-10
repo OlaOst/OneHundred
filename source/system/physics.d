@@ -43,12 +43,7 @@ final class Physics : EntityProcessingSystem
     assert(velocity !is null);
     assert(mass !is null);
   
-    State state;
-    state.position = position.position;
-    state.velocity = velocity.velocity;
-    state.mass = mass.mass;
-    state.forceCalculator = &calculateForce;
-    state.relation = relation;
+    auto state = State(position, velocity, mass, &calculateForce, relation);
     
     integrate(state, 0.0, 1.0/60.0);
     
