@@ -70,17 +70,16 @@ final class Renderer : EntityProcessingSystem
   {
     auto drawable = entity.getComponent!Drawable;
     auto position = entity.getComponent!Position;
-    auto velocity = entity.getComponent!Velocity;
     
     assert(drawable !is null);
     assert(position !is null);
-    assert(velocity !is null);
     
-    auto colorOffset = vec3((velocity.magnitude * 0.5).sqrt, velocity.magnitude^^2, (velocity.magnitude * 0.1).sqrt.sqrt);
-    auto offsetWeight = 0.0;
-    
-    vertices ~= drawable.vertices.map!(vertex => ((vec3(vertex, 0.0) * mat3.zrotation(position.angle)).xy + position - cameraPosition) * zoom).array();
-    colors ~= drawable.colors.map!(color => color * (1.0-offsetWeight) + colorOffset * offsetWeight).array();
+    vertices ~= drawable.vertices.map!(vertex => ((vec3(vertex, 0.0) * 
+                                                  mat3.zrotation(position.angle)).xy + 
+                                                  position - cameraPosition) 
+                                                  * zoom).array();
+                                                  
+    colors ~= drawable.colors;
   }
 
   
