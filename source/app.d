@@ -41,7 +41,7 @@ void main()
   
   Entity[] entities;
   
-  auto elements = 100;
+  auto elements = 64;
   foreach (float index; iota(0, elements))
   {
     auto angle = (index/elements) * PI * 2.0;
@@ -49,8 +49,12 @@ void main()
     
     Entity entity = world.createEntity();
     
-    entity.addComponent(new Position(cos(angle*5) * angle^^2, sin(angle*5) * angle^^2, 0.0));
-    entity.addComponent(new Velocity(sin(angle) * 0.5, cos(angle) * 0.5, uniform(-PI, PI)));
+    entity.addComponent(new Position(cos(angle*5) * (1.0+angle^^2), 
+                                     sin(angle*5) * (1.0+angle^^2), 
+                                     0.0));
+    entity.addComponent(new Velocity(sin(angle) * 0.5, 
+                                     cos(angle) * 0.5, 
+                                     uniform(-PI, PI)));
     entity.addComponent(new Size(size));
     entity.addComponent(new Mass(0.1 + size ^^ 2));
     entity.addComponent(new Drawable(size, uniformDistribution!float(3).vec3));
