@@ -49,8 +49,8 @@ void main()
     
     Entity entity = world.createEntity();
     
-    entity.addComponent(new Position(cos(angle*5) * (1.0+angle^^2), 
-                                     sin(angle*5) * (1.0+angle^^2), 
+    entity.addComponent(new Position(cos(angle*5) * (0.3+angle.sqrt), 
+                                     sin(angle*5) * (0.3+angle.sqrt), 
                                      0.0));
     entity.addComponent(new Velocity(sin(angle) * 0.5, 
                                      cos(angle) * 0.5, 

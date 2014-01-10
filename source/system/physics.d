@@ -58,8 +58,10 @@ final class Physics : EntityProcessingSystem
   
   vec2 calculateForce(State state, float time)
   {    
-    auto force = state.position * -2.0; // spring force to center
-    force += state.velocity * -0.2; // damping force
+    auto force = vec2(0.0, 0.0);
+    
+    //force += state.position * -2.0; // spring force to center
+    force += state.velocity * -0.05; // damping force
     
     vec2 getGravityForce(vec2 firstPosition, vec2 otherPosition, float firstMass, float otherMass)
     {
@@ -76,7 +78,7 @@ final class Physics : EntityProcessingSystem
                                                                 state.mass))
                               .reduce!"a+b";
 
-    gravityForce *= 0.05;
+    gravityForce *= 0.5;
     
     force += gravityForce;
     
