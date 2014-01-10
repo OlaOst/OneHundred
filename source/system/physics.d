@@ -68,8 +68,8 @@ final class Physics : EntityProcessingSystem
     }
     
     vec2 gravityForce = 
-      state.relation.relations.filter!(relation => relation.getComponent!Position !is null && 
-                                                   relation.getComponent!Mass !is null)
+      state.relation.relations.filter!(relation => relation.getComponent!Position && 
+                                                   relation.getComponent!Mass)
                               .map!(relation => getGravityForce(relation.getComponent!Position, 
                                                                 state.position, 
                                                                 relation.getComponent!Mass, 

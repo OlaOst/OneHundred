@@ -42,11 +42,31 @@ final class CollisionHandler : EntityProcessingSystem
     assert(collider !is null);
     
     // attraction force to other components
-    // TODO: collision response should be handled elsewhere, this class should just generate collision events
+    // TODO: collision response should be handled elsewhere
+    //       this class should just generate collision events
     if (collider !is null)
     {
-      auto collisions = collider.relations.filter!(candidate => candidate.getComponent!Position !is null && candidate.getComponent!Size !is null)
-                                .filter!(candidate => (candidate.getComponent!Position - position).magnitude < (candidate.getComponent!Size.radius + radius));
+      struct Circle
+      {
+        vec2 position;
+        float radius;
+      }
+      
+      bool isOverlapping(Entity first, Entity other)
+      {
+        auto firstPosition = first.getComponent!Position;
+        auto firstRadius = first.getComponent!Size.radius;
+        auto otherPosition = other.getComponent!Position;
+        auto otherRadius = other.getComponent!Size.radius;
+        
+        return (firstPosition - otherPosition).magnitude < (firstRadius + otherRadius);
+      }
+      
+      auto entityCircle = Circle(position, radius);
+      
+      auto collisions = collider.relations.filter!(candidate => candidate.getComponent!Position && 
+                                                                candidate.getComponent!Size)
+                                          .filter!(candidate => isOverlapping(candidate, entity));
                                
       foreach (collision; collisions)
       {
@@ -64,7 +84,8 @@ final class CollisionHandler : EntityProcessingSystem
         
         if (velocity.velocity.dot(contactPoint.normalized) > 0.0)
         {
-          velocity += (2.0 * -velocity.velocity.dot(contactPoint.normalized).abs * contactPoint.normalized) * 0.99;
+          velocity += (2.0 * -velocity.velocity.dot(contactPoint.normalized).abs * 
+                       contactPoint.normalized) * 0.99;
         }
       }
     }
