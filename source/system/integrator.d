@@ -1,19 +1,25 @@
-module integrator;
+module system.integrator;
 
 import gl3n.linalg;
+
+import component.relations.gravity;
 
 
 struct State
 {
   vec2 position;
   vec2 velocity;
-  float mass;
+  float mass;  
+  vec2 delegate(State, float) forceCalculator;
+  Gravity relation; // TODO: more generic class
   
   invariant()
   {
     assert(position.ok);
     assert(velocity.ok);
-    assert(mass > 0.0, "Must have positive nonzero mass");
+    assert(mass > 0.0, "Must have positive nonzero mass");    
+    assert(forceCalculator !is null);
+    assert(relation !is null);
   }
 }
 
@@ -29,14 +35,12 @@ struct Derivative
   }
 }
 
-Derivative evaluate(const State initial, float time, float timestep, const Derivative derivative)
+Derivative evaluate(State initial, float time, float timestep, const Derivative derivative)
 in
 {
   assert(&initial);
-  
   assert(!time.isNaN);
   assert(!timestep.isNaN);
-  
   assert(&derivative);
 }
 out(result)
@@ -45,40 +49,25 @@ out(result)
 }
 body
 {
-  State state;
+  State state = initial;
   
-  state.position = initial.position + derivative.position * timestep;
-  state.velocity = initial.velocity + derivative.velocity * timestep;
-  state.mass = initial.mass;
+  state.position += derivative.position * timestep;
+  state.velocity += derivative.velocity * timestep;
+  
+  assert(&state);
   
   Derivative output;
   
   output.position = state.velocity;
-  output.velocity = calculateForce(state, time + timestep) * (1.0 / state.mass);
+  output.velocity = state.forceCalculator(state, time + timestep) * (1.0 / state.mass);
   
   return output;
-}
-
-vec2 calculateForce(const State state, float time)
-in
-{
-  assert(&state);
-}
-out(result)
-{
-  assert(result.ok);
-}
-body
-{
-  //debug writeln("calculateForce returning " ~ (state.position * -0.2).to!string);
-  return state.position * -2.2;
 }
 
 void integrate(ref State state, float time, float timestep)
 in
 {
-  assert(&state);
-  
+  assert(&state);  
   assert(!time.isNaN);
   assert(!timestep.isNaN);
 }

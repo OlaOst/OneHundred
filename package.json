@@ -10,8 +10,22 @@
     "derelict-sdl2": "~master",
     "derelict-gl3": "~master",
     "gl3n": "~master",
-    "artemisd": "~master",
+    "greenfield:artemisd": "~master",
+    "greenfield:glamour": "~master",
 	},
+  "subPackages": [
+    {
+      "name": "artemisd",
+      "targetType": "library",
+      "sourcePaths": ["../artemisd/source"]
+    },
+    {
+      "name": "glamour",
+      "targetType": "library",
+      "sourcePaths": ["../glamour/glamour"]
+    }
+  ],
+  
   "versions": ["Derelict3", "SDLImage", "gl3n"],
   
   "configurations": [
