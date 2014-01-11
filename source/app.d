@@ -11,6 +11,7 @@ import derelict.sdl2.sdl;
 import gl3n.linalg;
 
 import component.drawable;
+import component.input;
 import component.mass;
 import component.position;
 import component.relations.collider;
@@ -39,6 +40,19 @@ void main()
   world.setSystem(renderer);
   world.initialize();
   
+  auto playerManager = new PlayerManager();
+  
+  Entity playerEntity = world.createEntity();
+  playerEntity.addComponent(new Position(0.0, 0.0, 0.0));
+  playerEntity.addComponent(new Velocity(0.0, 0.0, 0.0));
+  playerEntity.addComponent(new Size(0.3));
+  playerEntity.addComponent(new Mass(0.3 ^^ 2));
+  playerEntity.addComponent(new Drawable(0.3, vec3(1.0, 1.0, 1.0)));
+  playerEntity.addComponent(new Input());
+  playerManager.setPlayer(playerEntity, "player");
+  
+  playerEntity.addToWorld();
+  
   Entity[] entities;
   
   auto elements = 64;
@@ -58,6 +72,7 @@ void main()
     entity.addComponent(new Size(size));
     entity.addComponent(new Mass(0.1 + size ^^ 2));
     entity.addComponent(new Drawable(size, uniformDistribution!float(3).vec3));
+    entity.addComponent(new Input());
     
     entities ~= entity;
   }
@@ -85,6 +100,13 @@ void main()
       renderer.zoom += renderer.zoom * 1.0/60.0;
     if (input.zoomOut)
       renderer.zoom -= renderer.zoom * 1.0/60.0;
+    
+    assert(playerEntity.getComponent!Input);
+    
+    playerEntity.getComponent!Input.accelerate = input.accelerate;
+    playerEntity.getComponent!Input.decelerate = input.decelerate;
+    playerEntity.getComponent!Input.rotateLeft = input.rotateLeft;
+    playerEntity.getComponent!Input.rotateRight = input.rotateRight;
     
     renderer.draw();
 

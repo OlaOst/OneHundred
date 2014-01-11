@@ -2,7 +2,8 @@ module system.integrator;
 
 import gl3n.linalg;
 
-import component.relations.gravity;
+import artemisd.all;
+//import component.relations.gravity;
 
 
 struct State
@@ -11,7 +12,9 @@ struct State
   vec2 velocity;
   float mass;  
   vec2 delegate(State, float) forceCalculator;
-  Gravity relation; // TODO: more generic class
+  
+  //Gravity relation; // TODO: more generic class
+  Entity entity;
   
   invariant()
   {
@@ -19,7 +22,7 @@ struct State
     assert(velocity.ok);
     assert(mass > 0.0, "Must have positive nonzero mass");    
     assert(forceCalculator !is null);
-    assert(relation !is null);
+    assert(entity !is null);
   }
 }
 

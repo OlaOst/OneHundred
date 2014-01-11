@@ -9,6 +9,7 @@ import artemisd.all;
 import gl3n.linalg;
 
 import component.drawable;
+import component.input;
 import component.mass;
 import component.position;
 import component.relations.gravity;
@@ -27,7 +28,7 @@ final class Physics : EntityProcessingSystem
   
   this(World world)
   {
-    super(Aspect.getAspectForAll!(Position, Velocity, Mass));
+    super(Aspect.getAspectForAll!(Position, Velocity, Mass, Input));
     
     this.world = world;
   }
@@ -37,13 +38,13 @@ final class Physics : EntityProcessingSystem
     auto position = entity.getComponent!Position;
     auto velocity = entity.getComponent!Velocity;
     auto mass = entity.getComponent!Mass;
-    auto relation = entity.getComponent!Gravity;
+    //auto relation = entity.getComponent!Gravity;
       
     assert(position !is null);
     assert(velocity !is null);
     assert(mass !is null);
   
-    auto state = State(position, velocity, mass, &calculateForce, relation);
+    auto state = State(position, velocity, mass, &calculateForce, entity);
     
     integrate(state, 0.0, 1.0/60.0);
     
@@ -58,24 +59,51 @@ final class Physics : EntityProcessingSystem
     //force += state.position * -2.0; // spring force to center
     force += state.velocity * -0.05; // damping force
     
+    auto input = state.entity.getComponent!Input;
+    
+    if (input && input.accelerate)
+      force += vec2(0.0, 0.5);
+    if (input && input.decelerate)
+      force -= vec2(0.0, 0.5);
+    
+    /*Bag!Component comps;
+    comps = state.entity.getComponents(comps);
+
+    auto inputSearch = comps.data.find!(comp => __traits(identifier, comp) == __traits(identifier, Input));
+    
+    if (inputSearch.length > 0)
+    {
+      auto input = cast(Input)inputSearch[0];
+      
+      if (input.accelerate)
+        force += vec2(0.0, 0.5);
+      if (input.decelerate)
+        force -= vec2(0.0, 0.5);
+    }*/
+    
     vec2 getGravityForce(vec2 firstPosition, vec2 otherPosition, float firstMass, float otherMass)
     {
       return (firstPosition-otherPosition).normalized * 
              ((firstMass*otherMass) / (firstPosition-otherPosition).magnitude^^2);
     }
     
-    vec2 gravityForce = 
-      state.relation.relations.filter!(relation => relation.getComponent!Position && 
-                                                   relation.getComponent!Mass)
-                              .map!(relation => getGravityForce(relation.getComponent!Position, 
-                                                                state.position, 
-                                                                relation.getComponent!Mass, 
-                                                                state.mass))
-                              .reduce!"a+b";
-
-    gravityForce *= 0.5;
+    auto gravity = state.entity.getComponent!Gravity;
     
-    force += gravityForce;
+    if (gravity)
+    {
+      vec2 gravityForce = 
+        gravity.relations.filter!(relation => relation.getComponent!Position && 
+                                             relation.getComponent!Mass)
+                        .map!(relation => getGravityForce(relation.getComponent!Position, 
+                                                          state.position, 
+                                                          relation.getComponent!Mass, 
+                                                          state.mass))
+                        .reduce!"a+b";
+
+      gravityForce *= 0.5;
+      
+      force += gravityForce;
+    }
     
     return force;
   }

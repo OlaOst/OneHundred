@@ -7,6 +7,10 @@ bool keepRunning = true;
 bool zoomIn = false;
 bool zoomOut = false;
 
+bool accelerate = false;
+bool decelerate = false;
+bool rotateLeft = false;
+bool rotateRight = false;
 
 void handleEvents()
 {
@@ -35,6 +39,22 @@ void handleEvents()
             zoomIn = false;
             break;
             
+          case SDLK_UP:
+            accelerate = false;
+            break;
+          
+          case SDLK_DOWN:
+            decelerate = false;
+            break;
+            
+          case SDLK_LEFT:
+            rotateRight = false;
+            break;
+          
+          case SDLK_RIGHT:
+            rotateRight = false;
+            break;
+            
           default:
             break;
         }
@@ -50,7 +70,23 @@ void handleEvents()
           case SDLK_PAGEUP:
             zoomIn = true;
             break;
+
+          case SDLK_UP:
+            accelerate = true;
+            break;
           
+          case SDLK_DOWN:
+            decelerate = true;
+            break;
+            
+          case SDLK_LEFT:
+            rotateRight = true;
+            break;
+          
+          case SDLK_RIGHT:
+            rotateRight = true;
+            break;
+            
           default:
             break;
         }
