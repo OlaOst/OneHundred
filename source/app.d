@@ -96,7 +96,7 @@ void main()
     {
       //debug writeln("physics.update(", time, ", ", physicsTimeStep, ") accumulator is ", accumulator);
       
-      physics.update(time, physicsTimeStep);
+      physics.integrate(time, physicsTimeStep);
       
       accumulator -= physicsTimeStep;
       time += physicsTimeStep;

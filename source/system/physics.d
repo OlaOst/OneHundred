@@ -1,15 +1,12 @@
 module system.physics;
 
 import std.algorithm;
-import std.conv;
 import std.math;
 import std.range;
-import std.stdio;
     
 import artemisd.all;
 import gl3n.linalg;
 
-import component.drawable;
 import component.input;
 import component.mass;
 import component.position;
@@ -37,41 +34,26 @@ final class Physics : EntityProcessingSystem
   override void process(Entity entity)
   {
     auto state = State(entity, &calculateForce, &calculateTorque);
-    
     currentStates ~= state;
-    
-    //integrate(state, time, deltaTime);
-    //state.updateComponents();
   }
   
-  void update(double time, double timestep)
+  void integrate(double time, double timestep)
   {
     previousStates = currentStates;
   
-    //integrate(states, time, timestep);
-        
     foreach (ref state; currentStates)
     {
       state.integrate(time, timestep);
       state.updateComponents();
     }
-    
-    //states.map!(state => integrate(state, time, timestep));
-    //states.map!(state => state.updateComponents());
   }
   
   void interpolateStates(double alpha)
   {
-    foreach (stateTuple; zip(currentStates, previousStates))
+    foreach (ref stateTuple; zip(currentStates, previousStates))
     {
-      State interpolated = stateTuple[0];
-      
-      interpolated.position = stateTuple[0].position * alpha + stateTuple[1].position * (1.0-alpha);
-      interpolated.velocity = stateTuple[0].velocity * alpha + stateTuple[1].velocity * (1.0-alpha);
-      interpolated.angle = stateTuple[0].angle * alpha + stateTuple[1].angle * (1.0-alpha);
-      interpolated.rotation = stateTuple[0].rotation * alpha + stateTuple[1].rotation * (1.0-alpha);
-      
-      interpolated.updateComponents();
+      stateTuple[0].interpolate(stateTuple[1], alpha);
+      stateTuple[0].updateComponents();
     }
   }
   
