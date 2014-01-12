@@ -27,7 +27,7 @@ Entity createPlayer(World world)
   return playerEntity;
 }
 
-Entity createEntity(World world, vec2 position, vec2 velocity, float size)
+Entity createEntity(World world, vec2 position, vec2 velocity, double size)
 {
   Entity entity = world.createEntity();
     
