@@ -15,43 +15,27 @@ import component.position;
 import component.relations.gravity;
 import component.velocity;
 
-import system.integrator;
+import integrator.integrator;
+import integrator.state;
 
 
 final class Physics : EntityProcessingSystem
 {
   mixin TypeDecl;
-  
   World world;
-  
   State[] states;
   
   this(World world)
   {
     super(Aspect.getAspectForAll!(Position, Velocity, Mass, Input));
-    
     this.world = world;
   }
 
   override void process(Entity entity)
   {
-    auto position = entity.getComponent!Position;
-    auto velocity = entity.getComponent!Velocity;
-    auto mass = entity.getComponent!Mass;
-    //auto relation = entity.getComponent!Gravity;
-      
-    assert(position !is null);
-    assert(velocity !is null);
-    assert(mass !is null);
-  
-    auto state = State(position, velocity, position.angle, velocity.rotation, mass, &calculateForce, &calculateTorque, entity);
-    
+    auto state = State(entity, &calculateForce, &calculateTorque);
     integrate(state, 0.0, 1.0/60.0);
-    
-    position.position = state.position;
-    velocity.velocity = state.velocity;
-    position.angle = state.angle;
-    velocity.rotation = state.rotation;
+    state.updateComponents();
   }
   
   float calculateTorque(State state, float time)

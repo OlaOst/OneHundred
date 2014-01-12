@@ -47,7 +47,7 @@ void main()
   playerEntity.addComponent(new Velocity(vec2(0.0, 0.0), 0.0));
   playerEntity.addComponent(new Size(0.3));
   playerEntity.addComponent(new Mass(0.3 ^^ 2));
-  playerEntity.addComponent(new Drawable(0.3, 3, vec3(1.0, 1.0, 1.0)));
+  playerEntity.addComponent(new Drawable(0.3, 3, vec3(0.0, 1.0, 0.0)));
   playerEntity.addComponent(new Input());
   playerManager.setPlayer(playerEntity, "player");
   
