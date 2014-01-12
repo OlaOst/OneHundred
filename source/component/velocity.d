@@ -18,9 +18,4 @@ final class Velocity : Component
     this.velocity = velocity;
     this.rotation = rotation;
   }
-  
-  this(float x, float y, float rotation)
-  {
-    this(vec2(x, y), rotation);
-  }
 }

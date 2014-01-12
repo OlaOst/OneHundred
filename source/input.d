@@ -48,7 +48,7 @@ void handleEvents()
             break;
             
           case SDLK_LEFT:
-            rotateRight = false;
+            rotateLeft = false;
             break;
           
           case SDLK_RIGHT:
@@ -80,7 +80,7 @@ void handleEvents()
             break;
             
           case SDLK_LEFT:
-            rotateRight = true;
+            rotateLeft = true;
             break;
           
           case SDLK_RIGHT:

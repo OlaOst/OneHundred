@@ -43,11 +43,11 @@ void main()
   auto playerManager = new PlayerManager();
   
   Entity playerEntity = world.createEntity();
-  playerEntity.addComponent(new Position(0.0, 0.0, 0.0));
-  playerEntity.addComponent(new Velocity(0.0, 0.0, 0.0));
+  playerEntity.addComponent(new Position(vec2(0.0, 0.0), 0.0));
+  playerEntity.addComponent(new Velocity(vec2(0.0, 0.0), 0.0));
   playerEntity.addComponent(new Size(0.3));
   playerEntity.addComponent(new Mass(0.3 ^^ 2));
-  playerEntity.addComponent(new Drawable(0.3, vec3(1.0, 1.0, 1.0)));
+  playerEntity.addComponent(new Drawable(0.3, 3, vec3(1.0, 1.0, 1.0)));
   playerEntity.addComponent(new Input());
   playerManager.setPlayer(playerEntity, "player");
   
@@ -55,7 +55,7 @@ void main()
   
   Entity[] entities;
   
-  auto elements = 64;
+  auto elements = 100;
   foreach (float index; iota(0, elements))
   {
     auto angle = (index/elements) * PI * 2.0;
@@ -63,15 +63,15 @@ void main()
     
     Entity entity = world.createEntity();
     
-    entity.addComponent(new Position(cos(angle*5) * (0.3+angle.sqrt), 
-                                     sin(angle*5) * (0.3+angle.sqrt), 
+    entity.addComponent(new Position(vec2(cos(angle*5) * (0.3+angle.sqrt), 
+                                          sin(angle*5) * (0.3+angle.sqrt)), 
                                      0.0));
-    entity.addComponent(new Velocity(sin(angle) * 0.5, 
-                                     cos(angle) * 0.5, 
+    entity.addComponent(new Velocity(vec2(sin(angle) * 0.5, 
+                                          cos(angle) * 0.5), 
                                      uniform(-PI, PI)));
     entity.addComponent(new Size(size));
     entity.addComponent(new Mass(0.1 + size ^^ 2));
-    entity.addComponent(new Drawable(size, uniformDistribution!float(3).vec3));
+    entity.addComponent(new Drawable(size, uniform(3, 12), uniformDistribution!float(3).vec3));
     entity.addComponent(new Input());
     
     entities ~= entity;

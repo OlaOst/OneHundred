@@ -44,12 +44,32 @@ final class Physics : EntityProcessingSystem
     assert(velocity !is null);
     assert(mass !is null);
   
-    auto state = State(position, velocity, mass, &calculateForce, entity);
+    auto state = State(position, velocity, position.angle, velocity.rotation, mass, &calculateForce, &calculateTorque, entity);
     
     integrate(state, 0.0, 1.0/60.0);
     
     position.position = state.position;
     velocity.velocity = state.velocity;
+    position.angle = state.angle;
+    velocity.rotation = state.rotation;
+  }
+  
+  float calculateTorque(State state, float time)
+  {
+    auto torque = 0.0;
+    
+    torque += state.rotation * -0.2; // damping torque
+    
+    auto input = state.entity.getComponent!Input;
+    
+    if (input && input.rotateLeft)
+      torque += 1.0;
+    if (input && input.rotateRight)
+      torque -= 1.0;
+      
+    // TODO: torque from collisions
+    
+    return torque;
   }
   
   vec2 calculateForce(State state, float time)
@@ -62,10 +82,10 @@ final class Physics : EntityProcessingSystem
     auto input = state.entity.getComponent!Input;
     
     if (input && input.accelerate)
-      force += vec2(0.0, 0.5);
+      force += vec2(cos(state.angle), sin(state.angle)) * 0.5;
     if (input && input.decelerate)
-      force -= vec2(0.0, 0.5);
-    
+      force -= vec2(cos(state.angle), sin(state.angle)) * 0.5;
+      
     vec2 getGravityForce(vec2 firstPosition, vec2 otherPosition, float firstMass, float otherMass)
     {
       return (firstPosition-otherPosition).normalized * 
@@ -74,7 +94,7 @@ final class Physics : EntityProcessingSystem
     
     auto gravity = state.entity.getComponent!Gravity;
     
-    if (gravity)
+    if (gravity && gravity.relations.length > 0)
     {
       vec2 gravityForce = 
         gravity.relations.filter!(relation => relation.getComponent!Position && 

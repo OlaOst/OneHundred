@@ -30,14 +30,12 @@ final class Drawable : Component
   vec2[] vertices;
   vec3[] colors;
   
-  this(float size, vec3 color)
+  this(float size, int points, vec3 color)
   {
     this.size = size;
     
     //this.vertices = this.baseTriangle.map!(vertex => vertex * size).array();
     //this.vertices = this.baseSquare.map!(vertex => vertex * size).array();
-    
-    auto points = uniform(3, 12);
     
     foreach (angle; iota(0.0, PI*2.0, PI*2.0/points))
     {

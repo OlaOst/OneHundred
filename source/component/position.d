@@ -18,9 +18,4 @@ final class Position : Component
     this.position = position;
     this.angle = angle;
   }
-  
-  this(float x, float y, float angle)
-  {
-    this(vec2(x, y), angle);
-  }
 }
