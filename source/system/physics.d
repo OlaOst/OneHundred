@@ -15,6 +15,7 @@ import component.velocity;
 
 import integrator.integrator;
 import integrator.state;
+import integrator.states;
 
 
 final class Physics : EntityProcessingSystem
@@ -37,28 +38,16 @@ final class Physics : EntityProcessingSystem
     currentStates ~= state;
   }
   
-  void integrate(double time, double timestep)
+  void update(ref double time, ref double accumulator, double physicsTimeStep)
   {
-    previousStates = currentStates;
-  
-    foreach (ref state; currentStates)
+    while (accumulator >= physicsTimeStep)
     {
-      state.integrate(time, timestep);
-      state.updateComponents();
+      integrateStates(currentStates, previousStates, time, physicsTimeStep);
+      accumulator -= physicsTimeStep;
+      time += physicsTimeStep;
     }
-  }
-  
-  void interpolateStates(double alpha)
-  {
-    foreach (ref stateTuple; zip(currentStates, previousStates))
-    {
-      stateTuple[0].interpolate(stateTuple[1], alpha);
-      stateTuple[0].updateComponents();
-    }
-  }
-  
-  void resetStates()
-  {
+    
+    interpolateStates(currentStates, previousStates, accumulator / physicsTimeStep);
     currentStates.length = 0;
   }
   

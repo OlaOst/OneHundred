@@ -89,22 +89,9 @@ void main()
     double newTime = timer.peek().usecs * (1.0 / 1_000_000);
     double frameTime = newTime - currentTime;
     currentTime = newTime;
-    
     accumulator += frameTime;
     
-    while (accumulator >= physicsTimeStep)
-    {
-      //debug writeln("physics.update(", time, ", ", physicsTimeStep, ") accumulator is ", accumulator);
-      
-      physics.integrate(time, physicsTimeStep);
-      
-      accumulator -= physicsTimeStep;
-      time += physicsTimeStep;
-    }
-    
-    physics.interpolateStates(accumulator / physicsTimeStep);
-    
-    physics.resetStates();
+    physics.update(time, accumulator, physicsTimeStep);
     
     world.setDelta(1.0/60.0);
     world.process();
