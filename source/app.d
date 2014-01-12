@@ -1,4 +1,5 @@
 import std.algorithm;
+import std.datetime;
 import std.exception;
 import std.math;
 import std.random;
@@ -73,9 +74,15 @@ void main()
     renderer.close();
   }
   
+  StopWatch timer;
+  double timestep = 1.0 / 60.0;
   while (input.keepRunning)
   {
-    world.setDelta(1.0/60.0);
+    import std.stdio;
+    import std.conv;
+    debug writeln("timestep is " ~ timestep.to!string);
+    
+    world.setDelta(timestep);
     world.process();
   
     input.handleEvents();
@@ -93,5 +100,10 @@ void main()
     
     renderer.draw();
     SDL_GL_SwapWindow(window);
+    
+    timer.stop();
+    timestep = timer.peek().usecs * (1.0/1_000_000);
+    timer.reset();
+    timer.start();
   }
 }
