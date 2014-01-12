@@ -14,7 +14,7 @@ final class Drawable : Component
 {
   mixin TypeDecl;
   
-  float size;
+  double size;
   
   static immutable vec2[] baseTriangle = [vec2(-1.0, -1.0),
                                           vec2( 1.0, -1.0),
@@ -30,7 +30,7 @@ final class Drawable : Component
   vec2[] vertices;
   vec3[] colors;
   
-  this(float size, int points, vec3 color)
+  this(double size, int points, vec3 color)
   {
     this.size = size;
     

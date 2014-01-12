@@ -4,6 +4,7 @@ import std.exception;
 import std.math;
 import std.random;
 import std.range;
+import std.stdio;
 
 import artemisd.all;
 import derelict.sdl2.sdl;
@@ -50,7 +51,7 @@ void main()
   entities ~= playerEntity;
   
   auto elements = 30;
-  foreach (float index; iota(0, elements))
+  foreach (double index; iota(0, elements))
   {
     auto angle = (index/elements) * PI * 2.0;
     auto size = uniform(0.01, 0.1);
@@ -93,16 +94,15 @@ void main()
     
     while (accumulator >= physicsTimeStep)
     {
-      //double deltaTime = min(time, physicsTimeStep);
-      
-      //import std.stdio;
-      //writeln("physics.update(", time, ", ", deltaTime, ") frameTime is ", frameTime);
+      //debug writeln("physics.update(", time, ", ", physicsTimeStep, ") accumulator is ", accumulator);
       
       physics.update(time, physicsTimeStep);
       
       accumulator -= physicsTimeStep;
       time += physicsTimeStep;
     }
+    
+    physics.interpolateStates(accumulator / physicsTimeStep);
     
     physics.resetStates();
     
@@ -124,10 +124,5 @@ void main()
     
     renderer.draw();
     SDL_GL_SwapWindow(window);
-    
-    //timer.stop();
-    //timestep = timer.peek().usecs * (1.0/1_000_000);
-    //timer.reset();
-    //timer.start();
   }
 }

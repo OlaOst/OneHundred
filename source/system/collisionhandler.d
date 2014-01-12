@@ -49,7 +49,7 @@ final class CollisionHandler : EntityProcessingSystem
       struct Circle
       {
         vec2 position;
-        float radius;
+        double radius;
       }
       
       bool isOverlapping(Entity first, Entity other)

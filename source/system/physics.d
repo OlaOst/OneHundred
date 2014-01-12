@@ -3,6 +3,7 @@ module system.physics;
 import std.algorithm;
 import std.conv;
 import std.math;
+import std.range;
 import std.stdio;
     
 import artemisd.all;
@@ -23,7 +24,9 @@ final class Physics : EntityProcessingSystem
 {
   mixin TypeDecl;
   World world;
-  State[] states;
+  
+  State[] previousStates;
+  State[] currentStates;
   
   this(World world)
   {
@@ -35,7 +38,7 @@ final class Physics : EntityProcessingSystem
   {
     auto state = State(entity, &calculateForce, &calculateTorque);
     
-    states ~= state;
+    currentStates ~= state;
     
     //integrate(state, time, deltaTime);
     //state.updateComponents();
@@ -43,9 +46,11 @@ final class Physics : EntityProcessingSystem
   
   void update(double time, double timestep)
   {
+    previousStates = currentStates;
+  
     //integrate(states, time, timestep);
-    
-    foreach (state; states)
+        
+    foreach (ref state; currentStates)
     {
       state.integrate(time, timestep);
       state.updateComponents();
@@ -55,12 +60,27 @@ final class Physics : EntityProcessingSystem
     //states.map!(state => state.updateComponents());
   }
   
-  void resetStates()
+  void interpolateStates(double alpha)
   {
-    states.length = 0;
+    foreach (stateTuple; zip(currentStates, previousStates))
+    {
+      State interpolated = stateTuple[0];
+      
+      interpolated.position = stateTuple[0].position * alpha + stateTuple[1].position * (1.0-alpha);
+      interpolated.velocity = stateTuple[0].velocity * alpha + stateTuple[1].velocity * (1.0-alpha);
+      interpolated.angle = stateTuple[0].angle * alpha + stateTuple[1].angle * (1.0-alpha);
+      interpolated.rotation = stateTuple[0].rotation * alpha + stateTuple[1].rotation * (1.0-alpha);
+      
+      interpolated.updateComponents();
+    }
   }
   
-  float calculateTorque(State state, float time)
+  void resetStates()
+  {
+    currentStates.length = 0;
+  }
+  
+  double calculateTorque(State state, double time)
   {
     auto torque = 0.0;
     
@@ -78,7 +98,7 @@ final class Physics : EntityProcessingSystem
     return torque;
   }
   
-  vec2 calculateForce(State state, float time)
+  vec2 calculateForce(State state, double time)
   {    
     auto force = vec2(0.0, 0.0);
     
@@ -92,7 +112,7 @@ final class Physics : EntityProcessingSystem
     if (input && input.decelerate)
       force -= vec2(cos(state.angle), sin(state.angle)) * 0.5;
       
-    vec2 getGravityForce(vec2 firstPosition, vec2 otherPosition, float firstMass, float otherMass)
+    vec2 getGravityForce(vec2 firstPosition, vec2 otherPosition, double firstMass, double otherMass)
     {
       return (firstPosition-otherPosition).normalized * 
              ((firstMass*otherMass) / (firstPosition-otherPosition).magnitude^^2);

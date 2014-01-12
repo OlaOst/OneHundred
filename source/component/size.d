@@ -7,12 +7,12 @@ final class Size : Component
 {
   mixin TypeDecl;
   
-  float radius;
+  double radius;
   // TODO: AABB and/or vertex list describing convex hull?
   
   alias radius this;
   
-  this(float radius)
+  this(double radius)
   {
     this.radius = radius;
   }

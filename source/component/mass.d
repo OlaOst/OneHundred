@@ -8,11 +8,11 @@ final class Mass : Component
 {
   mixin TypeDecl;
   
-  float mass;
+  double mass;
   
   alias mass this;
   
-  this(float mass)
+  this(double mass)
   {
     this.mass = mass;
   }
