@@ -77,10 +77,13 @@ void main()
     entities ~= entity;
   }
   
+  playerEntity.addComponent(new Gravity(entities));
+  playerEntity.addComponent(new Collider(entities));
+  
   foreach (entity; entities)
   {
-    entity.addComponent(new Gravity(entities.filter!(checkEntity => checkEntity != entity).array));
-    entity.addComponent(new Collider(entities.filter!(checkEntity => checkEntity != entity).array));
+    entity.addComponent(new Gravity(entities.filter!(checkEntity => checkEntity != entity).array ~ playerEntity));
+    entity.addComponent(new Collider(entities.filter!(checkEntity => checkEntity != entity).array ~ playerEntity));
     entity.addToWorld();
   }
 

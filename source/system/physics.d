@@ -66,21 +66,6 @@ final class Physics : EntityProcessingSystem
     if (input && input.decelerate)
       force -= vec2(0.0, 0.5);
     
-    /*Bag!Component comps;
-    comps = state.entity.getComponents(comps);
-
-    auto inputSearch = comps.data.find!(comp => __traits(identifier, comp) == __traits(identifier, Input));
-    
-    if (inputSearch.length > 0)
-    {
-      auto input = cast(Input)inputSearch[0];
-      
-      if (input.accelerate)
-        force += vec2(0.0, 0.5);
-      if (input.decelerate)
-        force -= vec2(0.0, 0.5);
-    }*/
-    
     vec2 getGravityForce(vec2 firstPosition, vec2 otherPosition, float firstMass, float otherMass)
     {
       return (firstPosition-otherPosition).normalized * 

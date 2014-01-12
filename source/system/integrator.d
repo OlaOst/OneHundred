@@ -3,7 +3,6 @@ module system.integrator;
 import gl3n.linalg;
 
 import artemisd.all;
-//import component.relations.gravity;
 
 
 struct State
@@ -13,7 +12,6 @@ struct State
   float mass;  
   vec2 delegate(State, float) forceCalculator;
   
-  //Gravity relation; // TODO: more generic class
   Entity entity;
   
   invariant()
