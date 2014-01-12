@@ -35,7 +35,8 @@ void main()
   
   auto world = new World();
   //world.setSystem(new Movement(world));
-  world.setSystem(new Physics(world));
+  auto physics = new Physics(world);
+  world.setSystem(physics);
   world.setSystem(new CollisionHandler(world));
   world.setSystem(renderer);
   world.initialize();
@@ -48,7 +49,7 @@ void main()
   
   entities ~= playerEntity;
   
-  auto elements = 100;
+  auto elements = 30;
   foreach (float index; iota(0, elements))
   {
     auto angle = (index/elements) * PI * 2.0;
@@ -75,14 +76,37 @@ void main()
   }
   
   StopWatch timer;
-  double timestep = 1.0 / 60.0;
+  timer.start();
+  
+  double time = 0.0;
+  const double physicsTimeStep = 1.0 / 60.0;
+  double currentTime = timer.peek().usecs * (1.0 / 1_000_000);
+  double accumulator = 0.0;
+  
   while (input.keepRunning)
   {
-    import std.stdio;
-    import std.conv;
-    debug writeln("timestep is " ~ timestep.to!string);
+    double newTime = timer.peek().usecs * (1.0 / 1_000_000);
+    double frameTime = newTime - currentTime;
+    currentTime = newTime;
     
-    world.setDelta(timestep);
+    accumulator += frameTime;
+    
+    while (accumulator >= physicsTimeStep)
+    {
+      //double deltaTime = min(time, physicsTimeStep);
+      
+      //import std.stdio;
+      //writeln("physics.update(", time, ", ", deltaTime, ") frameTime is ", frameTime);
+      
+      physics.update(time, physicsTimeStep);
+      
+      accumulator -= physicsTimeStep;
+      time += physicsTimeStep;
+    }
+    
+    physics.resetStates();
+    
+    world.setDelta(1.0/60.0);
     world.process();
   
     input.handleEvents();
@@ -101,9 +125,9 @@ void main()
     renderer.draw();
     SDL_GL_SwapWindow(window);
     
-    timer.stop();
-    timestep = timer.peek().usecs * (1.0/1_000_000);
-    timer.reset();
-    timer.start();
+    //timer.stop();
+    //timestep = timer.peek().usecs * (1.0/1_000_000);
+    //timer.reset();
+    //timer.start();
   }
 }

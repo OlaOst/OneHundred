@@ -34,8 +34,30 @@ final class Physics : EntityProcessingSystem
   override void process(Entity entity)
   {
     auto state = State(entity, &calculateForce, &calculateTorque);
-    integrate(state, 0.0, 1.0/60.0);
-    state.updateComponents();
+    
+    states ~= state;
+    
+    //integrate(state, time, deltaTime);
+    //state.updateComponents();
+  }
+  
+  void update(double time, double timestep)
+  {
+    //integrate(states, time, timestep);
+    
+    foreach (state; states)
+    {
+      state.integrate(time, timestep);
+      state.updateComponents();
+    }
+    
+    //states.map!(state => integrate(state, time, timestep));
+    //states.map!(state => state.updateComponents());
+  }
+  
+  void resetStates()
+  {
+    states.length = 0;
   }
   
   float calculateTorque(State state, float time)
@@ -82,12 +104,12 @@ final class Physics : EntityProcessingSystem
     {
       vec2 gravityForce = 
         gravity.relations.filter!(relation => relation.getComponent!Position && 
-                                             relation.getComponent!Mass)
-                        .map!(relation => getGravityForce(relation.getComponent!Position, 
-                                                          state.position, 
-                                                          relation.getComponent!Mass, 
-                                                          state.mass))
-                        .reduce!"a+b";
+                                              relation.getComponent!Mass)
+                         .map!(relation => getGravityForce(relation.getComponent!Position, 
+                                                           state.position, 
+                                                           relation.getComponent!Mass, 
+                                                           state.mass))
+                         .reduce!"a+b";
 
       gravityForce *= 0.5;
       
