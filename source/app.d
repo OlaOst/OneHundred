@@ -26,6 +26,7 @@ import system.physics;
 
 import entityfactory;
 import input;
+import timer;
 import window;
 
 
@@ -43,11 +44,9 @@ void main()
   world.initialize();
   
   auto playerEntity = createPlayer(world);
-  
   playerEntity.addToWorld();
   
   Entity[] entities;
-  
   entities ~= playerEntity;
   
   auto elements = 30;
@@ -55,12 +54,10 @@ void main()
   {
     auto angle = (index/elements) * PI * 2.0;
     auto size = uniform(0.01, 0.1);
-    
     auto entity = createEntity(world, vec2(cos(angle * 5) * (0.3 + angle.sqrt),
                                            sin(angle * 5) * (0.3 + angle.sqrt)),
                                       vec2(sin(angle) * 0.5, cos(angle) * 0.5),
                                       size);
-    
     entities ~= entity;
   }
   
@@ -76,33 +73,21 @@ void main()
     renderer.close();
   }
   
-  StopWatch timer;
-  timer.start();
-  
-  double time = 0.0;
-  const double physicsTimeStep = 1.0 / 60.0;
-  double currentTime = timer.peek().usecs * (1.0 / 1_000_000);
-  double accumulator = 0.0;
+  auto timer = new Timer();
   
   while (input.keepRunning)
   {
-    double newTime = timer.peek().usecs * (1.0 / 1_000_000);
-    double frameTime = newTime - currentTime;
-    currentTime = newTime;
-    accumulator += frameTime;
-    
-    physics.update(time, accumulator, physicsTimeStep);
+    timer.incrementAccumulator();
+    physics.update(timer);
     
     world.setDelta(1.0/60.0);
     world.process();
   
     input.handleEvents();
-    
     if (input.zoomIn)
       renderer.zoom += renderer.zoom * 1.0/60.0;
     if (input.zoomOut)
       renderer.zoom -= renderer.zoom * 1.0/60.0;
-    
     assert(playerEntity.getComponent!Input);
     playerEntity.getComponent!Input.accelerate = input.accelerate;
     playerEntity.getComponent!Input.decelerate = input.decelerate;

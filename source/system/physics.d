@@ -17,6 +17,8 @@ import integrator.integrator;
 import integrator.state;
 import integrator.states;
 
+import timer;
+
 
 final class Physics : EntityProcessingSystem
 {
@@ -38,16 +40,16 @@ final class Physics : EntityProcessingSystem
     currentStates ~= state;
   }
   
-  void update(ref double time, ref double accumulator, double physicsTimeStep)
+  void update(Timer timer)
   {
-    while (accumulator >= physicsTimeStep)
+    while (timer.accumulator >= timer.physicsTimeStep)
     {
-      integrateStates(currentStates, previousStates, time, physicsTimeStep);
-      accumulator -= physicsTimeStep;
-      time += physicsTimeStep;
+      integrateStates(currentStates, previousStates, timer.time, timer.physicsTimeStep);
+      timer.accumulator -= timer.physicsTimeStep;
+      timer.time += timer.physicsTimeStep;
     }
     
-    interpolateStates(currentStates, previousStates, accumulator / physicsTimeStep);
+    interpolateStates(currentStates, previousStates, timer.accumulator / timer.physicsTimeStep);
     currentStates.length = 0;
   }
   
