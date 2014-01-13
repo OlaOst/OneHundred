@@ -6,7 +6,10 @@ import integrator.integrator;
 import integrator.state;
 
 
-void integrateStates(ref State[] currentStates, ref State[] previousStates, double time, double timestep)
+void integrateStates(ref State[] currentStates, 
+                     ref State[] previousStates, 
+                     double time, 
+                     double timestep)
 {
   previousStates = currentStates;
 
@@ -17,7 +20,9 @@ void integrateStates(ref State[] currentStates, ref State[] previousStates, doub
   }
 }
 
-void interpolateStates(ref State[] currentStates, ref State[] previousStates, double alpha)
+void interpolateStates(ref State[] currentStates, 
+                       ref State[] previousStates, 
+                       double alpha)
 {
   foreach (ref stateTuple; zip(currentStates, previousStates))
   {

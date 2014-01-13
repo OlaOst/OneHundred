@@ -9,7 +9,10 @@ import gl3n.linalg;
 import integrator.state;
 
 
-Derivative[] evaluate(State[] initials, double time, double timestep, const Derivative[] derivatives)
+Derivative[] evaluate(State[] initials, 
+                      double time, 
+                      double timestep, 
+                      const Derivative[] derivatives)
 in
 {
   initials.map!(state => assert(&state));
@@ -34,10 +37,13 @@ body
   
   Derivative outputs[];
   
-  outputs = states.map!(state => Derivative(state.velocity, 
-                                            state.forceCalculator(state, time + timestep) * (1.0 / state.mass), 
-                                            state.rotation, 
-                                            state.torqueCalculator(state, time + timestep) * (1.0 / state.mass))).array;
+  outputs = states.map!(state => 
+                        Derivative(state.velocity, 
+                                   state.forceCalculator(state, time+timestep) * (1.0/state.mass), 
+                                   state.rotation, 
+                                   state.torqueCalculator(state, time+timestep) * (1.0/state.mass)
+                                  )
+                       ).array;
     
   return outputs;
 }
@@ -55,17 +61,30 @@ out
 }
 body
 {
-  Derivative[] a = evaluate(states, time, timestep * 0.0, Derivative().repeat.take(states.length).array);
+  auto blanks = Derivative().repeat.take(states.length).array;
+  Derivative[] a = evaluate(states, time, timestep * 0.0, blanks);
   Derivative[] b = evaluate(states, time, timestep * 0.5, a);
   Derivative[] c = evaluate(states, time, timestep * 0.5, b);
   Derivative[] d = evaluate(states, time, timestep * 1.0, c);
   
   // RK4 style
-  vec2[] positionChanges = zip(a, b, c, d).map!(d => 1.0 / 6.0 * (d[0].position + 2.0 * (d[1].position + d[2].position) + d[3].position)).array;
-  vec2[] velocityChanges = zip(a, b, c, d).map!(d => 1.0 / 6.0 * (d[0].velocity + 2.0 * (d[1].velocity + d[2].velocity) + d[3].velocity)).array;
+  vec2[] positionChanges = zip(a, b, c, d).map!(d => 1.0/6.0 * 
+                                                     (d[0].position +
+                                                      2.0 * (d[1].position+d[2].position) +
+                                                      d[3].position)).array;
+  vec2[] velocityChanges = zip(a, b, c, d).map!(d => 1.0/6.0 * 
+                                                     (d[0].velocity + 
+                                                      2.0 * (d[1].velocity+d[2].velocity) +
+                                                      d[3].velocity)).array;
   
-  double[] angleChanges = zip(a, b, c, d).map!(d => 1.0 / 6.0 * (d[0].angle + 2.0 * (d[1].angle + d[2].angle) + d[3].angle)).array;
-  double[] rotationChanges = zip(a, b, c, d).map!(d => 1.0 / 6.0 * (d[0].rotation + 2.0 * (d[1].rotation + d[2].rotation) + d[3].rotation)).array;
+  double[] angleChanges = zip(a, b, c, d).map!(d => 1.0/6.0 * 
+                                                    (d[0].angle + 
+                                                     2.0 * (d[1].angle + d[2].angle) + 
+                                                     d[3].angle)).array;
+  double[] rotationChanges = zip(a, b, c, d).map!(d => 1.0/6.0 * 
+                                                       (d[0].rotation + 
+                                                        2.0 * (d[1].rotation + d[2].rotation) + 
+                                                        d[3].rotation)).array;
   
   // euler style
   //vec2 positionChange = a.position;

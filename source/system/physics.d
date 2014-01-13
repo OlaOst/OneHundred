@@ -82,28 +82,11 @@ final class Physics : EntityProcessingSystem
       force += vec2(cos(state.angle), sin(state.angle)) * 0.5;
     if (input && input.decelerate)
       force -= vec2(cos(state.angle), sin(state.angle)) * 0.5;
-      
-    vec2 getGravityForce(vec2 firstPosition, vec2 otherPosition, double firstMass, double otherMass)
-    {
-      return (firstPosition-otherPosition).normalized * 
-             ((firstMass*otherMass) / (firstPosition-otherPosition).magnitude^^2);
-    }
     
-    auto gravity = state.entity.getComponent!Gravity;
-    
-    if (gravity && gravity.relations.length > 0)
+    if (auto gravity = state.entity.getComponent!Gravity)
     {
-      vec2 gravityForce = 
-        gravity.relations.filter!(relation => relation.getComponent!Position && 
-                                              relation.getComponent!Mass)
-                         .map!(relation => getGravityForce(relation.getComponent!Position, 
-                                                           state.position, 
-                                                           relation.getComponent!Mass, 
-                                                           state.mass))
-                         .reduce!"a+b";
-
+      vec2 gravityForce = gravity.getAccumulatedGravityForce(state.position, state.mass);
       gravityForce *= 0.5;
-      
       force += gravityForce;
     }
     
