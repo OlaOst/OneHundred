@@ -58,8 +58,9 @@ void main()
   
   foreach (entity; entities)
   {
-    entity.addComponent(new Gravity(entities.filter!(checkEntity => checkEntity != entity).array));
-    entity.addComponent(new Collider(entities.filter!(checkEntity => checkEntity != entity).array));
+    auto otherEntities = entities.filter!(checkEntity => checkEntity != entity).array;
+    entity.addComponent(new Gravity(otherEntities));
+    entity.addComponent(new Collider(otherEntities));
     entity.addToWorld();
   }
 
