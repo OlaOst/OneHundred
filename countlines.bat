@@ -1,1 +1,1 @@
-for /r %%f in (*.d) do @wc -lL %%f
+for /r source/ %%f in (*.d) do @wc -lL %%f
