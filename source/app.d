@@ -10,14 +10,9 @@ import artemisd.all;
 import derelict.sdl2.sdl;
 import gl3n.linalg;
 
-import component.drawable;
 import component.input;
-import component.mass;
-import component.position;
 import component.relations.collider;
 import component.relations.gravity;
-import component.size;
-import component.velocity;
 
 import system.collisionhandler;
 import system.movement;
