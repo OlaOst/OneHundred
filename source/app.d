@@ -15,12 +15,12 @@ import component.relations.collider;
 import component.relations.gravity;
 
 import system.collisionhandler;
+import system.inputhandler;
 import system.movement;
 import system.renderer;
 import system.physics;
 
 import entityfactory;
-import input;
 import timer;
 import window;
 
@@ -29,14 +29,18 @@ void main()
 {
   auto window = getWindow(1024, 768);
   auto renderer = new Renderer();
-  
+  auto timer = new Timer();
   auto world = new World();
-  //world.setSystem(new Movement(world));
   auto physics = new Physics(world);
+  auto inputHandler = new InputHandler();
   world.setSystem(physics);
+  world.setSystem(inputHandler);
   world.setSystem(new CollisionHandler(world));
   world.setSystem(renderer);
   world.initialize();
+  
+  auto gameController = createGameController(world);
+  gameController.addToWorld();
   
   auto playerEntity = createPlayer(world);
   playerEntity.addToWorld();
@@ -69,9 +73,9 @@ void main()
     renderer.close();
   }
   
-  auto timer = new Timer();
-  
-  while (input.keepRunning)
+  bool keepRunning = true;
+  timer.start();
+  while (keepRunning)
   {
     timer.incrementAccumulator();
     physics.update(timer);
@@ -79,17 +83,15 @@ void main()
     world.setDelta(1.0/60.0);
     world.process();
   
-    input.handleEvents();
-    if (input.zoomIn)
+    inputHandler.update();
+    auto gameActions = gameController.getComponent!Input.isActive;
+    if ("zoomIn" in gameActions && gameActions["zoomIn"])
       renderer.zoom += renderer.zoom * 1.0/60.0;
-    if (input.zoomOut)
+    if ("zoomOut" in gameActions && gameActions["zoomOut"])
       renderer.zoom -= renderer.zoom * 1.0/60.0;
-    assert(playerEntity.getComponent!Input);
-    playerEntity.getComponent!Input.accelerate = input.accelerate;
-    playerEntity.getComponent!Input.decelerate = input.decelerate;
-    playerEntity.getComponent!Input.rotateLeft = input.rotateLeft;
-    playerEntity.getComponent!Input.rotateRight = input.rotateRight;
-    
+    if ("quit" in gameActions && gameActions["quit"])
+      keepRunning = false;
+      
     renderer.draw();
     SDL_GL_SwapWindow(window);
   }

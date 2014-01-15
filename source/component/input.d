@@ -1,19 +1,50 @@
 module component.input;
 
 import artemisd.all;
+import derelict.sdl2.sdl;
 
 
 final class Input : Component
 {
   mixin TypeDecl;
   
-  bool accelerate = false;
-  bool decelerate = false;
-  bool rotateLeft = false;
-  bool rotateRight = false;
+  SDL_Keycode[string] keyForAction;
+  bool[string] isActive;
   
-  this()
+  this(SDL_Keycode[string] keyForAction)
   {
+    this.keyForAction = keyForAction;
     
+    keyForAction["accelerate"] = SDLK_UP;
+    keyForAction["decelerate"] = SDLK_DOWN;
+    keyForAction["rotateLeft"] = SDLK_LEFT;
+    keyForAction["rotateRight"] = SDLK_RIGHT;
+    
+    isActive["accelerate"] = false;
+    isActive["decelerate"] = false;
+    isActive["rotateLeft"] = false;
+    isActive["rotateRight"] = false;
   }
+  
+  // TODO: would be neat to make these static initalized
+  // but DMD 2.064 cannot static initialize AAs
+  static SDL_Keycode[string] playerInput;/* = ["accelerate" : SDLK_UP,
+                                            "decelerate" : SDLK_DOWN,
+                                            "rotateLeft" : SDLK_LEFT,
+                                            "rotateRight" : SDLK_RIGHT];*/
+
+  static SDL_Keycode[string] gameControls;
+  
+  static this()
+  {
+    playerInput["accelerate"] = SDLK_UP;
+    playerInput["decelerate"] = SDLK_DOWN;
+    playerInput["rotateLeft"] = SDLK_LEFT;
+    playerInput["rotateRight"] = SDLK_RIGHT;
+    
+    gameControls["zoomIn"] = SDLK_PAGEUP;
+    gameControls["zoomOut"] = SDLK_PAGEDOWN;
+    gameControls["quit"] = SDLK_ESCAPE;
+  }
+  
 }

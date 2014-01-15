@@ -8,10 +8,14 @@ class Timer
 public:
   this()
   {
-    timer.start();
     currentTime = timer.peek().usecs * (1.0 / 1_000_000);
   }
 
+  void start()
+  {
+    timer.start();
+  }
+  
   void incrementAccumulator()
   {
     double newTime = timer.peek().usecs * (1.0 / 1_000_000);

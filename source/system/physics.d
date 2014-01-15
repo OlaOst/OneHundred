@@ -61,9 +61,9 @@ final class Physics : EntityProcessingSystem
     
     auto input = state.entity.getComponent!Input;
     
-    if (input && input.rotateLeft)
+    if (input && "rotateLeft" in input.isActive && input.isActive["rotateLeft"])
       torque += 1.0;
-    if (input && input.rotateRight)
+    if (input && "rotateRight" in input.isActive && input.isActive["rotateRight"])
       torque -= 1.0;
       
     // TODO: torque from collisions
@@ -80,9 +80,9 @@ final class Physics : EntityProcessingSystem
     
     auto input = state.entity.getComponent!Input;
     
-    if (input && input.accelerate)
+    if (input && "accelerate" in input.isActive && input.isActive["accelerate"])
       force += vec2(cos(state.angle), sin(state.angle)) * 0.5;
-    if (input && input.decelerate)
+    if (input && "decelerate" in input.isActive && input.isActive["decelerate"])
       force -= vec2(cos(state.angle), sin(state.angle)) * 0.5;
     
     if (auto gravity = state.entity.getComponent!Gravity)
