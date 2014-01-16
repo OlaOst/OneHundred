@@ -11,11 +11,19 @@ import component.velocity;
 
 struct State
 {
+  // primaries
   vec2 position;
-  vec2 velocity;
+  vec2 momentum;
   double angle;
+  //double rotationalMomentum;
+  
+  // secondaries
+  vec2 velocity;
   double rotation;
-  double mass;  
+  
+  //constants
+  double mass;
+  
   vec2 delegate(State, double time) forceCalculator;
   double delegate(State, double time) torqueCalculator;
   Entity entity;
@@ -29,6 +37,8 @@ struct State
     auto position = entity.getComponent!Position;
     auto velocity = entity.getComponent!Velocity;
     auto mass = entity.getComponent!Mass;
+      
+    this.momentum = velocity * mass;
       
     assert(position !is null);
     assert(velocity !is null);
@@ -63,36 +73,24 @@ struct State
   void interpolate(State other, double alpha)
   {
     position = position * alpha + other.position * (1.0-alpha);
+    momentum = momentum * alpha + other.momentum * (1.0-alpha);
     velocity = velocity * alpha + other.velocity * (1.0-alpha);
     angle = angle * alpha + other.angle * (1.0-alpha);
     rotation = rotation * alpha + other.rotation * (1.0-alpha);
+    //rotationalMomentum = rotationalMomentum * alpha + other.rotationalMomentum * (1.0-alpha);
   }
   
   invariant()
   {
     assert(position.ok);
+    assert(momentum.ok);
     assert(velocity.ok);
     assert(!angle.isNaN);
     assert(!rotation.isNaN);
+    //assert(!rotationalMomentum.isNaN);
     assert(mass > 0.0, "Must have positive nonzero mass");    
     assert(forceCalculator !is null);
     assert(torqueCalculator !is null);
     assert(entity !is null);
-  }
-}
-
-struct Derivative
-{
-  vec2 position = vec2(0.0, 0.0);
-  vec2 velocity = vec2(0.0, 0.0);
-  double angle = 0.0;
-  double rotation = 0.0;
-  
-  invariant()
-  {
-    assert(position.ok);
-    assert(velocity.ok);
-    assert(!angle.isNaN);
-    assert(!rotation.isNaN);
   }
 }

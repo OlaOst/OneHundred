@@ -4,6 +4,7 @@ import std.stdio;
 
 import gl3n.linalg;
 
+import integrator.derivative;
 import integrator.state;
 
 
@@ -23,20 +24,20 @@ body
 {
   State state = initial;
   
-  state.position += derivative.position * timestep;
-  state.velocity += derivative.velocity * timestep;
-  state.angle += derivative.angle * timestep;
-  state.rotation += derivative.rotation * timestep;
+  state.position += derivative.velocity * timestep;
+  state.velocity += derivative.force * timestep;
+  state.angle += derivative.rotation * timestep;
+  state.rotation += derivative.torque * timestep;
   
   assert(&state);
   
   Derivative output;
   
-  output.position = state.velocity;
-  output.velocity = state.forceCalculator(state, time + timestep) * (1.0 / state.mass);
-  output.angle = state.rotation;
+  output.velocity = state.velocity;
+  output.force = state.forceCalculator(state, time + timestep) * (1.0 / state.mass);
+  output.rotation = state.rotation;
   // TODO: adjust rotation by shape tensor thingy instead of assuming perfectly regular shape
-  output.rotation = state.torqueCalculator(state, time + timestep) * (1.0 / state.mass); 
+  output.torque = state.torqueCalculator(state, time + timestep) * (1.0 / state.mass); 
   
   return output;
 }
@@ -60,11 +61,11 @@ body
   Derivative d = evaluate(state, time, timestep * 1.0, c);
   
   // RK4 style
-  vec2 positionChange = 1.0/6.0 * (a.position + 2.0 * (b.position + c.position) + d.position);
-  vec2 velocityChange = 1.0/6.0 * (a.velocity + 2.0 * (b.velocity + c.velocity) + d.velocity);
+  vec2 positionChange = 1.0/6.0 * (a.velocity + 2.0 * (b.velocity + c.velocity) + d.velocity);
+  vec2 velocityChange = 1.0/6.0 * (a.force + 2.0 * (b.force + c.force) + d.force);
   
-  double angleChange = 1.0/6.0 * (a.angle + 2.0 * (b.angle + c.angle) + d.angle);
-  double rotationChange = 1.0/6.0 * (a.rotation + 2.0 * (b.rotation + c.rotation) + d.rotation);
+  double angleChange = 1.0/6.0 * (a.rotation + 2.0 * (b.rotation + c.rotation) + d.rotation);
+  double rotationChange = 1.0/6.0 * (a.torque + 2.0 * (b.torque + c.torque) + d.torque);
   
   // euler style
   //vec2 positionChange = a.position;

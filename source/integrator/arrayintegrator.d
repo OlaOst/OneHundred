@@ -6,9 +6,10 @@ import std.stdio;
 
 import gl3n.linalg;
 
+import integrator.derivative;
 import integrator.state;
 
-
+/+
 Derivative[] evaluate(State[] initials, 
                       double time, 
                       double timestep, 
@@ -95,3 +96,4 @@ body
   zip(states, angleChanges).map!(s => s[0].angle += s[1] * timestep);
   zip(states, rotationChanges).map!(s => s[0].rotation += s[1] * timestep);
 }
++/
