@@ -45,7 +45,6 @@ Entity createEntity(World world, vec2 position, vec2 velocity, double size)
   entity.addComponent(new Size(size));
   entity.addComponent(new Mass(0.1 + size ^^ 2));
   entity.addComponent(new Drawable(size, uniform(3, 12), uniformDistribution!float(3).vec3));
-  //entity.addComponent(new Input());
   
   return entity;
 }

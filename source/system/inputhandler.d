@@ -59,24 +59,6 @@ public:
     }
   }
   
-  /*@property bool zoomIn()
-  {
-    return (SDLK_PAGEUP in eventsForKey) && 
-            eventsForKey[SDLK_PAGEUP].any!(event => event.type == SDL_KEYDOWN);
-  }
-  
-  @property bool zoomOut()
-  {
-    return (SDLK_PAGEDOWN in eventsForKey) && 
-            eventsForKey[SDLK_PAGEDOWN].any!(event => event.type == SDL_KEYDOWN);
-  }
-  
-  @property bool keepRunning()
-  {
-    return !((SDLK_ESCAPE in eventsForKey) && 
-            eventsForKey[SDLK_ESCAPE].any!(event => event.type == SDL_KEYUP));
-  }*/
-  
 private:
   SDL_Event[][SDL_Keycode] eventsForKey;
 }
