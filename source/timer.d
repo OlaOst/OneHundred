@@ -1,5 +1,6 @@
 module timer;
 
+import std.algorithm;
 import std.datetime;
 
 
@@ -19,7 +20,8 @@ public:
   void incrementAccumulator()
   {
     double newTime = timer.peek().usecs * (1.0 / 1_000_000);
-    double frameTime = newTime - currentTime;
+    double frameTime = min(newTime - currentTime, 0.25);
+    
     currentTime = newTime;
     accumulator += frameTime;
   }
