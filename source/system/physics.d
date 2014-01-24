@@ -72,7 +72,7 @@ final class Physics : EntityProcessingSystem
   }
   
   vec2 calculateForce(State state, double time)
-  {    
+  {
     auto force = vec2(0.0, 0.0);
     
     //force += state.position * -2.0; // spring force to center

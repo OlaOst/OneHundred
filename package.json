@@ -1,5 +1,5 @@
 {
-	"name": "greenfield",
+	"name": "onehundred",
 	"description": "An example project skeleton",
 	"homepage": "http://example.org",
 	"copyright": "Copyright © 2000, Your Name",
@@ -10,8 +10,8 @@
     "derelict-sdl2": "~master",
     "derelict-gl3": "~master",
     "gl3n": "~master",
-    "greenfield:artemisd": "~master",
-    "greenfield:glamour": "~master",
+    "onehundred:artemisd": "~master",
+    "onehundred:glamour": "~master",
 	},
   "subPackages": [
     {
@@ -34,14 +34,13 @@
       "targetType": "executable",
     },
     {
-			"name": "example",
+			"name": "test",
 			"targetType": "executable",
-			"targetName": "example-app",
+			"targetName": "testrun",
 			"sourcePaths": [
-				"example",
+				"source/tests",
 			],
 			"excludedSourceFiles": [
-				"example/example_texture.d",
         "source/app.d",
 			],
 			"versions": [
