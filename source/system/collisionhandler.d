@@ -14,7 +14,7 @@ import component.position;
 import component.relations.collider;
 import component.size;
 import component.velocity;
-import spatialindex;
+import spatialindex.spatialindex;
 
 
 final class CollisionHandler : EntityProcessingSystem
@@ -63,7 +63,7 @@ final class CollisionHandler : EntityProcessingSystem
     
     this.world = world;
     
-    index = new SpatialIndex!CollisionEntity(1.0);
+    index = new SpatialIndex!CollisionEntity();
   }
   
   override void process(Entity entity)
@@ -97,7 +97,7 @@ final class CollisionHandler : EntityProcessingSystem
       
     foreach (collisionEntity; collisionEntities)
     {
-      auto candidates = index.find(collisionEntity);
+      auto candidates = index.find(collisionEntity.position, collisionEntity.radius);
       
       auto collidingEntities = candidates.filter!(candidate => candidate != collisionEntity && candidate.isOverlapping(collisionEntity))
                                          .filter!(collidingEntity => !(collisions.any!(collision => (collision.first == collisionEntity && collision.other == collidingEntity) || 
@@ -146,7 +146,7 @@ final class CollisionHandler : EntityProcessingSystem
     
     // reset entity list and index so we are ready for the next update
     collisionEntities.length = 0;
-    index = new SpatialIndex!CollisionEntity(1.0);
+    index = new SpatialIndex!CollisionEntity();
     /*
     auto radius = (size !is null) ? size.radius : 0.0;
     

@@ -2,6 +2,24 @@ module bitops;
 
 import std.conv;
 
+import gl3n.aabb;
+import gl3n.linalg;
+
+
+bool intersectsEquals(AABB first, AABB box) 
+{
+  return (first.min.x <= box.max.x && first.max.x >= box.min.x) &&
+         (first.min.y <= box.max.y && first.max.y >= box.min.y) &&
+         (first.min.z <= box.max.z && first.max.z >= box.min.z);
+}
+
+bool contains(AABB container, AABB content)
+{
+   return (container.min.x < content.min.x && 
+           container.max.x > content.max.x &&
+           container.min.y < content.min.y &&
+           container.max.y > content.max.y);
+}
 
 uint powerOf2(uint n)
 {
@@ -13,6 +31,13 @@ uint powerOf2(uint n)
     level++;
   }
   return level;
+}
+
+// hash a position into an int
+uint index(vec2 position)
+{
+  // TODO: make sure values are clamped not wrapped
+  return interleave(cast(uint)position.x + 2^^15, cast(uint)position.y + 2^^15);
 }
 
 // will extract even bits
