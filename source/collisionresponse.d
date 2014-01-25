@@ -1,6 +1,7 @@
 module collisionresponse;
 
 import std.math;
+import std.stdio;
 
 import artemisd.all;
 import gl3n.linalg;
@@ -24,17 +25,32 @@ struct CollisionEntity
   {
     return (position - other.position).magnitude < (radius + other.radius);
   }
+  
+  void updateFromEntity()
+  {
+    position = entity.getComponent!Position.position;
+    velocity = entity.getComponent!Velocity.velocity;
+    // TODO: for now assume that radius and mass does not change
+  }
 }
 
 struct Collision
 {
   CollisionEntity first, other;
+  
+  void updateFromEntities()
+  {
+    first.updateFromEntity();
+    other.updateFromEntity();
+  }
 }
 
 void handleCollisions(Collision[] collisions)
 {
   foreach (collision; collisions)
   {
+    collision.updateFromEntities();
+    
     auto firstVelocity = collision.first.velocity * ((collision.first.mass-collision.other.mass) / 
                                                      (collision.first.mass+collision.other.mass)) +
                          collision.other.velocity * ((2 * collision.other.mass)                  / 
@@ -54,20 +70,27 @@ void handleCollisions(Collision[] collisions)
     
     //debug writeln("changing vel from ", collision.first.velocity, " to ", firstVelocity);
     
+
     auto firstVel = collision.first.entity.getComponent!Velocity;
     auto otherVel = collision.other.entity.getComponent!Velocity;
-    firstVel = firstVelocity;
-    otherVel = otherVelocity;
+    // only change velocities if entities are moving towards each other
+    if (((collision.other.position + collision.other.velocity*0.01) - 
+         (collision.first.position + collision.first.velocity*0.01)).magnitude <
+        (collision.other.position - collision.first.position).magnitude)
+    {
+      firstVel = firstVelocity;
+      otherVel = otherVelocity;
+    }
     
-    // change positions to ensure colliders does not overlap
-    auto firstPos = collision.first.entity.getComponent!Position;
+    // change positions to ensure colliders do not overlap
+    /*auto firstPos = collision.first.entity.getComponent!Position;
     auto otherPos = collision.other.entity.getComponent!Position;
     
     auto contactPoint = (collision.other.position - collision.first.position);
     
     firstPos += (contactPoint - contactPoint.normalized() * 
-                (collision.first.radius+collision.other.radius)) * 0.5;
+                (collision.first.radius+collision.other.radius)) * 1.0;
     otherPos -= (contactPoint - contactPoint.normalized() *
-                (collision.first.radius+collision.other.radius)) * 0.5;
+                (collision.first.radius+collision.other.radius)) * 1.0;*/
   }
 }
