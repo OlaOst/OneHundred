@@ -44,7 +44,8 @@ uint index(vec2 position)
 int deinterleave(int z)
 in
 {
-  assert(z >= -2^^31 && z < 2^^31-1, "Tried to call deinterleave with z out of bounds: " ~ to!string(z));
+  assert(z >= -2^^31 && z < 2^^31-1, 
+         "Tried to call deinterleave with z out of bounds: " ~ to!string(z));
 }
 body
 {

@@ -58,14 +58,12 @@ void main()
                                            sin(angle * 5) * (0.3 + angle.sqrt)),
                                       vec2(sin(angle) * 0.5, cos(angle) * 0.5),
                                       size);
-    //auto entity = createEntity(world, vec2(1.0, 0.0), vec2(0.0, 0.0), 0.5);
     entities ~= entity;
   }
   
   foreach (entity; entities)
   {
     auto otherEntities = entities.filter!(checkEntity => checkEntity != entity).array;
-    //entity.addComponent(new Gravity(otherEntities));
     entity.addComponent(new Collider(otherEntities));
     entity.addToWorld();
   }
