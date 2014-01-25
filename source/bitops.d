@@ -3,6 +3,18 @@ module bitops;
 import std.conv;
 
 
+uint powerOf2(uint n)
+{
+  uint level = 0;
+  
+  while (n > 1)
+  {
+    n >>= 1;
+    level++;
+  }
+  return level;
+}
+
 // will extract even bits
 int deinterleave(int z)
 in

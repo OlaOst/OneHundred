@@ -23,6 +23,8 @@ class SpatialIndex(Element)
   
   enum uint levels = 17;
   
+  enum uint maxIndicesPerLevel = 2^^12;
+  
   Element[][uint][levels] elementsInIndex;
   
   this(double leastQuadrantSize)
@@ -30,7 +32,7 @@ class SpatialIndex(Element)
     this.leastQuadrantSize = leastQuadrantSize;
   }
   
-  uint[][levels] findCoveringIndices(vec2 position, float radius)
+  uint[][levels] findCoveringIndices(vec2 position, float radius, bool checkSubQuads)
   {
     uint[][levels] indices;
     
@@ -39,29 +41,16 @@ class SpatialIndex(Element)
     
     //debug writeln("findCoveringIndices start");
     
-    populateCoveringIndices(object, quadrant, indices);
+    populateCoveringIndices(object, quadrant, indices, checkSubQuads);
     
     //debug writeln("findCoveringIndices found ", indices[0].length, " indices at level 0");
     
     return indices;
   } 
   
-  // coveringindices - whole part is the index, fractional part is the level. 0 is minsize, .5 is next and so on
-  void populateCoveringIndices(AABB object, AABB quadrant, ref uint[][levels] coveringIndices)
+  void populateCoveringIndices(AABB object, AABB quadrant, ref uint[][levels] coveringIndices, bool checkSubQuads)
   {
     auto quadrantSize = (quadrant.extent.xy.magnitude_squared * 2).sqrt * 0.5;
-    
-    uint powerOf2(uint n)
-    {
-      uint level = 0;
-      
-      while (n > 1)
-      {
-        n >>= 1;
-        level++;
-      }
-      return level;
-    }
     auto level = powerOf2(cast(uint)quadrantSize);
     
     bool intersectsEquals(AABB first, AABB box) const 
@@ -72,27 +61,29 @@ class SpatialIndex(Element)
     }
     
     // add object to index if we're at bottom level and intersecting
-    if (level == 0 && intersectsEquals(object, quadrant))
+    if (level == 0 && intersectsEquals(object, quadrant) && coveringIndices[level].length < maxIndicesPerLevel)
     {
       auto index = quadrant.min.xy.index;
       //debug writefln("adding index %032b for level %d", index, level);
       coveringIndices[level] ~= index;
     }
     
-    // check subquads if we are not on the bottom level
-    if (level > 0)
+    // check subquads if we are not on the bottom level and this level is not filled up with maxIndices
+    if (level > 0 && coveringIndices[level].length < maxIndicesPerLevel)
     {
-      // if the object covers the entire quadrant there is no need to check subquadrants
-      if (object.min.x < quadrant.min.x && 
-          object.min.y < quadrant.min.y &&
-          object.max.x > quadrant.max.x &&
-          object.max.y > quadrant.max.y)
+      bool fullyCovered = (object.min.x < quadrant.min.x && 
+                           object.max.x > quadrant.max.x &&
+                           object.min.y < quadrant.min.y &&
+                           object.max.y > quadrant.max.y);
+      if (fullyCovered || (checkSubQuads && intersectsEquals(object, quadrant)))
       {
         auto index = quadrant.min.xy.index >> level*2;
-        if (level > 13) debug writefln("adding index %032b for level %d", index, level);
+        //if (level > 13 && checkSubQuads) debug writefln("adding index %032b for level %d", index, level);
         coveringIndices[level] ~= index;
       }
-      else
+      
+      // if the object covers the entire quadrant there is no need to check subquadrants, if checkSubQuads is false
+      if (!fullyCovered || checkSubQuads)
       {
         // check subquadrants and recurse
         
@@ -121,19 +112,19 @@ class SpatialIndex(Element)
       
         if (lowerLeftIntersects)
         {
-          populateCoveringIndices(object, lowerLeft, coveringIndices);
+          populateCoveringIndices(object, lowerLeft, coveringIndices, checkSubQuads);
         }
         if (lowerRightIntersects)
         {
-          populateCoveringIndices(object, lowerRight, coveringIndices);
+          populateCoveringIndices(object, lowerRight, coveringIndices, checkSubQuads);
         }
         if (upperLeftIntersects)
         {
-          populateCoveringIndices(object, upperLeft, coveringIndices);
+          populateCoveringIndices(object, upperLeft, coveringIndices, checkSubQuads);
         }
         if (upperRightIntersects)
         {
-          populateCoveringIndices(object, upperRight, coveringIndices);
+          populateCoveringIndices(object, upperRight, coveringIndices, checkSubQuads);
         }
         
       }
@@ -150,7 +141,7 @@ class SpatialIndex(Element)
   { 
     Element[] elements;
 
-    auto coveringIndices = findCoveringIndices(position, radius);
+    auto coveringIndices = findCoveringIndices(position, radius, false);
     
     //debug writeln("find found ", coveringIndices);
     
@@ -169,8 +160,10 @@ class SpatialIndex(Element)
   }
   body
   {
-    auto coveringIndices = findCoveringIndices(element.position, element.radius);
+    auto coveringIndices = findCoveringIndices(element.position, element.radius, true);
 
+    //debug writeln("insert found ", coveringIndices);
+    
     foreach (level, indices; coveringIndices)
     {
       assert(level >= 0 && level < levels, "level out of bounds [0.." ~ (levels-1).to!string ~ "]: " ~ level.to!string);
