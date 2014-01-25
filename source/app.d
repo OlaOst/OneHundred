@@ -33,9 +33,10 @@ void main()
   auto world = new World();
   auto physics = new Physics(world);
   auto inputHandler = new InputHandler();
+  auto collisionHandler = new CollisionHandler(world);
   world.setSystem(physics);
   world.setSystem(inputHandler);
-  world.setSystem(new CollisionHandler(world));
+  world.setSystem(collisionHandler);
   world.setSystem(renderer);
   world.initialize();
   
@@ -48,7 +49,7 @@ void main()
   Entity[] entities;
   entities ~= playerEntity;
   
-  auto elements = 60;
+  auto elements = 200;
   foreach (double index; iota(0, elements))
   {
     auto angle = (index/elements) * PI * 2.0;
@@ -57,13 +58,14 @@ void main()
                                            sin(angle * 5) * (0.3 + angle.sqrt)),
                                       vec2(sin(angle) * 0.5, cos(angle) * 0.5),
                                       size);
+    //auto entity = createEntity(world, vec2(1.0, 0.0), vec2(0.0, 0.0), 0.5);
     entities ~= entity;
   }
   
   foreach (entity; entities)
   {
     auto otherEntities = entities.filter!(checkEntity => checkEntity != entity).array;
-    entity.addComponent(new Gravity(otherEntities));
+    //entity.addComponent(new Gravity(otherEntities));
     entity.addComponent(new Collider(otherEntities));
     entity.addToWorld();
   }
@@ -79,6 +81,7 @@ void main()
   {
     timer.incrementAccumulator();
     physics.update(timer);
+    collisionHandler.update();
     
     world.setDelta(1.0/60.0);
     world.process();

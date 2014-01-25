@@ -10,4 +10,7 @@ final class Collider : Component
 {
   mixin TypeDecl;
   mixin Relation;
+  
+  //vec2 position;
+  //double radius;
 }

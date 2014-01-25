@@ -131,6 +131,11 @@ class SpatialIndex(Element)
     }
   }  
   
+  Element[] find(Element element)
+  {
+    return find(element.position, element.radius);
+  }
+  
   Element[] find(vec2 position, double radius)
   in
   {

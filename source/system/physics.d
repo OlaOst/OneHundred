@@ -75,7 +75,7 @@ final class Physics : EntityProcessingSystem
   {
     auto force = vec2(0.0, 0.0);
     
-    //force += state.position * -2.0; // spring force to center
+    force += state.position * -0.05; // spring force to center
     force += state.velocity * -0.05; // damping force
     
     auto input = state.entity.getComponent!Input;
