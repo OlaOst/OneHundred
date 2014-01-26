@@ -6,12 +6,14 @@
 	"authors": [
 		"Your Name"
 	],
+  "mainSourceFile": "source/app.d",
 	"dependencies": {
     "derelict-sdl2": "~master",
     "derelict-gl3": "~master",
+    "derelict-al": "~master",
     "gl3n": "~master",
-    "onehundred:artemisd": "~master",
-    "onehundred:glamour": "~master",
+    "artemisd": { "version": "~master", "path": "../artemisd" },
+    "glamour": { "version": "~master", "path": "../glamour" },
 	},
   "subPackages": [
     {

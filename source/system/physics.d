@@ -59,6 +59,9 @@ final class Physics : EntityProcessingSystem
     
     torque += state.rotation * -0.2; // damping torque
     
+    import std.random;
+    torque += uniform(-0.0, 1.0);
+    
     auto input = state.entity.getComponent!Input;
     
     if (input && "rotateLeft" in input.isActive && input.isActive["rotateLeft"])
@@ -75,8 +78,10 @@ final class Physics : EntityProcessingSystem
   {
     auto force = vec2(0.0, 0.0);
     
-    force += state.position * -0.05; // spring force to center
+    force += state.position * -0.01; // spring force to center
     force += state.velocity * -0.05; // damping force
+    
+    force += vec2(state.position.y, -state.position.x) * 0.02; // twisty force
     
     auto input = state.entity.getComponent!Input;
     

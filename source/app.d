@@ -19,6 +19,7 @@ import system.inputhandler;
 import system.movement;
 import system.renderer;
 import system.physics;
+import system.soundsystem;
 
 import entityfactory;
 import timer;
@@ -34,10 +35,12 @@ void main()
   auto physics = new Physics(world);
   auto inputHandler = new InputHandler();
   auto collisionHandler = new CollisionHandler();
+  auto soundSystem = new SoundSystem();
   world.setSystem(physics);
   world.setSystem(inputHandler);
   world.setSystem(collisionHandler);
   world.setSystem(renderer);
+  world.setSystem(soundSystem);
   world.initialize();
   
   auto gameController = createGameController(world);
@@ -49,7 +52,7 @@ void main()
   Entity[] entities;
   entities ~= playerEntity;
   
-  auto elements = 100;
+  auto elements = 200;
   foreach (double index; iota(0, elements))
   {
     auto angle = (index/elements) * PI * 2.0;
@@ -80,6 +83,7 @@ void main()
     timer.incrementAccumulator();
     physics.update(timer);
     collisionHandler.update();
+    soundSystem.update();
     
     world.setDelta(1.0/60.0);
     world.process();
