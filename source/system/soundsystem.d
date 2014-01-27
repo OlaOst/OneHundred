@@ -20,8 +20,6 @@ final class SoundSystem : EntityProcessingSystem
 {
   mixin TypeDecl;
     
-  ALuint[64] sources;
-    
   this()
   {
     super(Aspect.getAspectForAll!(Sound));
@@ -31,13 +29,10 @@ final class SoundSystem : EntityProcessingSystem
     DerelictVorbis.load();
     DerelictVorbisFile.load();
     
-    /*foreach (index; iota(0, sources.length))
-    {
-      alGenSources(1, &sources[index]);
-    }*/
-    
-    //loadFile("gasturbinestartup.ogg");
-    
+    auto device = alcOpenDevice(null);
+    auto context = alcCreateContext(device, null);
+    alcMakeContextCurrent(context);
+
     alListener3f(AL_POSITION, 0.0, 0.0, 1.0);
     alListener3f(AL_VELOCITY, 0.0, 0.0, 0.0);
     
@@ -45,6 +40,7 @@ final class SoundSystem : EntityProcessingSystem
     
     stream.printInfo();
     
+    // TODO: make the thread liston to quit events so we don't have to listen to the end of the music when quitting
     stream.startPlaybackThread();
   }
   

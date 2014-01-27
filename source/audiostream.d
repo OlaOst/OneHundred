@@ -14,8 +14,6 @@ import derelict.openal.al;
 
 
 // this code made possible by http://devmaster.net/posts/openal-lesson-8-oggvorbis-streaming-using-the-source-queue
-
-
 class AudioStream
 {
 public:
@@ -36,14 +34,14 @@ public:
     
     format = (info.channels == 1) ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
     
-    writeln("buffers before gen ", buffers);
     alGenBuffers(buffers.length, buffers.ptr);
-    writeln("buffers after gen ", buffers);
+    foreach (buffer; buffers)
+      enforce(alIsBuffer(buffer));
+
     check();
     
     alGenSources(1, &source);
-    
-    writeln("source after gen ", source);
+    enforce(alIsSource(source));
     
     check();
   }
