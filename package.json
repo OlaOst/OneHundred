@@ -11,6 +11,8 @@
     "derelict-sdl2": "~master",
     "derelict-gl3": "~master",
     "derelict-al": "~master",
+    "derelict-ogg": "~master",
+    "derelict-vorbis": "~master",
     "gl3n": "~master",
     "artemisd": { "version": "~master", "path": "../artemisd" },
     "glamour": { "version": "~master", "path": "../glamour" },

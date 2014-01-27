@@ -52,7 +52,8 @@ void main()
   Entity[] entities;
   entities ~= playerEntity;
   
-  auto elements = 200;
+  
+  auto elements = 300;
   foreach (double index; iota(0, elements))
   {
     auto angle = (index/elements) * PI * 2.0;
@@ -83,7 +84,7 @@ void main()
     timer.incrementAccumulator();
     physics.update(timer);
     collisionHandler.update();
-    soundSystem.update();
+    soundSystem.updatestuff();
     
     world.setDelta(1.0/60.0);
     world.process();
