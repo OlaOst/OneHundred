@@ -10,7 +10,6 @@ import derelict.ogg.ogg;
 import derelict.vorbis.vorbis;
 import derelict.vorbis.file;
 import derelict.openal.al;
-//import derelict.openal.alut;
 
 
 // this code made possible by http://devmaster.net/posts/openal-lesson-8-oggvorbis-streaming-using-the-source-queue
@@ -71,11 +70,19 @@ public:
     }
   }
   
+  // stop all threads playing sounds (via playbackLoop delegate)
+  void silence()
+  {
+    keepPlaying = false;
+  }
+  
+  bool keepPlaying = true;
+  
   
 private:
   void playbackLoop()
   {
-    while (update())
+    while (update() && keepPlaying)
     {
       if (!playing())
       {

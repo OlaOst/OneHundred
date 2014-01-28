@@ -84,7 +84,7 @@ void main()
     timer.incrementAccumulator();
     physics.update(timer);
     collisionHandler.update();
-    soundSystem.updatestuff();
+    soundSystem.update();
     
     world.setDelta(1.0/60.0);
     world.process();
@@ -101,4 +101,6 @@ void main()
     renderer.draw();
     SDL_GL_SwapWindow(window);
   }
+  
+  soundSystem.silence();
 }

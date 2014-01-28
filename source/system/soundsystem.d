@@ -19,7 +19,9 @@ import component.sound;
 final class SoundSystem : EntityProcessingSystem
 {
   mixin TypeDecl;
-    
+  
+  AudioStream stream;
+  
   this()
   {
     super(Aspect.getAspectForAll!(Sound));
@@ -36,7 +38,7 @@ final class SoundSystem : EntityProcessingSystem
     alListener3f(AL_POSITION, 0.0, 0.0, 1.0);
     alListener3f(AL_VELOCITY, 0.0, 0.0, 0.0);
     
-    auto stream = new AudioStream("orbitalelevator.ogg");
+    stream = new AudioStream("orbitalelevator.ogg");
     
     stream.printInfo();
     
@@ -49,7 +51,12 @@ final class SoundSystem : EntityProcessingSystem
     
   }
   
-  void updatestuff()
+  void update()
   {
+  }
+  
+  void silence()
+  {
+    stream.silence();
   }
 }
