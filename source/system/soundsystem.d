@@ -12,7 +12,8 @@ import derelict.ogg.ogg;
 import derelict.vorbis.file;
 import derelict.vorbis.vorbis;
 
-import audiostream;
+import audio.raw;
+import audio.stream;
 import component.sound;
 
 
@@ -20,7 +21,9 @@ final class SoundSystem : EntityProcessingSystem
 {
   mixin TypeDecl;
   
-  AudioStream stream;
+  Stream stream;
+  Raw raw;
+  //Entity[] entities;
   
   this()
   {
@@ -38,17 +41,23 @@ final class SoundSystem : EntityProcessingSystem
     alListener3f(AL_POSITION, 0.0, 0.0, 1.0);
     alListener3f(AL_VELOCITY, 0.0, 0.0, 0.0);
     
-    stream = new AudioStream("orbitalelevator.ogg");
-    
+    stream = new Stream("orbitalelevator.ogg");
     stream.printInfo();
-    
-    // TODO: make the thread liston to quit events so we don't have to listen to the end of the music when quitting
     stream.startPlaybackThread();
+    
+    raw = new Raw("bounce.wav");
+    raw.play();
   }
   
   override void process(Entity entity)
   {
+    auto sound = entity.getComponent!Sound;
     
+    if (sound)
+    {
+      //entities ~= entity;
+      
+    }
   }
   
   void update()
@@ -57,6 +66,7 @@ final class SoundSystem : EntityProcessingSystem
   
   void silence()
   {
-    stream.silence();
+    if (stream !is null)
+      stream.silence();
   }
 }

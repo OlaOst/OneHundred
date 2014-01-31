@@ -25,9 +25,12 @@ final class CollisionHandler : EntityProcessingSystem
   SpatialIndex!CollisionEntity index = new SpatialIndex!CollisionEntity();
   CollisionEntity[] collisionEntities;
   
-  this()
+  World world;
+  
+  this(World world)
   {
     super(Aspect.getAspectForAll!(Collider));
+    this.world = world;
   }
   
   override void process(Entity entity)
@@ -62,7 +65,7 @@ final class CollisionHandler : EntityProcessingSystem
                                      Collision(collisionEntity, collidingEntity)).array;
     }
     
-    handleCollisions(collisions);
+    handleCollisions(world, collisions);
     
     // reset entity list and index so we are ready for the next update
     collisionEntities.length = 0;

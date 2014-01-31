@@ -63,7 +63,7 @@ final class Physics : EntityProcessingSystem
     
     if (!input)
     {
-      torque += (1.0 / state.position.magnitude) * 0.2;
+      torque += (1.0 / state.position.magnitude) * 0.5;
     }
     
     if (input && "rotateLeft" in input.isActive && input.isActive["rotateLeft"])
@@ -87,7 +87,7 @@ final class Physics : EntityProcessingSystem
     if (normalPos.magnitude() > 0.0)
       force += normalPos.normalized() * ((1.0 / (normalPos.magnitude() + 0.1)) ^^2) * 0.05; // twisty force
       
-    force += vec2(-state.position.y, state.position.x) * 0.01;
+    force += vec2(-state.position.y, state.position.x) * 0.015;
     
     auto input = state.entity.getComponent!Input;
     

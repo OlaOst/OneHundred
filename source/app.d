@@ -34,7 +34,7 @@ void main()
   auto world = new World();
   auto physics = new Physics(world);
   auto inputHandler = new InputHandler();
-  auto collisionHandler = new CollisionHandler();
+  auto collisionHandler = new CollisionHandler(world);
   auto soundSystem = new SoundSystem();
   world.setSystem(physics);
   world.setSystem(inputHandler);

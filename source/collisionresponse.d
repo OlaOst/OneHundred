@@ -7,6 +7,7 @@ import artemisd.all;
 import gl3n.linalg;
 
 import component.position;
+import component.sound;
 import component.velocity;
 import system.collisionhandler;
 
@@ -45,7 +46,7 @@ struct Collision
   }
 }
 
-void handleCollisions(Collision[] collisions)
+void handleCollisions(World world, Collision[] collisions)
 {
   foreach (collision; collisions)
   {
@@ -92,5 +93,17 @@ void handleCollisions(Collision[] collisions)
                 (collision.first.radius+collision.other.radius)) * 1.0;
     otherPos -= (contactPoint - contactPoint.normalized() *
                 (collision.first.radius+collision.other.radius)) * 1.0;*/
+                
+    
+    auto contactPoint = ((collision.other.position - collision.first.position) * collision.first.radius + 
+                         (collision.first.position - collision.other.position) * collision.other.radius) * 
+                         (1.0 / collision.first.radius + collision.other.radius);
+    // add sound entity to world
+    //Entity bonk = world.createEntity();
+    //bonk.addComponent(new Position(contactPoint));
+    //auto sound = new Sound("bounce.wav");
+    //sound.startPlaying();
+    //bonk.addComponent(sound);
+    //bonk.addToWorld();
   }
 }

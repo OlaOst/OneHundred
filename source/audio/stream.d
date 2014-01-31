@@ -1,4 +1,4 @@
-module audiostream;
+module audio.stream;
 
 import std.algorithm;
 import std.conv;
@@ -13,30 +13,29 @@ import derelict.openal.al;
 
 
 // this code made possible by http://devmaster.net/posts/openal-lesson-8-oggvorbis-streaming-using-the-source-queue
-class AudioStream
+class Stream
 {
 public:
   this(string filename)
-  in
   {
-    // TODO: assert that openal and ogg libraries are loaded
-  }
-  body
-  {
+    this.filename = filename;
     file = File(filename);
+    
+    enforce(filename.endsWith(".ogg"), "Can only stream ogg files, " ~ filename ~ " is not recognized as an ogg file.");
+
     auto result = ov_open(file.getFP(), &oggFile, null, 0);
-    
-    enforce(result == 0, "Error opening Ogg stream: " ~ to!string(result));
-    
+  
+    enforce(result == 0, "Error opening Ogg stream: " ~ result.to!string);
+  
     info = *ov_info(&oggFile, -1);
     comment = *ov_comment(&oggFile, -1);
-    
+  
     format = (info.channels == 1) ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
-    
+
     alGenBuffers(buffers.length, buffers.ptr);
     foreach (buffer; buffers)
       enforce(alIsBuffer(buffer));
-
+    
     check();
     
     alGenSources(1, &source);
@@ -54,23 +53,23 @@ public:
   
   void printInfo()
   {
-    writeln("version:         " ~ to!string(info._version));
-    writeln("channels:        " ~ to!string(info.channels));
-    writeln("rate (hz):       " ~ to!string(info.rate));
-    writeln("bitrate upper:   " ~ to!string(info.bitrate_upper));
-    writeln("bitrate nominal: " ~ to!string(info.bitrate_nominal));
-    writeln("bitrate lower:   " ~ to!string(info.bitrate_lower));
-    writeln("bitrate window:  " ~ to!string(info.bitrate_window));
-    writeln("vendor:          " ~ to!string(comment.vendor));
+    writeln("version:         " ~ info._version.to!string);
+    writeln("channels:        " ~ info.channels.to!string);
+    writeln("rate (hz):       " ~ info.rate.to!string);
+    writeln("bitrate upper:   " ~ info.bitrate_upper.to!string);
+    writeln("bitrate nominal: " ~ info.bitrate_nominal.to!string);
+    writeln("bitrate lower:   " ~ info.bitrate_lower.to!string);
+    writeln("bitrate window:  " ~ info.bitrate_window.to!string);
+    writeln("vendor:          " ~ comment.vendor.to!string);
     
     writeln("comments: ");
     for (int i = 0; i < comment.comments; i++)
     {
-      writeln("  " ~ to!string(comment.user_comments[i]));
+      writeln("  " ~ comment.user_comments[i].to!string);
     }
   }
   
-  // stop all threads playing sounds (via playbackLoop delegate)
+  // stop thread playing sound (via playbackLoop delegate)
   void silence()
   {
     keepPlaying = false;
@@ -93,33 +92,6 @@ private:
     }
   }
   
-  bool playback()
-  {
-    if (playing())
-      return true;
-    
-    foreach (buffer; buffers)
-    {
-      if (stream(buffer) == false)
-        return false;
-    }
-    
-    //writeln("playback queuing buffers ", buffers);
-    
-    alSourceQueueBuffers(source, buffers.length, buffers.ptr);
-    alSourcePlay(source);
-    
-    return true;
-  }
-  
-  bool playing()
-  {
-    ALenum state;
-    alGetSourcei(source, AL_SOURCE_STATE, &state);
-    
-    return state == AL_PLAYING;
-  }
-    
   bool update()
   {
     int buffersProcessed;
@@ -145,6 +117,31 @@ private:
     return active;
   }
   
+  bool playing()
+  {
+    ALenum state;
+    alGetSourcei(source, AL_SOURCE_STATE, &state);
+    
+    return state == AL_PLAYING;
+  }
+  
+  bool playback()
+  {
+    if (playing())
+      return true;
+    
+    foreach (buffer; buffers)
+    {
+      if (stream(buffer) == false)
+        return false;
+    }
+    
+    alSourceQueueBuffers(source, buffers.length, buffers.ptr);
+    alSourcePlay(source);
+    
+    return true;
+  }
+  
   bool stream(ALuint buffer)
   {
     int size = 0;
@@ -154,10 +151,10 @@ private:
     byte[bufferSize] data;
     
     while (size < bufferSize)
-    {
+    { 
       bytesRead = ov_read(&oggFile, data.ptr + size, bufferSize - size, 0, 2, 1, &section);
       
-      enforce(bytesRead >= 0, "Error streaming Ogg file: " ~ to!string(bytesRead));
+      enforce(bytesRead >= 0, "Error streaming Ogg file: " ~ bytesRead.to!string);
       
       if (bytesRead > 0)
         size += bytesRead;
@@ -167,8 +164,9 @@ private:
     
     if (size == 0)
       return false;
-      
+
     alBufferData(buffer, format, data.ptr, size, info.rate);
+    
     check();
     
     return true;
@@ -184,6 +182,7 @@ private:
 private:
   immutable enum int bufferSize = 32768;
 
+  string filename;
   File file;
   OggVorbis_File oggFile;
   
