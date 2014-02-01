@@ -98,12 +98,15 @@ void handleCollisions(World world, Collision[] collisions)
     auto contactPoint = ((collision.other.position - collision.first.position) * collision.first.radius + 
                          (collision.first.position - collision.other.position) * collision.other.radius) * 
                          (1.0 / collision.first.radius + collision.other.radius);
+    
     // add sound entity to world
-    //Entity bonk = world.createEntity();
-    //bonk.addComponent(new Position(contactPoint));
+    Entity bonk = world.createEntity();
+    bonk.addComponent(new Position(contactPoint, 0.0));
     //auto sound = new Sound("bounce.wav");
+    auto sound = Sound.loadSound("bounce.wav");
+    debug writeln("adding collision sound");
     //sound.startPlaying();
-    //bonk.addComponent(sound);
-    //bonk.addToWorld();
+    bonk.addComponent(sound);
+    bonk.addToWorld();
   }
 }

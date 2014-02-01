@@ -53,7 +53,7 @@ void main()
   entities ~= playerEntity;
   
   
-  auto elements = 300;
+  auto elements = 1;
   foreach (double index; iota(0, elements))
   {
     auto angle = (index/elements) * PI * 2.0;

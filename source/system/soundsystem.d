@@ -21,9 +21,11 @@ final class SoundSystem : EntityProcessingSystem
 {
   mixin TypeDecl;
   
-  Stream stream;
-  Raw raw;
+  //Stream stream;
+  //Raw raw;
   //Entity[] entities;
+  
+  bool stopPlaying = false;
   
   this()
   {
@@ -41,12 +43,12 @@ final class SoundSystem : EntityProcessingSystem
     alListener3f(AL_POSITION, 0.0, 0.0, 1.0);
     alListener3f(AL_VELOCITY, 0.0, 0.0, 0.0);
     
-    stream = new Stream("orbitalelevator.ogg");
+    /*stream = new Stream("orbitalelevator.ogg");
     stream.printInfo();
     stream.startPlaybackThread();
     
     raw = new Raw("bounce.wav");
-    raw.play();
+    raw.play();*/
   }
   
   override void process(Entity entity)
@@ -56,7 +58,10 @@ final class SoundSystem : EntityProcessingSystem
     if (sound)
     {
       //entities ~= entity;
-      
+      if (stopPlaying)
+        sound.stopPlaying();
+      else if (!sound.isPlaying)
+        sound.startPlaying();
     }
   }
   
@@ -66,7 +71,8 @@ final class SoundSystem : EntityProcessingSystem
   
   void silence()
   {
-    if (stream !is null)
-      stream.silence();
+    stopPlaying = true;
+    //if (stream !is null)
+      //stream.silence();
   }
 }
