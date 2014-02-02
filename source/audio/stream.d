@@ -11,9 +11,10 @@ import derelict.vorbis.vorbis;
 import derelict.vorbis.file;
 import derelict.openal.al;
 
+import audio.source;
 
 // this code made possible by http://devmaster.net/posts/openal-lesson-8-oggvorbis-streaming-using-the-source-queue
-class Stream
+class Stream : Source
 {
 public:
   this(string filename)
@@ -44,13 +45,6 @@ public:
     check();
   }
   
-  void startPlaybackThread()
-  {
-    auto playbackTask = task(&this.playbackLoop);
-    
-    playbackTask.executeInNewThread();
-  }
-  
   void printInfo()
   {
     writeln("version:         " ~ info._version.to!string);
@@ -69,6 +63,11 @@ public:
     }
   }
   
+  void play()
+  {
+    startPlaybackThread();
+  }
+  
   // stop thread playing sound (via playbackLoop delegate)
   void silence()
   {
@@ -79,6 +78,13 @@ public:
   
   
 private:
+  void startPlaybackThread()
+  {
+    auto playbackTask = task(&this.playbackLoop);
+    
+    playbackTask.executeInNewThread();
+  }
+  
   void playbackLoop()
   {
     while (update() && keepPlaying)

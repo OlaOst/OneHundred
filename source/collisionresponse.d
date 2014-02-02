@@ -102,10 +102,7 @@ void handleCollisions(World world, Collision[] collisions)
     // add sound entity to world
     Entity bonk = world.createEntity();
     bonk.addComponent(new Position(contactPoint, 0.0));
-    //auto sound = new Sound("bounce.wav");
-    auto sound = Sound.loadSound("bounce.wav");
-    debug writeln("adding collision sound");
-    //sound.startPlaying();
+    auto sound = new Sound("bounce.wav");
     bonk.addComponent(sound);
     bonk.addToWorld();
   }

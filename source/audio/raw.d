@@ -11,16 +11,18 @@ import derelict.vorbis.vorbis;
 import derelict.vorbis.file;
 import derelict.openal.al;
 
+import audio.source;
 
-class Raw
+
+class Raw : Source
 {
 public:
-  this(string filename)
+  this(string fileName)
   {
-    enforce(filename.endsWith(".wav"), "Can only read wav soundfiles, " ~ filename ~ " is not recognized as a wav file");
+    enforce(fileName.endsWith(".wav"), "Can only read wav soundfiles, " ~ filename ~ " is not recognized as a wav file");
   
-    this.filename = filename;
-    file = File(filename);
+    this.filename = fileName;
+    file = File(fileName);
     
     ushort channels;
     ushort bits;
@@ -34,9 +36,11 @@ public:
     {
       auto first = chunks.front;
       
-      enforce(first[0..4] == "RIFF");
+      enforce(first.length >= 44, "Problem parsing wav file header, is " ~ fileName ~ " really a wav file?");
+      
+      enforce(first[0..4] == "RIFF", "Problem parsing wav file header, is " ~ fileName ~ " really a wav file?");
       // skip size value (4 bytes)
-      enforce(first[8..12] == "WAVE");
+      enforce(first[8..12] == "WAVE", "Problem parsing wav file header, is " ~ fileName ~ " really a wav file?");
       // skip "fmt", format length, format tag (10 bytes)
       channels = (cast(ushort[])first[22..24])[0];
       frequency = (cast(ALsizei[])first[24..28])[0];
@@ -64,11 +68,6 @@ public:
     
     check();
     
-    alGenSources(1, &source);
-    enforce(alIsSource(source));
-    
-    check();
-    
     alBufferData(buffer, channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, data.ptr, data.length, frequency);
     
     check();
@@ -76,17 +75,18 @@ public:
   
   void play()
   {
+    alGenSources(1, &source);
+    enforce(alIsSource(source));
+    
+    check();
+    
     alSourceQueueBuffers(source, 1, &buffer);
     alSourcePlay(source);
   }
   
-private:
-  void check()
+  void silence()
   {
-    int error = alGetError();
-    enforce(error == AL_NO_ERROR, "OpenAL error " ~ to!string(error));
   }
-  
   
 private:
   string filename;

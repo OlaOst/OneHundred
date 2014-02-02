@@ -30,6 +30,12 @@ void main()
 {
   auto window = getWindow(1024, 768);
   auto renderer = new Renderer();
+  
+  scope (exit)
+  {
+    renderer.close();
+  }
+  
   auto timer = new Timer();
   auto world = new World();
   auto physics = new Physics(world);
@@ -53,12 +59,12 @@ void main()
   entities ~= playerEntity;
   
   
-  auto elements = 1;
+  auto elements = 250;
   foreach (double index; iota(0, elements))
   {
     auto angle = (index/elements) * PI * 2.0;
     auto size = uniform(0.01, 0.1);
-    auto entity = createEntity(world, vec2(cos(angle * 5) * (0.3 + angle.sqrt),
+    auto entity = createEntity(world, vec2(1.0 + cos(angle * 5) * (0.3 + angle.sqrt),
                                            sin(angle * 5) * (0.3 + angle.sqrt)),
                                       vec2(sin(angle) * 0.5, cos(angle) * 0.5),
                                       size);
@@ -70,11 +76,6 @@ void main()
     auto otherEntities = entities.filter!(checkEntity => checkEntity != entity).array;
     entity.addComponent(new Collider(otherEntities));
     entity.addToWorld();
-  }
-
-  scope (exit)
-  {
-    renderer.close();
   }
   
   bool keepRunning = true;
