@@ -89,7 +89,7 @@ private:
   {
     while (update() && keepPlaying)
     {
-      if (!playing())
+      if (!source.isPlaying)
       {
         enforce(playback(), "Ogg abruptly stopped");
         
@@ -123,17 +123,9 @@ private:
     return active;
   }
   
-  bool playing()
-  {
-    ALenum state;
-    alGetSourcei(source, AL_SOURCE_STATE, &state);
-    
-    return state == AL_PLAYING;
-  }
-  
   bool playback()
   {
-    if (playing())
+    if (source.isPlaying)
       return true;
     
     foreach (buffer; buffers)

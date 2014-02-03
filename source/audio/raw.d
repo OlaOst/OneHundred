@@ -19,6 +19,8 @@ class Raw : Source
 public:
   this(string fileName)
   {
+    writeln("creating raw from ", fileName);
+    
     enforce(fileName.endsWith(".wav"), "Can only read wav soundfiles, " ~ filename ~ " is not recognized as a wav file");
   
     this.filename = fileName;
@@ -75,17 +77,52 @@ public:
   
   void play()
   {
-    alGenSources(1, &source);
-    enforce(alIsSource(source));
+    // find a source not currently playing
+    //auto foundSource = Source.sources.filter!(source => !source.isPlaying);
+    source = 0;
+    //debug writeln("checking ", Source.sources.length, " sources");
+    foreach (ref checkSource; Source.sources)
+    {
+      //debug writeln("checking source ", checkSource, ", alIsSource: ", checkSource.alIsSource, ", isplaying: ", checkSource.isPlaying);
+      
+      if (!checkSource.alIsSource)
+      {
+        alGenSources(1, &checkSource);
+        //writeln("genning source ", checkSource);
+        check();
+      }
+      
+      if (!checkSource.isPlaying)
+      {
+        //writeln("found nonplaying source ", checkSource);
+        
+        source = checkSource;
+        break;
+      }
+    }
     
-    check();
+    if (source.alIsSource)
+    {
+      //alGenSources(1, &source);
+      enforce(source.alIsSource);
+      
+      check();
     
-    alSourceQueueBuffers(source, 1, &buffer);
-    alSourcePlay(source);
+      //auto source = foundSource.front;
+    
+      source.alSourceQueueBuffers(1, &buffer);
+      source.alSourcePlay;
+    }
+    else
+    {
+      //writeln("no free sound sources");
+    }
   }
   
   void silence()
   {
+    enforce(alIsSource(source));
+    alSourceUnqueueBuffers(source, 1, &buffer);
   }
   
 private:

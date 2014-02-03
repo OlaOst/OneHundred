@@ -16,11 +16,23 @@ interface Source
   final void check()
   {
     auto error = alGetError();
-    
-    enforce(error == AL_NO_ERROR, "OpenAL error " ~ enumMapping[error]);
+    //enforce(error == AL_NO_ERROR, "OpenAL error " ~ enumMapping[error]);
   }
-}
   
+  static ALuint[64] sources;
+}
+
+bool isPlaying(ALuint source)
+{
+  ALenum state;
+  alGetSourcei(source, AL_SOURCE_STATE, &state);
+  
+  return state == AL_PLAYING;
+}
+
+
+// the stuff below is for getting error names printed out instead of error codes
+// since the derelict openal enums are anonymous there is no way to get them directly...
 template tuple(args...)
 {
   alias tuple = args;
