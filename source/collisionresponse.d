@@ -67,10 +67,7 @@ void handleCollisions(World world, Collision[] collisions)
                          otherVelocity * collision.other.mass;
     assert(approxEqual(momentumBefore.magnitude, momentumAfter.magnitude), 
            "Momentum not conserved in collision: went from " ~ 
-           momentumBefore.to!string ~ " to " ~ momentumAfter.to!string);
-    
-    //debug writeln("changing vel from ", collision.first.velocity, " to ", firstVelocity);
-    
+           momentumBefore.to!string ~ " to " ~ momentumAfter.to!string);    
 
     auto firstVel = collision.first.entity.getComponent!Velocity;
     auto otherVel = collision.other.entity.getComponent!Velocity;
@@ -82,24 +79,16 @@ void handleCollisions(World world, Collision[] collisions)
       firstVel = firstVelocity;
       otherVel = otherVelocity;
     }
-    
-    // change positions to ensure colliders do not overlap
-    /*auto firstPos = collision.first.entity.getComponent!Position;
-    auto otherPos = collision.other.entity.getComponent!Position;
-    
-    auto contactPoint = (collision.other.position - collision.first.position);
-    
-    firstPos += (contactPoint - contactPoint.normalized() * 
-                (collision.first.radius+collision.other.radius)) * 1.0;
-    otherPos -= (contactPoint - contactPoint.normalized() *
-                (collision.first.radius+collision.other.radius)) * 1.0;*/
-                
-    
-    auto contactPoint = ((collision.other.position - collision.first.position) * collision.first.radius + 
-                         (collision.first.position - collision.other.position) * collision.other.radius) * 
+
+    auto contactPoint = ((collision.other.position - collision.first.position) 
+                         * collision.first.radius + 
+                         (collision.first.position - collision.other.position) 
+                         * collision.other.radius) * 
                          (1.0 / collision.first.radius + collision.other.radius);
     
     // add sound entity to world
+    // TODO: stop this from leaking, sound entities should be destroyed or recycled
+    // when they stop playing
     Entity bonk = world.createEntity();
     bonk.addComponent(new Position(contactPoint, 0.0));
     auto sound = new Sound("bounce.wav");
