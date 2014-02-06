@@ -24,13 +24,13 @@ struct State
   //constants
   double mass;
   
-  vec2 delegate(State, double time) forceCalculator;
-  double delegate(State, double time) torqueCalculator;
+  vec2 function(State, double time) forceCalculator;
+  double function(State, double time) torqueCalculator;
   Entity entity;
   
   this(Entity entity, 
-       vec2 delegate(State, double time) forceCalculator, 
-       double delegate(State, double time) torqueCalculator)
+       vec2 function(State, double time) forceCalculator, 
+       double function(State, double time) torqueCalculator)
   {
     this.entity = entity;
   

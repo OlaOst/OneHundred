@@ -10,9 +10,9 @@ import artemisd.all;
 import gl3n.linalg;
 
 import collisionresponse;
+import component.collider;
 import component.mass;
 import component.position;
-import component.relations.collider;
 import component.size;
 import component.velocity;
 import spatialindex.spatialindex;

@@ -17,8 +17,6 @@ final class Sound : Component
   public bool isPlaying = false;
   static Source[string] sourceCache;
   
-  //static ALuint[32] sources;
-  
   this(string fileName)
   {
     if (fileName !in sourceCache)

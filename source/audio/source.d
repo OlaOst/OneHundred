@@ -19,7 +19,7 @@ interface Source
     //enforce(error == AL_NO_ERROR, "OpenAL error " ~ enumMapping[error]);
   }
   
-  static ALuint[64] sources;
+  static ALuint[32] sources;
   
   static ALuint findFreeSource()
   {

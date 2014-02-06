@@ -1,4 +1,4 @@
-module component.relations.collider;
+module component.collider;
 
 import artemisd.all;
 import gl3n.linalg;
@@ -9,7 +9,6 @@ import component.relation;
 final class Collider : Component
 {
   mixin TypeDecl;
-  mixin Relation;
   
   //vec2 position;
   //double radius;

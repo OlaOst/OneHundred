@@ -1,10 +1,12 @@
 module entityfactory;
 
 import std.random;
+import std.range;
 
 import artemisd.all;
 import gl3n.linalg;
 
+import component.collider;
 import component.drawable;
 import component.input;
 import component.mass;
@@ -24,13 +26,8 @@ Entity createGameController(World world)
 
 Entity createPlayer(World world)
 {
-  Entity playerEntity = world.createEntity();
+  auto playerEntity = createEntity(world, vec2(0.0, 0.0), vec2(0.0, 0.0), 0.3);
   
-  playerEntity.addComponent(new Position(vec2(0.0, 0.0), 0.0));
-  playerEntity.addComponent(new Velocity(vec2(0.0, 0.0), 0.0));
-  playerEntity.addComponent(new Size(0.3));
-  playerEntity.addComponent(new Mass(0.3 ^^ 2));
-  playerEntity.addComponent(new Drawable(0.3, 3, vec3(0.0, 1.0, 0.0)));
   playerEntity.addComponent(new Input(Input.playerInput));
   
   return playerEntity;
@@ -45,6 +42,23 @@ Entity createEntity(World world, vec2 position, vec2 velocity, double size)
   entity.addComponent(new Size(size));
   entity.addComponent(new Mass(0.1 + size ^^ 2));
   entity.addComponent(new Drawable(size, uniform(3, 12), uniformDistribution!float(3).vec3));
+  entity.addComponent(new Collider());
   
   return entity;
+}
+
+Entity[] createEntities(World world, uint elements)
+{
+  Entity[] entities;
+  foreach (double index; iota(0, elements))
+  {
+    auto angle = (index/elements) * PI * 2.0;
+    auto size = uniform(0.01, 0.1);
+    auto entity = createEntity(world, vec2(1.0 + cos(angle * 5) * (0.3 + angle.sqrt),
+                                           sin(angle * 5) * (0.3 + angle.sqrt)),
+                                      vec2(sin(angle) * 0.5, cos(angle) * 0.5),
+                                      size);
+    entities ~= entity;
+  }
+  return entities;
 }
