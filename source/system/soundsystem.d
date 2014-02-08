@@ -53,8 +53,22 @@ final class SoundSystem : EntityProcessingSystem
     }
   }
   
+  void silence(Entity entity)
+  {
+    auto sound = entity.getComponent!Sound;
+    
+    if (sound)
+      sound.stopPlaying();
+  }
+  
   void silence()
   {
     stopPlaying = true;
+  }
+  
+  override void removed(Entity entity)
+  {
+    super.removed(entity);
+    writeln("soundsystem removed entity");
   }
 }

@@ -12,6 +12,7 @@ import component.input;
 import component.mass;
 import component.position;
 import component.size;
+import component.sound;
 import component.velocity;
 
 
@@ -61,4 +62,14 @@ Entity[] createEntities(World world, uint elements)
     entities ~= entity;
   }
   return entities;
+}
+
+Entity createMusic(World world)
+{
+  Entity entity = world.createEntity();
+
+  entity.addComponent(new Position(vec2(0.0, 0.0), 0.0));
+  entity.addComponent(new Sound("gasturbinestartup.ogg"));
+  
+  return entity;
 }

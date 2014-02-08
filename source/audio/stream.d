@@ -19,33 +19,25 @@ class Stream : Source
 public:
   this(string filename)
   {
-    this.filename = filename;
     file = File(filename);
-    
     enforce(filename.endsWith(".ogg"), "Can only stream ogg files, " ~ filename ~ " is not recognized as an ogg file.");
 
     auto result = ov_open(file.getFP(), &oggFile, null, 0);
-  
     enforce(result == 0, "Error opening Ogg stream: " ~ result.to!string);
   
     info = *ov_info(&oggFile, -1);
     comment = *ov_comment(&oggFile, -1);
-  
     format = (info.channels == 1) ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
 
     alGenBuffers(buffers.length, buffers.ptr);
     foreach (buffer; buffers)
-      enforce(alIsBuffer(buffer));
+      enforce(buffer.alIsBuffer);
     
-    check();
-    
-    alGenSources(1, &source);
-    enforce(alIsSource(source));
-    
+    source = Source.findFreeSource();
     check();
   }
   
-  void printInfo()
+  void printInfo(vorbis_info info)
   {
     writeln("version:         " ~ info._version.to!string);
     writeln("channels:        " ~ info.channels.to!string);
@@ -58,9 +50,7 @@ public:
     
     writeln("comments: ");
     for (int i = 0; i < comment.comments; i++)
-    {
       writeln("  " ~ comment.user_comments[i].to!string);
-    }
   }
   
   void play()
@@ -74,14 +64,10 @@ public:
     keepPlaying = false;
   }
   
-  bool keepPlaying = true;
-  
-  
 private:
   void startPlaybackThread()
   {
     auto playbackTask = task(&this.playbackLoop);
-    
     playbackTask.executeInNewThread();
   }
   
@@ -92,8 +78,6 @@ private:
       if (!source.isPlaying)
       {
         enforce(playback(), "Ogg abruptly stopped");
-        
-        //writeln("Ogg stream interrupted");
       }
     }
   }
@@ -101,26 +85,23 @@ private:
   bool update()
   {
     int buffersProcessed;
-    bool active = true;
+    bool isActive = true;
     
-    alGetSourcei(source, AL_BUFFERS_PROCESSED, &buffersProcessed);
+    source.alGetSourcei(AL_BUFFERS_PROCESSED, &buffersProcessed);
     
     while (buffersProcessed--)
     {
       ALuint buffer;
-      
-      alSourceUnqueueBuffers(source, 1, &buffer);
+      source.alSourceUnqueueBuffers(1, &buffer);
       check();
       
-      active = stream(buffer);
-      
-      if (active)
-        alSourceQueueBuffers(source, 1, &buffer);
-        
+      isActive = stream(buffer);
+      if (isActive)
+        source.alSourceQueueBuffers(1, &buffer);
       check();
     }
     
-    return active;
+    return isActive;
   }
   
   bool playback()
@@ -128,14 +109,11 @@ private:
     if (source.isPlaying)
       return true;
     
-    foreach (buffer; buffers)
-    {
-      if (stream(buffer) == false)
-        return false;
-    }
+    if (buffers[].any!(buffer => !stream(buffer)))
+      return false;
     
-    alSourceQueueBuffers(source, buffers.length, buffers.ptr);
-    alSourcePlay(source);
+    source.alSourceQueueBuffers(buffers.length, buffers.ptr);
+    source.alSourcePlay();
     
     return true;
   }
@@ -145,7 +123,6 @@ private:
     int size = 0;
     int section;
     long bytesRead;
-    
     byte[bufferSize] data;
     
     while (size < bufferSize)
@@ -164,31 +141,20 @@ private:
       return false;
 
     alBufferData(buffer, format, data.ptr, size, info.rate);
-    
     check();
     
     return true;
-  }
-  
-  void check()
-  {
-    int error = alGetError();
-    enforce(error == AL_NO_ERROR, "OpenAL error " ~ to!string(error));
-  }
-  
+  }  
   
 private:
   immutable enum int bufferSize = 32768;
 
-  string filename;
+  bool keepPlaying = true;
   File file;
-  OggVorbis_File oggFile;
-  
-  vorbis_info info;
+  OggVorbis_File oggFile;  
   vorbis_comment comment;
-
+  vorbis_info info;  
   ALenum format;
- 
   ALuint[3] buffers;
   ALuint source;
 }

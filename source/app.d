@@ -41,8 +41,9 @@ void main()
   auto gameController = createGameController(world);
   gameController.addToWorld();
   
-  Entity[] entities = createEntities(world, 200);
+  Entity[] entities = createEntities(world, 3);
   entities ~= createPlayer(world);
+  entities ~= createMusic(world);
   
   foreach (entity; entities)
     entity.addToWorld();
@@ -75,5 +76,8 @@ void main()
   {
     renderer.close();
     soundSystem.silence();
+    
+    foreach (entity; entities)
+      soundSystem.silence(entity);
   }
 }
