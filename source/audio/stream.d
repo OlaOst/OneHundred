@@ -15,7 +15,6 @@ import audio.oggsource;
 import audio.source;
 
 
-// this code made possible by http://devmaster.net/posts/openal-lesson-8-oggvorbis-streaming-using-the-source-queue
 class Stream : Source
 {
 public:
@@ -35,7 +34,6 @@ public:
     startPlaybackThread();
   }
   
-  // stop thread playing sound (via playbackLoop delegate)
   void silence()
   {
     keepPlaying = false;
@@ -96,33 +94,4 @@ private:
   OggSource oggSource;
   ALuint[3] buffers;
   ALuint source;
-}
-
-bool stream(ALuint buffer, ref OggSource oggSource)
-{
-  enum int bufferSize = 32768;
-  int size = 0;
-  int section;
-  long bytesRead;
-  byte[bufferSize] data;
-  
-  while (size < bufferSize)
-  {
-    bytesRead = ov_read(&oggSource.oggFile, data.ptr + size, bufferSize - size, 0, 2, 1, &section);
-    
-    enforce(bytesRead >= 0, "Error streaming Ogg file: " ~ bytesRead.to!string);
-    
-    if (bytesRead > 0)
-      size += bytesRead;
-    else
-      break;
-  }
-  
-  if (size == 0)
-    return false;
-
-  alBufferData(buffer, oggSource.format, data.ptr, size, oggSource.info.rate);
-  check();
-  
-  return true;
 }
