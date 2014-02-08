@@ -51,12 +51,8 @@ private:
   void playbackLoop()
   {
     while (update() && keepPlaying)
-    {
       if (!source.isPlaying)
-      {
         enforce(playback(), "Ogg abruptly stopped");
-      }
-    }
   }
   
   bool update()
