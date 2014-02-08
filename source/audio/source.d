@@ -13,12 +13,6 @@ interface Source
   void play();
   void silence();
   
-  final void check() const
-  {
-    auto error = alGetError();
-    enforce(error == AL_NO_ERROR, "OpenAL error " ~ enumMapping[error]);
-  }
-  
   static ALuint[32] sources;
   
   static ALuint findFreeSource()
@@ -27,13 +21,23 @@ interface Source
     foreach (ref source; sources)
     {
       if (!source.alIsSource)
+      {
         alGenSources(1, &source);
+        enforce(source.alIsSource);
+        check();
+      }
       
       if (!source.isPlaying)
         return source;
     }
     return 0;
   }
+}
+
+void check()
+{
+  auto error = alGetError();
+  enforce(error == AL_NO_ERROR, "OpenAL error " ~ enumMapping[error]);
 }
 
 bool isPlaying(ALuint source)
