@@ -60,7 +60,7 @@ bool stream(ALuint buffer, ref OggSource oggSource)
   if (size == 0)
     return false;
 
-  alBufferData(buffer, oggSource.format, data.ptr, size, oggSource.info.rate);
+  buffer.alBufferData(oggSource.format, data.ptr, size, oggSource.info.rate);
   check();
   
   return true;

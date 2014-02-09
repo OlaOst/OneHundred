@@ -44,6 +44,7 @@ void main()
   Entity[] entities = createEntities(world, 3);
   entities ~= createPlayer(world);
   entities ~= createMusic(world);
+  entities ~= createStartupSound(world);
   
   foreach (entity; entities)
     entity.addToWorld();

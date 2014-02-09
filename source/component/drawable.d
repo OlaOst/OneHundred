@@ -49,3 +49,9 @@ final class Drawable : Component
     }
   }
 }
+
+bool isClockwise(vec2 p1, vec2 p2, vec2 p3)
+{
+    return (p1.x*p2.y + p2.x*p3.y + p3.x*p1.y - 
+            p2.x*p1.y - p3.x*p2.y - p1.x*p3.y) < 0;
+}

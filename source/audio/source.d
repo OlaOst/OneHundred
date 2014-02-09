@@ -43,8 +43,7 @@ void check()
 bool isPlaying(ALuint source)
 {
   ALenum state;
-  alGetSourcei(source, AL_SOURCE_STATE, &state);
-  
+  source.alGetSourcei(AL_SOURCE_STATE, &state);
   return state == AL_PLAYING;
 }
 

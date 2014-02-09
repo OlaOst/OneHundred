@@ -19,6 +19,7 @@ invariant()
 {
   check();
 }
+
 public:
   this(string fileName)
   {

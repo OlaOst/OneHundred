@@ -17,6 +17,11 @@ import audio.source;
 
 class Stream : Source
 {
+invariant()
+{
+  check();
+}
+
 public:
   this(string fileName)
   {
@@ -24,9 +29,6 @@ public:
 
     alGenBuffers(buffers.length, buffers.ptr);
     enforce(buffers[].all!(buffer => buffer.alIsBuffer));
-    
-    source = Source.findFreeSource();
-    check();
   }
   
   void play()
@@ -48,6 +50,8 @@ private:
   
   void playbackLoop()
   {
+    source = Source.findFreeSource();
+    
     while (update() && keepPlaying)
       if (!source.isPlaying)
         enforce(playback(), "Ogg abruptly stopped");
@@ -64,12 +68,10 @@ private:
     {
       ALuint buffer;
       source.alSourceUnqueueBuffers(1, &buffer);
-      check();
       
       isActive = buffer.stream(oggSource);
       if (isActive)
         source.alSourceQueueBuffers(1, &buffer);
-      check();
     }
     
     return isActive;
