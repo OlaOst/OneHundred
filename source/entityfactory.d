@@ -54,7 +54,7 @@ Entity[] createEntities(World world, uint elements)
   foreach (double index; iota(0, elements))
   {
     auto angle = (index/elements) * PI * 2.0;
-    auto size = uniform(0.01, 0.1);
+    auto size = uniform(0.025, 0.125);
     auto entity = createEntity(world, vec2(1.0 + cos(angle * 5) * (0.3 + angle.sqrt),
                                            sin(angle * 5) * (0.3 + angle.sqrt)),
                                       vec2(sin(angle) * 0.5, cos(angle) * 0.5),

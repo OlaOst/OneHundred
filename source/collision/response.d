@@ -1,39 +1,20 @@
-module collisionresponse;
+module collision.response;
 
+import std.algorithm;
 import std.math;
+import std.range;
 import std.stdio;
 
 import artemisd.all;
 import gl3n.linalg;
 
+import collision.check;
+import component.drawable;
 import component.position;
 import component.sound;
 import component.velocity;
 import system.collisionhandler;
 
-
-struct CollisionEntity
-{
-  Entity entity;
-  vec2 position;
-  vec2 velocity;
-  double radius;
-  double mass;
-  
-  alias entity this;
-  
-  bool isOverlapping(CollisionEntity other)
-  {
-    return (position - other.position).magnitude < (radius + other.radius);
-  }
-  
-  void updateFromEntity()
-  {
-    position = entity.getComponent!Position.position;
-    velocity = entity.getComponent!Velocity.velocity;
-    // TODO: for now assume that radius and mass does not change
-  }
-}
 
 struct Collision
 {
@@ -93,6 +74,6 @@ void handleCollisions(World world, Collision[] collisions)
     bonk.addComponent(new Position(contactPoint, 0.0));
     auto sound = new Sound("bounce.wav");
     bonk.addComponent(sound);
-    bonk.addToWorld();
+    //bonk.addToWorld();
   }
 }

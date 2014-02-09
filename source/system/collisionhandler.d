@@ -9,7 +9,8 @@ import std.stdio;
 import artemisd.all;
 import gl3n.linalg;
 
-import collisionresponse;
+import collision.check;
+import collision.response;
 import component.collider;
 import component.mass;
 import component.position;
