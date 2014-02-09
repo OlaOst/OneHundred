@@ -19,7 +19,7 @@ SDL_Window* getWindow(int screenWidth, int screenHeight)
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
   
-  auto window = SDL_CreateWindow("greenfield", 
+  auto window = SDL_CreateWindow("OneHundred", 
                                  SDL_WINDOWPOS_CENTERED, 
                                  SDL_WINDOWPOS_CENTERED, 
                                  screenWidth, 
