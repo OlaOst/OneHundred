@@ -48,10 +48,17 @@ final class CollisionHandler : EntityProcessingSystem
   
   void update()
   {
+    debug int candidateCount = 0;
+    
     Collision[] collisions;
     foreach (collisionEntity; collisionEntities)
     {
+      auto collider = collisionEntity.getComponent!Collider;
+      collider.isColliding = false;
+    
       auto candidates = index.find(collisionEntity.position, collisionEntity.radius);
+      
+      debug candidateCount += candidates.length;
       
       auto collidingEntities = 
         candidates.filter!(candidate => candidate != collisionEntity && 
@@ -65,6 +72,8 @@ final class CollisionHandler : EntityProcessingSystem
       collisions ~= collidingEntities.map!(collidingEntity => 
                                      Collision(collisionEntity, collidingEntity)).array;
     }
+    
+    debug writeln("collisionhandler checked ", candidateCount, " candidates");
     
     handleCollisions(world, collisions);
     

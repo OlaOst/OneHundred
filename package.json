@@ -15,7 +15,7 @@
     "derelict-vorbis": "~master",
     "gl3n": "~master",
     "artemisd": { "version": "~master", "path": "../artemisd" },
-    "glamour": { "version": "~master", "path": "../glamour" },
+    "glamour": { "version": "~master", "path": "../glamour-orig" },
 	},
   "subPackages": [
     {

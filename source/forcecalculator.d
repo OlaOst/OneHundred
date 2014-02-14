@@ -2,7 +2,9 @@ module forcecalculator;
 
 import gl3n.linalg;
 
+import component.collider;
 import component.input;
+import component.position;
 import component.relations.gravity;
 import integrator.state;
 
@@ -17,7 +19,7 @@ double calculateTorque(State state, double time)
   
   if (!input)
   {
-    torque += (1.0 / state.position.magnitude) * 0.5;
+    //torque += (1.0 / state.position.magnitude) * 0.5;
   }
   
   if (input && "rotateLeft" in input.isActive && input.isActive["rotateLeft"])
@@ -25,7 +27,22 @@ double calculateTorque(State state, double time)
   if (input && "rotateRight" in input.isActive && input.isActive["rotateRight"])
     torque -= 1.0;
     
-  // TODO: torque from collisions
+  // torque from collisions
+  if (auto collision = state.entity.getComponent!Collider)
+  {
+    if (collision.isColliding)
+    {
+      auto position = state.entity.getComponent!Position;
+      auto relative = collision.contactPoint - position;
+      
+      auto cross = collision.force.x * relative.y - collision.force.y * relative.x;
+      
+      //import std.stdio;
+      //writeln("calc torque from contactpoint ", collision.contactPoint, " with torque ", cross);
+      
+      torque += cross;
+    }
+  }
   
   return torque;
 }
@@ -38,12 +55,12 @@ vec2 calculateForce(State state, double time)
   force += state.velocity * -0.05; // damping force
   
   // twisty clockwise force close to center
-  auto normalPos = vec2(state.position.y, -state.position.x);
+  /*auto normalPos = vec2(state.position.y, -state.position.x);
   if (normalPos.magnitude() > 0.0)
     force += normalPos.normalized() * ((1.0 / (normalPos.magnitude() + 0.1)) ^^2) * 0.05;
     
   // twisty counterclockwise force further out
-  force += vec2(-state.position.y, state.position.x) * 0.015;
+  force += vec2(-state.position.y, state.position.x) * 0.015;*/
   
   auto input = state.entity.getComponent!Input;
   
@@ -57,6 +74,15 @@ vec2 calculateForce(State state, double time)
     vec2 gravityForce = gravity.getAccumulatedGravityForce(state.position, state.mass);
     gravityForce *= 0.5;
     force += gravityForce;
+  }
+  
+  // torque from collisions
+  if (auto collision = state.entity.getComponent!Collider)
+  {
+    if (collision.isColliding)
+    {
+      //force += collision.force;
+    }
   }
   
   return force;

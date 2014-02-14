@@ -6,7 +6,7 @@ import gl3n.linalg;
 import bitops;
 
 
-uint[][levels] findCoveringIndices(uint levels, uint maxIndicesPerLevel)
+uint[][levels] findCoveringIndices(uint levels, uint maxIndicesPerLevel, uint minLevel)
                                   (vec2 position, float radius, bool checkSubQuads)
 {
   uint[][levels] indices;
@@ -15,19 +15,19 @@ uint[][levels] findCoveringIndices(uint levels, uint maxIndicesPerLevel)
                      vec3(position.x+radius, position.y+radius, 1.0));
   auto quadrant = AABB(vec3(-2^^15, -2^^15, -1.0), vec3(2^^15, 2^^15, 1.0));
   
-  populateCoveringIndices!(levels, maxIndicesPerLevel)(object, quadrant, indices, checkSubQuads);
+  populateCoveringIndices!(levels, maxIndicesPerLevel, minLevel)(object, quadrant, indices, checkSubQuads);
   
   return indices;
 } 
 
-void populateCoveringIndices(uint levels, uint maxIndicesPerLevel)
+void populateCoveringIndices(uint levels, uint maxIndicesPerLevel, uint minLevel)
                             (AABB object, AABB quadrant, 
                              ref uint[][levels] coveringIndices, bool checkSubQuads)
 {
   auto level = powerOf2(cast(uint)quadrant.extent.x);
   
   // add object to index if we're at bottom level and intersecting
-  if (level == 0 && 
+  if (level == minLevel && 
       intersectsEquals(object, quadrant) && 
       coveringIndices[level].length < maxIndicesPerLevel)
   {
@@ -35,7 +35,7 @@ void populateCoveringIndices(uint levels, uint maxIndicesPerLevel)
     coveringIndices[level] ~= index;
   }
   
-  if (level > 0 && coveringIndices[level].length < maxIndicesPerLevel)
+  if (level > minLevel && coveringIndices[level].length < maxIndicesPerLevel)
   {
     auto fullyCovered = object.contains(quadrant);
     if (fullyCovered || (checkSubQuads && intersectsEquals(object, quadrant)))
@@ -57,16 +57,16 @@ void populateCoveringIndices(uint levels, uint maxIndicesPerLevel)
                             vec3(middle.x, quadrant.max.y, 1.0));
               
       if (intersectsEquals(object, lowerLeft))
-        populateCoveringIndices!(levels, maxIndicesPerLevel)
+        populateCoveringIndices!(levels, maxIndicesPerLevel, minLevel)
                                 (object, lowerLeft, coveringIndices, checkSubQuads);
       if (intersectsEquals(object, lowerRight))
-        populateCoveringIndices!(levels, maxIndicesPerLevel)
+        populateCoveringIndices!(levels, maxIndicesPerLevel, minLevel)
                                 (object, lowerRight, coveringIndices, checkSubQuads);
       if (intersectsEquals(object, upperLeft))
-        populateCoveringIndices!(levels, maxIndicesPerLevel)
+        populateCoveringIndices!(levels, maxIndicesPerLevel, minLevel)
                                 (object, upperLeft, coveringIndices, checkSubQuads);
       if (intersectsEquals(object, upperRight))
-        populateCoveringIndices!(levels, maxIndicesPerLevel)
+        populateCoveringIndices!(levels, maxIndicesPerLevel, minLevel)
                                 (object, upperRight, coveringIndices, checkSubQuads);
     }
   }

@@ -10,6 +10,8 @@ final class Collider : Component
 {
   mixin TypeDecl;
   
-  //vec2 position;
+  bool isColliding;
+  vec2 contactPoint;
+  vec2 force;
   //double radius;
 }

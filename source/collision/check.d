@@ -72,6 +72,38 @@ struct CollisionEntity
           }
         }
         
+        foreach (vec2 line; zip(otherVertices[0..$-1], otherVertices[1..$]).
+                            map!(vertexPair => vertexPair[1] - vertexPair[0]))
+        {
+          auto perpendicular = vec2(-line.y, line.x).normalized;
+          
+          auto firstProjections = firstVertices.map!(vertex => perpendicular.dot(vertex));
+          auto otherProjections = otherVertices.map!(vertex => perpendicular.dot(vertex));
+          
+          auto firstMin = firstProjections.reduce!((a,b) => min(a,b));
+          auto firstMax = firstProjections.reduce!((a,b) => max(a,b));
+          auto otherMin = otherProjections.reduce!((a,b) => min(a,b));
+          auto otherMax = otherProjections.reduce!((a,b) => max(a,b));
+          
+          //if (firstMin > otherMax || firstMax < otherMin)
+          if (otherMin > firstMax || otherMax < firstMin)
+          {
+            return false;
+          }
+          else
+          {
+            // TODO: also take angular velocity into account
+            float velocityProjection = perpendicular.dot(other.velocity - velocity);
+            if (velocityProjection < 0)
+              otherMin += velocityProjection;
+            else
+              otherMax += velocityProjection;
+            
+            if (otherMin > firstMax || otherMax < firstMin)
+              return false;
+          }
+        }
+        
         return true;
       }
       else

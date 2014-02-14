@@ -19,9 +19,10 @@ class SpatialIndex(Element)
   if (__traits(compiles, function double (Element element) { return element.radius; }) &&
       __traits(compiles, function vec2 (Element element) { return element.position; }))
 {
-  enum uint levels = 17;  
-  enum uint maxIndicesPerLevel = 2^^12;  
-  double leastQuadrantSize = 1.0;
+  enum uint levels = 17;
+  enum uint maxIndicesPerLevel = 2^^12;
+  enum uint minLevel = 2; // quad extent at minlevel == 2^^minLevel
+  //double leastQuadrantSize = 1.0;
   Element[][uint][levels] elementsInIndex;
 
   Element[] find(vec2 position, double radius)
@@ -34,7 +35,7 @@ class SpatialIndex(Element)
   { 
     Element[] elements;
 
-    foreach (level, indices; findCoveringIndices!(levels, maxIndicesPerLevel)
+    foreach (level, indices; findCoveringIndices!(levels, maxIndicesPerLevel, minLevel)
                                                  (position, radius, false))
       foreach (index; indices.filter!(index => index in elementsInIndex[level]))
         elements ~= elementsInIndex[level][index];
@@ -50,7 +51,7 @@ class SpatialIndex(Element)
   }
   body
   {
-    foreach (level, indices; findCoveringIndices!(levels, maxIndicesPerLevel)
+    foreach (level, indices; findCoveringIndices!(levels, maxIndicesPerLevel, minLevel)
                                                  (element.position, element.radius, true))
     {
       foreach (index; indices)
