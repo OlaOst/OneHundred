@@ -3,6 +3,7 @@ module component.sound;
 import std.algorithm;
 
 import artemisd.all;
+import gl3n.linalg;
 
 import audio.raw;
 import audio.source;
@@ -16,6 +17,8 @@ final class Sound : Component
   Source source;
   public bool isPlaying = false;
   static Source[string] sourceCache;
+  
+  Source getSource() { return source; }
   
   this(string fileName)
   {
@@ -33,6 +36,8 @@ final class Sound : Component
   
   void startPlaying()
   {
+    source.setPosition(vec2(300.0, 0.0));
+    
     if (!isPlaying)
       source.play();
 

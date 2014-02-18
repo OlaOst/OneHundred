@@ -9,6 +9,7 @@ import derelict.ogg.ogg;
 import derelict.vorbis.vorbis;
 import derelict.vorbis.file;
 import derelict.openal.al;
+import gl3n.linalg;
 
 import audio.source;
 
@@ -78,6 +79,7 @@ public:
     
     if (source.alIsSource)
     {
+      source.alSource3f(AL_POSITION, position.x, position.y, 0.0);
       source.alSourceQueueBuffers(1, &buffer);
       source.alSourcePlay;
     }
@@ -89,10 +91,16 @@ public:
     source.alSourceUnqueueBuffers(1, &buffer);
   }
   
+  void setPosition(vec2 position)
+  {
+    this.position = position;
+  }
+  
 private:
   File file;
   ALsizei frequency;
   ALenum format; 
   ALuint buffer;
   ALuint source;
+  vec2 position;
 }

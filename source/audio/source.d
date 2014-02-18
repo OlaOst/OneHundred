@@ -6,12 +6,15 @@ import std.exception;
 import std.traits;
 
 import derelict.openal.al;
+import gl3n.linalg;
 
 
 interface Source
 {
   void play();
   void silence();
+  
+  void setPosition(vec2 position);
   
   static ALuint[32] sources;
   

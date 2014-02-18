@@ -10,6 +10,7 @@ import derelict.ogg.ogg;
 import derelict.vorbis.vorbis;
 import derelict.vorbis.file;
 import derelict.openal.al;
+import gl3n.linalg;
 
 import audio.oggsource;
 import audio.source;
@@ -41,6 +42,11 @@ public:
     keepPlaying = false;
   }
   
+  void setPosition(vec2 position)
+  {
+    this.position = position;
+  }
+  
 private:
   void startPlaybackThread()
   {
@@ -52,9 +58,18 @@ private:
   {
     source = Source.findFreeSource();
     
-    while (update() && keepPlaying)
-      if (!source.isPlaying)
-        enforce(playback(), "Ogg abruptly stopped");
+    if (source.alIsSource)
+    {
+      source.alSource3f(AL_POSITION, position.x, position.y, 0.0);
+    
+      while (update() && keepPlaying)
+        if (!source.isPlaying)
+          enforce(playback(), "Ogg abruptly stopped");
+    }
+    else
+    {
+      debug writeln(alIsSource, "Could not get free audio source for stream");
+    }
   }
   
   bool update()
@@ -96,4 +111,8 @@ private:
   OggSource oggSource;
   ALuint[3] buffers;
   ALuint source;
+  
+  vec2 position;
+  
+  //task playbackTask;
 }

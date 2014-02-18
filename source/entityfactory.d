@@ -2,6 +2,7 @@ module entityfactory;
 
 import std.random;
 import std.range;
+import std.stdio;
 
 import artemisd.all;
 import gl3n.linalg;
@@ -67,7 +68,12 @@ Entity[] createEntities(World world, uint elements)
 Entity createMusic(World world)
 {
   Entity entity = world.createEntity();
-  entity.addComponent(new Sound("orbitalelevator.ogg"));  
+  entity.addComponent(new Sound("orbitalelevator.ogg"));
+  entity.addComponent(new Position(vec2(300.0, 0.0), 0.0));
+  entity.addComponent(new Velocity(vec2(0.0, 3.0), 0.0));
+  entity.addComponent(new Size(0.1));
+  entity.addComponent(new Mass(0.1 + 0.1 ^^ 2));
+  
   return entity;
 }
 

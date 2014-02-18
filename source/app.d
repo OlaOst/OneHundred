@@ -41,9 +41,9 @@ void main()
   auto gameController = createGameController(world);
   gameController.addToWorld();
   
-  Entity[] entities = createEntities(world, 100);
+  Entity[] entities = createEntities(world, 150);
   entities ~= createPlayer(world);
-  //entities ~= createMusic(world);
+  entities ~= createMusic(world);
   //entities ~= createStartupSound(world);
   
   foreach (entity; entities)
@@ -57,7 +57,7 @@ void main()
     physics.update(timer);
     collisionHandler.update();
     
-    world.setDelta(1.0/60.0);
+    //world.setDelta(1.0/60.0);
     world.process();
   
     inputHandler.update();

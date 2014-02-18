@@ -36,8 +36,9 @@ final class SoundSystem : EntityProcessingSystem
     auto context = alcCreateContext(device, null);
     alcMakeContextCurrent(context);
 
-    alListener3f(AL_POSITION, 0.0, 0.0, 1.0);
+    alListener3f(AL_POSITION, 0.0, 0.0, 10.0);
     alListener3f(AL_VELOCITY, 0.0, 0.0, 0.0);
+    alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
   }
   
   override void process(Entity entity)
@@ -69,6 +70,5 @@ final class SoundSystem : EntityProcessingSystem
   override void removed(Entity entity)
   {
     super.removed(entity);
-    writeln("soundsystem removed entity");
   }
 }
