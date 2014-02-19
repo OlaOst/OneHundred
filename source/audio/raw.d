@@ -12,14 +12,12 @@ import derelict.openal.al;
 import gl3n.linalg;
 
 import audio.source;
+import audio.wavheader;
 
 
 class Raw : Source
 {
-invariant()
-{
-  check();
-}
+invariant() { check(); }
 
 public:
   this(string fileName)
@@ -36,21 +34,9 @@ public:
     if (!chunks.empty)
     {
       auto first = chunks.front;
-      
-      enforce(first.length >= 44, 
-              "Problem parsing wav file header, is " ~ fileName ~ " really a wav file?");
-      enforce(first[0..4] == "RIFF", 
-              "Problem parsing wav file header, is " ~ fileName ~ " really a wav file?");
-      // skip size value (4 bytes)
-      enforce(first[8..12] == "WAVE", 
-              "Problem parsing wav file header, is " ~ fileName ~ " really a wav file?");
-      // skip "fmt", format length, format tag (10 bytes)
-      channels = (cast(ushort[])first[22..24])[0];
-      frequency = (cast(ALsizei[])first[24..28])[0];
-      // skip average bytes per second, block align, bytes by capture (6 bytes)
-      ushort bits = (cast(ushort[])first[34..36])[0];
-      // skip 'data' (4 bytes)
-      size = (cast(uint[])first[40..44])[0];
+
+      parseWavHeader(first, channels, frequency, size);
+
       data ~= first[44..$].dup;
       
       chunks.popFront;
@@ -76,7 +62,7 @@ public:
   void play()
   {
     source = Source.findFreeSource();
-    
+  
     if (source.alIsSource)
     {
       source.alSource3f(AL_POSITION, position.x, position.y, 0.0);

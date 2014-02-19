@@ -113,6 +113,4 @@ private:
   ALuint source;
   
   vec2 position;
-  
-  //task playbackTask;
 }
