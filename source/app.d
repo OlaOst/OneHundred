@@ -41,7 +41,7 @@ void main()
   auto gameController = createGameController(world);
   gameController.addToWorld();
   
-  Entity[] entities = createEntities(world, 150);
+  Entity[] entities = createEntities(world, 50);
   entities ~= createPlayer(world);
   entities ~= createMusic(world);
   //entities ~= createStartupSound(world);

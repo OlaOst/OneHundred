@@ -94,6 +94,6 @@ void handleCollisions(World world, Collision[] collisions)
     bonk.addComponent(new Position(contactPoint, 0.0));
     auto sound = new Sound("bounce.wav");
     bonk.addComponent(sound);
-    bonk.addToWorld();
+    //bonk.addToWorld();
   }
 }

@@ -36,75 +36,13 @@ struct CollisionEntity
         //       instead of digging them out of Drawable on every collision
         auto firstVertices = chain(firstDrawable.vertices[1..$].stride(3), 
                                    firstDrawable.vertices[2..$].stride(3)).
-                             map!(vertex => vertex + position);
+                             map!(vertex => vertex + position).array;
         auto otherVertices = chain(otherDrawable.vertices[1..$].stride(3),
                                    otherDrawable.vertices[2..$].stride(3)).
-                             map!(vertex => vertex + other.position);
+                             map!(vertex => vertex + other.position).array;
         
-        foreach (vec2 line; zip(firstVertices[0..$-1], firstVertices[1..$]).
-                            map!(vertexPair => vertexPair[1] - vertexPair[0]))
-        {
-          auto perpendicular = vec2(-line.y, line.x).normalized;
-          
-          auto firstProjections = firstVertices.map!(vertex => perpendicular.dot(vertex));
-          auto otherProjections = otherVertices.map!(vertex => perpendicular.dot(vertex));
-          
-          auto firstMin = firstProjections.reduce!((a,b) => min(a,b));
-          auto firstMax = firstProjections.reduce!((a,b) => max(a,b));
-          auto otherMin = otherProjections.reduce!((a,b) => min(a,b));
-          auto otherMax = otherProjections.reduce!((a,b) => max(a,b));
-          
-          if (firstMin > otherMax || firstMax < otherMin)
-          {
-            return false;
-          }
-          else
-          {
-            // TODO: also take angular velocity into account
-            float velocityProjection = perpendicular.dot(other.velocity - velocity);
-            if (velocityProjection < 0)
-              firstMin += velocityProjection;
-            else
-              firstMax += velocityProjection;
-            
-            if (firstMin > otherMax || firstMax < otherMin)
-              return false;
-          }
-        }
-        
-        foreach (vec2 line; zip(otherVertices[0..$-1], otherVertices[1..$]).
-                            map!(vertexPair => vertexPair[1] - vertexPair[0]))
-        {
-          auto perpendicular = vec2(-line.y, line.x).normalized;
-          
-          auto firstProjections = firstVertices.map!(vertex => perpendicular.dot(vertex));
-          auto otherProjections = otherVertices.map!(vertex => perpendicular.dot(vertex));
-          
-          auto firstMin = firstProjections.reduce!((a,b) => min(a,b));
-          auto firstMax = firstProjections.reduce!((a,b) => max(a,b));
-          auto otherMin = otherProjections.reduce!((a,b) => min(a,b));
-          auto otherMax = otherProjections.reduce!((a,b) => max(a,b));
-          
-          //if (firstMin > otherMax || firstMax < otherMin)
-          if (otherMin > firstMax || otherMax < firstMin)
-          {
-            return false;
-          }
-          else
-          {
-            // TODO: also take angular velocity into account
-            float velocityProjection = perpendicular.dot(other.velocity - velocity);
-            if (velocityProjection < 0)
-              otherMin += velocityProjection;
-            else
-              otherMax += velocityProjection;
-            
-            if (otherMin > firstMax || otherMax < firstMin)
-              return false;
-          }
-        }
-        
-        return true;
+        return firstVertices.isOverlapping(otherVertices, velocity, other.velocity) ||
+               otherVertices.isOverlapping(firstVertices, other.velocity, velocity);
       }
       else
       {
@@ -121,4 +59,41 @@ struct CollisionEntity
     velocity = entity.getComponent!Velocity.velocity;
     // TODO: for now assume that radius and mass does not change
   }
+}
+
+
+bool isOverlapping(vec2[] firstVertices, vec2[] otherVertices, 
+                   vec2 firstVelocity, vec2 otherVelocity)
+{
+  foreach (vec2 line; zip(firstVertices[0..$-1], firstVertices[1..$]).
+                      map!(vertexPair => vertexPair[1] - vertexPair[0]))
+  {
+    auto perpendicular = vec2(-line.y, line.x).normalized;
+    
+    auto firstProjections = firstVertices.map!(vertex => perpendicular.dot(vertex));
+    auto otherProjections = otherVertices.map!(vertex => perpendicular.dot(vertex));
+    
+    auto firstMin = firstProjections.reduce!((a,b) => min(a,b));
+    auto firstMax = firstProjections.reduce!((a,b) => max(a,b));
+    auto otherMin = otherProjections.reduce!((a,b) => min(a,b));
+    auto otherMax = otherProjections.reduce!((a,b) => max(a,b));
+    
+    if (firstMin > otherMax || firstMax < otherMin)
+    {
+      return false;
+    }
+    else
+    {
+      // TODO: also take angular velocity into account
+      float velocityProjection = perpendicular.dot(otherVelocity - firstVelocity);
+      if (velocityProjection < 0)
+        firstMin += velocityProjection;
+      else
+        firstMax += velocityProjection;
+      
+      if (firstMin > otherMax || firstMax < otherMin)
+        return false;
+    }
+  }
+  return true;
 }
