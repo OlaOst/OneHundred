@@ -50,13 +50,15 @@ public:
                                      "or wait for wav streaming support");
     }
     
-    enforce(data.length == size, "Mismatch in data size read from wav file vs " ~
-                                 "what wav file said the size should be");
+    debug if (data.length != size)
+      writeln("Read ", data.length, " bytes from wav file, but wav header said it contained ", size, " bytes");
+    //enforce(data.length == size, "Mismatch in data size read from wav file vs " ~
+    //                             "what wav file said the size should be");
 
     alGenBuffers(1, &buffer);
     enforce(buffer.alIsBuffer);
     buffer.alBufferData(channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, 
-                        data.ptr, data.length, frequency);
+                        data.ptr, cast(int)data.length, frequency);
   }
   
   void play()

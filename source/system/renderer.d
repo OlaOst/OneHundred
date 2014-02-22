@@ -7,8 +7,7 @@ import std.range;
 
 import artemisd.all;
 import derelict.opengl3.gl3;
-import gl3n.linalg;
-import glamour.shader;
+import gl3n.linalg; import glamour.shader;
 import glamour.vao;
 import glamour.vbo;
 
@@ -58,7 +57,7 @@ final class Renderer : EntityProcessingSystem
     verticesVbo.bind(shader, "position", GL_FLOAT, 2, 0, 0);
     colorsVbo.bind(shader, "color", GL_FLOAT, 3, 0, 0);
     
-    glDrawArrays(GL_TRIANGLES, 0, vertices.length);
+    glDrawArrays(GL_TRIANGLES, 0, cast(int)vertices.length);
     
     // clear vertices and vbo for the next frame
     vertices.length = colors.length = 0;

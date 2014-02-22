@@ -29,7 +29,13 @@ public:
     oggSource = OggSource(fileName);
 
     alGenBuffers(buffers.length, buffers.ptr);
-    enforce(buffers[].all!(buffer => buffer.alIsBuffer));
+    // this line gives compiler error 'exit code -11' on mac
+    // see OneHundred-minify.reduced for details
+    //enforce(buffers[].all!(buffer => buffer.alIsBuffer));
+    foreach (buffer; buffers)
+    {
+      enforce(buffer.alIsBuffer);
+    }
   }
   
   void play()
