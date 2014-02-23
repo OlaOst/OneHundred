@@ -40,61 +40,39 @@ public:
   
   void play()
   {
-    startPlaybackThread();
-  }
-  
-  void silence()
-  {
-    keepPlaying = false;
-  }
-  
-  void setPosition(vec2 position)
-  {
-    this.position = position;
-  }
-  
-private:
-  void startPlaybackThread()
-  {
     auto playbackTask = task(&this.playbackLoop);
     playbackTask.executeInNewThread();
   }
   
+  void silence() { keepPlaying = false; }
+  ALuint getAlSource() { return source; }
+  
+private:
   void playbackLoop()
   {
-    source = Source.findFreeSource();
-    
-    if (source.alIsSource)
+    if ((source = Source.findFreeSource()).alIsSource)
     {
-      source.alSource3f(AL_POSITION, position.x, position.y, 0.0);
-    
       while (update() && keepPlaying)
         if (!source.isPlaying)
           enforce(playback(), "Ogg abruptly stopped");
     }
-    else
-    {
-      debug writeln(alIsSource, "Could not get free audio source for stream");
-    }
+    else debug writeln(alIsSource, "Could not get free audio source for stream");
   }
   
   bool update()
   {
     int buffersProcessed;
     bool isActive = true;
-    
     source.alGetSourcei(AL_BUFFERS_PROCESSED, &buffersProcessed);
     
     while (buffersProcessed--)
     {
       ALuint buffer;
       source.alSourceUnqueueBuffers(1, &buffer);
-      
       isActive = buffer.stream(oggSource);
       if (isActive)
         source.alSourceQueueBuffers(1, &buffer);
     }
-    
     return isActive;
   }
   
@@ -117,6 +95,4 @@ private:
   OggSource oggSource;
   ALuint[3] buffers;
   ALuint source;
-  
-  vec2 position;
 }

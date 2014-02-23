@@ -14,7 +14,7 @@ interface Source
   void play();
   void silence();
   
-  void setPosition(vec2 position);
+  ALuint getAlSource();
   
   static ALuint[32] sources;
   

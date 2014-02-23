@@ -51,7 +51,8 @@ public:
     }
     
     debug if (data.length != size)
-      writeln("Read ", data.length, " bytes from wav file, but wav header said it contained ", size, " bytes");
+      writeln("Read ", data.length, " bytes from wav file, but wav header said it contained "
+                     , size, " bytes");
     //enforce(data.length == size, "Mismatch in data size read from wav file vs " ~
     //                             "what wav file said the size should be");
 
@@ -67,7 +68,6 @@ public:
   
     if (source.alIsSource)
     {
-      source.alSource3f(AL_POSITION, position.x, position.y, 0.0);
       source.alSourceQueueBuffers(1, &buffer);
       source.alSourcePlay;
     }
@@ -79,10 +79,7 @@ public:
     source.alSourceUnqueueBuffers(1, &buffer);
   }
   
-  void setPosition(vec2 position)
-  {
-    this.position = position;
-  }
+  ALuint getAlSource() { return source; }
   
 private:
   File file;
@@ -90,5 +87,4 @@ private:
   ALenum format; 
   ALuint buffer;
   ALuint source;
-  vec2 position;
 }

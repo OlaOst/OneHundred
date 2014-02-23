@@ -5,7 +5,10 @@ import std.exception;
 import derelict.openal.al;
 
 
-void parseWavHeader(const ubyte[] headerData, ref ushort channels, ref ALsizei frequency, ref uint size)
+void parseWavHeader(const ubyte[] headerData, 
+                    ref ushort channels, 
+                    ref ALsizei frequency, 
+                    ref uint size)
 {
   enforce(headerData.length >= 44, "Problem parsing wav file header");
   enforce(headerData[0..4] == "RIFF", "Problem parsing wav file header");
