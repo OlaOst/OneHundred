@@ -15,7 +15,8 @@ uint[][levels] findCoveringIndices(uint levels, uint maxIndicesPerLevel, uint mi
                      vec3(position.x+radius, position.y+radius, 1.0));
   auto quadrant = AABB(vec3(-2^^15, -2^^15, -1.0), vec3(2^^15, 2^^15, 1.0));
   
-  populateCoveringIndices!(levels, maxIndicesPerLevel, minLevel)(object, quadrant, indices, checkSubQuads);
+  populateCoveringIndices!(levels, maxIndicesPerLevel, minLevel)
+                          (object, quadrant, indices, checkSubQuads);
   
   return indices;
 } 
