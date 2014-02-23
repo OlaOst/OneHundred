@@ -73,27 +73,21 @@ void handleCollisions(World world, Collision[] collisions)
     otherCollider.contactPoint = other.position - contactPoint;
     
     // TODO: is it right to integrate by physicsTimeStep here?
-    firstCollider.force = (firstVelocity * first.mass - first.velocity * first.mass) * (1.0 / Timer.physicsTimeStep);
-    otherCollider.force = (otherVelocity * other.mass - other.velocity * other.mass) * (1.0 / Timer.physicsTimeStep);
+    firstCollider.force = (firstVelocity * first.mass - first.velocity * first.mass) * 
+                          (1.0 / Timer.physicsTimeStep);
+    otherCollider.force = (otherVelocity * other.mass - other.velocity * other.mass) * 
+                          (1.0 / Timer.physicsTimeStep);
     
     // change positions to ensure colliders does not overlap
     auto firstPos = collision.first.entity.getComponent!Position;
     auto otherPos = collision.other.entity.getComponent!Position;
-    
-    //auto contactPoint = (collision.other.position - collision.first.position);
-    
-    /*firstPos += (contactPoint - contactPoint.normalized() * 
-                (collision.first.radius+collision.other.radius)) * 0.5;
-    otherPos -= (contactPoint - contactPoint.normalized() *
-                (collision.first.radius+collision.other.radius)) * 0.5;*/
     
     // add sound entity to world
     // TODO: stop this from leaking, sound entities should be destroyed or recycled
     // when they stop playing
     Entity bonk = world.createEntity();
     bonk.addComponent(new Position(contactPoint, 0.0));
-    auto sound = new Sound("bounce.wav");
-    bonk.addComponent(sound);
+    bonk.addComponent(new Sound("bounce.wav"));
     //bonk.addToWorld();
   }
 }
