@@ -32,14 +32,8 @@ struct CollisionEntity
       if (firstDrawable !is null && otherDrawable !is null)
       {
         // assume verts are in order
-        // TODO: parse collision vertices when creating component 
-        //       instead of digging them out of Drawable on every collision
-        auto firstVertices = chain(firstDrawable.vertices[1..$].stride(3), 
-                                   firstDrawable.vertices[2..$].stride(3)).
-                             map!(vertex => vertex + position).array;
-        auto otherVertices = chain(otherDrawable.vertices[1..$].stride(3),
-                                   otherDrawable.vertices[2..$].stride(3)).
-                             map!(vertex => vertex + other.position).array;
+        auto firstVertices = firstDrawable.vertices;
+        auto otherVertices = otherDrawable.vertices;
         
         return firstVertices.isOverlapping(otherVertices, velocity, other.velocity) ||
                otherVertices.isOverlapping(firstVertices, other.velocity, velocity);
