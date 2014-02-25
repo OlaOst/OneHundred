@@ -3,7 +3,9 @@ module system.collisionhandler;
 import std.algorithm;
 import std.array;
 import std.conv;
+import std.datetime;
 import std.math;
+import std.range;
 import std.stdio;
     
 import artemisd.all;
@@ -22,10 +24,8 @@ import spatialindex.spatialindex;
 final class CollisionHandler : EntityProcessingSystem
 {
   mixin TypeDecl;
-  
   SpatialIndex!CollisionEntity index = new SpatialIndex!CollisionEntity();
   CollisionEntity[] collisionEntities;
-  
   World world;
   
   this(World world)
@@ -36,19 +36,15 @@ final class CollisionHandler : EntityProcessingSystem
   
   override void process(Entity entity)
   {
-    auto position = entity.getComponent!Position;
-    auto velocity = entity.getComponent!Velocity;
-    auto size = entity.getComponent!Size;
-    auto mass = entity.getComponent!Mass;
-    
-    auto collisionEntity = CollisionEntity(entity, position, velocity, size.radius, mass);
+    auto collisionEntity = CollisionEntity(entity);
     index.insert(collisionEntity);
     collisionEntities ~= collisionEntity;
   }
   
   void update()
   {
-    debug int candidateCount = 0;
+    debug int broadPhaseCount, midPhaseCount, narrowPhaseCount;
+    debug StopWatch broadPhaseTimer, narrowPhaseTimer;
     
     Collision[] collisions;
     foreach (collisionEntity; collisionEntities)
@@ -56,10 +52,16 @@ final class CollisionHandler : EntityProcessingSystem
       auto collider = collisionEntity.getComponent!Collider;
       collider.isColliding = false;
     
+      debug broadPhaseTimer.start;
       auto candidates = index.find(collisionEntity.position, collisionEntity.radius);
+      debug broadPhaseTimer.stop;
+      debug broadPhaseCount += candidates.length;
       
-      debug candidateCount += candidates.length;
+      debug midPhaseCount += candidates.filter!(candidate => 
+                               (collisionEntity.position - candidate.position).magnitude_squared < 
+                               (collisionEntity.radius + candidate.radius)^^2).walkLength;
       
+      debug narrowPhaseTimer.start;
       auto collidingEntities = 
         candidates.filter!(candidate => candidate != collisionEntity && 
                                         candidate.isOverlapping(collisionEntity))
@@ -68,13 +70,22 @@ final class CollisionHandler : EntityProcessingSystem
                                                            collision.other == collidingEntity) || 
                                                           (collision.other == collisionEntity && 
                                                            collision.first == collidingEntity))));
-      
+
       collisions ~= collidingEntities.map!(collidingEntity => 
                                      Collision(collisionEntity, collidingEntity)).array;
+                                     
+      debug narrowPhaseTimer.stop;
+      debug narrowPhaseCount += collidingEntities.walkLength;
     }
     
-    debug writeln("collisionhandler checked ", candidateCount, " candidates");
-    
+    debug writeln("collisionhandler checked ", broadPhaseCount, "/", 
+                                               midPhaseCount, "/", 
+                                               narrowPhaseCount, 
+                  " candidates in broadphase/midphase/narrowphase");
+    debug writeln("collisionhandler timings ", broadPhaseTimer.peek.usecs*0.001, "/", 
+                                               narrowPhaseTimer.peek.usecs*0.001, 
+                  " candidates in broadphase/narrowphase");
+                  
     handleCollisions(world, collisions);
     
     // reset entity list and index so we are ready for the next update

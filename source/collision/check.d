@@ -8,7 +8,9 @@ import artemisd.all;
 import gl3n.linalg;
 
 import component.drawable;
+import component.mass;
 import component.position;
+import component.size;
 import component.velocity;
 
 
@@ -19,8 +21,13 @@ struct CollisionEntity
   vec2 velocity;
   double radius;
   double mass;
-  
   alias entity this;
+  
+  this(Entity entity)
+  {
+    this.entity = entity;
+    updateFromEntity();
+  }
   
   bool isOverlapping(CollisionEntity other)
   {
@@ -31,7 +38,6 @@ struct CollisionEntity
       
       if (firstDrawable !is null && otherDrawable !is null)
       {
-        // assume verts are in order
         auto firstVertices = firstDrawable.vertices;
         auto otherVertices = otherDrawable.vertices;
         
@@ -51,7 +57,8 @@ struct CollisionEntity
   {
     position = entity.getComponent!Position.position;
     velocity = entity.getComponent!Velocity.velocity;
-    // TODO: for now assume that radius and mass does not change
+    radius = entity.getComponent!Size.radius;
+    mass = entity.getComponent!Mass;
   }
 }
 
@@ -72,11 +79,7 @@ bool isOverlapping(vec2[] firstVertices, vec2[] otherVertices,
     auto otherMin = otherProjections.reduce!((a,b) => min(a,b));
     auto otherMax = otherProjections.reduce!((a,b) => max(a,b));
     
-    if (firstMin > otherMax || firstMax < otherMin)
-    {
-      return false;
-    }
-    else
+    if (firstMin < otherMax && firstMax > otherMin)
     {
       // TODO: also take angular velocity into account
       float velocityProjection = perpendicular.dot(otherVelocity - firstVelocity);
@@ -88,6 +91,8 @@ bool isOverlapping(vec2[] firstVertices, vec2[] otherVertices,
       if (firstMin > otherMax || firstMax < otherMin)
         return false;
     }
+    else
+      return false;
   }
   return true;
 }
