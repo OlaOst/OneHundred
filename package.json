@@ -1,13 +1,13 @@
-{
-	"name": "onehundred",
-	"description": "An example project skeleton",
-	"homepage": "http://example.org",
-	"copyright": "Copyright © 2000, Your Name",
-	"authors": [
-		"Your Name"
-	],
+﻿{
+  "name": "onehundred",
+  "description": "An example project skeleton",
+  "homepage": "http://example.org",
+  "copyright": "Copyright © 2000, Your Name",
+  "authors": [
+    "Your Name"
+  ],
   "mainSourceFile": "source/app.d",
-	"dependencies": {
+  "dependencies": {
     "derelict-sdl2": "~master",
     "derelict-gl3": "~master",
     "derelict-al": "~master",
@@ -16,7 +16,7 @@
     "gl3n": "~master",
     "artemisd": { "version": "~master", "path": "../artemisd" },
     "glamour": { "version": "~master", "path": "../glamour" },
-	},
+  },
   "subPackages": [
     {
       "name": "artemisd",
@@ -38,22 +38,22 @@
       "targetType": "executable",
     },
     {
-			"name": "test",
-			"targetType": "executable",
-			"targetName": "testrun",
-			"sourcePaths": [
-				"source/tests",
-			],
-			"excludedSourceFiles": [
+      "name": "test",
+      "targetType": "executable",
+      "targetName": "testrun",
+      "sourcePaths": [
+        "source/tests",
+      ],
+      "excludedSourceFiles": [
         "source/app.d",
-			],
-			"versions": [
-				"Derelict3", "SDLImage", "gl3n",
-			],
-			"dependencies": {
-				"derelict-sdl2": "~master",
+      ],
+      "versions": [
+        "Derelict3", "SDLImage", "gl3n",
+      ],
+      "dependencies": {
+        "derelict-sdl2": "~master",
         "derelict-gl3": "~master",
-			}
-		},
+      }
+    },
   ],
 }
