@@ -13,22 +13,11 @@
     "derelict-al": "~master",
     "derelict-ogg": "~master",
     "derelict-vorbis": "~master",
+    "derelict-ft": "~master",
     "gl3n": "~master",
     "artemisd": { "version": "~master", "path": "../artemisd" },
     "glamour": { "version": "~master", "path": "../glamour" },
   },
-  "subPackages": [
-    {
-      "name": "artemisd",
-      "targetType": "library",
-      "sourcePaths": ["../artemisd/source"]
-    },
-    {
-      "name": "glamour",
-      "targetType": "library",
-      "sourcePaths": ["../glamour/glamour"]
-    }
-  ],
   
   "versions": ["Derelict3", "SDLImage", "gl3n"],
   

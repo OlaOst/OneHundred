@@ -14,8 +14,10 @@ import glamour.vbo;
 
 import component.drawable;
 import component.drawables.polygon;
+import component.drawables.text;
 import component.position;
 import component.velocity;
+import textrenderer;
 
 
 final class Renderer : EntityProcessingSystem
@@ -26,21 +28,26 @@ final class Renderer : EntityProcessingSystem
   {
     super(Aspect.getAspectForAll!(Drawable));
     
-    immutable string shaderSource = readText("shader/default.shader");
+    textRenderer = new TextRenderer();
+    
+    immutable string defaultShaderSource = readText("shader/default.shader");
+    immutable string textureShaderSource = readText("shader/texture.shader");
   
     vao = new VAO();
     vao.bind();
     
-    shader = new Shader("defaultshader", shaderSource);
-    shader.bind();
+    defaultShader = new Shader("defaultshader", defaultShaderSource);
+    textureShader = new Shader("textureshader", textureShaderSource);
   }
   
   public void close()
   {
-    if (shader !is null) shader.remove();
+    if (defaultShader !is null) defaultShader.remove();
+    if (textureShader !is null) textureShader.remove();
     if (verticesVbo !is null) verticesVbo.remove();
     if (colorsVbo !is null) colorsVbo.remove();
     if (vao !is null) vao.remove();
+    if (textRenderer !is null) textRenderer.close();
   }
   
   public void draw()
@@ -48,16 +55,23 @@ final class Renderer : EntityProcessingSystem
     // create new vbo from new vertices built up in process
     // TODO: make vbo with max amount of vertices drawable, to prevent reinitalizing every frame. 
     //       but would be a premature optimization without profiling
-    verticesVbo = new Buffer(vertices);
-    colorsVbo = new Buffer(colors);
   
     glClearColor(0.0, 0.0, 0.33, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    shader.bind();
     
-    verticesVbo.bind(shader, "position", GL_FLOAT, 2, 0, 0);
-    colorsVbo.bind(shader, "color", GL_FLOAT, 3, 0, 0);
+    verticesVbo = new Buffer(vertices);
+    colorsVbo = new Buffer(colors);
+    
+    auto texs = vertices.map!(vertex => (vertex - vertices.reduce!("a+b") * (1.0/vertices.length)).normalized + vec2(0.5, 0.5)).array; //[[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]];
+    textureVbo = new Buffer(texs);
+    
+    //defaultShader.bind();
+    textureShader.bind();
+    
+    //verticesVbo.bind(defaultShader, "position", GL_FLOAT, 2, 0, 0);
+    //colorsVbo.bind(defaultShader, "color", GL_FLOAT, 3, 0, 0);
+    verticesVbo.bind(textureShader, "position", GL_FLOAT, 2, 0, 0);
+    textureVbo.bind(textureShader, "texCoords", GL_FLOAT, 2, 0, 0);
     
     glDrawArrays(GL_TRIANGLES, 0, cast(int)vertices.length);
     
@@ -65,22 +79,52 @@ final class Renderer : EntityProcessingSystem
     vertices.length = colors.length = 0;
     verticesVbo.remove();
     colorsVbo.remove();
+    
+    drawText();
+  }
+  
+  public void drawText()
+  {
+    textureShader.bind();
+    
+    auto verts = [[-1.0, -1.0], [-1.0, 1.0], [1.0, 1.0], [1.0, -1.0]];
+    auto texs = [[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]];
+    
+    verticesVbo = new Buffer(verts[0..3] ~ verts[0..1] ~ verts[2..4]);
+    textureVbo = new Buffer(texs[0..3] ~ texs[0..1] ~ texs[2..4]);
+    
+    verticesVbo.bind(textureShader, "position", GL_FLOAT, 2, 0, 0);
+    textureVbo.bind(textureShader, "texCoords", GL_FLOAT, 2, 0, 0);
+    
+    textRenderer.bind();
+    
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    
+    verticesVbo.remove();
+    textureVbo.remove();
   }
   
   override void process(Entity entity)
   {
-    auto polygon = entity.getComponent!Polygon;
     auto position = entity.getComponent!Position;
+    auto polygon = entity.getComponent!Polygon;
+    auto text = entity.getComponent!Text;    
     
-    assert(polygon !is null);
     assert(position !is null);
     
-    vertices ~= polygon.vertices.map!(vertex => ((vec3(vertex, 0.0) * 
-                                                  mat3.zrotation(position.angle)).xy + 
-                                                  position - cameraPosition) 
-                                                  * zoom).array();
-                                                  
-    colors ~= polygon.colors;
+    if (polygon !is null)
+    {
+      vertices ~= polygon.vertices.map!(vertex => ((vec3(vertex, 0.0) * 
+                                                    mat3.zrotation(position.angle)).xy + 
+                                                    position - cameraPosition) 
+                                                    * zoom).array();
+                                                    
+      colors ~= polygon.colors;
+    }
+    else if (text !is null)
+    {
+      //vertices ~= 
+    }
   }
 
   
@@ -95,5 +139,9 @@ private:
   VAO vao;
   Buffer verticesVbo;
   Buffer colorsVbo;
-  Shader shader;
+  Buffer textureVbo;
+  Shader defaultShader;
+  Shader textureShader;
+  
+  TextRenderer textRenderer;
 }
