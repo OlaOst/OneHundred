@@ -7,11 +7,13 @@ import std.range;
 
 import artemisd.all;
 import derelict.opengl3.gl3;
-import gl3n.linalg; import glamour.shader;
+import gl3n.linalg; 
+import glamour.shader;
 import glamour.vao;
 import glamour.vbo;
 
 import component.drawable;
+import component.drawables.polygon;
 import component.position;
 import component.velocity;
 
@@ -67,18 +69,18 @@ final class Renderer : EntityProcessingSystem
   
   override void process(Entity entity)
   {
-    auto drawable = entity.getComponent!Drawable;
+    auto polygon = entity.getComponent!Polygon;
     auto position = entity.getComponent!Position;
     
-    assert(drawable !is null);
+    assert(polygon !is null);
     assert(position !is null);
     
-    vertices ~= drawable.vertices.map!(vertex => ((vec3(vertex, 0.0) * 
+    vertices ~= polygon.vertices.map!(vertex => ((vec3(vertex, 0.0) * 
                                                   mat3.zrotation(position.angle)).xy + 
                                                   position - cameraPosition) 
                                                   * zoom).array();
                                                   
-    colors ~= drawable.colors;
+    colors ~= polygon.colors;
   }
 
   

@@ -10,7 +10,6 @@ import gl3n.linalg;
 
 import collision.check;
 import component.collider;
-import component.drawable;
 import component.position;
 import component.sound;
 import component.velocity;

@@ -8,7 +8,7 @@ import artemisd.all;
 import gl3n.linalg;
 
 import component.collider;
-import component.drawable;
+import component.drawables.polygon;
 import component.input;
 import component.mass;
 import component.position;
@@ -43,7 +43,7 @@ Entity createEntity(World world, vec2 position, vec2 velocity, double size)
   entity.addComponent(new Velocity(velocity, uniform(-PI, PI)));
   entity.addComponent(new Size(size));
   entity.addComponent(new Mass(0.1 + size ^^ 2));
-  auto drawable = new Drawable(size, uniform(3, 12), uniformDistribution!float(3).vec3);
+  auto drawable = new Polygon(size, uniform(3, 12), uniformDistribution!float(3).vec3);
   entity.addComponent(drawable);
   
   auto colliderVertices = chain(drawable.vertices[1..$].stride(3), 

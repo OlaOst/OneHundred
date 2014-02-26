@@ -7,7 +7,7 @@ import std.stdio;
 import artemisd.all;
 import gl3n.linalg;
 
-import component.drawable;
+import component.collider;
 import component.mass;
 import component.position;
 import component.size;
@@ -33,13 +33,13 @@ struct CollisionEntity
   {
     if ((position - other.position).magnitude_squared < (radius + other.radius)^^2)
     {
-      auto firstDrawable = entity.getComponent!Drawable;
-      auto otherDrawable = other.entity.getComponent!Drawable;
+      auto firstCollider = entity.getComponent!Collider;
+      auto otherCollider = other.entity.getComponent!Collider;
       
-      if (firstDrawable !is null && otherDrawable !is null)
+      if (firstCollider !is null && otherCollider !is null)
       {
-        auto firstVertices = firstDrawable.vertices;
-        auto otherVertices = otherDrawable.vertices;
+        auto firstVertices = firstCollider.vertices;
+        auto otherVertices = otherCollider.vertices;
         
         return firstVertices.isOverlapping(otherVertices, velocity, other.velocity) ||
                otherVertices.isOverlapping(firstVertices, other.velocity, velocity);
