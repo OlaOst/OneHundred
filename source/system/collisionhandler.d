@@ -78,13 +78,13 @@ final class CollisionHandler : EntityProcessingSystem
       debug narrowPhaseCount += collidingEntities.walkLength;
     }
     
-    debug writeln("collisionhandler checked ", broadPhaseCount, "/", 
+    /*debug writeln("collisionhandler checked ", broadPhaseCount, "/", 
                                                midPhaseCount, "/", 
                                                narrowPhaseCount, 
                   " candidates in broadphase/midphase/narrowphase");
     debug writeln("collisionhandler timings ", broadPhaseTimer.peek.usecs*0.001, "/", 
                                                narrowPhaseTimer.peek.usecs*0.001, 
-                  " candidates in broadphase/narrowphase");
+                  " candidates in broadphase/narrowphase");*/
                   
     handleCollisions(world, collisions);
     
