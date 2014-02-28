@@ -20,5 +20,5 @@ fragment:
 
   void main(void)
   {  
-    color = texture2D(textureMap, coords).rgba;
+    color = texture(textureMap, coords).rgba;
   }

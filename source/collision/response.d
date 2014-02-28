@@ -87,6 +87,6 @@ void handleCollisions(World world, Collision[] collisions)
     Entity bonk = world.createEntity();
     bonk.addComponent(new Position(contactPoint, 0.0));
     bonk.addComponent(new Sound("bounce.wav"));
-    //bonk.addToWorld();
+    bonk.addToWorld();
   }
 }

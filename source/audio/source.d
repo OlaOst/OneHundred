@@ -19,11 +19,11 @@ interface Source
   static ALuint[32] sources;
   
   static ALuint findFreeSource()
-  {
+  {    
     // find a source not currently playing
     foreach (ref source; sources)
     {
-      if (!source.alIsSource)
+      if (source <= 0 || !source.alIsSource)
       {
         alGenSources(1, &source);
         enforce(source.alIsSource);

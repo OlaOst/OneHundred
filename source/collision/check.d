@@ -81,6 +81,13 @@ bool isOverlapping(vec2[] firstVertices, vec2[] otherVertices,
     
     if (firstMin < otherMax && firstMax > otherMin)
     {
+      /*test(vec2 vertex, vec2 velocity, float angularVelocity, float time)
+      {
+        auto linearOffset = velocity * time;
+        auto angularOffset = vec2(cos(angularVelocity*time), sin(angularVelocity*time)) * vertex.magnitude;
+        return vertex + linearOffset + angularOffset;
+      }*/
+    
       // TODO: also take angular velocity into account
       float velocityProjection = perpendicular.dot(otherVelocity - firstVelocity);
       if (velocityProjection < 0)

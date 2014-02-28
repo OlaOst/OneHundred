@@ -30,14 +30,16 @@ final class Renderer : EntityProcessingSystem
     
     textRenderer = new TextRenderer();
     
-    immutable string defaultShaderSource = readText("shader/default.shader");
-    immutable string textureShaderSource = readText("shader/texture.shader");
+    //immutable string defaultShaderSource = readText("shader/default.shader");
+    //immutable string textureShaderSource = readText("shader/texture.shader");
   
     vao = new VAO();
     vao.bind();
     
-    defaultShader = new Shader("defaultshader", defaultShaderSource);
-    textureShader = new Shader("textureshader", textureShaderSource);
+    //defaultShader = new Shader("defaultshader", defaultShaderSource);
+    //textureShader = new Shader("textureshader", textureShaderSource);
+    defaultShader = new Shader("shader/default.shader");
+    textureShader = new Shader("shader/texture.shader");
   }
   
   public void close()

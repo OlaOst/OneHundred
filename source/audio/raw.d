@@ -66,7 +66,7 @@ public:
   {
     source = Source.findFreeSource();
   
-    if (source.alIsSource)
+    if (source > 0 && source.alIsSource)
     {
       source.alSourceQueueBuffers(1, &buffer);
       source.alSourcePlay;
@@ -75,11 +75,17 @@ public:
   
   void silence()
   {
-    enforce(source.alIsSource);
-    source.alSourceUnqueueBuffers(1, &buffer);
+    if (source > 0)
+    {
+      enforce(source.alIsSource);
+      source.alSourceUnqueueBuffers(1, &buffer);
+    }
   }
   
-  ALuint getAlSource() { return source; }
+  ALuint getAlSource() 
+  { 
+    return source; 
+  }
   
 private:
   File file;

@@ -36,10 +36,12 @@ final class Sound : Component
   }
   
   void startPlaying()
-  {
+  {    
     vec2 position = vec2(300.0, 0.0);
-    if (source.getAlSource().alIsSource)
-      source.getAlSource().alSource3f(AL_POSITION, position.x, position.y, 0.0);
+    //if (source.getAlSource().alIsSource)
+      //source.getAlSource().alSource3f(AL_POSITION, position.x, position.y, 0.0);
+    
+    check();
     
     if (!isPlaying)
       source.play();
