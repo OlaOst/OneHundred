@@ -4,6 +4,7 @@ import std.algorithm;
 import std.array;
 import std.file;
 import std.range;
+import std.stdio;
 
 import artemisd.all;
 import derelict.opengl3.gl3;
@@ -56,7 +57,7 @@ final class Renderer : EntityProcessingSystem
     glClearColor(0.0, 0.0, 0.33, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    //drawText();
+    drawText();
     drawPolygons();
   }
   
@@ -101,7 +102,7 @@ final class Renderer : EntityProcessingSystem
     textureVbo.bind(textureShader, "texCoords", GL_FLOAT, 2, 0, 0);
     textRenderer.bind();
     
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    glDrawArrays(GL_TRIANGLES, 0, cast(int)(vertices["text"].length));
     
     verticesVbo.remove();
     textureVbo.remove();
@@ -119,8 +120,8 @@ final class Renderer : EntityProcessingSystem
     {
       vertices["polygon"] ~= polygon.vertices.map!(vertex => ((vec3(vertex, 0.0) * 
                                                     mat3.zrotation(position.angle)).xy + 
-                                                    position - cameraPosition) 
-                                                    * zoom).array();
+                                                    position - cameraPosition) *
+                                                    zoom).array();
                                                     
       colors["polygon"] ~= polygon.colors;
     }
@@ -130,7 +131,13 @@ final class Renderer : EntityProcessingSystem
       
       foreach (letter; text)
       {
-        auto verts = [vec2(-1.0, -1.0), vec2(1.0, -1.0), vec2(1.0, 1.0), vec2(-1.0, 1.0)];
+        //auto verts = [vec2(-1.0, -1.0), vec2(1.0, -1.0), vec2(1.0, 1.0), vec2(-1.0, 1.0)];
+        auto verts = [vec2(-1.0, -1.0),
+                      vec2( 1.0, -1.0),
+                      vec2( 1.0,  1.0),
+                      vec2( 1.0,  1.0),
+                      vec2(-1.0,  1.0),
+                      vec2(-1.0, -1.0)];
         //auto texs = [vec2(0.0, 0.0), vec2(1.0, 0.0), vec2(1.0, 1.0), vec2(0.0, 1.0)].map!(t => t * (1.0 / 16.0) + vec2(4 * 1.0 / 16.0, 4 * 1.0 / 16.0)).array;
     
         texCoords["text"] ~= textRenderer.getTexCoordsForLetter(letter);
@@ -138,17 +145,20 @@ final class Renderer : EntityProcessingSystem
         //verticesVbo = new Buffer([verts[0], verts[1], verts[2], verts[0], verts[2], verts[3]]);
         //textureVbo = new Buffer([texs[0], texs[1], texs[2], texs[0], texs[2], texs[3]]);
 
-        import std.stdio;
-        writeln("drawing letter ", letter, ", cursor at ", cursor);
-        vertices["text"] ~= verts.map!(vertex => (vertex + position - cameraPosition + cursor + vec2(1.0, 0.0)) * 0.8).array();
+        //debug writeln("drawing letter ", letter, ", cursor at ", cursor, " with scale ", zoom);
+        vertices["text"] ~= verts.map!(vertex => ((vec3(vertex, 0.0) *
+                                                   mat3.zrotation(position.angle)).xy + 
+                                                   position - cameraPosition + cursor) * 
+                                                  zoom).array();
         //texCoords["text"] ~= texs;
         
         auto glyph = textRenderer.getGlyphForLetter(letter);
         
-        auto scale = zoom * 0.1;
+        auto scale = 1.0; //zoom * 1.0;
         cursor += vec2(glyph.advance.x * scale * 2, glyph.advance.y * scale * 2);
         
       }
+      //debug writeln("drawing text ", text, " with verts ", vertices["text"]);
     }
   }
 

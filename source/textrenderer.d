@@ -79,11 +79,11 @@ class TextRenderer
                  (col*glyphSize + row*glyphSize*cols*glyphSize + x + y*glyphSize*rows)*colorComponents + 
                  colorIndex] = glyph.data[(y * glyphSize + x)*colorComponents + colorIndex];
           
-            if (x == 0 || y == 0)
+            /*if (x == 0 || y == 0)
               data[colorComponents + 
                  (colorComponents*cols*glyphSize) + 
                  (col*glyphSize + row*glyphSize*cols*glyphSize + x + y*glyphSize*rows)*colorComponents + 
-                 colorIndex] = 255;
+                 colorIndex] = 255;*/
           }
         }
       }
@@ -151,13 +151,27 @@ class TextRenderer
     int row = letter / 16;
     int col = letter % 16;
     
-    float x = 1.0 / col + 1.0/16.0;
-    float y = 1.0 / row + 3.0/16.0;
+    //float x = 1.0 / col + 1.0/16.0;
+    //float y = 1.0 / row + 3.0/16.0;
+    float x = col / 16.0;
+    float y = row / 16.0;
     
-    writeln("getting coords for letter ", letter, " with index ", letter.to!int, " at row ", row, " col ", col);
+    //debug writeln("getting coords for letter ", letter, " with index ", letter.to!int, " at row ", row, " col ", col);
     
-    //return [vec2(x, y), vec2(x + 1.0/16.0, y), vec2(x + 1.0/16.0, y + 1.0/16.0), vec2(x, y + 1.0/16.0)];
-    return [vec2(0.0, 0.0), vec2(1.0, 0.0), vec2(1.0, 1.0), vec2(0.0, 1.0)];
+    return [vec2(x, y), 
+            vec2(x + 1.0/16.0, y), 
+            vec2(x + 1.0/16.0, y + 1.0/16.0), 
+            vec2(x + 1.0/16.0, y + 1.0/16.0), 
+            vec2(x, y + 1.0/16.0),
+            vec2(x, y)];
+    //return [vec2(0.0, 0.0), vec2(1.0, 0.0), vec2(1.0, 1.0), vec2(0.0, 1.0)];
+    
+    /*[vec2(-1.0, -1.0),
+     vec2( 1.0, -1.0),
+     vec2( 1.0,  1.0),
+     vec2( 1.0,  1.0),
+     vec2(-1.0,  1.0),
+     vec2(-1.0, -1.0)]*/
   }
 
   public GlyphData getGlyphForLetter(char letter)
