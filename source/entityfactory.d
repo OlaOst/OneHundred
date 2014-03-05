@@ -97,8 +97,10 @@ Entity createText(World world)
   Entity text = world.createEntity();
   
   text.addComponent(new Position(vec2(-1.0, 0.0), 0.0));
-  text.addComponent(new Text(0.1, "hello, world", vec4(1.0, 1.0, 1.0, 1.0)));
+  //text.addComponent(new Velocity(vec2(0.0, 0.0), 2.5));
+  text.addComponent(new Text(0.1, "hello, world", vec4(1.0, 1.0, 1.0, 0.0)));
   text.addComponent(new Size(0.1));
+  //text.addComponent(new Mass(0.5));
   
   return text;
 }

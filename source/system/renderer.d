@@ -82,17 +82,15 @@ final class Renderer : EntityProcessingSystem
   }
   
   public void drawText()
+  in
+  {
+    assert(vertices["text"].length == texCoords["text"].length);
+  }
+  body
   {
     if ("text" !in vertices)
       return;
-    //auto verts = [vec2(-1.0, -1.0), vec2(1.0, -1.0), vec2(1.0, 1.0), vec2(-1.0, 1.0)].map!(v => v * 0.9).array;
-    //auto texs = [vec2(0.0, 0.0), vec2(1.0, 0.0), vec2(1.0, 1.0), vec2(0.0, 1.0)].map!(t => t * (1.0 / 16.0) + vec2(4 * 1.0 / 16.0, 4 * 1.0 / 16.0)).array;
-    
-    //verticesVbo = new Buffer([verts[0], verts[1], verts[2], verts[0], verts[2], verts[3]]);
-    //textureVbo = new Buffer([texs[0], texs[1], texs[2], texs[0], texs[2], texs[3]]);
-    //verticesVbo = new Buffer([verts[0], verts[3], verts[1], verts[2]]);
-    //textureVbo = new Buffer([texs[0], texs[3], texs[1], texs[2]]);
-    
+      
     verticesVbo = new Buffer(vertices["text"]);
     textureVbo = new Buffer(texCoords["text"]);
     
@@ -103,6 +101,9 @@ final class Renderer : EntityProcessingSystem
     textRenderer.bind();
     
     glDrawArrays(GL_TRIANGLES, 0, cast(int)(vertices["text"].length));
+    
+    vertices["text"].length = 0;
+    texCoords["text"].length = 0;
     
     verticesVbo.remove();
     textureVbo.remove();
@@ -131,34 +132,18 @@ final class Renderer : EntityProcessingSystem
       
       foreach (letter; text)
       {
-        //auto verts = [vec2(-1.0, -1.0), vec2(1.0, -1.0), vec2(1.0, 1.0), vec2(-1.0, 1.0)];
-        auto verts = [vec2(-1.0, -1.0),
-                      vec2( 1.0, -1.0),
-                      vec2( 1.0,  1.0),
-                      vec2( 1.0,  1.0),
-                      vec2(-1.0,  1.0),
-                      vec2(-1.0, -1.0)];
-        //auto texs = [vec2(0.0, 0.0), vec2(1.0, 0.0), vec2(1.0, 1.0), vec2(0.0, 1.0)].map!(t => t * (1.0 / 16.0) + vec2(4 * 1.0 / 16.0, 4 * 1.0 / 16.0)).array;
+        auto glyph = textRenderer.getGlyphForLetter(letter);
+      
+        //auto verts = baseSquare.dup;
     
         texCoords["text"] ~= textRenderer.getTexCoordsForLetter(letter);
-          
-        //verticesVbo = new Buffer([verts[0], verts[1], verts[2], verts[0], verts[2], verts[3]]);
-        //textureVbo = new Buffer([texs[0], texs[1], texs[2], texs[0], texs[2], texs[3]]);
-
-        //debug writeln("drawing letter ", letter, ", cursor at ", cursor, " with scale ", zoom);
-        vertices["text"] ~= verts.map!(vertex => ((vec3(vertex, 0.0) *
-                                                   mat3.zrotation(position.angle)).xy + 
-                                                   position - cameraPosition + cursor) * 
-                                                  zoom).array();
-        //texCoords["text"] ~= texs;
+        vertices["text"] ~= text.vertices.map!(vertex => ((vec3(vertex, 0.0) *
+                                                mat3.zrotation(position.angle)).xy + 
+                                                position - cameraPosition + glyph.offset*text.size + cursor) * 
+                                                zoom).array();
         
-        auto glyph = textRenderer.getGlyphForLetter(letter);
-        
-        auto scale = 1.0; //zoom * 1.0;
-        cursor += vec2(glyph.advance.x * scale * 2, glyph.advance.y * scale * 2);
-        
+        cursor += glyph.advance * text.size * 2.0;
       }
-      //debug writeln("drawing text ", text, " with verts ", vertices["text"]);
     }
   }
 

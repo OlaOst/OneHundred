@@ -24,6 +24,9 @@ class TextRenderer
     enforce(!FT_Init_FreeType(&library), "Error initializing FreeType");
     
     auto defaultFont = "fonts/freesansbold.ttf";
+    //auto defaultFont = "fonts/telegrama_render.otf";
+    //auto defaultFont = "fonts/Inconsolata.otf";
+    //auto defaultFont = "fonts/OxygenMono-Regular.otf";
     
     FT_Face face;
     auto fontError = FT_New_Face(library, ("./" ~ defaultFont).toStringz(), 0, &face);
@@ -103,7 +106,7 @@ class TextRenderer
     FT_Load_Glyph(face, glyphIndex, 0);
     FT_Render_Glyph(face.glyph, FT_RENDER_MODE_NORMAL);
     
-    debug writeln("glyph ", letter, 
+    debug writeln("glyph ", letter > 32 ? letter : '?', 
                   ", buffer is ", face.glyph.bitmap.width, "x", face.glyph.bitmap.rows,
                   ", pitch is ", face.glyph.bitmap.pitch,
                   ", metric is ", face.glyph.metrics.width/64, "x", face.glyph.metrics.height/64,
@@ -112,7 +115,7 @@ class TextRenderer
     
     GlyphData glyph;
     
-    glyph.data = new GLubyte[4 * glyphWidth * glyphHeight];
+    glyph.data = new GLubyte[colorComponents * glyphWidth * glyphHeight];
     glyph.bitmap = face.glyph.bitmap;
     
     glyph.offset = vec2(face.glyph.bitmap_left / cast(float)glyphSize, (face.glyph.bitmap_top - face.glyph.bitmap.rows) / cast(float)glyphSize);
@@ -146,13 +149,9 @@ class TextRenderer
 
   public vec2[] getTexCoordsForLetter(char letter) 
   {
-    //auto texs = [vec2(0.0, 0.0), vec2(1.0, 0.0), vec2(1.0, 1.0), vec2(0.0, 1.0)].map!(t => t * (1.0 / 16.0) + vec2(4 * 1.0 / 16.0, 4 * 1.0 / 16.0)).array;
-    
     int row = letter / 16;
     int col = letter % 16;
     
-    //float x = 1.0 / col + 1.0/16.0;
-    //float y = 1.0 / row + 3.0/16.0;
     float x = col / 16.0;
     float y = row / 16.0;
     
@@ -164,14 +163,6 @@ class TextRenderer
             vec2(x + 1.0/16.0, y + 1.0/16.0), 
             vec2(x, y + 1.0/16.0),
             vec2(x, y)];
-    //return [vec2(0.0, 0.0), vec2(1.0, 0.0), vec2(1.0, 1.0), vec2(0.0, 1.0)];
-    
-    /*[vec2(-1.0, -1.0),
-     vec2( 1.0, -1.0),
-     vec2( 1.0,  1.0),
-     vec2( 1.0,  1.0),
-     vec2(-1.0,  1.0),
-     vec2(-1.0, -1.0)]*/
   }
 
   public GlyphData getGlyphForLetter(char letter)
