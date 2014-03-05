@@ -38,8 +38,7 @@ public:
   void play()
   {
     source = Source.findFreeSource();
-    writeln("play() found source ", source, ", is alsource: ", (source > 0 && source.alIsSource));
-    
+
     auto playbackTask = task(&this.playbackLoop);
     playbackTask.executeInNewThread();
   }
@@ -50,10 +49,8 @@ public:
 private:
   void playbackLoop()
   {
-    writeln("playbackloop start");
     if (source > 0 && source.alIsSource)
     {
-      writeln("playbackloop found alsource ", source);
       
       while (update() && keepPlaying)
         if (!source.isPlaying)
@@ -63,7 +60,6 @@ private:
     {
       debug writeln("Could not get free audio source for stream");
     }
-    writeln("playbackloop end");
   }
   
   bool update()
@@ -90,8 +86,6 @@ private:
     
     if (buffers[].any!(buffer => !buffer.stream(oggSource)))
       return false;
-      
-      writeln("stream playback streaming ", buffers.length, " buffers");
     
     source.alSourceQueueBuffers(buffers.length, buffers.ptr);
     source.alSourcePlay();

@@ -53,15 +53,20 @@ class TextRenderer
   {
     GLubyte[] data;
     
+    int rows = 16;
+    int cols = 16;
+    
     // TODO: figure out all the magic numbers, replace with descriptive variables
-    data.length = ((16 * glyphSize) ^^ 2) * colorComponents + (16 * glyphSize * colorComponents * colorComponents);
+    data.length = ((rows * glyphSize) * (cols * glyphSize) * colorComponents) + (cols * glyphSize * colorComponents * colorComponents);
     
     foreach (index; iota(0, 256))
     {
       auto glyph = loadGlyph(face, glyphSize, index.to!char);
       
-      int row = index / 16;
-      int col = index % 16;
+      glyphData[index.to!char] = glyph;
+      
+      int row = index / rows;
+      int col = index % cols;
       
       foreach (y; iota(0, glyphSize))
       {
@@ -69,17 +74,26 @@ class TextRenderer
         {
           foreach (int colorIndex; iota(0, colorComponents))
           {
-            data[4 + (4*16*glyphSize) + (col*glyphSize + row*glyphSize*16*glyphSize + x + y*glyphSize*16)*4 + colorIndex] = glyph.data[(y * glyphSize + x)*4 + colorIndex];
+            data[colorComponents + 
+                 (colorComponents*cols*glyphSize) + 
+                 (col*glyphSize + row*glyphSize*cols*glyphSize + x + y*glyphSize*rows)*colorComponents + 
+                 colorIndex] = glyph.data[(y * glyphSize + x)*colorComponents + colorIndex];
+          
+            if (x == 0 || y == 0)
+              data[colorComponents + 
+                 (colorComponents*cols*glyphSize) + 
+                 (col*glyphSize + row*glyphSize*cols*glyphSize + x + y*glyphSize*rows)*colorComponents + 
+                 colorIndex] = 255;
           }
         }
       }
     }
     
     texture = new Texture2D();
-    texture.set_data(data, GL_RGBA, 16*glyphSize, 16*glyphSize, GL_RGBA, GL_UNSIGNED_BYTE);
+    texture.set_data(data, GL_RGBA, cols*glyphSize, rows*glyphSize, GL_RGBA, GL_UNSIGNED_BYTE);
   }
 
-  GlyphData loadGlyph(FT_Face face, uint glyphSize, char letter)
+  private GlyphData loadGlyph(FT_Face face, uint glyphSize, char letter)
   {
     auto glyphWidth = glyphSize;
     auto glyphHeight = glyphSize;
@@ -130,7 +144,28 @@ class TextRenderer
     return glyph;
   }
 
-  struct GlyphData
+  public vec2[] getTexCoordsForLetter(char letter) 
+  {
+    //auto texs = [vec2(0.0, 0.0), vec2(1.0, 0.0), vec2(1.0, 1.0), vec2(0.0, 1.0)].map!(t => t * (1.0 / 16.0) + vec2(4 * 1.0 / 16.0, 4 * 1.0 / 16.0)).array;
+    
+    int row = letter / 16;
+    int col = letter % 16;
+    
+    float x = 1.0 / col + 1.0/16.0;
+    float y = 1.0 / row + 3.0/16.0;
+    
+    writeln("getting coords for letter ", letter, " with index ", letter.to!int, " at row ", row, " col ", col);
+    
+    //return [vec2(x, y), vec2(x + 1.0/16.0, y), vec2(x + 1.0/16.0, y + 1.0/16.0), vec2(x, y + 1.0/16.0)];
+    return [vec2(0.0, 0.0), vec2(1.0, 0.0), vec2(1.0, 1.0), vec2(0.0, 1.0)];
+  }
+
+  public GlyphData getGlyphForLetter(char letter)
+  {
+    return glyphData[letter];
+  }
+
+  public struct GlyphData
   {
     FT_Bitmap bitmap;
     
@@ -140,6 +175,7 @@ class TextRenderer
     GLubyte[] data;
   }
   
-  static uint colorComponents = 4;
-  Texture2D texture;
+  private static uint colorComponents = 4;
+  private GlyphData[char] glyphData;
+  private Texture2D texture;
 }

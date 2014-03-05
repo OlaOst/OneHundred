@@ -41,10 +41,11 @@ void main()
   auto gameController = createGameController(world);
   gameController.addToWorld();
   
-  Entity[] entities = createEntities(world, 50);
+  Entity[] entities = createEntities(world, 1);
   entities ~= createPlayer(world);
   entities ~= createMusic(world);
   //entities ~= createStartupSound(world);
+  entities ~= createText(world);
   
   foreach (entity; entities)
     entity.addToWorld();

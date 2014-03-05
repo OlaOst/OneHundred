@@ -26,9 +26,9 @@ final class Polygon : Drawable
                                         vec2(-1.0, -1.0)];
   
   vec2[] vertices;
-  vec3[] colors;
+  vec4[] colors;
   
-  this(double size, int points, vec3 color)
+  this(double size, int points, vec4 color)
   {
     this.size = size;
     
@@ -43,7 +43,7 @@ final class Polygon : Drawable
                    vec2(cos(angle), sin(angle)) * size, 
                    vec2(cos(nextangle), sin(nextangle)) * size];
                    
-      colors ~= [vec3(1.0, 1.0, 1.0), color, color];
+      colors ~= [vec4(1.0, 1.0, 1.0, 1.0), color, color];
     }
   }
 }

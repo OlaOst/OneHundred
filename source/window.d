@@ -37,6 +37,9 @@ SDL_Window* getWindow(int screenWidth, int screenHeight)
   // setup gl viewport and etc
   glViewport(0, 0, screenWidth, screenHeight);
   
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  
   DerelictGL3.reload();
   
   return window;

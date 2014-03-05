@@ -15,7 +15,9 @@ final class Text : Drawable
   double size;
   string text;
   
-  this(double size, string text, vec3 color)
+  alias text this;
+  
+  this(double size, string text, vec4 color)
   {
     this.size = size;
     this.text = text;
