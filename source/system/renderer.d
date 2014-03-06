@@ -5,6 +5,7 @@ import std.array;
 import std.file;
 import std.range;
 import std.stdio;
+import std.string;
 
 import artemisd.all;
 import derelict.opengl3.gl3;
@@ -130,19 +131,25 @@ final class Renderer : EntityProcessingSystem
     {
       auto cursor = vec2(0.0, 0.0);
       
-      foreach (letter; text)
-      {
-        auto glyph = textRenderer.getGlyphForLetter(letter);
+      auto lines = text.text.split("\n");
       
-        //auto verts = baseSquare.dup;
-    
-        texCoords["text"] ~= textRenderer.getTexCoordsForLetter(letter);
-        vertices["text"] ~= text.vertices.map!(vertex => ((vec3(vertex, 0.0) *
-                                                mat3.zrotation(position.angle)).xy + 
-                                                position - cameraPosition + glyph.offset*text.size + cursor) * 
-                                                zoom).array();
+      foreach (line; lines)
+      {
+        foreach (letter; line)
+        {
+          auto glyph = textRenderer.getGlyphForLetter(letter);
         
-        cursor += glyph.advance * text.size * 2.0;
+          //auto verts = baseSquare.dup;
+      
+          texCoords["text"] ~= textRenderer.getTexCoordsForLetter(letter);
+          vertices["text"] ~= text.vertices.map!(vertex => ((vec3(vertex, 0.0) *
+                                                  mat3.zrotation(position.angle)).xy + 
+                                                  position - cameraPosition + glyph.offset*text.size + cursor) * 
+                                                  zoom).array();
+          
+          cursor += glyph.advance * text.size * 2.0;
+        }
+        cursor = vec2(0.0, cursor.y - text.size * 2.0);
       }
     }
   }
