@@ -86,7 +86,7 @@ void handleCollisions(World world, Collision[] collisions)
     // when they stop playing
     Entity bonk = world.createEntity();
     bonk.addComponent(new Position(contactPoint, 0.0));
-    bonk.addComponent(new Sound("bounce.wav"));
+    bonk.addComponent(new Sound("audio/bounce.wav"));
     bonk.addToWorld();
   }
 }

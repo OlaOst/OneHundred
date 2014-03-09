@@ -76,7 +76,7 @@ Entity[] createEntities(World world, uint elements)
 Entity createMusic(World world)
 {
   Entity entity = world.createEntity();
-  entity.addComponent(new Sound("orbitalelevator.ogg"));
+  entity.addComponent(new Sound("audio/orbitalelevator.ogg"));
   entity.addComponent(new Position(vec2(300.0, 0.0), 0.0));
   entity.addComponent(new Velocity(vec2(0.0, 3.0), 0.0));
   entity.addComponent(new Size(0.1));
@@ -88,7 +88,7 @@ Entity createMusic(World world)
 Entity createStartupSound(World world)
 {
   Entity startupSound = world.createEntity();
-  startupSound.addComponent(new Sound("gasturbinestartup.ogg"));
+  startupSound.addComponent(new Sound("audio/gasturbinestartup.ogg"));
   return startupSound;
 }
 

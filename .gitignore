@@ -1,8 +1,5 @@
 *.lst
 *.deps
-*.wav
-*.mp3
-*.ogg
 *.obj
 *.exe
 *.dll
