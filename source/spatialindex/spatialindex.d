@@ -28,7 +28,7 @@ class SpatialIndex(Element)
   Element[] find(vec2 position, double radius)
   in
   {
-    assert(position.ok);
+    assert(position.isFinite);
     assert(radius >= 0.0, "Cannot find something with negative radius");
   }
   body
@@ -46,7 +46,7 @@ class SpatialIndex(Element)
   void insert(Element element)
   in
   {
-    assert(element.position.ok);
+    assert(element.position.isFinite);
     assert(element.radius >= 0.0, "Cannot insert something with negative radius");
   }
   body

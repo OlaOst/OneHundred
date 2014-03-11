@@ -82,9 +82,9 @@ struct State
   
   invariant()
   {
-    assert(position.ok);
-    assert(momentum.ok);
-    assert(velocity.ok);
+    assert(position.isFinite);
+    assert(momentum.isFinite);
+    assert(velocity.isFinite);
     assert(!angle.isNaN);
     assert(!rotation.isNaN);
     //assert(!rotationalMomentum.isNaN);

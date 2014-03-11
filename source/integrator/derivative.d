@@ -12,8 +12,8 @@ struct Derivative
   
   invariant()
   {
-    assert(velocity.ok);
-    assert(force.ok);
+    assert(velocity.isFinite);
+    assert(force.isFinite);
     assert(!rotation.isNaN);
     assert(!torque.isNaN);
   }
