@@ -10,10 +10,11 @@ import gl3n.linalg;
 
 import component.input;
 import entityfactory;
+import renderer;
 import system.collisionhandler;
+import system.graphics;
 import system.inputhandler;
 import system.movement;
-import system.renderer;
 import system.physics;
 import system.soundsystem;
 import timer;
@@ -27,14 +28,15 @@ void main()
   
   auto timer = new Timer();
   auto world = new World();
+  auto graphics = new Graphics();
   auto physics = new Physics();
   auto inputHandler = new InputHandler();
   auto collisionHandler = new CollisionHandler(world);
   auto soundSystem = new SoundSystem();
+  world.setSystem(graphics);
   world.setSystem(physics);
   world.setSystem(inputHandler);
   world.setSystem(collisionHandler);
-  world.setSystem(renderer);
   world.setSystem(soundSystem);
   world.initialize();
   
@@ -64,13 +66,15 @@ void main()
     inputHandler.update();
     auto gameActions = gameController.getComponent!Input.isActive;
     if ("zoomIn" in gameActions && gameActions["zoomIn"])
-      renderer.zoom += renderer.zoom * 1.0/60.0;
+      graphics.zoom += graphics.zoom * 1.0/60.0;
     if ("zoomOut" in gameActions && gameActions["zoomOut"])
-      renderer.zoom -= renderer.zoom * 1.0/60.0;
+      graphics.zoom -= graphics.zoom * 1.0/60.0;
     if ("quit" in gameActions && gameActions["quit"])
       keepRunning = false;
       
-    renderer.draw();
+    renderer.draw(graphics.getVertices(), graphics.getColors(), graphics.getTexCoords());
+    graphics.clear();
+    
     SDL_GL_SwapWindow(window);
   }
   
