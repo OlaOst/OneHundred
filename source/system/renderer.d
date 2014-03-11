@@ -19,7 +19,7 @@ import component.drawables.polygon;
 import component.drawables.text;
 import component.position;
 import component.velocity;
-import textrenderer;
+import textrenderer.textrenderer;
 
 
 final class Renderer : EntityProcessingSystem
