@@ -9,7 +9,8 @@ import derelict.sdl2.sdl;
 import gl3n.linalg;
 
 import component.input;
-import entityfactory;
+import entityfactory.entities;
+import entityfactory.tests;
 import renderer;
 import system.collisionhandler;
 import system.graphics;
