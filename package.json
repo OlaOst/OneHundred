@@ -18,6 +18,7 @@
     "artemisd": { "version": "~master", "path": "../artemisd" },
     "glamour": { "version": "~master", "path": "../glamour" },
   },
+  "importPaths" : ["../glamour"],
   
   "versions": ["Derelict3", "SDLImage", "gl3n"],
   
