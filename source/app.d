@@ -5,7 +5,6 @@ import std.range;
 import std.stdio;
 
 import artemisd.all;
-import derelict.sdl2.sdl;
 import gl3n.linalg;
 
 import component.input;
@@ -19,13 +18,11 @@ import system.movement;
 import system.physics;
 import system.soundsystem;
 import timer;
-import window;
 
 
 void main()
 {
-  auto window = getWindow(1024, 768);
-  auto renderer = new Renderer();
+  auto renderer = new Renderer(1024, 768);
   
   auto timer = new Timer();
   auto world = new World();
@@ -75,8 +72,6 @@ void main()
       
     renderer.draw(graphics.getVertices(), graphics.getColors(), graphics.getTexCoords());
     graphics.clear();
-    
-    SDL_GL_SwapWindow(window);
   }
   
   scope(exit)
