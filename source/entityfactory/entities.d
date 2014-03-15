@@ -30,14 +30,14 @@ Entity createGameController(World world)
 
 Entity createPlayer(World world)
 {
-  auto playerEntity = createEntity(world, vec2(0.0, 0.0), vec2(0.0, 0.0), 0.3);
+  auto playerEntity = createEntity(world, vec2(0.0, 0.0), vec2(0.0, 0.0), 0.3, 3, 3);
   
   playerEntity.addComponent(new Input(Input.playerInput));
   
   return playerEntity;
 }
 
-Entity createEntity(World world, vec2 position, vec2 velocity, double size)
+Entity createEntity(World world, vec2 position, vec2 velocity, double size, int minVerts, int maxVerts)
 {
   Entity entity = world.createEntity();
     
@@ -45,7 +45,7 @@ Entity createEntity(World world, vec2 position, vec2 velocity, double size)
   entity.addComponent(new Velocity(velocity, uniform(-PI, PI)));
   entity.addComponent(new Size(size));
   entity.addComponent(new Mass(0.1 + size ^^ 2));
-  auto drawable = new Polygon(size, uniform(3, 12), vec4(uniformDistribution!float(3).vec3, 0.5));
+  auto drawable = new Polygon(size, uniform(minVerts, maxVerts+1), vec4(uniformDistribution!float(3).vec3, 0.5));
   entity.addComponent(drawable);
   
   auto colliderVertices = chain(drawable.vertices[1..$].stride(3), 
@@ -67,7 +67,8 @@ Entity[] createEntities(World world, uint elements)
     auto entity = createEntity(world, vec2(1.0 + cos(angle * 5) * (0.3 + angle.sqrt),
                                            sin(angle * 5) * (0.3 + angle.sqrt)),
                                       vec2(sin(angle) * 0.5, cos(angle) * 0.5),
-                                      size);
+                                      size,
+                                      3, 12);
     entities ~= entity;
   }
   return entities;
