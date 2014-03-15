@@ -14,16 +14,6 @@ final class Input : Component
   this(SDL_Keycode[string] keyForAction)
   {
     this.keyForAction = keyForAction;
-    
-    keyForAction["accelerate"] = SDLK_UP;
-    keyForAction["decelerate"] = SDLK_DOWN;
-    keyForAction["rotateLeft"] = SDLK_LEFT;
-    keyForAction["rotateRight"] = SDLK_RIGHT;
-    
-    isActive["accelerate"] = false;
-    isActive["decelerate"] = false;
-    isActive["rotateLeft"] = false;
-    isActive["rotateRight"] = false;
   }
   
   // TODO: would be neat to make these static initalized
