@@ -8,16 +8,21 @@ import std.stdio;
 import std.string;
 
 import derelict.opengl3.gl3;
+import derelict.sdl2.sdl;
 import gl3n.linalg; 
 import glamour.shader;
 import glamour.vao;
 import glamour.vbo;
 
+import window;
+
 
 class Renderer
 {
-  this()
+  this(int xres, int yres)
   {
+    window = getWindow(xres, yres);
+
     vao = new VAO();
     vao.bind();
     
@@ -42,6 +47,8 @@ class Renderer
     
     drawText(vertices["text"], texCoords["text"]);
     drawPolygons(vertices["polygon"], colors["polygon"]);
+    
+    SDL_GL_SwapWindow(window);
   }
   
   void drawPolygons(vec2[] vertices, vec4[] colors)
@@ -85,6 +92,7 @@ class Renderer
   }
   
 private:
+  SDL_Window *window;
   VAO vao;
   Buffer[string] vboSet;
   Shader[string] shaderSet;
