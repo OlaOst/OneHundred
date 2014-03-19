@@ -46,3 +46,23 @@ Entity createText(World world)
   text.addComponent(new Size(0.1));
   return text;
 }
+
+Entity createMouseCursor(World world)
+{
+  float size = 0.1;
+  auto position = vec2(0.0, 0.0);
+  Entity mouseCursor = world.createEntity();
+  mouseCursor.addComponent(new Position(position, 0.0));
+  mouseCursor.addComponent(new Size(size));
+  
+  auto drawable = new Polygon(size, 3, vec4(1.0, 0.0, 0.0, 0.0));
+  mouseCursor.addComponent(drawable);
+  
+  auto colliderVertices = chain(drawable.vertices[1..$].stride(3), 
+                                drawable.vertices[2..$].stride(3)).
+                          map!(vertex => vertex + position).array;
+  
+  mouseCursor.addComponent(new Collider(colliderVertices));
+  
+  return mouseCursor;
+}

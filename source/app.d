@@ -22,11 +22,13 @@ import timer;
 
 void main()
 {
-  auto renderer = new Renderer(1024, 768);
+  int xres = 1024;
+  int yres = 768;
+  auto renderer = new Renderer(xres, yres);
   
   auto timer = new Timer();
   auto world = new World();
-  auto graphics = new Graphics();
+  auto graphics = new Graphics(xres, yres);
   auto physics = new Physics();
   auto inputHandler = new InputHandler();
   auto collisionHandler = new CollisionHandler(world);
@@ -43,7 +45,9 @@ void main()
   
   Entity[] entities = createEntities(world, 1);
   entities ~= createPlayer(world);
-  entities ~= createMusic(world);
+  auto mouseCursor = createMouseCursor(world);
+  entities ~= mouseCursor;
+  //entities ~= createMusic(world);
   //entities ~= createStartupSound(world);
   entities ~= createText(world);
   
@@ -60,7 +64,7 @@ void main()
     
     //world.setDelta(1.0/60.0);
     world.process();
-  
+    
     inputHandler.update();
     auto gameActions = gameController.getComponent!Input.isActive;
     if ("zoomIn" in gameActions && gameActions["zoomIn"])
@@ -69,6 +73,9 @@ void main()
       graphics.zoom -= graphics.zoom * 1.0/60.0;
     if ("quit" in gameActions && gameActions["quit"])
       keepRunning = false;
+      
+    import component.position;
+    mouseCursor.getComponent!Position.position = graphics.getWorldPositionFromScreenCoordinates(inputHandler.mouseScreenPosition);
       
     renderer.draw(graphics.getVertices(), graphics.getColors(), graphics.getTexCoords());
     graphics.clear();

@@ -21,9 +21,12 @@ final class Graphics : EntityProcessingSystem
 {
   mixin TypeDecl;
   
-  this()
+  this(int xres, int yres)
   {
     super(Aspect.getAspectForAll!(Drawable));
+    
+    this.xres = xres;
+    this.yres = yres;
     
     textRenderer = new TextRenderer();
   }
@@ -48,8 +51,12 @@ final class Graphics : EntityProcessingSystem
                                                     mat3.zrotation(position.angle)).xy + 
                                                     position - cameraPosition) *
                                                     zoom).array();
-                                                    
-      colors["polygon"] ~= polygon.colors;
+
+      import component.collider;      
+      if (entity.getComponent!Collider !is null && entity.getComponent!Collider.isColliding)                                              
+        colors["polygon"] ~= polygon.colors.map!(color => vec4(1.0, color.g, color.b, color.a)).array;
+      else
+        colors["polygon"] ~= polygon.colors;
     }
     else if (text !is null)
     {
@@ -87,11 +94,20 @@ final class Graphics : EntityProcessingSystem
     texCoords = null;
   }
   
+  vec2 getWorldPositionFromScreenCoordinates(vec2 screenCoordinates)
+  {
+    return vec2(screenCoordinates.x / cast(float)xres - 0.5, 0.5 - screenCoordinates.y / cast(float)yres) * 
+           (1.0 / zoom) * 2.0;
+  }
+  
 public:
   vec2 cameraPosition = vec2(0.0, 0.0);
   float zoom = 0.3;
   
 private:
+  int xres;
+  int yres;
+  
   TextRenderer textRenderer;
   vec2[][string] vertices;
   vec4[][string] colors;

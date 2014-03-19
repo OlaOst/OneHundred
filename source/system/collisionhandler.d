@@ -35,7 +35,7 @@ final class CollisionHandler : EntityProcessingSystem
   }
   
   override void process(Entity entity)
-  {
+  {    
     auto collisionEntity = CollisionEntity(entity);
     index.insert(collisionEntity);
     collisionEntities ~= collisionEntity;

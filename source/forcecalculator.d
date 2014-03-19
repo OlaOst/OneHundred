@@ -1,5 +1,7 @@
 module forcecalculator;
 
+import std.stdio;
+
 import gl3n.linalg;
 
 import component.collider;
@@ -10,10 +12,15 @@ import integrator.state;
 
 
 double calculateTorque(State state, double time)
+out (result)
+{
+  assert(!result.isNaN);
+}
+body
 {
   auto torque = 0.0;
   
-  torque += state.rotation * -0.2; // damping torque
+  torque += state.rotation * -0.02; // damping torque
   
   auto input = state.entity.getComponent!Input;
   
@@ -35,10 +42,11 @@ double calculateTorque(State state, double time)
       auto position = state.entity.getComponent!Position;
       auto relative = collision.contactPoint - position;
       
+      writeln("calc cross from collision force ", collision.force, " and rel pos ", relative);
+      
       auto cross = collision.force.x * relative.y - collision.force.y * relative.x;
       
-      //import std.stdio;
-      //writeln("calc torque from contactpoint ", collision.contactPoint, " with torque ", cross);
+      writeln("calc torque from contactpoint ", collision.contactPoint, " with torque ", cross);
       
       torque += cross;
     }
@@ -48,6 +56,11 @@ double calculateTorque(State state, double time)
 }
 
 vec2 calculateForce(State state, double time)
+out (result)
+{
+  assert(result.isFinite);
+}
+body
 {
   auto force = vec2(0.0, 0.0);
   

@@ -36,5 +36,4 @@ final class Input : Component
     gameControls["zoomOut"] = SDLK_PAGEDOWN;
     gameControls["quit"] = SDLK_ESCAPE;
   }
-  
 }

@@ -12,7 +12,7 @@ final class Collider : Component
   
   bool isColliding;
   vec2 contactPoint;
-  vec2 force;
+  vec2 force = vec2(0.0, 0.0);
   //double radius;
   
   vec2[] vertices;

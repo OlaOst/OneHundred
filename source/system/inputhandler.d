@@ -18,6 +18,9 @@ public:
     super(Aspect.getAspectForOne!(Input));
   }
   
+  import gl3n.linalg;
+  vec2 mouseScreenPosition = vec2(0.0, 0.0);
+  
   void update()
   {
     eventsForKey = null;
@@ -28,7 +31,10 @@ public:
     {
       if (event.type == SDL_KEYUP || event.type == SDL_KEYDOWN)
         // TODO: does this make a deep copy of the event?
-        eventsForKey[event.key.keysym.sym] ~= event; //.dup; 
+        eventsForKey[event.key.keysym.sym] ~= event; //.dup;
+        
+      if (event.type == SDL_MOUSEMOTION)
+        mouseScreenPosition = vec2(event.motion.x, event.motion.y);
     }
   }
   

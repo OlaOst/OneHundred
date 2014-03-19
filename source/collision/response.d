@@ -37,6 +37,28 @@ void handleCollisions(World world, Collision[] collisions)
     
     collision.updateFromEntities();
     
+    auto firstCollider = first.entity.getComponent!Collider;
+    auto otherCollider = other.entity.getComponent!Collider;
+    firstCollider.isColliding = true;
+    otherCollider.isColliding = true;
+    
+    // TODO: collision.check should calculate the contactpoint
+    auto contactPoint = ((other.position - first.position) * first.radius + 
+                         (first.position - other.position) * other.radius) * 
+                        (1.0 / first.radius + other.radius);
+
+    assert(contactPoint.isFinite);
+
+    //writeln("contactpoint: ", contactPoint);
+    firstCollider.contactPoint = first.position + contactPoint;
+    otherCollider.contactPoint = other.position - contactPoint;
+    
+    assert(firstCollider.contactPoint.isFinite);
+    assert(otherCollider.contactPoint.isFinite);
+        
+    if (first.getComponent!Velocity is null || other.getComponent!Velocity is null)
+      return;
+    
     auto firstVelocity = first.velocity * ((first.mass-other.mass) / (first.mass+other.mass)) +
                          other.velocity * ((2 * other.mass) / (first.mass+other.mass));
     auto otherVelocity = other.velocity * ((other.mass-first.mass) / (first.mass+other.mass)) +
@@ -58,19 +80,6 @@ void handleCollisions(World world, Collision[] collisions)
       otherVel = otherVelocity;
     }
 
-    // TODO: collision.check should calculate the contactpoint
-    auto contactPoint = ((other.position - first.position) * first.radius + 
-                         (first.position - other.position) * other.radius) * 
-                        (1.0 / first.radius + other.radius);
-    
-    //writeln("contactpoint: ", contactPoint);
-    auto firstCollider = first.entity.getComponent!Collider;
-    auto otherCollider = other.entity.getComponent!Collider;
-    firstCollider.isColliding = true;
-    otherCollider.isColliding = true;
-    firstCollider.contactPoint = first.position + contactPoint;
-    otherCollider.contactPoint = other.position - contactPoint;
-    
     // TODO: is it right to integrate by physicsTimeStep here?
     firstCollider.force = (firstVelocity * first.mass - first.velocity * first.mass) * 
                           (1.0 / Timer.physicsTimeStep);

@@ -28,6 +28,8 @@ class Renderer
     
     shaderSet["default"] = new Shader("shader/default.shader");
     shaderSet["texture"] = new Shader("shader/texture.shader");
+    
+    //auto ctx = CGLGetCurrentContext();
   }
   
   public void close()

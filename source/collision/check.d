@@ -24,6 +24,14 @@ struct CollisionEntity
   alias entity this;
   
   this(Entity entity)
+  in
+  {
+    //assert(entity.getComponent!Position !is null);
+    //assert(entity.getComponent!Velocity !is null);
+    //assert(entity.getComponent!Size !is null);
+    //assert(entity.getComponent!Mass !is null);
+  }
+  body
   {
     this.entity = entity;
     updateFromEntity();
@@ -55,10 +63,22 @@ struct CollisionEntity
   
   void updateFromEntity()
   {
-    position = entity.getComponent!Position.position;
-    velocity = entity.getComponent!Velocity.velocity;
-    radius = entity.getComponent!Size.radius;
-    mass = entity.getComponent!Mass;
+    if (entity.getComponent!Position !is null)
+      position = entity.getComponent!Position.position;
+    else
+      position = vec2(0.0, 0.0);
+    if (entity.getComponent!Velocity !is null)
+      velocity = entity.getComponent!Velocity.velocity;
+    else
+      velocity = vec2(0.0, 0.0);
+    if (entity.getComponent!Size !is null)
+      radius = entity.getComponent!Size.radius;
+    else
+      radius = 0.0;
+    if (entity.getComponent!Mass !is null)
+      mass = entity.getComponent!Mass;
+    else
+      mass = 0.0;
   }
 }
 
@@ -79,6 +99,8 @@ bool isOverlapping(vec2[] firstVertices, vec2[] otherVertices,
     auto otherMin = otherProjections.reduce!((a,b) => min(a,b));
     auto otherMax = otherProjections.reduce!((a,b) => max(a,b));
     
+    writeln("firstminmax ", firstMin, " ", firstMax, ", otherminmax ", otherMin, " ", otherMax);
+    writeln("firstmin < otherMax: ", firstMin < otherMax, ", firstmax > otherMin: ", firstMax > otherMin); 
     if (firstMin < otherMax && firstMax > otherMin)
     {
       // TODO: also take angular velocity into account
@@ -94,5 +116,6 @@ bool isOverlapping(vec2[] firstVertices, vec2[] otherVertices,
     else
       return false;
   }
+  writeln("SAT returning true");
   return true;
 }

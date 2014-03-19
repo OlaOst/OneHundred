@@ -33,8 +33,11 @@ final class Physics : EntityProcessingSystem
 
   override void process(Entity entity)
   {
-    auto state = State(entity, &calculateForce, &calculateTorque);
-    currentStates ~= state;
+    if (entity.getComponent!Mass !is null)
+    {
+      auto state = State(entity, &calculateForce, &calculateTorque);
+      currentStates ~= state;
+    }
   }
   
   void update(Timer timer)
