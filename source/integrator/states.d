@@ -16,7 +16,6 @@ void integrateStates(ref State[] currentStates,
   foreach (ref state; currentStates)
   {
     state.integrate(time, timestep);
-    state.updateComponents();
   }
 }
 
@@ -27,6 +26,5 @@ void interpolateStates(ref State[] currentStates,
   foreach (ref stateTuple; zip(currentStates, previousStates))
   {
     stateTuple[0].interpolate(stateTuple[1], alpha);
-    stateTuple[0].updateComponents();
   }
 }

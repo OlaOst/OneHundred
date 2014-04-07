@@ -59,22 +59,6 @@ struct State
     this.torqueCalculator = torqueCalculator;
   }
   
-  void updateComponents()
-  {
-    /*auto position = entity.getComponent!Position;
-    auto velocity = entity.getComponent!Velocity;
-    auto mass = entity.getComponent!Mass;
-      
-    assert(position !is null);
-    assert(velocity !is null);
-    assert(mass !is null);
-    
-    position.position = this.position;
-    velocity.velocity = this.velocity;
-    position.angle = this.angle;
-    velocity.rotation = this.rotation;*/
-  }
-  
   void interpolate(State other, double alpha)
   {
     position = position * alpha + other.position * (1.0-alpha);
