@@ -37,7 +37,9 @@ Entity createEntity(vec2 position, vec2 velocity, double size, int minVerts, int
 {
   auto entity = new Entity();
 
-  auto drawable = new Polygon(size, uniform(minVerts, maxVerts+1), vec4(uniformDistribution!float(3).vec3, 0.5));
+  auto drawable = new Polygon(size, 
+                              uniform(minVerts, maxVerts+1), 
+                              vec4(uniformDistribution!float(3).vec3, 0.5));
   
   entity.vectors["position"] = position;
   entity.vectors["velocity"] = velocity;
