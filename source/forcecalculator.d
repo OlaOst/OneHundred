@@ -33,10 +33,9 @@ body
     torque += 1.0;
   if (input && "rotateRight" in input.isActive && input.isActive["rotateRight"])
     torque -= 1.0;
-    
-  /*
+
   // torque from collisions
-  if (auto collision = state.entity.getComponent!Collider)
+  /*if (auto collision = state.entity.getComponent!Collider)
   {
     if (collision.isColliding)
     {
@@ -76,9 +75,6 @@ body
   // twisty counterclockwise force further out
   force += vec2(-state.position.y, state.position.x) * 0.015;*/
   
-  assert(state.entity !is null);
-  //assert(state.entity.input !is null);
-  
   auto input = state.entity.input;
   
   if (input && "accelerate" in input.isActive && input.isActive["accelerate"])
@@ -86,21 +82,14 @@ body
   if (input && "decelerate" in input.isActive && input.isActive["decelerate"])
     force -= vec2(cos(state.angle), sin(state.angle)) * 0.5;
   
-  /*if (auto gravity = state.entity.getComponent!Gravity)
-  {
-    vec2 gravityForce = gravity.getAccumulatedGravityForce(state.position, state.mass);
-    gravityForce *= 0.5;
-    force += gravityForce;
-  }
-  
-  // torque from collisions
-  if (auto collision = state.entity.getComponent!Collider)
+  // force from collisions
+  if (auto collision = state.entity.collider)
   {
     if (collision.isColliding)
     {
-      //force += collision.force;
+      force -= collision.force;
     }
-  }*/
+  }
   
   return force;
 }

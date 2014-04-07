@@ -49,7 +49,7 @@ void main()
     soundSystem.silence();
   }
   
-  Entity[] entities = createEntities(1);
+  Entity[] entities = createEntities(10);
   entities ~= createPlayer();
   
   auto mouseCursor = createMouseCursor();
