@@ -3,7 +3,6 @@ module spatialindex.spatialindex;
 import std.algorithm;
 import std.array;
 import std.bitmanip;
-import std.math;
 import std.range;
 import std.stdio;
 

@@ -1,10 +1,7 @@
 module systems.collisionhandler;
 
 import std.algorithm;
-import std.array;
-import std.conv;
 import std.datetime;
-import std.math;
 import std.range;
 import std.stdio;
     
@@ -34,9 +31,7 @@ class CollisionHandler : System
     {
       indexForEntity[entity] = collisionEntities.length;
       entityForIndex[collisionEntities.length] = entity;
-      
-      auto collisionEntity = CollisionEntity(entity);
-      collisionEntities ~= collisionEntity;
+      collisionEntities ~= CollisionEntity(entity);
     }
   }
   
@@ -91,18 +86,13 @@ class CollisionHandler : System
                   
     handleCollisions(collisions);
     
-    // reset entity list and index so we are ready for the next update
-    //collisionEntities.length = 0;
+    // reset index for the next update
     index = new SpatialIndex!CollisionEntity();
   }
   
   void updateFromEntities()
   {
     foreach (int index, Entity entity; entityForIndex)
-    {
-      assert(collisionEntities[index].entity == entity);
-      
       collisionEntities[index].updateFromEntity();
-    }
   }
 }

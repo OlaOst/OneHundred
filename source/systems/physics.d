@@ -1,7 +1,6 @@
 module systems.physics;
 
 import std.algorithm;
-import std.math;
 import std.range;
     
 import gl3n.linalg;
