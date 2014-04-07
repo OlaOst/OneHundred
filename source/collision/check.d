@@ -2,7 +2,6 @@ module collision.check;
 
 import std.algorithm;
 import std.range;
-import std.stdio;
 
 import gl3n.linalg;
 
@@ -64,7 +63,6 @@ struct CollisionEntity
   }
 }
 
-
 bool isOverlapping(vec2[] firstVertices, vec2[] otherVertices, 
                    vec2 firstVelocity, vec2 otherVelocity)
 {
@@ -81,8 +79,6 @@ bool isOverlapping(vec2[] firstVertices, vec2[] otherVertices,
     auto otherMin = otherProjections.reduce!((a,b) => min(a,b));
     auto otherMax = otherProjections.reduce!((a,b) => max(a,b));
     
-    //writeln("firstminmax ", firstMin, " ", firstMax, ", otherminmax ", otherMin, " ", otherMax);
-    //writeln("firstmin < otherMax: ", firstMin < otherMax, ", firstmax > otherMin: ", firstMax > otherMin); 
     if (firstMin < otherMax && firstMax > otherMin)
     {
       // TODO: also take angular velocity into account
@@ -98,6 +94,5 @@ bool isOverlapping(vec2[] firstVertices, vec2[] otherVertices,
     else
       return false;
   }
-  //writeln("SAT returning true");
   return true;
 }
