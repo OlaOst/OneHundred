@@ -53,9 +53,6 @@ class Sound
   
   void stopPlaying()
   {
-    import std.stdio;
-    writeln("sound stopplaying");
-    
     if (isPlaying)
       source.silence();
       

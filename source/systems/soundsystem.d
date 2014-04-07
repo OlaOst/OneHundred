@@ -1,4 +1,4 @@
-module system.soundsystem;
+module systems.soundsystem;
 
 import std.conv;
 import std.exception;
@@ -15,7 +15,7 @@ import audio.raw;
 import audio.stream;
 import component.sound;
 import entity;
-import system.system;
+import system;
 
 
 final class SoundSystem : System

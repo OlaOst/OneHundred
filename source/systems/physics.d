@@ -1,4 +1,4 @@
-module system.physics;
+module systems.physics;
 
 import std.algorithm;
 import std.math;
@@ -13,7 +13,7 @@ import forcecalculator;
 import integrator.integrator;
 import integrator.state;
 import integrator.states;
-import system.system;
+import system;
 import timer;
 
 

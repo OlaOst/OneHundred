@@ -1,4 +1,4 @@
-module system.graphics;
+module systems.graphics;
 
 import std.algorithm;
 import std.array;
@@ -12,7 +12,7 @@ import component.drawable;
 import component.drawables.polygon;
 import component.drawables.text;
 import entity;
-import system.system;
+import system;
 import textrenderer.textrenderer;
 
 

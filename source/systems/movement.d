@@ -1,9 +1,9 @@
-module system.movement;
+module systems.movement;
 
 import gl3n.linalg;
 
 import entity;
-import system.system;
+import system;
 
 
 class Movement : System

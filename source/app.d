@@ -11,25 +11,25 @@ import entity;
 import entityfactory.entities;
 import entityfactory.tests;
 import renderer;
-import system.collisionhandler;
-import system.graphics;
-import system.inputhandler;
-import system.movement;
-import system.physics;
-import system.soundsystem;
+import system;
+import systems.collisionhandler;
+import systems.graphics;
+import systems.inputhandler;
+import systems.movement;
+import systems.physics;
+import systems.soundsystem;
 import timer;
 
 
 void main()
 {
-  // TODO: get rid of artemisd, make replacement
   int xres = 1024;
   int yres = 768;
+  
   auto renderer = new Renderer(xres, yres);
+  auto timer = new Timer(); 
   
-  auto timer = new Timer();
-  
-  //auto movement = new Movement();
+  System[] systems;
   
   auto graphics = new Graphics(xres, yres);
   auto physics = new Physics();
@@ -37,13 +37,16 @@ void main()
   auto collisionHandler = new CollisionHandler();
   auto soundSystem = new SoundSystem();
   
+  systems ~= graphics;
+  systems ~= physics;
+  systems ~= inputHandler;
+  systems ~= collisionHandler;
+  systems ~= soundSystem;
+  
   scope(exit)
   {
     renderer.close();
     soundSystem.silence();
-    
-    foreach (entity; entities)
-      soundSystem.silence(entity);
   }
   
   Entity[] entities = createEntities(1);
@@ -60,14 +63,9 @@ void main()
   auto gameController = createGameController();
   inputHandler.addEntity(gameController);
   
-  foreach (entity; entities)
-  {
-    physics.addEntity(entity);
-    graphics.addEntity(entity);
-    collisionHandler.addEntity(entity);
-    inputHandler.addEntity(entity);
-    soundSystem.addEntity(entity);
-  }
+  foreach (system; systems)
+    foreach (entity; entities)
+      system.addEntity(entity);
   
   bool keepRunning = true;
   timer.start();
@@ -75,16 +73,13 @@ void main()
   {
     timer.incrementAccumulator();
     physics.setTimer(timer);
-    physics.update();
+    
+    foreach (system; systems)
+      system.update();
     
     physics.updateEntities();
     graphics.updateFromEntities();
     collisionHandler.updateFromEntities();
-    
-    graphics.update();
-    collisionHandler.update();
-    soundSystem.update();
-    inputHandler.update();
     
     auto gameActions = gameController.input.isActive;
     //writeln("gameactions: ", gameActions);
@@ -95,11 +90,8 @@ void main()
     if ("quit" in gameActions && gameActions["quit"])
       keepRunning = false;
 
-    mouseCursor.vectors["position"] = graphics.getWorldPositionFromScreenCoordinates(inputHandler.mouseScreenPosition);
-    
-    //foreach (entity; entities)
-      //soundSystem.checkEntity(entity);
-      //soundSystem.cleanupEntities();
+    mouseCursor.vectors["position"] = 
+      graphics.getWorldPositionFromScreenCoordinates(inputHandler.mouseScreenPosition);
       
     renderer.draw(graphics.getVertices(), graphics.getColors(), graphics.getTexCoords());
     graphics.clear();

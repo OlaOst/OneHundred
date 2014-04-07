@@ -1,4 +1,4 @@
-module system.collisionhandler;
+module systems.collisionhandler;
 
 import std.algorithm;
 import std.array;
@@ -15,7 +15,7 @@ import collision.response;
 import component.collider;
 import entity;
 import spatialindex.spatialindex;
-import system.system;
+import system;
 
 
 class CollisionHandler : System

@@ -1,4 +1,4 @@
-module system.inputhandler;
+module systems.inputhandler;
 
 import std.algorithm;
 
@@ -7,7 +7,7 @@ import gl3n.linalg;
 
 import component.input;
 import entity;
-import system.system;
+import system;
 
 
 class InputHandler : System

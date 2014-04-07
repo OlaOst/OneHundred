@@ -1,4 +1,4 @@
-module system.system;
+module system;
 
 import entity;
 

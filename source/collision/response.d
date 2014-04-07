@@ -10,7 +10,7 @@ import gl3n.linalg;
 import collision.check;
 import component.collider;
 import component.sound;
-import system.collisionhandler;
+import systems.collisionhandler;
 import timer;
 
 
