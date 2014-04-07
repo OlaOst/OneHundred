@@ -1,7 +1,6 @@
 module audio.raw;
 
 import std.algorithm;
-import std.conv;
 import std.exception;
 import std.stdio;
 
@@ -9,7 +8,6 @@ import derelict.ogg.ogg;
 import derelict.vorbis.vorbis;
 import derelict.vorbis.file;
 import derelict.openal.al;
-import gl3n.linalg;
 
 import audio.source;
 import audio.wavheader;
@@ -34,11 +32,8 @@ public:
     if (!chunks.empty)
     {
       auto first = chunks.front;
-
       parseWavHeader(first, channels, frequency, size);
-
       data ~= first[44..$].dup;
-      
       chunks.popFront;
     }
     
@@ -84,8 +79,6 @@ public:
   
   void silence()
   {
-    writeln("silencing raw source ", source);
-    
     if (source > 0)
     {
       enforce(source.alIsSource);
@@ -93,10 +86,7 @@ public:
     }
   }
   
-  ALuint getAlSource() 
-  { 
-    return source; 
-  }
+  ALuint getAlSource() { return source; }
   
 private:
   File file;

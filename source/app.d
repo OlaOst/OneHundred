@@ -55,8 +55,8 @@ void main()
   auto mouseCursor = createMouseCursor();
   entities ~= mouseCursor;
 
-  entities ~= createMusic();
-  //entities ~= createStartupSound();
+  //entities ~= createMusic();
+  entities ~= createStartupSound();
   
   entities ~= createText();
   
