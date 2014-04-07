@@ -10,7 +10,8 @@ import component.drawables.text;
 import textrenderer.textrenderer;
 
 
-vec2[] getVerticesForText(TextRenderer textRenderer, Text text, double zoom, vec2 delegate (vec2) transform)
+vec2[] getVerticesForText(TextRenderer textRenderer, 
+                          Text text, double zoom, vec2 delegate (vec2) transform)
 {
   vec2[] result;
   
@@ -22,7 +23,8 @@ vec2[] getVerticesForText(TextRenderer textRenderer, Text text, double zoom, vec
     foreach (letter; line)
     {
       auto glyph = textRenderer.getGlyphForLetter(letter);
-      auto textTransform = delegate (vec2 vertex) => transform(vertex) + (glyph.offset * text.size + cursor) * zoom;
+      auto textTransform = delegate (vec2 vertex) => transform(vertex) + 
+                                                     (glyph.offset * text.size + cursor) * zoom;
   
       result ~= text.vertices.map!textTransform.array();
       
