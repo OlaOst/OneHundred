@@ -61,7 +61,7 @@ class TextRenderer
     atlas.bind_and_activate();
   }
 
-  public vec2[] getTexCoordsForLetter(char letter) 
+  vec2[] getTexCoordsForLetter(dchar letter) 
   {
     int rows = cast(int)sqrt(cast(float)glyphSet.length);
     int cols = cast(int)sqrt(cast(float)glyphSet.length);

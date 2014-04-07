@@ -1,5 +1,4 @@
 import std.algorithm;
-//import std.math;
 import std.random;
 import std.range;
 import std.stdio;
@@ -93,7 +92,6 @@ void main()
     mouseCursor.vectors["position"] = 
       graphics.getWorldPositionFromScreenCoordinates(inputHandler.mouseScreenPosition);
       
-    renderer.draw(graphics.getVertices(), graphics.getColors(), graphics.getTexCoords());
-    graphics.clear();
+    renderer.draw(graphics.vertices, graphics.colors, graphics.texCoords);
   }
 }
