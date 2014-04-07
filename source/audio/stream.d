@@ -1,7 +1,6 @@
 module audio.stream;
 
 import std.algorithm;
-import std.conv;
 import std.exception;
 import std.parallelism;
 import std.stdio;
@@ -50,7 +49,6 @@ private:
   {
     if (source > 0 && source.alIsSource)
     {
-      
       while (update() && keepPlaying)
         if (!source.isPlaying)
           enforce(playback(), "Ogg abruptly stopped");
