@@ -6,15 +6,8 @@ import entity;
 class System
 {
   invariant()
-  {
-    //assert(positions.length == velocities.length);
-    
-    // ensure there is a one-to-one mapping for indices in the arrays and the indexForEntity mapping
-    /*foreach (const Entity entity, int index; indexForEntity)
-    {
-      assert(index >= 0 && index <= positions.length);
-    }*/
-    
+  {    
+    // ensure there is a one-to-one mapping between indices and entities
     for (int index = 0; index < indexForEntity.length; index++)
     {
       assert(index in entityForIndex);
@@ -28,6 +21,5 @@ class System
   
   abstract bool canAddEntity(Entity entity);
   abstract void addEntity(Entity entity);
-  
   abstract void update();
 }
