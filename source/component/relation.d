@@ -1,10 +1,11 @@
 module component.relation;
 
-import artemisd.all;
+import entity;
 
 
 mixin template Relation()
 {
+  import entity;
   Entity[] relations;
   
   alias relations this;

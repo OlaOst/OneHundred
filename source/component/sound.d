@@ -2,7 +2,6 @@ module component.sound;
 
 import std.algorithm;
 
-import artemisd.all;
 import derelict.openal.al;
 import gl3n.linalg;
 
@@ -11,12 +10,10 @@ import audio.source;
 import audio.stream;
 
 
-final class Sound : Component
-{
-  mixin TypeDecl;
-  
+class Sound
+{  
   Source source;
-  public bool isPlaying = false;
+  bool isPlaying = false;
   static Source[string] sourceCache;
   
   Source getSource() { return source; }
@@ -35,6 +32,11 @@ final class Sound : Component
     this.source = sourceCache[fileName];
   }
   
+  bool stoppedPlaying()
+  {
+    return !source.isPlaying;
+  }
+  
   void startPlaying()
   {    
     vec2 position = vec2(300.0, 0.0);
@@ -51,6 +53,9 @@ final class Sound : Component
   
   void stopPlaying()
   {
+    import std.stdio;
+    writeln("sound stopplaying");
+    
     if (isPlaying)
       source.silence();
       

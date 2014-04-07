@@ -2,27 +2,42 @@ module system.inputhandler;
 
 import std.algorithm;
 
-import artemisd.all;
 import derelict.sdl2.sdl;
+import gl3n.linalg;
 
 import component.input;
+import entity;
+import system.system;
 
 
-final class InputHandler : EntityProcessingSystem
+class InputHandler : System
 {
 public:
-  mixin TypeDecl;
- 
-  this()
-  {
-    super(Aspect.getAspectForOne!(Input));
-  }
+  Input[] inputs;
   
-  import gl3n.linalg;
   vec2 mouseScreenPosition = vec2(0.0, 0.0);
   
-  void update()
+  override bool canAddEntity(Entity entity)
   {
+    return entity.input !is null;
+  }
+  
+  override void addEntity(Entity entity)
+  {
+    if (canAddEntity(entity))
+    {
+      indexForEntity[entity] = inputs.length;
+      entityForIndex[inputs.length] = entity;
+      
+      inputs ~= entity.input;
+    }
+  }
+  
+  override void update()
+  {
+    foreach (int index, Entity entity; entityForIndex)
+      process(entity);
+  
     eventsForKey = null;
     
     SDL_Event event;
@@ -38,16 +53,17 @@ public:
     }
   }
   
-  override void process(Entity entity)
+  void process(Entity entity)
   {
-    auto input = entity.getComponent!Input;
+    //auto input = entity.getComponent!Input;
+    auto input = entity.input;
     
     // the getaspect thing in the constructor does not work
     // we get entities without input components here
-    if (input is null)
-      return;
+    //if (input is null)
+      //return;
     
-    foreach (action, key; input.keyForAction)
+    foreach (string action, SDL_Keycode key; input.keyForAction)
     {
       if (key in eventsForKey)
       {

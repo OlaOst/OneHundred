@@ -5,64 +5,62 @@ import std.random;
 import std.range;
 import std.stdio;
 
-import artemisd.all;
 import gl3n.linalg;
 
 import component.collider;
 import component.drawables.polygon;
 import component.drawables.text;
-import component.input;
-import component.mass;
-import component.position;
-import component.size;
 import component.sound;
-import component.velocity;
+import entity;
 
 
-Entity createMusic(World world)
+Entity createMusic()
 {
-  Entity entity = world.createEntity();
-  entity.addComponent(new Sound("audio/orbitalelevator.ogg"));
-  entity.addComponent(new Position(vec2(300.0, 0.0), 0.0));
-  entity.addComponent(new Velocity(vec2(0.0, 3.0), 0.0));
-  entity.addComponent(new Size(0.1));
-  entity.addComponent(new Mass(0.1 + 0.1 ^^ 2));
+  auto entity = new Entity();
+  entity.vectors["position"] = vec2(300.0, 0.0);
+  entity.vectors["velocity"] = vec2(0.0, 3.0);
+  entity.scalars["size"] = 0.1;
+  entity.scalars["mass"] = 0.1 + 0.1 ^^ 2;  
+  entity.sound = new Sound("audio/orbitalelevator.ogg");
   
   return entity;
 }
 
-Entity createStartupSound(World world)
+Entity createStartupSound()
 {
-  Entity startupSound = world.createEntity();
-  startupSound.addComponent(new Sound("audio/gasturbinestartup.ogg"));
+  auto startupSound = new Entity();
+  startupSound.sound = new Sound("audio/gasturbinestartup.ogg");
+  
   return startupSound;
 }
 
-Entity createText(World world)
+Entity createText()
 {
-  Entity text = world.createEntity();  
-  text.addComponent(new Position(vec2(-1.0, 0.0), 0.0));
-  text.addComponent(new Text(0.1, "hello,\n world", vec4(1.0, 1.0, 1.0, 0.0)));
-  text.addComponent(new Size(0.1));
+  auto text = new Entity();
+  
+  text.vectors["position"] = vec2(-1.0, 0.0);
+  text.scalars["size"] = 0.1;
+  text.text = new Text(0.1, "hello,\n world", vec4(1.0, 1.0, 0.5, 0.0));
+  
   return text;
 }
 
-Entity createMouseCursor(World world)
+Entity createMouseCursor()
 {
   float size = 0.1;
   auto position = vec2(0.0, 0.0);
-  Entity mouseCursor = world.createEntity();
-  mouseCursor.addComponent(new Position(position, 0.0));
-  mouseCursor.addComponent(new Size(size));
+  auto mouseCursor = new Entity();
+  mouseCursor.vectors["position"] = position;
+  mouseCursor.scalars["angle"] = 0.0;
   
   auto drawable = new Polygon(size, 3, vec4(1.0, 0.0, 0.0, 0.0));
-  mouseCursor.addComponent(drawable);
+  mouseCursor.polygon = drawable;
   
   auto colliderVertices = chain(drawable.vertices[1..$].stride(3), 
                                 drawable.vertices[2..$].stride(3)).
                           map!(vertex => vertex + position).array;
   
-  mouseCursor.addComponent(new Collider(colliderVertices));
+  mouseCursor.collider = new Collider(colliderVertices);
   
   return mouseCursor;
 }

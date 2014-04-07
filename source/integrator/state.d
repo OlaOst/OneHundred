@@ -3,23 +3,21 @@ module integrator.state;
 import std.stdio;
 
 import gl3n.linalg;
-import artemisd.all;
 
-import component.mass;
-import component.position;
-import component.velocity;
+import entity;
+
 
 struct State
 {
   // primaries
-  vec2 position;
-  vec2 momentum;
-  double angle;
+  vec2 position = vec2(0.0, 0.0);
+  vec2 momentum = vec2(0.0, 0.0);
+  double angle = 0.0;
   //double rotationalMomentum;
   
   // secondaries
-  vec2 velocity;
-  double rotation;
+  vec2 velocity = vec2(0.0, 0.0);
+  double rotation = 0.0;
   
   //constants
   double mass;
@@ -28,26 +26,33 @@ struct State
   double function(State, double time) torqueCalculator;
   Entity entity;
   
+  @disable this();
+  
   this(Entity entity, 
        vec2 function(State, double time) forceCalculator, 
        double function(State, double time) torqueCalculator)
   {
     this.entity = entity;
   
-    auto position = entity.getComponent!Position;
-    auto velocity = entity.getComponent!Velocity;
-    auto mass = entity.getComponent!Mass;
-      
+    auto position = "position" in entity.vectors ? entity.vectors["position"] : vec2(0.0, 0.0);
+    auto velocity = "velocity" in entity.vectors ? entity.vectors["velocity"] : vec2(0.0, 0.0);
+    auto angle = "angle" in entity.scalars ? entity.scalars["angle"] : 0.0;
+    auto rotation = "rotation" in entity.scalars ? entity.scalars["rotation"] : 0.0;
+    auto mass = "mass" in entity.scalars ? entity.scalars["mass"] : 0.0;
+    
     this.momentum = velocity * mass;
       
-    assert(position !is null);
-    assert(velocity !is null);
-    assert(mass !is null);
+    assert(position.isFinite);
+    assert(velocity.isFinite);
+    assert(!angle.isNaN);
+    
+    assert(!rotation.isNaN);
+    assert(!mass.isNaN);
   
     this.position = position;
     this.velocity = velocity;
-    this.angle = position.angle;
-    this.rotation = velocity.rotation;
+    this.angle = angle;
+    this.rotation = rotation;
     this.mass = mass;
     
     this.forceCalculator = forceCalculator;
@@ -56,7 +61,7 @@ struct State
   
   void updateComponents()
   {
-    auto position = entity.getComponent!Position;
+    /*auto position = entity.getComponent!Position;
     auto velocity = entity.getComponent!Velocity;
     auto mass = entity.getComponent!Mass;
       
@@ -67,7 +72,7 @@ struct State
     position.position = this.position;
     velocity.velocity = this.velocity;
     position.angle = this.angle;
-    velocity.rotation = this.rotation;
+    velocity.rotation = this.rotation;*/
   }
   
   void interpolate(State other, double alpha)

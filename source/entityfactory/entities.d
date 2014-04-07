@@ -5,70 +5,67 @@ import std.random;
 import std.range;
 import std.stdio;
 
-import artemisd.all;
 import gl3n.linalg;
 
 import component.collider;
 import component.drawables.polygon;
 import component.drawables.text;
 import component.input;
-import component.mass;
-import component.position;
-import component.size;
 import component.sound;
-import component.velocity;
+import entity;
 
 
-Entity createGameController(World world)
+Entity createGameController()
 {
-  Entity gameController = world.createEntity();
+  auto gameController = new Entity();
   
-  gameController.addComponent(new Input(Input.gameControls));
+  gameController.input = new Input(Input.gameControls);
   
   return gameController;
 }
 
-Entity createPlayer(World world)
+Entity createPlayer()
 {
-  auto playerEntity = createEntity(world, vec2(0.0, 0.0), vec2(0.0, 0.0), 0.3, 3, 3);
+  auto playerEntity = createEntity(vec2(0.0, 0.0), vec2(0.0, 0.0), 0.3, 3, 3);
   
-  playerEntity.addComponent(new Input(Input.playerInput));
+  playerEntity.input = new Input(Input.playerInput);
   
   return playerEntity;
 }
 
-Entity createEntity(World world, vec2 position, vec2 velocity, double size, int minVerts, int maxVerts)
+Entity createEntity(vec2 position, vec2 velocity, double size, int minVerts, int maxVerts)
 {
-  Entity entity = world.createEntity();
-    
-  entity.addComponent(new Position(position, 0.0));
-  entity.addComponent(new Velocity(velocity, uniform(-PI, PI)));
-  entity.addComponent(new Size(size));
-  entity.addComponent(new Mass(0.1 + size ^^ 2));
+  auto entity = new Entity();
+
   auto drawable = new Polygon(size, uniform(minVerts, maxVerts+1), vec4(uniformDistribution!float(3).vec3, 0.5));
-  entity.addComponent(drawable);
+  
+  entity.vectors["position"] = position;
+  entity.vectors["velocity"] = velocity;
+  entity.scalars["size"] = size;
+  entity.scalars["mass"] = 0.1 + size ^^ 2;
+  entity.polygon = drawable;
   
   auto colliderVertices = chain(drawable.vertices[1..$].stride(3), 
                                 drawable.vertices[2..$].stride(3)).
                           map!(vertex => vertex + position).array;
   
-  entity.addComponent(new Collider(drawable.vertices));
+  entity.collider = new Collider(drawable.vertices);
   
   return entity;
 }
 
-Entity[] createEntities(World world, uint elements)
+Entity[] createEntities(uint elements)
 {
   Entity[] entities;
   foreach (double index; iota(0, elements))
   {
     auto angle = (index/elements) * PI * 2.0;
     auto size = uniform(0.025, 0.125);
-    auto entity = createEntity(world, vec2(1.0 + cos(angle * 5) * (0.3 + angle.sqrt),
-                                           sin(angle * 5) * (0.3 + angle.sqrt)),
-                                      vec2(sin(angle) * 0.5, cos(angle) * 0.5),
-                                      size,
-                                      3, 12);
+    auto entity = createEntity(vec2(1.0 + cos(angle * 5) * (0.3 + angle.sqrt),
+                                          sin(angle * 5) * (0.3 + angle.sqrt)),
+                               vec2(sin(angle) * 0.5, cos(angle) * 0.5),
+                               size,
+                               3, 12);
     entities ~= entity;
   }
   return entities;

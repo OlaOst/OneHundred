@@ -1,13 +1,10 @@
 module component.input;
 
-import artemisd.all;
 import derelict.sdl2.sdl;
 
 
-final class Input : Component
+class Input
 {
-  mixin TypeDecl;
-  
   SDL_Keycode[string] keyForAction;
   bool[string] isActive;
   

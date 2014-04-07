@@ -4,14 +4,10 @@ import std.algorithm;
 import std.range;
 import std.stdio;
 
-import artemisd.all;
 import gl3n.linalg;
 
 import component.collider;
-import component.mass;
-import component.position;
-import component.size;
-import component.velocity;
+import entity;
 
 
 struct CollisionEntity
@@ -24,14 +20,6 @@ struct CollisionEntity
   alias entity this;
   
   this(Entity entity)
-  in
-  {
-    //assert(entity.getComponent!Position !is null);
-    //assert(entity.getComponent!Velocity !is null);
-    //assert(entity.getComponent!Size !is null);
-    //assert(entity.getComponent!Mass !is null);
-  }
-  body
   {
     this.entity = entity;
     updateFromEntity();
@@ -41,42 +29,36 @@ struct CollisionEntity
   {
     if ((position - other.position).magnitude_squared < (radius + other.radius)^^2)
     {
-      auto firstCollider = entity.getComponent!Collider;
-      auto otherCollider = other.entity.getComponent!Collider;
+      auto firstCollider = entity.collider;
+      auto otherCollider = other.entity.collider;
       
-      if (firstCollider !is null && otherCollider !is null)
-      {
-        auto firstVertices = firstCollider.vertices;
-        auto otherVertices = otherCollider.vertices;
-        
-        return firstVertices.isOverlapping(otherVertices, velocity, other.velocity) ||
-               otherVertices.isOverlapping(firstVertices, other.velocity, velocity);
-      }
-      else
-      {
-        return true;
-      }
+      assert(firstCollider !is null && otherCollider !is null);
       
+      auto firstVertices = firstCollider.vertices;
+      auto otherVertices = otherCollider.vertices;
+      
+      return firstVertices.isOverlapping(otherVertices, velocity, other.velocity) ||
+             otherVertices.isOverlapping(firstVertices, other.velocity, velocity);      
     }
     return false;
   }
   
   void updateFromEntity()
   {
-    if (entity.getComponent!Position !is null)
-      position = entity.getComponent!Position.position;
+    if ("position" in entity.vectors)
+      position = entity.vectors["position"];
     else
       position = vec2(0.0, 0.0);
-    if (entity.getComponent!Velocity !is null)
-      velocity = entity.getComponent!Velocity.velocity;
+    if ("velocity" in entity.vectors)
+      velocity = entity.vectors["velocity"];
     else
       velocity = vec2(0.0, 0.0);
-    if (entity.getComponent!Size !is null)
-      radius = entity.getComponent!Size.radius;
+    if ("size" in entity.scalars)
+      radius = entity.scalars["size"];
     else
       radius = 0.0;
-    if (entity.getComponent!Mass !is null)
-      mass = entity.getComponent!Mass;
+    if ("mass" in entity.scalars)
+      mass = entity.scalars["mass"];
     else
       mass = 0.0;
   }
@@ -99,8 +81,8 @@ bool isOverlapping(vec2[] firstVertices, vec2[] otherVertices,
     auto otherMin = otherProjections.reduce!((a,b) => min(a,b));
     auto otherMax = otherProjections.reduce!((a,b) => max(a,b));
     
-    writeln("firstminmax ", firstMin, " ", firstMax, ", otherminmax ", otherMin, " ", otherMax);
-    writeln("firstmin < otherMax: ", firstMin < otherMax, ", firstmax > otherMin: ", firstMax > otherMin); 
+    //writeln("firstminmax ", firstMin, " ", firstMax, ", otherminmax ", otherMin, " ", otherMax);
+    //writeln("firstmin < otherMax: ", firstMin < otherMax, ", firstmax > otherMin: ", firstMax > otherMin); 
     if (firstMin < otherMax && firstMax > otherMin)
     {
       // TODO: also take angular velocity into account
@@ -116,6 +98,6 @@ bool isOverlapping(vec2[] firstVertices, vec2[] otherVertices,
     else
       return false;
   }
-  writeln("SAT returning true");
+  //writeln("SAT returning true");
   return true;
 }

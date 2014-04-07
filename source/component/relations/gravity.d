@@ -2,17 +2,13 @@ module component.relations.gravity;
 
 import std.algorithm;
 
-import artemisd.all;
 import gl3n.linalg;
 
-import component.mass;
-import component.position;
 import component.relation;
 
 
-final class Gravity : Component
+class Gravity
 {
-  mixin TypeDecl;
   mixin Relation;
   
   static vec2 getGravityForce(vec2 firstPosition, 
@@ -30,11 +26,11 @@ final class Gravity : Component
     
     if (relations.length > 0)
     {
-      gravityForce = relations.filter!(relation => relation.getComponent!Position && 
-                                                   relation.getComponent!Mass)
-                              .map!(relation => getGravityForce(relation.getComponent!Position, 
+      gravityForce = relations.filter!(relation => relation.vectors["position"] && 
+                                                   relation.scalars["mass"])
+                              .map!(relation => getGravityForce(relation.vectors["position"], 
                                                                 position, 
-                                                                relation.getComponent!Mass, 
+                                                                relation.scalars["mass"],
                                                                 mass))
                               .reduce!"a+b";
     }

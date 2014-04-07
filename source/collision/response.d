@@ -5,14 +5,11 @@ import std.math;
 import std.range;
 import std.stdio;
 
-import artemisd.all;
 import gl3n.linalg;
 
 import collision.check;
 import component.collider;
-import component.position;
 import component.sound;
-import component.velocity;
 import system.collisionhandler;
 import timer;
 
@@ -28,7 +25,7 @@ struct Collision
   }
 }
 
-void handleCollisions(World world, Collision[] collisions)
+void handleCollisions(Collision[] collisions)
 {
   foreach (collision; collisions)
   {
@@ -37,8 +34,8 @@ void handleCollisions(World world, Collision[] collisions)
     
     collision.updateFromEntities();
     
-    auto firstCollider = first.entity.getComponent!Collider;
-    auto otherCollider = other.entity.getComponent!Collider;
+    auto firstCollider = first.entity.collider;
+    auto otherCollider = other.entity.collider;
     firstCollider.isColliding = true;
     otherCollider.isColliding = true;
     
@@ -56,7 +53,7 @@ void handleCollisions(World world, Collision[] collisions)
     assert(firstCollider.contactPoint.isFinite);
     assert(otherCollider.contactPoint.isFinite);
         
-    if (first.getComponent!Velocity is null || other.getComponent!Velocity is null)
+    if ("velocity" !in first.vectors || "velocity" !in other.vectors)
       return;
     
     auto firstVelocity = first.velocity * ((first.mass-other.mass) / (first.mass+other.mass)) +
@@ -70,8 +67,8 @@ void handleCollisions(World world, Collision[] collisions)
            "Momentum not conserved in collision: went from " ~ 
            momentumBefore.to!string ~ " to " ~ momentumAfter.to!string);    
 
-    auto firstVel = first.entity.getComponent!Velocity;
-    auto otherVel = other.entity.getComponent!Velocity;
+    auto firstVel = first.entity.vectors["velocity"];
+    auto otherVel = other.entity.vectors["velocity"];
     // only change velocities if entities are moving towards each other
     if (((other.position+other.velocity*0.01) - (first.position+first.velocity*0.01)).magnitude <
         (other.position-first.position).magnitude)
@@ -87,15 +84,15 @@ void handleCollisions(World world, Collision[] collisions)
                           (1.0 / Timer.physicsTimeStep);
     
     // change positions to ensure colliders does not overlap
-    auto firstPos = collision.first.entity.getComponent!Position;
-    auto otherPos = collision.other.entity.getComponent!Position;
+    auto firstPos = collision.first.entity.vectors["position"];
+    auto otherPos = collision.other.entity.vectors["position"];
     
     // add sound entity to world
     // TODO: stop this from leaking, sound entities should be destroyed or recycled
     // when they stop playing
-    Entity bonk = world.createEntity();
-    bonk.addComponent(new Position(contactPoint, 0.0));
-    bonk.addComponent(new Sound("audio/bounce.wav"));
-    bonk.addToWorld();
+    //Entity bonk = world.createEntity();
+    //bonk.addComponent(new Position(contactPoint, 0.0));
+    //bonk.addComponent(new Sound("audio/bounce.wav"));
+    //bonk.addToWorld();
   }
 }

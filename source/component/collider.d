@@ -1,15 +1,12 @@
 module component.collider;
 
-import artemisd.all;
 import gl3n.linalg;
 
 import component.relation;
 
 
-final class Collider : Component
-{
-  mixin TypeDecl;
-  
+class Collider
+{  
   bool isColliding;
   vec2 contactPoint;
   vec2 force = vec2(0.0, 0.0);

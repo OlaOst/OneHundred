@@ -13,6 +13,7 @@ interface Source
 {
   void play();
   void silence();
+  bool isPlaying();
   
   ALuint getAlSource();
   

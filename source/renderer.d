@@ -47,8 +47,11 @@ class Renderer
     glClearColor(0.0, 0.0, 0.33, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    drawText(vertices["text"], texCoords["text"]);
-    drawPolygons(vertices["polygon"], colors["polygon"]);
+    if ("text" in vertices && "text" in texCoords)
+      drawText(vertices["text"], texCoords["text"]);
+      
+    if ("polygon" in vertices && "polygon" in colors)
+      drawPolygons(vertices["polygon"], colors["polygon"]);
     
     SDL_GL_SwapWindow(window);
   }

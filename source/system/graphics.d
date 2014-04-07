@@ -6,25 +6,23 @@ import std.range;
 import std.stdio;
 import std.string;
 
-import artemisd.all;
 import gl3n.linalg; 
 
 import component.drawable;
 import component.drawables.polygon;
 import component.drawables.text;
-import component.position;
-import component.velocity;
+import entity;
+import system.system;
 import textrenderer.textrenderer;
 
 
-final class Graphics : EntityProcessingSystem
-{
-  mixin TypeDecl;
+class Graphics : System
+{ 
+  vec2[] positions;
+  double[] angles;
   
   this(int xres, int yres)
   {
-    super(Aspect.getAspectForAll!(Drawable));
-    
     this.xres = xres;
     this.yres = yres;
     
@@ -37,7 +35,86 @@ final class Graphics : EntityProcessingSystem
       textRenderer.close();
   }
   
-  override void process(Entity entity)
+  override bool canAddEntity(Entity entity)
+  {
+    return "position" in entity.vectors && (entity.polygon !is null || entity.text !is null);
+  }
+  
+  override void addEntity(Entity entity)
+  {
+    if (canAddEntity(entity))
+    {
+      indexForEntity[entity] = positions.length;
+      entityForIndex[positions.length] = entity;
+      
+      positions ~= entity.vectors["position"];
+      if ("angle" in entity.scalars)
+        angles ~= entity.scalars["angle"];
+      else
+        angles ~= 0.0;
+    }
+  }
+  
+  override void update()
+  {
+    foreach (int index, Entity entity; entityForIndex)
+    {
+      if (entity.polygon !is null)
+      {
+        vertices["polygon"] ~= entity.polygon.vertices.map!(vertex => ((vec3(vertex, 0.0) * 
+                                                                      mat3.zrotation(angles[index])).xy + 
+                                                                      positions[index] - cameraPosition) *
+                                                                      zoom).array();
+        //colors["polygon"] ~= entity.polygon.colors;
+        
+        import component.collider;
+        if (entity.collider !is null && entity.collider.isColliding)                                              
+          colors["polygon"] ~= entity.polygon.colors.map!(color => vec4(1.0, color.g, color.b, color.a)).array;
+        else
+          colors["polygon"] ~= entity.polygon.colors;
+      }
+      else if (entity.text !is null)
+      {
+        auto cursor = vec2(0.0, 0.0);
+        
+        auto lines = entity.text.text.split("\n");
+        foreach (line; lines)
+        {
+          foreach (letter; line)
+          {
+            auto glyph = textRenderer.getGlyphForLetter(letter);
+        
+            texCoords["text"] ~= textRenderer.getTexCoordsForLetter(letter);
+            vertices["text"] ~= entity.text.vertices.map!(vertex => ((vec3(vertex, 0.0) *
+                                                                    mat3.zrotation(angles[index])).xy + 
+                                                                    positions[index] - cameraPosition + 
+                                                                    glyph.offset * entity.text.size + cursor) * 
+                                                                    zoom).array();
+            
+            cursor += glyph.advance * entity.text.size * 2.0;
+          }
+          cursor = vec2(0.0, cursor.y - entity.text.size * 2.0);
+        }
+      }
+    }
+  }
+  
+  void updateFromEntities()
+  {
+    foreach (int index, Entity entity; entityForIndex)
+    {
+      //entity.vectors["position"] = currentStates[index].position;
+      //entity.scalars["angle"] = currenStates[index].angle;
+      positions[index] = entity.vectors["position"];
+      
+      if ("angle" in entity.scalars)
+        angles[index] = entity.scalars["angle"];
+      else
+        angles[index] = 0.0;
+    }
+  }
+  
+  /+override void process(Entity entity)
   {
     auto position = entity.getComponent!Position;
     auto polygon = entity.getComponent!Polygon;
@@ -81,7 +158,7 @@ final class Graphics : EntityProcessingSystem
         cursor = vec2(0.0, cursor.y - text.size * 2.0);
       }
     }
-  }
+  }+/
 
   vec2[][string] getVertices() { return vertices; }
   vec4[][string] getColors() { return colors; }

@@ -37,6 +37,11 @@ public:
     playbackTask.executeInNewThread();
   }
   
+  bool isPlaying()
+  {
+    return keepPlaying;
+  }
+  
   void silence() { keepPlaying = false; }
   ALuint getAlSource() { return source; }
   

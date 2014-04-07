@@ -1,34 +1,52 @@
 module system.movement;
 
-import artemisd.all;
 import gl3n.linalg;
 
-import component.position;
-import component.velocity;
+import entity;
+import system.system;
 
 
-final class Movement : EntityProcessingSystem
+class Movement : System
 {
-  mixin TypeDecl;
-  
-  World world;
-  
-  this(World world)
+  invariant()
   {
-    super(Aspect.getAspectForAll!(Position, Velocity));
+    assert(positions.length == velocities.length);
     
-    this.world = world;
+    // ensure there is a one-to-one mapping for indices in the arrays and the indexForEntity mapping
+    foreach (const Entity entity, int index; indexForEntity)
+    {
+      assert(index >= 0 && index <= positions.length);
+    }
+  }
+
+  vec2[] positions;
+  vec2[] velocities;
+  
+  int[const Entity] indexForEntity;
+  Entity[int] entityForIndex;
+  
+  override bool canAddEntity(Entity entity)
+  {
+    return "position" in entity.vectors && "velocity" in entity.vectors;
   }
   
-  override void process(Entity entity)
+  override void addEntity(Entity entity)
   {
-    auto position = entity.getComponent!Position;
-    auto velocity = entity.getComponent!Velocity;
-    
-    assert(position !is null);
-    assert(velocity !is null);
-    
-    //position += velocity * world.getDelta();
-    //position.angle += velocity.rotation * world.getDelta();
+    if (canAddEntity(entity))
+    {
+      indexForEntity[entity] = positions.length;
+      entityForIndex[positions.length] = entity;
+      
+      positions ~= entity.vectors["position"];
+      velocities ~= entity.vectors["velocity"];
+    }
+  }
+  
+  override void update()
+  {
+    for (int index = 0; index < positions.length; index++)
+    {
+      positions[index] += velocities[index];
+    }
   }
 }

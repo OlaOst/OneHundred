@@ -5,7 +5,6 @@ import std.exception;
 import std.range;
 import std.stdio;
 
-import artemisd.all;
 import derelict.openal.al;
 import derelict.ogg.ogg;
 //import derelict.vorbis.enc;
@@ -15,18 +14,17 @@ import derelict.vorbis.vorbis;
 import audio.raw;
 import audio.stream;
 import component.sound;
+import entity;
+import system.system;
 
 
-final class SoundSystem : EntityProcessingSystem
+final class SoundSystem : System
 {
-  mixin TypeDecl;
-  
   bool stopPlaying = false;
+  Sound[] sounds;
   
   this()
   {
-    super(Aspect.getAspectForAll!(Sound));
-  
     DerelictAL.load();
     DerelictOgg.load();
     DerelictVorbis.load();
@@ -41,34 +39,46 @@ final class SoundSystem : EntityProcessingSystem
     alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
   }
   
-  override void process(Entity entity)
+  override bool canAddEntity(Entity entity)
   {
-    auto sound = entity.getComponent!Sound;
-    
-    if (sound)
+    return entity.sound !is null;
+  }
+  
+  override void addEntity(Entity entity)
+  {
+    if (canAddEntity(entity))
+    {
+      indexForEntity[entity] = sounds.length;
+      entityForIndex[sounds.length] = entity;
+      
+      sounds ~= entity.sound;
+    }
+  }
+  
+  override void update()
+  {
+    foreach (sound; sounds)
     {
       if (stopPlaying)
         sound.stopPlaying();
       else if (!sound.isPlaying)
-        sound.startPlaying();
+        sound.startPlaying();        
     }
   }
   
   void silence(Entity entity)
   {
-    auto sound = entity.getComponent!Sound;
-    
-    if (sound)
-      sound.stopPlaying();
+    if (entity in indexForEntity)
+    {
+      sounds[indexForEntity[entity]].stopPlaying();
+    }
   }
   
   void silence()
   {
     stopPlaying = true;
-  }
-  
-  override void removed(Entity entity)
-  {
-    super.removed(entity);
+    
+    foreach (sound; sounds)
+      sound.stopPlaying();
   }
 }

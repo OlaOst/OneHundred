@@ -30,12 +30,12 @@ Glyph loadGlyph(FT_Face face, char letter, uint glyphSize)
   FT_Load_Glyph(face, glyphIndex, 0);
   FT_Render_Glyph(face.glyph, FT_RENDER_MODE_NORMAL);
   
-  debug writeln("glyph ", letter > 32 ? letter : '?', 
+  /*debug writeln("glyph ", letter > 32 ? letter : '?', 
                 ", buffer is ", face.glyph.bitmap.width, "x", face.glyph.bitmap.rows,
                 ", pitch is ", face.glyph.bitmap.pitch,
                 ", metric is ", face.glyph.metrics.width/64, "x", face.glyph.metrics.height/64,
                 ", horizontal advance is ", face.glyph.metrics.horiAdvance/64, 
-                ", bearing is ", face.glyph.bitmap_left, "x", face.glyph.bitmap_top);
+                ", bearing is ", face.glyph.bitmap_left, "x", face.glyph.bitmap_top);*/
   
   Glyph glyph;
   

@@ -73,8 +73,19 @@ public:
     }
   }
   
+  bool isPlaying()
+  {
+    if (source > 0 && source.alIsSource)
+    {
+      return source.isPlaying();
+    }
+    return false;
+  }
+  
   void silence()
   {
+    writeln("silencing raw source ", source);
+    
     if (source > 0)
     {
       enforce(source.alIsSource);
