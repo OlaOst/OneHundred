@@ -1,12 +1,5 @@
 module renderer;
 
-import std.algorithm;
-import std.array;
-import std.file;
-import std.range;
-import std.stdio;
-import std.string;
-
 import derelict.opengl3.gl3;
 import derelict.sdl2.sdl;
 import gl3n.linalg; 
@@ -28,8 +21,6 @@ class Renderer
     
     shaderSet["default"] = new Shader("shader/default.shader");
     shaderSet["texture"] = new Shader("shader/texture.shader");
-    
-    //auto ctx = CGLGetCurrentContext();
   }
   
   public void close()
