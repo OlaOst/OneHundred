@@ -44,7 +44,10 @@ void handleCollisions(Collision[] collisions)
                          (first.position - other.position) * other.radius) * 
                         (1.0 / (first.radius + other.radius));
 
-    assert(contactPoint.isFinite, "Bad contactpoint calculation from positions " ~ other.position.to!string ~ " vs " ~ first.position.to!string ~ ", and radii " ~ other.radius.to!string ~ " vs " ~ first.radius.to!string);
+    assert(contactPoint.isFinite, 
+           "Bad contactpoint calculation from positions " ~ 
+           other.position.to!string ~ " vs " ~ first.position.to!string ~ 
+           ", and radii " ~ other.radius.to!string ~ " vs " ~ first.radius.to!string);
 
     //writeln("contactpoint: ", contactPoint);
     firstCollider.contactPoint = first.position + contactPoint;
@@ -73,8 +76,6 @@ void handleCollisions(Collision[] collisions)
     if (((other.position+other.velocity*0.01) - (first.position+first.velocity*0.01)).magnitude <
         (other.position-first.position).magnitude)
     {
-      //firstVel = firstVelocity;
-      //otherVel = otherVelocity;
       first.entity.vectors["velocity"] = firstVelocity;
       other.entity.vectors["velocity"] = otherVelocity;
     }
@@ -88,13 +89,5 @@ void handleCollisions(Collision[] collisions)
     // change positions to ensure colliders does not overlap
     auto firstPos = collision.first.entity.vectors["position"];
     auto otherPos = collision.other.entity.vectors["position"];
-    
-    // add sound entity to world
-    // TODO: stop this from leaking, sound entities should be destroyed or recycled
-    // when they stop playing
-    //Entity bonk = world.createEntity();
-    //bonk.addComponent(new Position(contactPoint, 0.0));
-    //bonk.addComponent(new Sound("audio/bounce.wav"));
-    //bonk.addToWorld();
   }
 }
