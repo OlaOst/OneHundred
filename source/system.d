@@ -10,8 +10,10 @@ class System(ComponentType)
 {
   invariant()
   {
-    assert(indexForEntity.length == entityForIndex.length, "indexForEntity/entityForIndex length mismatch");
-    assert(indexForEntity.length == components.length, "indexForEntity/components length mismatch");
+    assert(indexForEntity.length == entityForIndex.length, 
+           "indexForEntity/entityForIndex length mismatch");
+    assert(indexForEntity.length == components.length, 
+           "indexForEntity/components length mismatch");
     
     // ensure there is a one-to-one mapping between indices and entities
     foreach (int index, const Entity entity; entityForIndex)
@@ -20,7 +22,8 @@ class System(ComponentType)
       assert(entity in indexForEntity);
       assert(entityForIndex[index] == entity);
       assert(indexForEntity[entity] == index);
-      assert(index >= 0 && index < components.length, "Index " ~ index.to!string ~ " out of bounds: " ~ components.length.to!string);
+      assert(index >= 0 && index < components.length, 
+             "index " ~ index.to!string ~ " out of bounds: " ~ components.length.to!string);
     }
   }
   
