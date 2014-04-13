@@ -42,9 +42,9 @@ void handleCollisions(Collision[] collisions)
     // TODO: collision.check should calculate the contactpoint
     auto contactPoint = ((other.position - first.position) * first.radius + 
                          (first.position - other.position) * other.radius) * 
-                        (1.0 / first.radius + other.radius);
+                        (1.0 / (first.radius + other.radius));
 
-    assert(contactPoint.isFinite);
+    assert(contactPoint.isFinite, "Bad contactpoint calculation from positions " ~ other.position.to!string ~ " vs " ~ first.position.to!string ~ ", and radii " ~ other.radius.to!string ~ " vs " ~ first.radius.to!string);
 
     //writeln("contactpoint: ", contactPoint);
     firstCollider.contactPoint = first.position + contactPoint;
