@@ -32,7 +32,7 @@ class CollisionHandler : System!CollisionEntity
   
   override void update()
   {
-    debug int broadPhaseCount, midPhaseCount, narrowPhaseCount;
+    debug int broadPhaseCount, narrowPhaseCount;
     debug StopWatch broadPhaseTimer, narrowPhaseTimer;
     
     foreach (collisionEntity; components)
@@ -48,10 +48,6 @@ class CollisionHandler : System!CollisionEntity
       auto candidates = index.find(collisionEntity.position, collisionEntity.radius);
       debug broadPhaseTimer.stop;
       debug broadPhaseCount += candidates.length;
-      
-      debug midPhaseCount += candidates.filter!(candidate => 
-                               (collisionEntity.position - candidate.position).magnitude_squared < 
-                               (collisionEntity.radius + candidate.radius)^^2).walkLength;
       
       debug narrowPhaseTimer.start;
       auto collidingEntities = 
@@ -70,10 +66,8 @@ class CollisionHandler : System!CollisionEntity
       debug narrowPhaseCount += collidingEntities.walkLength;
     }
     
-    debugText = format("collisionhandler checked %s/%s/%s/%s candidates\ntotal/broadphase/midphase/narrowphase", 
-                       components.length,
+    debugText = format("collisionhandler checked %s/%s candidates\nbroadphase/narrowphase", 
                        broadPhaseCount, 
-                       midPhaseCount,
                        narrowPhaseCount);
     debugText ~= format("\ncollisionhandler timings %s/%s milliseconds\nbroadphase/narrowphase", 
                         broadPhaseTimer.peek.usecs*0.001,
