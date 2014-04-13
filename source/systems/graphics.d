@@ -38,7 +38,8 @@ class Graphics : System!GraphicsComponent
   
   override GraphicsComponent makeComponent(Entity entity)
   {
-    return GraphicsComponent(entity.vectors["position"], "angle" in entity.scalars ? entity.scalars["angle"] : 0.0);
+    return GraphicsComponent(entity.vectors["position"], 
+                             "angle" in entity.scalars ? entity.scalars["angle"] : 0.0);
   }
   
   override void update()
