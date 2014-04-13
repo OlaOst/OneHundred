@@ -63,8 +63,10 @@ Entity[] createEntities(uint elements)
   {
     auto angle = (index/elements) * PI * 2.0;
     auto size = uniform(0.025, 0.125);
-    auto entity = createEntity(vec2(1.0 + cos(angle * 5) * (0.3 + angle.sqrt),
-                                          sin(angle * 5) * (0.3 + angle.sqrt)),
+    //auto position = vec2(1.0 + cos(angle * 5) * (0.3 + angle.sqrt),
+                         //sin(angle * 5) * (0.3 + angle.sqrt));
+    auto position = vec2(uniform(-5.0, 5.0), uniform(-5.0, 5.0));                   
+    auto entity = createEntity(position,
                                vec2(sin(angle) * 0.5, cos(angle) * 0.5),
                                size,
                                3, 12);

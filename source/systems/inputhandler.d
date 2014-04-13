@@ -10,7 +10,7 @@ import entity;
 import system;
 
 
-class InputHandler : System
+class InputHandler : System!Input
 {
 public:
   Input[] inputs;
@@ -22,15 +22,9 @@ public:
     return entity.input !is null;
   }
   
-  override void addEntity(Entity entity)
+  override Input makeComponent(Entity entity)
   {
-    if (canAddEntity(entity))
-    {
-      indexForEntity[entity] = inputs.length;
-      entityForIndex[inputs.length] = entity;
-      
-      inputs ~= entity.input;
-    }
+    return entity.input;
   }
   
   override void update()

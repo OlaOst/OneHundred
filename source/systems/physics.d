@@ -16,54 +16,63 @@ import system;
 import timer;
 
 
-class Physics : System
+class Physics : System!State
 {
   State[] previousStates;
-  State[] currentStates;
+  //State[] currentStates;
 
   Timer timer;
 
+  void setTimer(Timer timer)
+  {
+    this.timer = timer;
+  }
+  
   override bool canAddEntity(Entity entity)
   {
     return "position" in entity.vectors && "mass" in entity.scalars;
   }
   
-  override void addEntity(Entity entity)
+  override State makeComponent(Entity entity)
   {
-    if (canAddEntity(entity))
-    {
-      indexForEntity[entity] = currentStates.length;
-      entityForIndex[currentStates.length] = entity;
-      
-      auto state = State(entity, &calculateForce, &calculateTorque);
-
-      currentStates ~= state;
-    }
-  }
-  
-  void setTimer(Timer timer)
-  {
-    this.timer = timer;
+    return State(entity, &calculateForce, &calculateTorque);
   }
   
   override void update()
   {
     while (timer.accumulator >= timer.physicsTimeStep)
     {
-      integrateStates(currentStates, previousStates, timer.time, timer.physicsTimeStep);
+      //integrateStates(currentStates, previousStates, timer.time, timer.physicsTimeStep);
+      integrateStates(components, previousStates, timer.time, timer.physicsTimeStep);
       timer.accumulator -= timer.physicsTimeStep;
       timer.time += timer.physicsTimeStep;
     }
     
-    interpolateStates(currentStates, previousStates, timer.accumulator / timer.physicsTimeStep);
+    //previousStates = currentStates;
+    
+    //interpolateStates(currentStates, previousStates, timer.accumulator / timer.physicsTimeStep);
+    interpolateStates(components, previousStates, timer.accumulator / timer.physicsTimeStep);
   }
   
   void updateEntities()
   {
     foreach (int index, Entity entity; entityForIndex)
     {
-      entity.vectors["position"] = currentStates[index].position;
-      entity.scalars["angle"] = currentStates[index].angle;
+      //entity.vectors["position"] = currentStates[index].position;
+      //entity.vectors["velocity"] = currentStates[index].velocity;
+      //entity.scalars["angle"] = currentStates[index].angle;
+      entity.vectors["position"] = components[index].position;
+      entity.vectors["velocity"] = components[index].velocity;
+      entity.scalars["angle"] = components[index].angle;
+    }
+  }
+  
+  void updateFromEntities()
+  {
+    foreach (int index, Entity entity; entityForIndex)
+    {
+      //currentStates[index].velocity = entity.vectors["velocity"];
+      components[index].velocity = entity.vectors["velocity"];
     }
   }
 }

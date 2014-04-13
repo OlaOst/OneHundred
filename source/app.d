@@ -27,19 +27,11 @@ void main()
   auto renderer = new Renderer(xres, yres);
   auto timer = new Timer(); 
   
-  System[] systems;
-  
   auto graphics = new Graphics(xres, yres);
   auto physics = new Physics();
   auto inputHandler = new InputHandler();
   auto collisionHandler = new CollisionHandler();
   auto soundSystem = new SoundSystem();
-  
-  systems ~= graphics;
-  systems ~= physics;
-  systems ~= inputHandler;
-  systems ~= collisionHandler;
-  systems ~= soundSystem;
   
   scope(exit)
   {
@@ -47,23 +39,36 @@ void main()
     soundSystem.silence();
   }
   
-  Entity[] entities = createEntities(10);
-  entities ~= createPlayer();
+  Entity[] entities;
+  Entity[] npcs = createEntities(100);
+  entities ~= npcs;
+  
+  auto player = createPlayer();
+  entities ~= player;
   
   auto mouseCursor = createMouseCursor();
   entities ~= mouseCursor;
 
-  //entities ~= createMusic();
-  entities ~= createStartupSound();
+  auto music = createMusic();
+  entities ~= music;
+  //auto startupSound = createStartupSound();
+  //entities ~= startupSound;
   
   entities ~= createText();
+  auto debugText = createDebugText();
+  entities ~= debugText;
   
   auto gameController = createGameController();
-  inputHandler.addEntity(gameController);
+  entities ~= gameController;
   
-  foreach (system; systems)
-    foreach (entity; entities)
-      system.addEntity(entity);
+  foreach (entity; entities)
+  {
+    graphics.addEntity(entity);
+    physics.addEntity(entity);
+    inputHandler.addEntity(entity);
+    collisionHandler.addEntity(entity);
+    soundSystem.addEntity(entity);
+  }
   
   bool keepRunning = true;
   timer.start();
@@ -72,8 +77,13 @@ void main()
     timer.incrementAccumulator();
     physics.setTimer(timer);
     
-    foreach (system; systems)
-      system.update();
+    collisionHandler.update();
+    physics.updateFromEntities();
+    
+    graphics.update();
+    physics.update();
+    inputHandler.update();
+    soundSystem.update();
     
     physics.updateEntities();
     graphics.updateFromEntities();
@@ -87,9 +97,35 @@ void main()
       graphics.zoom -= graphics.zoom * 1.0/60.0;
     if ("quit" in gameActions && gameActions["quit"])
       keepRunning = false;
+    if ("addEntity" in gameActions && gameActions["addEntity"])
+    {
+      auto entity = createEntities(1)[0];
+
+      graphics.addEntity(entity);
+      physics.addEntity(entity);
+      inputHandler.addEntity(entity);
+      collisionHandler.addEntity(entity);
+      soundSystem.addEntity(entity);
+      
+      npcs ~= entity;
+    }
+    if ("removeEntity" in gameActions && gameActions["removeEntity"] && npcs.length > 1)
+    {
+      auto entity = npcs[$-1];
+      
+      graphics.removeEntity(entity);
+      physics.removeEntity(entity);
+      inputHandler.removeEntity(entity);
+      collisionHandler.removeEntity(entity);
+      soundSystem.removeEntity(entity);
+
+      npcs.length = npcs.length - 1;
+    }
 
     mouseCursor.vectors["position"] = 
       graphics.getWorldPositionFromScreenCoordinates(inputHandler.mouseScreenPosition);
+      
+    debugText.text.text = collisionHandler.debugText;
       
     renderer.draw(graphics.vertices, graphics.colors, graphics.texCoords);
   }

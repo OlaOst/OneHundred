@@ -18,10 +18,9 @@ import entity;
 import system;
 
 
-final class SoundSystem : System
+final class SoundSystem : System!Sound
 {
   bool stopPlaying = false;
-  Sound[] sounds;
   
   this()
   {
@@ -44,20 +43,14 @@ final class SoundSystem : System
     return entity.sound !is null;
   }
   
-  override void addEntity(Entity entity)
+  override Sound makeComponent(Entity entity)
   {
-    if (canAddEntity(entity))
-    {
-      indexForEntity[entity] = sounds.length;
-      entityForIndex[sounds.length] = entity;
-      
-      sounds ~= entity.sound;
-    }
+    return entity.sound;
   }
   
   override void update()
   {
-    foreach (sound; sounds)
+    foreach (sound; components)
     {
       if (stopPlaying)
         sound.stopPlaying();
@@ -70,7 +63,7 @@ final class SoundSystem : System
   {
     if (entity in indexForEntity)
     {
-      sounds[indexForEntity[entity]].stopPlaying();
+      components[indexForEntity[entity]].stopPlaying();
     }
   }
   
@@ -78,7 +71,7 @@ final class SoundSystem : System
   {
     stopPlaying = true;
     
-    foreach (sound; sounds)
+    foreach (sound; components)
       sound.stopPlaying();
   }
 }

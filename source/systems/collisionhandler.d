@@ -15,24 +15,19 @@ import spatialindex.spatialindex;
 import system;
 
 
-class CollisionHandler : System
+class CollisionHandler : System!CollisionEntity
 {
   SpatialIndex!CollisionEntity index = new SpatialIndex!CollisionEntity();
-  CollisionEntity[] collisionEntities;
+  string debugText;
   
   override bool canAddEntity(Entity entity)
   {
     return entity.collider !is null;
   }
   
-  override void addEntity(Entity entity)
+  override CollisionEntity makeComponent(Entity entity)
   {
-    if (canAddEntity(entity))
-    {
-      indexForEntity[entity] = collisionEntities.length;
-      entityForIndex[collisionEntities.length] = entity;
-      collisionEntities ~= CollisionEntity(entity);
-    }
+    return CollisionEntity(entity);
   }
   
   override void update()
@@ -40,11 +35,11 @@ class CollisionHandler : System
     debug int broadPhaseCount, midPhaseCount, narrowPhaseCount;
     debug StopWatch broadPhaseTimer, narrowPhaseTimer;
     
-    foreach (collisionEntity; collisionEntities)
+    foreach (collisionEntity; components)
       index.insert(collisionEntity);
     
     Collision[] collisions;
-    foreach (collisionEntity; collisionEntities)
+    foreach (collisionEntity; components)
     {
       auto collider = collisionEntity.collider;
       collider.isColliding = false;
@@ -75,14 +70,14 @@ class CollisionHandler : System
       debug narrowPhaseCount += collidingEntities.walkLength;
     }
     
-    /*debug writeln("collisionhandler checked ", collisionEntities.length, "/",
-                                               broadPhaseCount, "/", 
-                                               midPhaseCount, "/", 
-                                               narrowPhaseCount, 
-                  " candidates in total/broadphase/midphase/narrowphase");
-    debug writeln("collisionhandler timings ", broadPhaseTimer.peek.usecs*0.001, "/", 
-                                               narrowPhaseTimer.peek.usecs*0.001, 
-                  " candidates in broadphase/narrowphase");*/
+    debugText = format("collisionhandler checked %s/%s/%s/%s candidates\ntotal/broadphase/midphase/narrowphase", 
+                       components.length,
+                       broadPhaseCount, 
+                       midPhaseCount,
+                       narrowPhaseCount);
+    debugText ~= format("\ncollisionhandler timings %s/%s milliseconds\nbroadphase/narrowphase", 
+                        broadPhaseTimer.peek.usecs*0.001,
+                        narrowPhaseTimer.peek.usecs*0.001);
                   
     handleCollisions(collisions);
     
@@ -93,6 +88,6 @@ class CollisionHandler : System
   void updateFromEntities()
   {
     foreach (int index, Entity entity; entityForIndex)
-      collisionEntities[index].updateFromEntity();
+      components[index].updateFromEntity();
   }
 }

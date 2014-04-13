@@ -15,7 +15,13 @@ import textrenderer.textrenderer;
 import textrenderer.transform;
 
 
-class Graphics : System
+struct GraphicsComponent
+{
+  vec2 position;
+  double angle;
+}
+
+class Graphics : System!GraphicsComponent
 {
   this(int xres, int yres)
   {
@@ -30,15 +36,9 @@ class Graphics : System
     return "position" in entity.vectors && (entity.polygon !is null || entity.text !is null);
   }
   
-  override void addEntity(Entity entity)
+  override GraphicsComponent makeComponent(Entity entity)
   {
-    if (canAddEntity(entity))
-    {
-      indexForEntity[entity] = positions.length;
-      entityForIndex[positions.length] = entity;
-      positions ~= entity.vectors["position"];
-      "angle" in entity.scalars ? angles ~= entity.scalars["angle"] : angles ~= 0.0;
-    }
+    return GraphicsComponent(entity.vectors["position"], "angle" in entity.scalars ? entity.scalars["angle"] : 0.0);
   }
   
   override void update()
@@ -50,8 +50,8 @@ class Graphics : System
     foreach (int index, Entity entity; entityForIndex)
     {
       auto transform = delegate (vec2 vertex) => ((vec3(vertex, 0.0) * 
-                                                 mat3.zrotation(angles[index])).xy + 
-                                                 positions[index] - cameraPosition) *
+                                                 mat3.zrotation(components[index].angle)).xy + 
+                                                 components[index].position - cameraPosition) *
                                                  zoom;
       if (entity.polygon !is null)
       {
@@ -73,8 +73,8 @@ class Graphics : System
   {
     foreach (int index, Entity entity; entityForIndex)
     {
-      positions[index] = entity.vectors["position"];
-      angles[index] = "angle" in entity.scalars ? entity.scalars["angle"] : 0.0;
+      components[index].position = entity.vectors["position"];
+      components[index].angle = "angle" in entity.scalars ? entity.scalars["angle"] : 0.0;
     }
   }
   
@@ -93,6 +93,4 @@ public:
 private:
   int xres, yres;
   TextRenderer textRenderer;
-  vec2[] positions;
-  double[] angles;
 }

@@ -67,21 +67,23 @@ void handleCollisions(Collision[] collisions)
            "Momentum not conserved in collision: went from " ~ 
            momentumBefore.to!string ~ " to " ~ momentumAfter.to!string);    
 
-    /*auto firstVel = first.entity.vectors["velocity"];
+    auto firstVel = first.entity.vectors["velocity"];
     auto otherVel = other.entity.vectors["velocity"];
     // only change velocities if entities are moving towards each other
     if (((other.position+other.velocity*0.01) - (first.position+first.velocity*0.01)).magnitude <
         (other.position-first.position).magnitude)
     {
-      firstVel = firstVelocity;
-      otherVel = otherVelocity;
-    }*/
+      //firstVel = firstVelocity;
+      //otherVel = otherVelocity;
+      first.entity.vectors["velocity"] = firstVelocity;
+      other.entity.vectors["velocity"] = otherVelocity;
+    }
 
     // TODO: is it right to integrate by physicsTimeStep here?
-    firstCollider.force = (firstVelocity * first.mass - first.velocity * first.mass) * 
+    /*firstCollider.force = (firstVelocity * first.mass - first.velocity * first.mass) * 
                           (1.0 / Timer.physicsTimeStep) * 0.1;
     otherCollider.force = (otherVelocity * other.mass - other.velocity * other.mass) * 
-                          (1.0 / Timer.physicsTimeStep) * 0.1;
+                          (1.0 / Timer.physicsTimeStep) * 0.1;*/
     
     // change positions to ensure colliders does not overlap
     auto firstPos = collision.first.entity.vectors["position"];

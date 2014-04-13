@@ -21,7 +21,7 @@ class Input
                                             "rotateRight" : SDLK_RIGHT];*/
 
   static SDL_Keycode[string] gameControls;
-  
+    
   static this()
   {
     playerInput["accelerate"] = SDLK_UP;
@@ -32,5 +32,7 @@ class Input
     gameControls["zoomIn"] = SDLK_PAGEUP;
     gameControls["zoomOut"] = SDLK_PAGEDOWN;
     gameControls["quit"] = SDLK_ESCAPE;
+    gameControls["addEntity"] = SDLK_INSERT;
+    gameControls["removeEntity"] = SDLK_DELETE;
   }
 }
