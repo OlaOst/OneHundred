@@ -109,7 +109,7 @@ void main()
       
       npcs ~= entity;
     }
-    if ("removeEntity" in gameActions && gameActions["removeEntity"] && npcs.length > 1)
+    if ("removeEntity" in gameActions && gameActions["removeEntity"] && npcs.length > 0)
     {
       auto entity = npcs[$-1];
       
@@ -119,7 +119,7 @@ void main()
       collisionHandler.removeEntity(entity);
       soundSystem.removeEntity(entity);
 
-      npcs.length = npcs.length - 1;
+      npcs.popBack();
     }
 
     mouseCursor.vectors["position"] = 

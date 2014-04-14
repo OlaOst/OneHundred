@@ -21,6 +21,7 @@ class Renderer
     
     shaderSet["default"] = new Shader("shader/default.shader");
     shaderSet["texture"] = new Shader("shader/texture.shader");
+    shaderSet["debugCircle"] = new Shader("shader/debugCircle.shader");
   }
   
   public void close()
@@ -42,7 +43,11 @@ class Renderer
       drawText(vertices["text"], texCoords["text"]);
       
     if ("polygon" in vertices && "polygon" in colors)
+    {
       drawPolygons(vertices["polygon"], colors["polygon"]);
+      
+      debug drawDebugCircles(vertices["coveringSquare"], vertices["coveringTexCoords"]);
+    }    
     
     SDL_GL_SwapWindow(window);
   }
@@ -67,7 +72,7 @@ class Renderer
     vboSet["colors"].remove();
   }
   
-  public void drawText(vec2[] vertices, vec2[] texCoords)
+  void drawText(vec2[] vertices, vec2[] texCoords)
   in
   {
     assert(vertices.length == texCoords.length);
@@ -80,6 +85,21 @@ class Renderer
     shaderSet["texture"].bind();
     vboSet["vertices"].bind(shaderSet["texture"], "position", GL_FLOAT, 2, 0, 0);
     vboSet["texture"].bind(shaderSet["texture"], "texCoords", GL_FLOAT, 2, 0, 0);
+    
+    glDrawArrays(GL_TRIANGLES, 0, cast(int)(vertices.length));
+    
+    vboSet["vertices"].remove();
+    vboSet["texture"].remove();
+  }
+  
+  void drawDebugCircles(vec2[] vertices, vec2[] texCoords)
+  {
+    vboSet["vertices"] = new Buffer(vertices);
+    vboSet["texture"] = new Buffer(texCoords);
+    
+    shaderSet["debugCircle"].bind();
+    vboSet["vertices"].bind(shaderSet["debugCircle"], "position", GL_FLOAT, 2, 0, 0);
+    vboSet["texture"].bind(shaderSet["debugCircle"], "texCoords", GL_FLOAT, 2, 0, 0);
     
     glDrawArrays(GL_TRIANGLES, 0, cast(int)(vertices.length));
     

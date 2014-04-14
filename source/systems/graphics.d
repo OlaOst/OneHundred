@@ -56,6 +56,15 @@ class Graphics : System!GraphicsComponent
                                                  zoom;
       if (entity.polygon !is null)
       {
+        vertices["basePolygon"] ~= entity.polygon.vertices;//.map!(vertex => vertex * zoom).array();
+        vertices["coveringSquare"] ~= component.drawable.baseSquare.map!(vertex => vertex * entity.polygon.vertices.map!(v => v.magnitude).reduce!"a > b ? a : b").map!transform.array();
+        vertices["coveringTexCoords"] ~= [vec2(-1.0, -1.0), 
+                                          vec2( 1.0, -1.0), 
+                                          vec2( 1.0,  1.0), 
+                                          vec2( 1.0,  1.0),
+                                          vec2(-1.0,  1.0),
+                                          vec2(-1.0, -1.0)];
+      
         vertices["polygon"] ~= entity.polygon.vertices.map!transform.array();
         if (entity.collider !is null && entity.collider.isColliding)
           colors["polygon"] ~= entity.polygon.colors.map!(color => vec4(1.0, color.gba)).array;
