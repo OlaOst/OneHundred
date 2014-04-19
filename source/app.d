@@ -36,6 +36,7 @@ void main()
   scope(exit)
   {
     renderer.close();
+    graphics.close();
     soundSystem.silence();
   }
   
@@ -90,7 +91,6 @@ void main()
     collisionHandler.updateFromEntities();
     
     auto gameActions = gameController.input.isActive;
-    //writeln("gameactions: ", gameActions);
     if ("zoomIn" in gameActions && gameActions["zoomIn"])
       graphics.zoom += graphics.zoom * 1.0/60.0;
     if ("zoomOut" in gameActions && gameActions["zoomOut"])
