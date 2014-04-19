@@ -33,8 +33,8 @@ struct CollisionEntity
       
       assert(firstCollider !is null && otherCollider !is null);
       
-      auto firstVertices = firstCollider.vertices;
-      auto otherVertices = otherCollider.vertices;
+      auto firstVertices = firstCollider.vertices.map!(vertex => vertex + position).array();
+      auto otherVertices = otherCollider.vertices.map!(vertex => vertex + other.position).array();
       
       return firstVertices.isOverlapping(otherVertices, velocity, other.velocity) ||
              otherVertices.isOverlapping(firstVertices, other.velocity, velocity);      
