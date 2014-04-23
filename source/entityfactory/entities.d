@@ -9,6 +9,7 @@ import gl3n.linalg;
 
 import component.collider;
 import component.drawables.polygon;
+import component.drawables.sprite;
 import component.drawables.text;
 import component.input;
 import component.sound;
@@ -29,6 +30,9 @@ Entity createPlayer()
   auto playerEntity = createEntity(vec2(0.0, 0.0), vec2(0.0, 0.0), 0.3, 3, 3);
   
   playerEntity.input = new Input(Input.playerInput);
+  
+  playerEntity.polygon = null;
+  playerEntity.sprite = new Sprite(0.3, "images/playerShip1_blue.png");
   
   return playerEntity;
 }

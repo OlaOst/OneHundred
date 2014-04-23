@@ -4,15 +4,18 @@ import std.exception;
 import std.conv;
 
 import derelict.opengl3.gl3;
+import derelict.sdl2.image;
 import derelict.sdl2.sdl;
 
 
 SDL_Window* getWindow(int screenWidth, int screenHeight)
 {
   DerelictSDL2.load();
+  DerelictSDL2Image.load();
   DerelictGL3.load();
   
   enforce(SDL_Init(SDL_INIT_VIDEO) == 0, "Failed to initialize SDL: " ~ SDL_GetError().to!string);
+  enforce(IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) & (IMG_INIT_JPG | IMG_INIT_PNG), "IMG_Init failed: " ~ IMG_GetError().to!string);
   
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);

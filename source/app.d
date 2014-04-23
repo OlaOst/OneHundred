@@ -35,6 +35,7 @@ void main()
   
   scope(exit)
   {
+    collisionHandler.close();
     renderer.close();
     graphics.close();
     soundSystem.silence();
@@ -127,6 +128,6 @@ void main()
       
     debugText.text.text = collisionHandler.debugText;
       
-    renderer.draw(graphics.vertices, graphics.colors, graphics.texCoords);
+    renderer.draw(graphics.vertices, graphics.colors, graphics.texCoords, graphics.textureSet);
   }
 }

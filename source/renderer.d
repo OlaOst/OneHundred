@@ -4,6 +4,7 @@ import derelict.opengl3.gl3;
 import derelict.sdl2.sdl;
 import gl3n.linalg; 
 import glamour.shader;
+import glamour.texture;
 import glamour.vao;
 import glamour.vbo;
 
@@ -34,7 +35,7 @@ class Renderer
       vao.remove();
   }
   
-  public void draw(vec2[][string] vertices, vec4[][string] colors, vec2[][string] texCoords)
+  public void draw(vec2[][string] vertices, vec4[][string] colors, vec2[][string] texCoords, Texture2D[string] textureSet)
   {
     glClearColor(0.0, 0.0, 0.33, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -47,7 +48,16 @@ class Renderer
     }
     
     if ("text" in vertices && "text" in texCoords)
-      drawText(vertices["text"], texCoords["text"]);
+    {
+      textureSet["fontAtlas"].bind();
+      drawTexture(vertices["text"], texCoords["text"]);
+    }
+    
+    if ("sprite" in vertices && "sprite" in texCoords)
+    {
+      textureSet["testship"].bind();
+      drawTexture(vertices["sprite"], texCoords["sprite"]);
+    }
     
     SDL_GL_SwapWindow(window);
   }
@@ -72,7 +82,7 @@ class Renderer
     vboSet["colors"].remove();
   }
   
-  void drawText(vec2[] vertices, vec2[] texCoords)
+  void drawTexture(vec2[] vertices, vec2[] texCoords)
   in
   {
     assert(vertices.length == texCoords.length);
@@ -112,4 +122,5 @@ private:
   VAO vao;
   Buffer[string] vboSet;
   Shader[string] shaderSet;
+  Texture2D[string] textureSet;
 }

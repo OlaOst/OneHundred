@@ -4,6 +4,7 @@ import std.algorithm;
 import std.array;
 import std.stdio;
 
+import glamour.texture;
 import gl3n.linalg; 
 
 import component.collider;
@@ -27,13 +28,16 @@ class Graphics : System!GraphicsComponent
   {
     this.xres = xres; this.yres = yres;
     textRenderer = new TextRenderer();
+    
+    textureSet["fontAtlas"] = textRenderer.atlas;
+    textureSet["testship"] = Texture2D.from_image("images/playerShip1_blue.png");
   }
   
   void close() { textRenderer.close(); }
   
   override bool canAddEntity(Entity entity)
   {
-    return "position" in entity.vectors && (entity.polygon !is null || entity.text !is null);
+    return "position" in entity.vectors && (entity.polygon !is null || entity.text !is null || entity.sprite !is null);
   }
   
   override GraphicsComponent makeComponent(Entity entity)
@@ -41,6 +45,26 @@ class Graphics : System!GraphicsComponent
     return GraphicsComponent(entity.vectors["position"], 
                              "angle" in entity.scalars ? entity.scalars["angle"] : 0.0);
   }
+  
+  /*private void crap()
+  {
+    auto trans = (float v) => v;
+    //auto tja = entity.polygon.vertices.map!(v => ((vec3(v, 0.0) * mat3.zrotation(components[index].angle)).xy + v + components[index].position - cameraPosition) * zoom);
+    //auto verts = [vec2(1,1), vec2(2,2), vec2(3,3)]; //entity.polygon.vertices.dup;
+    auto verts = [1.0, 2.0, 3.0];
+    auto tja = verts.map!trans;
+    writeln("front: ", tja.front);
+    
+    writeln("trans delegate is ", trans);
+    
+    tja.popFront();
+    import std.range;
+    writeln("transformed verts length: ", tja.walkLength);
+    writeln("popped, empty is ", tja.empty);
+    writeln("popped, front: ", tja.front);
+    writeln("tja itself: ", tja);
+    writeln("tja array: ", tja.array);
+  }*/
   
   override void update()
   {
@@ -54,10 +78,16 @@ class Graphics : System!GraphicsComponent
                                                  mat3.zrotation(components[index].angle)).xy + 
                                                  components[index].position - cameraPosition) *
                                                  zoom;
+      
       if (entity.polygon !is null)
       {
-        vertices["basePolygon"] ~= entity.polygon.vertices;//.map!(vertex => vertex * zoom).array();
-        vertices["coveringSquare"] ~= component.drawable.baseSquare.map!(vertex => vertex * entity.polygon.vertices.map!(v => v.magnitude).reduce!"a > b ? a : b").map!transform.array();
+        //vertices["coveringSquare"] ~= component.drawable.baseSquare.map!(vertex => vertex * entity.polygon.vertices.map!(v => v.magnitude).reduce!"a > b ? a : b").map!transform.array();
+        
+        auto coveringSquareVertices = component.drawable.baseSquare.map!(vertex => vertex * entity.polygon.vertices.map!(v => v.magnitude).reduce!"a > b ? a : b").map!transform;
+        
+        foreach (coveringSquareVertex; coveringSquareVertices)
+          vertices["coveringSquare"] ~= coveringSquareVertex;
+        
         vertices["coveringTexCoords"] ~= [vec2(-1.0, -1.0), 
                                           vec2( 1.0, -1.0), 
                                           vec2( 1.0,  1.0), 
@@ -65,7 +95,12 @@ class Graphics : System!GraphicsComponent
                                           vec2(-1.0,  1.0),
                                           vec2(-1.0, -1.0)];
       
-        vertices["polygon"] ~= entity.polygon.vertices.map!transform.array();
+        // map with delegate in a variable and then array crashes with release build
+        //vertices["polygon"] ~= entity.polygon.vertices.map!transform.array();
+        auto transformedVertices = entity.polygon.vertices.map!transform;
+        foreach (transformedVertex; transformedVertices)
+          vertices["polygon"] ~= transformedVertex;
+        
         if (entity.collider !is null && entity.collider.isColliding)
           colors["polygon"] ~= entity.polygon.colors.map!(color => vec4(1.0, color.gba)).array;
         else
@@ -75,6 +110,24 @@ class Graphics : System!GraphicsComponent
       {
         texCoords["text"] ~= textRenderer.getTexCoordsForText(entity.text);
         vertices["text"] ~= textRenderer.getVerticesForText(entity.text, zoom, transform);
+      }
+      else if (entity.sprite !is null)
+      {
+        // hacky hack that is a hack - images assume angle 0 = pointing UP, while we assume angle 0 = pointing RIGHT. sinx/cosy vs cosx/siny...
+        components[index].angle -= PI/2;
+        
+        auto transformedVertices = entity.sprite.vertices.map!transform;
+        foreach (transformedVertex; transformedVertices)
+          vertices["sprite"] ~= transformedVertex;
+        
+        components[index].angle += PI/2;
+        
+        texCoords["sprite"] ~= [vec2(0.0, 0.0), 
+                                vec2(1.0, 0.0), 
+                                vec2(1.0, 1.0), 
+                                vec2(1.0, 1.0), 
+                                vec2(0.0, 1.0), 
+                                vec2(0.0, 0.0)];
       }
     }
   }
@@ -97,8 +150,10 @@ class Graphics : System!GraphicsComponent
 public:
   vec2 cameraPosition = vec2(0.0, 0.0);
   float zoom = 0.3;
-  vec2[][string] vertices, texCoords;
+  vec2[][string] vertices;
+  vec2[][string] texCoords;
   vec4[][string] colors;
+  Texture2D[string] textureSet;
   
 private:
   int xres, yres;

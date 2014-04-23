@@ -86,5 +86,5 @@ class TextRenderer
   
   private static uint colorComponents = 4;
   private Glyph[char] glyphSet;
-  private Texture2D atlas;
+  public Texture2D atlas;
 }
