@@ -10,12 +10,7 @@ import entity;
 import entityfactory.entities;
 import entityfactory.tests;
 import renderer;
-import system;
-import systems.collisionhandler;
-import systems.graphics;
-import systems.inputhandler;
-import systems.physics;
-import systems.soundsystem;
+import systemset;
 import timer;
 
 
@@ -25,20 +20,14 @@ void main()
   int yres = 768;
   
   auto renderer = new Renderer(xres, yres);
-  auto timer = new Timer(); 
+  auto timer = new Timer();
   
-  auto graphics = new Graphics(xres, yres);
-  auto physics = new Physics();
-  auto inputHandler = new InputHandler();
-  auto collisionHandler = new CollisionHandler();
-  auto soundSystem = new SoundSystem();
+  auto systemSet = new SystemSet(xres, yres);
   
   scope(exit)
   {
-    collisionHandler.close();
+    systemSet.close();
     renderer.close();
-    graphics.close();
-    soundSystem.silence();
   }
   
   Entity[] entities;
@@ -64,70 +53,45 @@ void main()
   entities ~= gameController;
   
   foreach (entity; entities)
-  {
-    graphics.addEntity(entity);
-    physics.addEntity(entity);
-    inputHandler.addEntity(entity);
-    collisionHandler.addEntity(entity);
-    soundSystem.addEntity(entity);
-  }
+    systemSet.addEntity(entity);
   
   bool keepRunning = true;
   timer.start();
   while (keepRunning)
   {
     timer.incrementAccumulator();
-    physics.setTimer(timer);
     
-    collisionHandler.update();
-    physics.updateFromEntities();
-    
-    graphics.update();
-    physics.update();
-    inputHandler.update();
-    soundSystem.update();
-    
-    physics.updateEntities();
-    graphics.updateFromEntities();
-    collisionHandler.updateFromEntities();
+    systemSet.update(timer);
     
     auto gameActions = gameController.input.isActive;
     if ("zoomIn" in gameActions && gameActions["zoomIn"])
-      graphics.zoom += graphics.zoom * 1.0/60.0;
+      systemSet.graphics.zoom += systemSet.graphics.zoom * 1.0/60.0;
     if ("zoomOut" in gameActions && gameActions["zoomOut"])
-      graphics.zoom -= graphics.zoom * 1.0/60.0;
+      systemSet.graphics.zoom -= systemSet.graphics.zoom * 1.0/60.0;
     if ("quit" in gameActions && gameActions["quit"])
       keepRunning = false;
     if ("addEntity" in gameActions && gameActions["addEntity"])
     {
       auto entity = createEntities(1)[0];
-
-      graphics.addEntity(entity);
-      physics.addEntity(entity);
-      inputHandler.addEntity(entity);
-      collisionHandler.addEntity(entity);
-      soundSystem.addEntity(entity);
-      
+      systemSet.addEntity(entity);
       npcs ~= entity;
     }
     if ("removeEntity" in gameActions && gameActions["removeEntity"] && npcs.length > 0)
     {
-      auto entity = npcs[$-1];
-      
-      graphics.removeEntity(entity);
-      physics.removeEntity(entity);
-      inputHandler.removeEntity(entity);
-      collisionHandler.removeEntity(entity);
-      soundSystem.removeEntity(entity);
-
+      auto entity = npcs[$-1];      
+      systemSet.removeEntity(entity);
       npcs.popBack();
     }
 
     mouseCursor.vectors["position"] = 
-      graphics.getWorldPositionFromScreenCoordinates(inputHandler.mouseScreenPosition);
+      systemSet.graphics.getWorldPositionFromScreenCoordinates(
+      systemSet.inputHandler.mouseScreenPosition);
       
-    debugText.text.text = collisionHandler.debugText;
+    debugText.text.text = systemSet.collisionHandler.debugText;
       
-    renderer.draw(graphics.vertices, graphics.colors, graphics.texCoords, graphics.textureSet);
+    renderer.draw(systemSet.graphics.vertices, 
+                  systemSet.graphics.colors, 
+                  systemSet.graphics.texCoords, 
+                  systemSet.graphics.textureSet);
   }
 }
