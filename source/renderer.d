@@ -47,16 +47,11 @@ class Renderer
       //debug drawDebugCircles(vertices["coveringSquare"], vertices["coveringTexCoords"]);
     }
     
-    if ("text" in vertices && "text" in texCoords)
+    foreach (string name, vec2[] texCoords; texCoords)
     {
-      textureSet["fontAtlas"].bind();
-      drawTexture(vertices["text"], texCoords["text"]);
-    }
-    
-    if ("sprite" in vertices && "sprite" in texCoords)
-    {
-      textureSet["testship"].bind();
-      drawTexture(vertices["sprite"], texCoords["sprite"]);
+      assert(name in textureSet);
+      textureSet[name].bind();
+      drawTexture(vertices[name], texCoords);
     }
     
     SDL_GL_SwapWindow(window);

@@ -29,8 +29,7 @@ class Graphics : System!GraphicsComponent
     this.xres = xres; this.yres = yres;
     textRenderer = new TextRenderer();
     
-    textureSet["fontAtlas"] = textRenderer.atlas;
-    textureSet["testship"] = Texture2D.from_image("images/playerShip1_blue.png");
+    textureSet["text"] = textRenderer.atlas;
   }
   
   void close() { textRenderer.close(); }
@@ -42,6 +41,9 @@ class Graphics : System!GraphicsComponent
   
   override GraphicsComponent makeComponent(Entity entity)
   {
+    if (entity.sprite !is null)
+      textureSet[entity.sprite.fileName] = entity.sprite.texture;
+
     return GraphicsComponent(entity.vectors["position"], 
                              "angle" in entity.scalars ? entity.scalars["angle"] : 0.0);
   }
@@ -118,16 +120,16 @@ class Graphics : System!GraphicsComponent
         
         auto transformedVertices = entity.sprite.vertices.map!transform;
         foreach (transformedVertex; transformedVertices)
-          vertices["sprite"] ~= transformedVertex;
+          vertices[entity.sprite.fileName] ~= transformedVertex;
         
         components[index].angle += PI/2;
         
-        texCoords["sprite"] ~= [vec2(0.0, 0.0), 
-                                vec2(1.0, 0.0), 
-                                vec2(1.0, 1.0), 
-                                vec2(1.0, 1.0), 
-                                vec2(0.0, 1.0), 
-                                vec2(0.0, 0.0)];
+        texCoords[entity.sprite.fileName] ~= [vec2(0.0, 0.0), 
+                                              vec2(1.0, 0.0), 
+                                              vec2(1.0, 1.0), 
+                                              vec2(1.0, 1.0), 
+                                              vec2(0.0, 1.0), 
+                                              vec2(0.0, 0.0)];
       }
     }
   }

@@ -1,6 +1,7 @@
 module entityfactory.entities;
 
 import std.algorithm;
+import std.file;
 import std.random;
 import std.range;
 import std.stdio;
@@ -49,7 +50,11 @@ Entity createEntity(vec2 position, vec2 velocity, double size, int minVerts, int
   entity.vectors["velocity"] = velocity;
   entity.scalars["size"] = size;
   entity.scalars["mass"] = 0.1 + size ^^ 2;
-  entity.polygon = drawable;
+  //entity.polygon = drawable;
+  
+  auto files = dirEntries("images", "*.png", SpanMode.breadth).map!(dirEntry => dirEntry.name).array();
+  
+  entity.sprite = new Sprite(size, files.randomSample(1).front);
   
   auto colliderVertices = chain(drawable.vertices[1..$].stride(3), 
                                 drawable.vertices[2..$].stride(3)).

@@ -15,16 +15,23 @@ import component.drawable;
 final class Sprite : Drawable
 {
   double size;
-  //Texture2D texture;
+  string fileName;
+  Texture2D texture;
   // TODO: texcoords in case texture is a spritesheet or atlas
+
+  static Texture2D[string] textureCache;
   
   vec2[] vertices;
   
   this(double size, string fileName)
   {
     this.size = size;
+    this.fileName = fileName;
     
-    //texture = Texture2D.from_image(fileName);
+    if (fileName !in textureCache)
+      textureCache[fileName] = Texture2D.from_image(fileName);
+     
+    texture = textureCache[fileName];
     
     vertices = baseSquare.dup.map!(vertex => vertex * size).array;
   }
