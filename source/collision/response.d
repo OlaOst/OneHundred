@@ -81,10 +81,10 @@ void handleCollisions(Collision[] collisions)
     }
 
     // TODO: is it right to integrate by physicsTimeStep here?
-    /*firstCollider.force = (firstVelocity * first.mass - first.velocity * first.mass) * 
-                          (1.0 / Timer.physicsTimeStep) * 0.1;
+    firstCollider.force = (firstVelocity * first.mass - first.velocity * first.mass) * 
+                          (1.0 / Timer.physicsTimeStep) * 1.0;
     otherCollider.force = (otherVelocity * other.mass - other.velocity * other.mass) * 
-                          (1.0 / Timer.physicsTimeStep) * 0.1;*/
+                          (1.0 / Timer.physicsTimeStep) * 1.0;
     
     // change positions to ensure colliders does not overlap
     auto firstPos = collision.first.entity.vectors["position"];

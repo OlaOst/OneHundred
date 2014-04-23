@@ -4,9 +4,11 @@ import gl3n.linalg;
 
 import component.collider;
 import component.drawables.polygon;
+import component.drawables.sprite;
 import component.drawables.text;
 import component.input;
 import component.sound;
+
 
 class Entity
 {
@@ -17,12 +19,11 @@ class Entity
   // temp drawable stuff
   Polygon polygon;
   Text text;
+  Sprite sprite;
   
-  // temp input mapping
-  Input input;
-  
+  // temp stuff
+  Input input; 
   Sound sound;
-  
   Collider collider;
   
   static long idCounter = 0;

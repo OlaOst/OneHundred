@@ -20,6 +20,26 @@ class CollisionHandler : System!CollisionEntity
   SpatialIndex!CollisionEntity index = new SpatialIndex!CollisionEntity();
   string debugText;
   
+  float[int] broadPhaseTimingsForCount;
+  float[int] narrowPhaseTimingsForCount;
+  int[int] updatesForCount;
+  
+  void close()
+  {
+    writeln("collisionhandler closing");
+    
+    foreach (int count, float accumulatedTiming; broadPhaseTimingsForCount)
+      broadPhaseTimingsForCount[count] = accumulatedTiming / updatesForCount[count];
+    
+    foreach (int count, float accumulatedTiming; narrowPhaseTimingsForCount)
+      narrowPhaseTimingsForCount[count] = accumulatedTiming / updatesForCount[count];
+      
+    foreach (count; updatesForCount.keys.sort)
+    {
+      writeln(count, "\t", broadPhaseTimingsForCount[count], "\t", narrowPhaseTimingsForCount[count]);
+    }
+  }
+  
   override bool canAddEntity(Entity entity)
   {
     return entity.collider !is null;
@@ -65,6 +85,10 @@ class CollisionHandler : System!CollisionEntity
       narrowPhaseTimer.stop;
       narrowPhaseCount += collidingEntities.walkLength;
     }
+    
+    updatesForCount[components.length]++;
+    broadPhaseTimingsForCount[components.length] += broadPhaseTimer.peek.usecs * 0.001;
+    narrowPhaseTimingsForCount[components.length] += narrowPhaseTimer.peek.usecs * 0.001;
     
     debugText = format("collisionhandler checked %s/%s candidates\nbroadphase/narrowphase", 
                        broadPhaseCount, 

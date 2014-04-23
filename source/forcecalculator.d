@@ -35,22 +35,22 @@ body
     torque -= 1.0;
 
   // torque from collisions
-  /*if (auto collision = state.entity.getComponent!Collider)
+  if (auto collider = state.entity.collider)
   {
-    if (collision.isColliding)
+    if (collider.isColliding)
     {
-      auto position = state.entity.getComponent!Position;
-      auto relative = collision.contactPoint - position;
+      auto position = state.entity.vectors["position"];
+      auto relative = collider.contactPoint - position;
       
-      //writeln("calc cross from collision force ", collision.force, " and rel pos ", relative);
+      //writeln("calc cross from collider force ", collider.force, " and rel pos ", relative);
       
-      auto cross = collision.force.x * relative.y - collision.force.y * relative.x;
+      auto cross = collider.force.x * relative.y - collider.force.y * relative.x;
       
-      //writeln("calc torque from contactpoint ", collision.contactPoint, " with torque ", cross);
+      //writeln("calc torque from contactpoint ", collider.contactPoint, " with torque ", cross);
       
-      torque += cross;
+      torque -= cross;
     }
-  }*/
+  }
   
   return torque;
 }
@@ -87,7 +87,7 @@ body
   {
     if (collision.isColliding)
     {
-      force -= collision.force;
+      //force -= collision.force;
     }
   }
   
