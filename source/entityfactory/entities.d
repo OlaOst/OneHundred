@@ -52,7 +52,8 @@ Entity createEntity(vec2 position, vec2 velocity, double size, int minVerts, int
   entity.scalars["mass"] = 0.1 + size ^^ 2;
   //entity.polygon = drawable;
   
-  auto files = dirEntries("images", "*.png", SpanMode.breadth).map!(dirEntry => dirEntry.name).array();
+  auto files = dirEntries("images", "*.png", SpanMode.breadth).
+               map!(dirEntry => dirEntry.name).array();
   
   entity.sprite = new Sprite(size, files.randomSample(1).front);
   
