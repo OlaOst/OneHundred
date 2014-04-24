@@ -28,7 +28,6 @@ class SystemSet
   
   void close()
   {
-    collisionHandler.close();
     graphics.close();
     soundSystem.silence();
   }
