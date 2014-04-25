@@ -22,6 +22,7 @@ final class Sprite : Drawable
   static Texture2D[string] textureCache;
   
   vec2[] vertices;
+  vec2[] texCoords;
   
   this(double size, string fileName)
   {
@@ -34,5 +35,6 @@ final class Sprite : Drawable
     texture = textureCache[fileName];
     
     vertices = baseSquare.dup.map!(vertex => vertex * size).array;
+    texCoords = baseTexCoordsSquare.dup;
   }
 }

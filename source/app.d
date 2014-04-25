@@ -40,8 +40,8 @@ void main()
   auto mouseCursor = createMouseCursor();
   entities ~= mouseCursor;
 
-  auto music = createMusic();
-  entities ~= music;
+  //auto music = createMusic();
+  //entities ~= music;
   //auto startupSound = createStartupSound();
   //entities ~= startupSound;
   

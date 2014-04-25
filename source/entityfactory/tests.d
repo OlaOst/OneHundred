@@ -39,6 +39,7 @@ Entity createText()
   auto text = new Entity();
   
   text.vectors["position"] = vec2(-1.0, 0.0);
+  text.scalars["angle"] = 0.0;
   text.scalars["size"] = 0.1;
   text.text = new Text(0.1, "hello,\n world", vec4(1.0, 1.0, 0.5, 0.0));
   
@@ -50,6 +51,7 @@ Entity createDebugText()
   auto text = new Entity();
   
   text.vectors["position"] = vec2(-3.0, -2.0);
+  text.scalars["angle"] = 0.0;
   text.scalars["size"] = 0.1;
   text.text = new Text(0.1, "??", vec4(1.0, 0.5, 0.5, 0.0));
   

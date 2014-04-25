@@ -48,6 +48,7 @@ Entity createEntity(vec2 position, vec2 velocity, double size, int minVerts, int
   
   entity.vectors["position"] = position;
   entity.vectors["velocity"] = velocity;
+  entity.scalars["angle"] = uniform(-PI, PI);
   entity.scalars["size"] = size;
   entity.scalars["mass"] = 0.1 + size ^^ 2;
   //entity.polygon = drawable;

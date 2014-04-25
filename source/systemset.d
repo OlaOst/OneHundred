@@ -28,7 +28,7 @@ class SystemSet
   
   void close()
   {
-    graphics.close();
+    graphics.textRenderer.close();
     soundSystem.silence();
   }
   
@@ -63,7 +63,7 @@ class SystemSet
     soundSystem.update();
     
     physics.updateEntities();
-    graphics.updateFromEntities();
+    //graphics.updateFromEntities();
     collisionHandler.updateFromEntities();
   }
 }
