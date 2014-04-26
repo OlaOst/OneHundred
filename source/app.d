@@ -82,11 +82,17 @@ void main()
       systemSet.removeEntity(entity);
       npcs.popBack();
     }
-    if ("fire" in player.input.isActive && player.input.isActive["fire"])
+    static float reloadTimeLeft = 0.0;
+    if ("fire" in player.input.isActive && player.input.isActive["fire"] && reloadTimeLeft <= 0.0)
     {
       auto bullet = createBullet(player.vectors["position"], player.scalars["angle"], player.vectors["velocity"]);
       systemSet.addEntity(bullet);
       npcs ~= bullet;
+      reloadTimeLeft = 0.1;
+    }
+    else if (reloadTimeLeft > 0.0)
+    {
+      reloadTimeLeft -= timer.frameTime;
     }
 
     mouseCursor.vectors["position"] = 

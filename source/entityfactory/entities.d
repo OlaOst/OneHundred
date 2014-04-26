@@ -87,9 +87,9 @@ Entity[] createEntities(uint elements)
 
 Entity createBullet(vec2 position, float angle, vec2 velocity)
 {
-  auto entity = createEntity(position, velocity + vec2(sin(-angle), cos(-angle)) * 1.0, 0.1);
+  auto entity = createEntity(position, velocity + vec2(sin(-angle), cos(-angle)) * 5.0, 0.1);
   //entity.vectors["velocity"] = velocity + vec2(sin(-angle), cos(-angle)) * 1.0;
-  entity.scalars["angle"] = angle;
+  entity.scalars["angle"] = angle + PI/2;
   entity.sprite = null;
   entity.polygon = new Polygon(0.1, 
                                uniform(3, 4), 
