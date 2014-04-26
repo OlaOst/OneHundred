@@ -82,6 +82,12 @@ void main()
       systemSet.removeEntity(entity);
       npcs.popBack();
     }
+    if ("fire" in player.input.isActive && player.input.isActive["fire"])
+    {
+      auto bullet = createBullet(player.vectors["position"], player.scalars["angle"], player.vectors["velocity"]);
+      systemSet.addEntity(bullet);
+      npcs ~= bullet;
+    }
 
     mouseCursor.vectors["position"] = 
       systemSet.graphics.getWorldPositionFromScreenCoordinates(

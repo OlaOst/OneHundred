@@ -28,22 +28,22 @@ Entity createGameController()
 
 Entity createPlayer()
 {
-  auto playerEntity = createEntity(vec2(0.0, 0.0), vec2(0.0, 0.0), 0.3, 3, 3);
+  auto playerEntity = createEntity(vec2(0.0, 0.0), vec2(0.0, 0.0), 0.3);
   
   playerEntity.input = new Input(Input.playerInput);
-  
+  playerEntity.scalars["angle"] = 0.0;
   playerEntity.polygon = null;
   playerEntity.sprite = new Sprite(0.3, "images/playerShip1_blue.png");
   
   return playerEntity;
 }
 
-Entity createEntity(vec2 position, vec2 velocity, double size, int minVerts, int maxVerts)
+Entity createEntity(vec2 position, vec2 velocity, double size)
 {
   auto entity = new Entity();
 
   auto drawable = new Polygon(size, 
-                              uniform(minVerts, maxVerts+1), 
+                              uniform(4, 4+1), 
                               vec4(uniformDistribution!float(3).vec3, 0.5));
   
   entity.vectors["position"] = position;
@@ -79,9 +79,20 @@ Entity[] createEntities(uint elements)
     auto position = vec2(uniform(-5.0, 5.0), uniform(-5.0, 5.0));                   
     auto entity = createEntity(position,
                                vec2(sin(angle) * 0.5, cos(angle) * 0.5),
-                               size,
-                               3, 12);
+                               size);
     entities ~= entity;
   }
   return entities;
+}
+
+Entity createBullet(vec2 position, float angle, vec2 velocity)
+{
+  auto entity = createEntity(position, velocity + vec2(sin(-angle), cos(-angle)) * 1.0, 0.1);
+  //entity.vectors["velocity"] = velocity + vec2(sin(-angle), cos(-angle)) * 1.0;
+  entity.scalars["angle"] = angle;
+  entity.sprite = null;
+  entity.polygon = new Polygon(0.1, 
+                               uniform(3, 4), 
+                               vec4(uniformDistribution!float(3).vec3, 0.5));
+  return entity;
 }

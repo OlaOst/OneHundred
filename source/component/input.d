@@ -28,6 +28,7 @@ class Input
     playerInput["decelerate"] = SDLK_DOWN;
     playerInput["rotateLeft"] = SDLK_LEFT;
     playerInput["rotateRight"] = SDLK_RIGHT;
+    playerInput["fire"] = SDLK_SPACE;
     
     gameControls["zoomIn"] = SDLK_PAGEUP;
     gameControls["zoomOut"] = SDLK_PAGEDOWN;
