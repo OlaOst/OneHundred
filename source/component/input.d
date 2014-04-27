@@ -5,12 +5,35 @@ import derelict.sdl2.sdl;
 
 class Input
 {
+  enum ActionState
+  {
+    Unknown,
+    Inactive,
+    Pressed,
+    Held,
+    Released,
+  }
+
   SDL_Keycode[string] keyForAction;
-  bool[string] isActive;
+  ActionState[string] actionState;
   
   this(SDL_Keycode[string] keyForAction)
   {
     this.keyForAction = keyForAction;
+    
+    foreach (string action; this.keyForAction.keys)
+      actionState[action] = ActionState.Inactive;
+  }
+  
+  ActionState getActionState(string action)
+  {
+    return (action in actionState) ? actionState[action] : ActionState.Unknown;
+  }
+  
+  void setAction(string action, ref bool value)
+  {
+    value = (getActionState(action) == ActionState.Pressed) ? true : 
+            (getActionState(action) == ActionState.Released) ? false : value;
   }
   
   // TODO: would be neat to make these static initalized
@@ -35,5 +58,6 @@ class Input
     gameControls["quit"] = SDLK_ESCAPE;
     gameControls["addEntity"] = SDLK_INSERT;
     gameControls["removeEntity"] = SDLK_DELETE;
+    gameControls["toggleDebugInfo"] = SDLK_d;
   }
 }

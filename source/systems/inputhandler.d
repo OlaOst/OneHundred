@@ -67,9 +67,11 @@ public:
         foreach(event; eventsForKey[key])
         {
           if (event.type == SDL_KEYUP)
-            input.isActive[action] = false;
+            input.actionState[action] = (input.actionState[action] == Input.ActionState.Pressed || 
+                                         input.actionState[action] == Input.ActionState.Held) ? Input.ActionState.Released : Input.ActionState.Inactive;
           if (event.type == SDL_KEYDOWN)
-            input.isActive[action] = true;
+            input.actionState[action] = (input.actionState[action] == Input.ActionState.Released ||
+                                         input.actionState[action] == Input.ActionState.Inactive) ? Input.ActionState.Pressed : Input.ActionState.Held;
         }
       }
     }

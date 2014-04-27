@@ -29,9 +29,9 @@ body
     //torque += (1.0 / state.position.magnitude) * 0.5;
   }
   
-  if (input && "rotateLeft" in input.isActive && input.isActive["rotateLeft"])
+  if (input && (input.getActionState("rotateLeft") == Input.ActionState.Pressed || input.getActionState("rotateLeft") == Input.ActionState.Held))
     torque += 1.0;
-  if (input && "rotateRight" in input.isActive && input.isActive["rotateRight"])
+  if (input && (input.getActionState("rotateRight") == Input.ActionState.Pressed || input.getActionState("rotateRight") == Input.ActionState.Held))
     torque -= 1.0;
 
   // torque from collisions
@@ -77,9 +77,9 @@ body
   
   auto input = state.entity.input;
   
-  if (input && "accelerate" in input.isActive && input.isActive["accelerate"])
+  if (input && (input.getActionState("accelerate") == Input.ActionState.Pressed || input.getActionState("accelerate") == Input.ActionState.Held))
     force += vec2(sin(-state.angle), cos(-state.angle)) * 0.5;
-  if (input && "decelerate" in input.isActive && input.isActive["decelerate"])
+  if (input && (input.getActionState("decelerate") == Input.ActionState.Pressed || input.getActionState("decelerate") == Input.ActionState.Held))
     force -= vec2(sin(-state.angle), cos(-state.angle)) * 0.5;
   
   // force from collisions
