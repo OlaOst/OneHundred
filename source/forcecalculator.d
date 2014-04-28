@@ -9,6 +9,7 @@ import component.input;
 import component.relations.gravity;
 import entity;
 import integrator.state;
+import playereventhandler;
 
 
 double calculateTorque(State state, double time)
@@ -20,19 +21,10 @@ body
 {
   auto torque = 0.0;
   
-  torque += state.rotation * -0.02; // damping torque
+  torque += state.rotation * -0.2; // damping torque
   
-  auto input = state.entity.input;
-  
-  if (!input)
-  {
-    //torque += (1.0 / state.position.magnitude) * 0.5;
-  }
-  
-  if (input && (input.getActionState("rotateLeft") == Input.ActionState.Pressed || input.getActionState("rotateLeft") == Input.ActionState.Held))
-    torque += 1.0;
-  if (input && (input.getActionState("rotateRight") == Input.ActionState.Pressed || input.getActionState("rotateRight") == Input.ActionState.Held))
-    torque -= 1.0;
+  if (state.entity.input)
+    state.entity.input.handlePlayerRotateActions(torque);
 
   // torque from collisions
   if (auto collider = state.entity.collider)
@@ -75,13 +67,9 @@ body
   // twisty counterclockwise force further out
   force += vec2(-state.position.y, state.position.x) * 0.015;*/
   
-  auto input = state.entity.input;
-  
-  if (input && (input.getActionState("accelerate") == Input.ActionState.Pressed || input.getActionState("accelerate") == Input.ActionState.Held))
-    force += vec2(sin(-state.angle), cos(-state.angle)) * 0.5;
-  if (input && (input.getActionState("decelerate") == Input.ActionState.Pressed || input.getActionState("decelerate") == Input.ActionState.Held))
-    force -= vec2(sin(-state.angle), cos(-state.angle)) * 0.5;
-  
+  if (state.entity.input)
+    state.entity.input.handlePlayerAccelerateActions(force, state.angle);
+
   // force from collisions
   if (auto collision = state.entity.collider)
   {

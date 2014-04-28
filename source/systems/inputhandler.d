@@ -59,6 +59,11 @@ public:
     
     foreach (string action, SDL_Keycode key; input.keyForAction)
     {
+      if (input.actionState[action] == Input.ActionState.Released)
+        input.actionState[action] = Input.ActionState.Inactive;
+      if (input.actionState[action] == Input.ActionState.Pressed)
+        input.actionState[action] = Input.ActionState.Held;
+        
       if (key in eventsForKey)
       {
         // TODO: here we assume that the ordering of events in the eventsForKey[key] array 
@@ -67,11 +72,9 @@ public:
         foreach(event; eventsForKey[key])
         {
           if (event.type == SDL_KEYUP)
-            input.actionState[action] = (input.actionState[action] == Input.ActionState.Pressed || 
-                                         input.actionState[action] == Input.ActionState.Held) ? Input.ActionState.Released : Input.ActionState.Inactive;
+            input.actionState[action] = Input.ActionState.Released;
           if (event.type == SDL_KEYDOWN)
-            input.actionState[action] = (input.actionState[action] == Input.ActionState.Released ||
-                                         input.actionState[action] == Input.ActionState.Inactive) ? Input.ActionState.Pressed : Input.ActionState.Held;
+            input.actionState[action] = Input.ActionState.Pressed;
         }
       }
     }

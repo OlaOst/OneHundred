@@ -9,6 +9,8 @@ import component.input;
 import entity;
 import entityfactory.entities;
 import entityfactory.tests;
+import eventhandler;
+import playereventhandler;
 import renderer;
 import systemset;
 import timer;
@@ -41,7 +43,7 @@ void main()
   systemSet.addEntity(mouseCursor);
 
   auto music = createMusic();
-  systemSet.addEntity(music);
+  //systemSet.addEntity(music);
   
   //auto startupSound = createStartupSound();
   //systemSet.addEntity(startupSound);  
@@ -52,72 +54,18 @@ void main()
   auto gameController = createGameController();
   systemSet.addEntity(gameController);
   
-  bool keepRunning = true;
-  bool zoomIn = false;
-  bool zoomOut = false;
-  bool addEntity = false;
-  bool removeEntity = false;
-  bool fire = false;
   timer.start();
-  while (keepRunning)
+  while (!quit)
   {
     timer.incrementAccumulator();
     
     systemSet.update(timer);
     
-    auto gameInput = gameController.input;
-    
-    gameInput.setAction("zoomIn", zoomIn);
-    gameInput.setAction("zoomOut", zoomOut);
-    gameInput.setAction("addEntity", addEntity);
-    gameInput.setAction("removeEntity", removeEntity);
-    gameInput.setAction("quit", keepRunning);
-    player.input.setAction("fire", fire);
-    if (zoomIn)
-      systemSet.graphics.zoom += systemSet.graphics.zoom * 1.0/60.0;
-    if (zoomOut)
-      systemSet.graphics.zoom -= systemSet.graphics.zoom * 1.0/60.0;
-    
-    if (addEntity)
-    {
-      auto entity = createEntities(1)[0];
-      systemSet.addEntity(entity);
-      npcs ~= entity;
-    }
-    
-    if (removeEntity && npcs.length > 0)
-    {
-      auto entity = npcs[$-1];
-      systemSet.removeEntity(entity);
-      npcs.popBack();
-    }
-    
-    if (gameInput.getActionState("toggleDebugInfo") == Input.ActionState.Released)
-    {
-      if (debugText is null)
-      {
-        debugText = createDebugText();
-        systemSet.addEntity(debugText);
-      }
-      else
-      {
-        systemSet.removeEntity(debugText);
-        debugText = null;
-      }
-    }
-    
-    static float reloadTimeLeft = 0.0;
-    if (fire && reloadTimeLeft <= 0.0)
-    {
-      auto bullet = createBullet(player.vectors["position"], player.scalars["angle"], player.vectors["velocity"]);
-      systemSet.addEntity(bullet);
-      npcs ~= bullet;
-      reloadTimeLeft = 0.1;
-    }
-    else if (reloadTimeLeft > 0.0)
-    {
-      reloadTimeLeft -= timer.frameTime;
-    }
+    gameController.input.handleQuit();
+    gameController.input.handleZoom(systemSet.graphics);
+    gameController.input.handleAddRemoveEntity(systemSet, npcs);
+    gameController.input.handleToggleDebugInfo(systemSet, debugText);
+    player.handlePlayerFireAction(systemSet, npcs, timer);
 
     mouseCursor.vectors["position"] = 
       systemSet.graphics.getWorldPositionFromScreenCoordinates(

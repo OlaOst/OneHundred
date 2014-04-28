@@ -32,8 +32,13 @@ class Input
   
   void setAction(string action, ref bool value)
   {
-    value = (getActionState(action) == ActionState.Pressed) ? true : 
-            (getActionState(action) == ActionState.Released) ? false : value;
+    value = getActionState(action) == ActionState.Pressed || 
+            getActionState(action) == ActionState.Held;
+  }
+  
+  void toggleAction(string action, ref bool value)
+  {
+    value = getActionState(action) == Input.ActionState.Pressed;
   }
   
   // TODO: would be neat to make these static initalized
