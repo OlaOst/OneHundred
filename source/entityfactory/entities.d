@@ -20,10 +20,15 @@ import entity;
 Entity createGameController()
 {
   auto gameController = new Entity();
-  
   gameController.input = new Input(Input.gameControls);
-  
   return gameController;
+}
+
+Entity createEditController()
+{
+  auto editController = new Entity();
+  editController.input = new Input(Input.textInput);
+  return editController;
 }
 
 Entity createPlayer()

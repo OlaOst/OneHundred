@@ -1,6 +1,9 @@
 module eventhandler;
 
+import std.algorithm;
 import std.array;
+
+import gl3n.linalg;
 
 import component.input;
 import entity;
@@ -51,7 +54,7 @@ void handleToggleDebugInfo(Input gameInput, SystemSet systemSet, ref Entity debu
   {
     if (debugText is null)
     {
-      debugText = createDebugText();
+      debugText = createText("??", vec2(-3.0, -2.0));
       systemSet.addEntity(debugText);
     }
     else
@@ -60,6 +63,22 @@ void handleToggleDebugInfo(Input gameInput, SystemSet systemSet, ref Entity debu
       debugText = null;
     }
   }
+}
+
+void handleEditableText(Input textInput, Entity editableText)
+{
+  assert(editableText.input !is null);
+  
+  foreach (string key, Input.ActionState pressedAction; textInput.actionState)
+  {
+    if (pressedAction == Input.ActionState.Pressed)
+    {
+      if (key == "backspace" && editableText.text.text.length > 0)
+        editableText.text.text.popBack();
+    }
+  }
+  
+  editableText.text.text ~= editableText.editText;
 }
 
 bool quit = false;

@@ -1,6 +1,8 @@
 module systems.inputhandler;
 
 import std.algorithm;
+import std.stdio;
+import std.string;
 
 import derelict.sdl2.sdl;
 import gl3n.linalg;
@@ -29,33 +31,36 @@ public:
   
   override void update()
   {
-    foreach (int index, Entity entity; entityForIndex)
-      process(entity);
-  
     eventsForKey = null;
     
     SDL_Event event;
 
+    textInput = "";
     while (SDL_PollEvent(&event))
     {
       if (event.type == SDL_KEYUP || event.type == SDL_KEYDOWN)
         // TODO: does this make a deep copy of the event?
         eventsForKey[event.key.keysym.sym] ~= event; //.dup;
         
+      if (event.type == SDL_TEXTINPUT)
+      {
+        textInput ~= event.text.text.toStringz.to!string;
+      }
+        
       if (event.type == SDL_MOUSEMOTION)
         mouseScreenPosition = vec2(event.motion.x, event.motion.y);
     }
+    
+    foreach (int index, Entity entity; entityForIndex)
+      process(entity);
   }
   
   void process(Entity entity)
   {
-    //auto input = entity.getComponent!Input;
     auto input = entity.input;
     
-    // the getaspect thing in the constructor does not work
-    // we get entities without input components here
-    //if (input is null)
-      //return;
+    // TODO: only set edittext for components that want to edit text
+    entity.editText = textInput;
     
     foreach (string action, SDL_Keycode key; input.keyForAction)
     {
@@ -82,4 +87,5 @@ public:
   
 private:
   SDL_Event[][SDL_Keycode] eventsForKey;
+  string textInput;
 }

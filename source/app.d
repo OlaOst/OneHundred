@@ -22,9 +22,8 @@ void main()
   int yres = 768;
   
   auto renderer = new Renderer(xres, yres);
-  auto timer = new Timer();
-  
   auto systemSet = new SystemSet(xres, yres);
+  auto timer = new Timer();
   
   scope(exit)
   {
@@ -36,23 +35,30 @@ void main()
   foreach (npc; npcs)
     systemSet.addEntity(npc);
   
-  auto player = createPlayer();  
+  auto player = createPlayer();
   systemSet.addEntity(player);
   
   auto mouseCursor = createMouseCursor();
   systemSet.addEntity(mouseCursor);
 
-  auto music = createMusic();
+  //auto music = createMusic();
   //systemSet.addEntity(music);
   
   //auto startupSound = createStartupSound();
   //systemSet.addEntity(startupSound);  
   
-  auto debugText = createDebugText();
+  auto debugText = createText("??", vec2(-3.0, -2.0));
   systemSet.addEntity(debugText);
+  
+  auto editableText = createText("", vec2(-3.0, 2.0));
+  editableText.input = new Input(Input.textInput);
+  systemSet.addEntity(editableText);
   
   auto gameController = createGameController();
   systemSet.addEntity(gameController);
+  
+  auto editController = createEditController();
+  systemSet.addEntity(editController);
   
   timer.start();
   while (!quit)
@@ -65,6 +71,7 @@ void main()
     gameController.input.handleZoom(systemSet.graphics);
     gameController.input.handleAddRemoveEntity(systemSet, npcs);
     gameController.input.handleToggleDebugInfo(systemSet, debugText);
+    editController.input.handleEditableText(editableText);
     player.handlePlayerFireAction(systemSet, npcs, timer);
 
     mouseCursor.vectors["position"] = 

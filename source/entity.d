@@ -22,7 +22,8 @@ class Entity
   Sprite sprite;
   
   // temp stuff
-  Input input; 
+  Input input;
+  string editText;
   Sound sound;
   Collider collider;
   
