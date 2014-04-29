@@ -47,8 +47,7 @@ Entity createEntity(vec2 position, vec2 velocity, double size)
 {
   auto entity = new Entity();
 
-  auto drawable = new Polygon(size, 
-                              uniform(4, 4+1), 
+  auto drawable = new Polygon(size, uniform(4, 4+1), 
                               vec4(uniformDistribution!float(3).vec3, 0.5));
   
   entity.vectors["position"] = position;
@@ -56,16 +55,11 @@ Entity createEntity(vec2 position, vec2 velocity, double size)
   entity.scalars["angle"] = uniform(-PI, PI);
   entity.scalars["size"] = size;
   entity.scalars["mass"] = 0.1 + size ^^ 2;
-  //entity.polygon = drawable;
   
   auto files = dirEntries("images", "*.png", SpanMode.breadth).
                map!(dirEntry => dirEntry.name).array();
   
   entity.sprite = new Sprite(size, files.randomSample(1).front);
-  
-  auto colliderVertices = chain(drawable.vertices[1..$].stride(3), 
-                                drawable.vertices[2..$].stride(3)).
-                          map!(vertex => vertex + position).array;
   
   entity.collider = new Collider(drawable.vertices);
   
@@ -82,8 +76,7 @@ Entity[] createEntities(uint elements)
     //auto position = vec2(1.0 + cos(angle * 5) * (0.3 + angle.sqrt),
                          //sin(angle * 5) * (0.3 + angle.sqrt));
     auto position = vec2(uniform(-5.0, 5.0), uniform(-5.0, 5.0));                   
-    auto entity = createEntity(position,
-                               vec2(sin(angle) * 0.5, cos(angle) * 0.5),
+    auto entity = createEntity(position, vec2(sin(angle) * 0.5, cos(angle) * 0.5),
                                size);
     entities ~= entity;
   }
@@ -93,11 +86,9 @@ Entity[] createEntities(uint elements)
 Entity createBullet(vec2 position, float angle, vec2 velocity)
 {
   auto entity = createEntity(position, velocity + vec2(sin(-angle), cos(-angle)) * 5.0, 0.1);
-  //entity.vectors["velocity"] = velocity + vec2(sin(-angle), cos(-angle)) * 1.0;
   entity.scalars["angle"] = angle + PI/2;
   entity.sprite = null;
-  entity.polygon = new Polygon(0.1, 
-                               uniform(3, 4), 
+  entity.polygon = new Polygon(0.1, uniform(3, 4), 
                                vec4(uniformDistribution!float(3).vec3, 0.5));
   return entity;
 }
