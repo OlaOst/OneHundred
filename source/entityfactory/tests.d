@@ -7,10 +7,10 @@ import std.stdio;
 
 import gl3n.linalg;
 
-import component.collider;
-import component.drawables.polygon;
-import component.drawables.text;
-import component.sound;
+import components.collider;
+import components.drawables.polygon;
+import components.drawables.text;
+import components.sound;
 import entity;
 
 

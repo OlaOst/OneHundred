@@ -6,7 +6,7 @@ import std.string;
 
 import gl3n.linalg;
 
-import component.drawables.text;
+import components.drawables.text;
 import textrenderer.textrenderer;
 
 

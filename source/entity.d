@@ -2,12 +2,12 @@ module entity;
 
 import gl3n.linalg;
 
-import component.collider;
-import component.drawables.polygon;
-import component.drawables.sprite;
-import component.drawables.text;
-import component.input;
-import component.sound;
+import components.collider;
+import components.drawables.polygon;
+import components.drawables.sprite;
+import components.drawables.text;
+import components.input;
+import components.sound;
 
 
 class Entity

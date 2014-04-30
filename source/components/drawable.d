@@ -1,4 +1,4 @@
-module component.drawable;
+module components.drawable;
 
 import gl3n.linalg;
 

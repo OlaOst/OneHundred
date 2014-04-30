@@ -1,4 +1,4 @@
-module component.drawables.text;
+module components.drawables.text;
 
 import std.algorithm;
 import std.conv;
@@ -9,7 +9,7 @@ import std.string;
 import derelict.freetype.ft;
 import gl3n.linalg;
 
-import component.drawable;
+import components.drawable;
 
 
 final class Text : Drawable

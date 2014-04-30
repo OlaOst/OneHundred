@@ -13,7 +13,7 @@ import derelict.vorbis.vorbis;
 
 import audio.raw;
 import audio.stream;
-import component.sound;
+import components.sound;
 import entity;
 import system;
 

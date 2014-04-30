@@ -5,7 +5,7 @@ import std.stdio;
 
 import gl3n.linalg;
 
-import component.input;
+import components.input;
 import entity;
 import entityfactory.entities;
 import entityfactory.tests;

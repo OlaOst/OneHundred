@@ -1,4 +1,4 @@
-module component.input;
+module components.input;
 
 import std.conv;
 

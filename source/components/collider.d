@@ -1,8 +1,8 @@
-module component.collider;
+module components.collider;
 
 import gl3n.linalg;
 
-import component.relation;
+import components.relation;
 
 
 class Collider

@@ -9,7 +9,7 @@ import gl3n.linalg;
 
 import collision.check;
 import collision.response;
-import component.collider;
+import components.collider;
 import entity;
 import spatialindex.spatialindex;
 import system;

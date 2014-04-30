@@ -1,4 +1,4 @@
-module component.relation;
+module components.relation;
 
 import entity;
 

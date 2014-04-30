@@ -1,4 +1,4 @@
-module component.sound;
+module components.sound;
 
 import std.algorithm;
 

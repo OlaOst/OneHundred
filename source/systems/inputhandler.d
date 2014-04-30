@@ -7,7 +7,7 @@ import std.string;
 import derelict.sdl2.sdl;
 import gl3n.linalg;
 
-import component.input;
+import components.input;
 import entity;
 import system;
 

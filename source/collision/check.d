@@ -5,7 +5,7 @@ import std.range;
 
 import gl3n.linalg;
 
-import component.collider;
+import components.collider;
 import entity;
 
 

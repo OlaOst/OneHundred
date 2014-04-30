@@ -4,9 +4,9 @@ import std.stdio;
 
 import gl3n.linalg;
 
-import component.collider;
-import component.input;
-import component.relations.gravity;
+import components.collider;
+import components.input;
+import components.relations.gravity;
 import entity;
 import integrator.state;
 import playereventhandler;

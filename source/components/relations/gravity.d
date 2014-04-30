@@ -1,10 +1,10 @@
-module component.relations.gravity;
+module components.relations.gravity;
 
 import std.algorithm;
 
 import gl3n.linalg;
 
-import component.relation;
+import components.relation;
 
 
 class Gravity

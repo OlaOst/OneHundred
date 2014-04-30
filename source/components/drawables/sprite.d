@@ -1,4 +1,4 @@
-module component.drawables.sprite;
+module components.drawables.sprite;
 
 import std.algorithm;
 import std.conv;
@@ -9,7 +9,7 @@ import std.string;
 import glamour.texture;
 import gl3n.linalg;
 
-import component.drawable;
+import components.drawable;
 
 
 final class Sprite : Drawable

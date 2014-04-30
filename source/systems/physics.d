@@ -5,8 +5,8 @@ import std.range;
     
 import gl3n.linalg;
 
-import component.input;
-import component.relations.gravity;
+import components.input;
+import components.relations.gravity;
 import entity;
 import forcecalculator;
 import integrator.integrator;

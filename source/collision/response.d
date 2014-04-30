@@ -8,8 +8,8 @@ import std.stdio;
 import gl3n.linalg;
 
 import collision.check;
-import component.collider;
-import component.sound;
+import components.collider;
+import components.sound;
 import systems.collisionhandler;
 import timer;
 

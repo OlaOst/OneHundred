@@ -7,9 +7,9 @@ import std.stdio;
 import glamour.texture;
 import gl3n.linalg; 
 
-import component.collider;
-import component.drawables.polygon;
-import component.drawables.text;
+import components.collider;
+import components.drawables.polygon;
+import components.drawables.text;
 import entity;
 import system;
 import textrenderer.textrenderer;

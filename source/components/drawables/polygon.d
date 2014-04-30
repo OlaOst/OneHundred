@@ -1,4 +1,4 @@
-module component.drawables.polygon;
+module components.drawables.polygon;
 
 import std.algorithm;
 import std.array;
@@ -6,7 +6,7 @@ import std.range;
 
 import gl3n.linalg;
 
-import component.drawable;
+import components.drawable;
 
 
 final class Polygon : Drawable
