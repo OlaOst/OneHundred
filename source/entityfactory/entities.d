@@ -59,7 +59,8 @@ Entity createEntity(vec2 position, vec2 velocity, double size)
   auto files = dirEntries("images", "*.png", SpanMode.breadth).
                map!(dirEntry => dirEntry.name).array();
   
-  entity.sprite = new Sprite(size, files.randomSample(1).front);
+  if (!files.empty)
+    entity.sprite = new Sprite(size, files.randomSample(1).front);
   
   entity.collider = new Collider(drawable.vertices);
   

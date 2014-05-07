@@ -78,9 +78,6 @@ void main()
       systemSet.graphics.getWorldPositionFromScreenCoordinates(
       systemSet.inputHandler.mouseScreenPosition);
       
-    if (debugText)
-      debugText.text.text = systemSet.collisionHandler.debugText;
-      
     renderer.draw(systemSet.graphics.vertices, 
                   systemSet.graphics.colors, 
                   systemSet.graphics.texCoords, 

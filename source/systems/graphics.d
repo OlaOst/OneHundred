@@ -2,6 +2,7 @@ module systems.graphics;
 
 import std.algorithm;
 import std.array;
+import std.datetime;
 import std.stdio;
 
 import glamour.texture;
@@ -42,6 +43,10 @@ class Graphics : System!bool
   
   override void update()
   {
+    StopWatch debugTimer;
+    
+    debugTimer.start;
+    
     vertices = null;
     colors = null;
     texCoords = null;
@@ -79,6 +84,8 @@ class Graphics : System!bool
         texCoords[entity.sprite.fileName] ~= entity.sprite.texCoords;
       }
     }
+    
+    debugText = format("graphics timings: %s", debugTimer.peek.usecs*0.001);
   }
   
   vec2 getWorldPositionFromScreenCoordinates(vec2 screenCoordinates)

@@ -18,7 +18,6 @@ import system;
 class CollisionHandler : System!CollisionEntity
 {
   SpatialIndex!CollisionEntity index = new SpatialIndex!CollisionEntity();
-  string debugText;
   
   override bool canAddEntity(Entity entity)
   {

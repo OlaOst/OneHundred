@@ -1,6 +1,7 @@
 module systems.physics;
 
 import std.algorithm;
+import std.datetime;
 import std.range;
     
 import gl3n.linalg;
@@ -40,6 +41,10 @@ class Physics : System!State
   
   override void update()
   {
+    StopWatch debugTimer;
+    
+    debugTimer.start;
+    
     while (timer.accumulator >= timer.physicsTimeStep)
     {
       //integrateStates(currentStates, previousStates, timer.time, timer.physicsTimeStep);
@@ -52,6 +57,8 @@ class Physics : System!State
     
     //interpolateStates(currentStates, previousStates, timer.accumulator / timer.physicsTimeStep);
     interpolateStates(components, previousStates, timer.accumulator / timer.physicsTimeStep);
+    
+    debugText = format("physics timings: %s", debugTimer.peek.usecs*0.001);
   }
   
   void updateEntities()

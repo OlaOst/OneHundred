@@ -25,7 +25,7 @@ vec2[] getVerticesForText(TextRenderer textRenderer,
       auto glyph = textRenderer.getGlyphForLetter(letter);
       auto textTransform = delegate (vec2 vertex) => transform(vertex) + 
                                                      (glyph.offset * text.size + cursor) * zoom;
-  
+
       //result ~= text.vertices.map!textTransform.array();
       auto textTransformedVertices = text.vertices.map!textTransform;
       foreach (textTransformedVertex; textTransformedVertices)

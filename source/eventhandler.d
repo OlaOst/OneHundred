@@ -49,6 +49,7 @@ void handleAddRemoveEntity(Input gameInput, SystemSet systemSet, ref Entity[] np
 
 void handleToggleDebugInfo(Input gameInput, SystemSet systemSet, ref Entity debugText)
 {
+  static int index = 0;
   gameInput.toggleAction("toggleDebugInfo", toggleDebugInfo);
   if (toggleDebugInfo)
   {
@@ -57,11 +58,29 @@ void handleToggleDebugInfo(Input gameInput, SystemSet systemSet, ref Entity debu
       debugText = createText("??", vec2(-3.0, -2.0));
       systemSet.addEntity(debugText);
     }
-    else
+    /*else
     {
       systemSet.removeEntity(debugText);
       debugText = null;
-    }
+    }*/
+    
+    index++;
+  }
+  
+  switch (index % 3)
+  {
+    case 0:
+      debugText.text.text = systemSet.collisionHandler.debugText;
+      break;
+    case 1:
+      debugText.text.text = systemSet.physics.debugText;
+      break;
+    case 2:
+      debugText.text.text = systemSet.graphics.debugText;
+      break;
+      
+    default:
+      debugText.text.text = "?";
   }
 }
 

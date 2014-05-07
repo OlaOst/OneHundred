@@ -30,6 +30,7 @@ class System(ComponentType)
   int[const Entity] indexForEntity;
   Entity[int] entityForIndex;
   ComponentType[] components;
+  string debugText;
   
   void addEntity(Entity entity)
   {
