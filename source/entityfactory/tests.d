@@ -61,7 +61,7 @@ Entity createMouseCursor()
                                 drawable.vertices[2..$].stride(3)).
                           map!(vertex => vertex + position).array;
   
-  mouseCursor.collider = new Collider(colliderVertices);
+  mouseCursor.collider = new Collider(colliderVertices, ColliderType.Cursor);
   
   return mouseCursor;
 }

@@ -32,6 +32,10 @@ void handleCollisions(Collision[] collisions)
     auto first = collision.first;
     auto other = collision.other;
     
+    // TODO: make separate functions for different collidertype pairs, i.e. npc/bullet, npc/player...
+    if (first.collider.type == ColliderType.Cursor || other.collider.type == ColliderType.Cursor)
+      continue;
+    
     collision.updateFromEntities();
     
     auto firstCollider = first.entity.collider;
@@ -55,7 +59,7 @@ void handleCollisions(Collision[] collisions)
     
     assert(firstCollider.contactPoint.isFinite);
     assert(otherCollider.contactPoint.isFinite);
-        
+
     if ("velocity" !in first.vectors || "velocity" !in other.vectors)
       return;
     

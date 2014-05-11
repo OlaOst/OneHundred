@@ -40,6 +40,8 @@ Entity createPlayer()
   playerEntity.polygon = null;
   playerEntity.sprite = new Sprite(0.3, "images/playerShip1_blue.png");
   
+  playerEntity.collider.type = ColliderType.Player;
+  
   return playerEntity;
 }
 
@@ -62,7 +64,7 @@ Entity createEntity(vec2 position, vec2 velocity, double size)
   if (!files.empty)
     entity.sprite = new Sprite(size, files.randomSample(1).front);
   
-  entity.collider = new Collider(drawable.vertices);
+  entity.collider = new Collider(drawable.vertices, ColliderType.Npc);
   
   return entity;
 }
@@ -91,5 +93,7 @@ Entity createBullet(vec2 position, float angle, vec2 velocity)
   entity.sprite = null;
   entity.polygon = new Polygon(0.1, uniform(3, 4), 
                                vec4(uniformDistribution!float(3).vec3, 0.5));
+                               
+  entity.collider.type = ColliderType.Bullet;
   return entity;
 }
