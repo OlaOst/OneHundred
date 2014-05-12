@@ -32,6 +32,15 @@ void handleCollisions(Collision[] collisions)
     auto first = collision.first;
     auto other = collision.other;
     
+    auto typePair = (first.collider.type < other.collider.type) ? 
+                      tuple(first.collider.type, other.collider.type) : 
+                      tuple(other.collider.type, first.collider.type);
+    
+    if (typePair == tuple(ColliderType.Player, ColliderType.Cursor))
+      writeln("player pointing, first ", first.collider.type, ", other ", other.collider.type); 
+    if (typePair == tuple(ColliderType.Npc, ColliderType.Bullet))
+      writeln("bullethit, first ", first.collider.type, ", other ", other.collider.type);
+
     // TODO: make separate functions for different collidertype pairs, i.e. npc/bullet, npc/player...
     if (first.collider.type == ColliderType.Cursor || other.collider.type == ColliderType.Cursor)
       continue;
