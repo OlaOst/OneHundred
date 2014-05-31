@@ -8,7 +8,7 @@ import std.stdio;
 import gl3n.linalg;
 
 import collision.check;
-import collision.response;
+import collision.responsehandler;
 import components.collider;
 import entity;
 import spatialindex.spatialindex;
