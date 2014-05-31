@@ -23,7 +23,6 @@ class Graphics : System!bool
   {
     this.xres = xres; this.yres = yres;
     textRenderer = new TextRenderer();
-    
     textureSet["text"] = textRenderer.atlas;
   }
   
@@ -37,19 +36,15 @@ class Graphics : System!bool
   {
     if (entity.sprite !is null)
       textureSet[entity.sprite.fileName] = entity.sprite.texture;
-
     return true;
   }
   
   override void update()
   {
     StopWatch debugTimer;
-    
     debugTimer.start;
-    
-    vertices = null;
+    vertices = texCoords = null;
     colors = null;
-    texCoords = null;
     
     foreach (int index, Entity entity; entityForIndex)
     {
@@ -84,7 +79,6 @@ class Graphics : System!bool
         texCoords[entity.sprite.fileName] ~= entity.sprite.texCoords;
       }
     }
-    
     debugText = format("graphics timings: %s", debugTimer.peek.usecs*0.001);
   }
   
@@ -98,8 +92,7 @@ class Graphics : System!bool
   TextRenderer textRenderer;
   vec2 cameraPosition = vec2(0.0, 0.0);
   float zoom = 0.3;
-  vec2[][string] vertices;
-  vec2[][string] texCoords;
+  vec2[][string] vertices, texCoords;
   vec4[][string] colors;
   Texture2D[string] textureSet;
 }
