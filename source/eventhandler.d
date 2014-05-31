@@ -58,16 +58,10 @@ void handleToggleDebugInfo(Input gameInput, SystemSet systemSet, ref Entity debu
       debugText = createText("??", vec2(-3.0, -2.0));
       systemSet.addEntity(debugText);
     }
-    /*else
-    {
-      systemSet.removeEntity(debugText);
-      debugText = null;
-    }*/
-    
     index++;
   }
   
-  switch (index % 3)
+  final switch (index % 3)
   {
     case 0:
       debugText.text.text = systemSet.collisionHandler.debugText;
@@ -78,25 +72,18 @@ void handleToggleDebugInfo(Input gameInput, SystemSet systemSet, ref Entity debu
     case 2:
       debugText.text.text = systemSet.graphics.debugText;
       break;
-      
-    default:
-      debugText.text.text = "?";
   }
 }
 
 void handleEditableText(Input textInput, Entity editableText)
 {
   assert(editableText.input !is null);
-  
   foreach (string key, Input.ActionState pressedAction; textInput.actionState)
   {
-    if (pressedAction == Input.ActionState.Pressed)
-    {
-      if (key == "backspace" && editableText.text.text.length > 0)
+    if (pressedAction == Input.ActionState.Pressed && key == "backspace" && 
+        editableText.text.text.length > 0)
         editableText.text.text.popBack();
-    }
   }
-  
   editableText.text.text ~= editableText.editText;
 }
 
