@@ -48,7 +48,8 @@ void handleCollisions(Collision[] collisions)
     if (first.collider.type == ColliderType.Cursor || other.collider.type == ColliderType.Cursor)
       continue;
     
-    if (typePair[0] != ColliderType.Player && (first.collider.type == ColliderType.Bullet || other.collider.type == ColliderType.Bullet))
+    if (typePair[0] != ColliderType.Player && (first.collider.type == ColliderType.Bullet || 
+                                               other.collider.type == ColliderType.Bullet))
       collision.bulletCollisionResponse();
     else
       collision.shipCollisionResponse();
