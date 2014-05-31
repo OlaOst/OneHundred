@@ -36,7 +36,8 @@ void handlePlayerFireAction(Entity player, SystemSet systemSet, ref Entity[] npc
   {
     auto bullet = createBullet(player.vectors["position"], 
                                player.scalars["angle"], 
-                               player.vectors["velocity"]);
+                               player.vectors["velocity"],
+                               5.0);
                                
     systemSet.addEntity(bullet);
     npcs ~= bullet;

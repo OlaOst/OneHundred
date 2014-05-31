@@ -6,6 +6,7 @@ import systems.graphics;
 import systems.inputhandler;
 import systems.physics;
 import systems.soundsystem;
+import systems.timehandler;
 import timer;
 
 
@@ -16,6 +17,7 @@ class SystemSet
   InputHandler inputHandler;
   CollisionHandler collisionHandler;
   SoundSystem soundSystem;
+  TimeHandler timeHandler;
   
   this(int xres, int yres)
   {
@@ -24,6 +26,7 @@ class SystemSet
     inputHandler = new InputHandler();
     collisionHandler = new CollisionHandler();
     soundSystem = new SoundSystem();
+    timeHandler = new TimeHandler();
   }
   
   void close()
@@ -39,6 +42,7 @@ class SystemSet
     inputHandler.addEntity(entity);
     collisionHandler.addEntity(entity);
     soundSystem.addEntity(entity);
+    timeHandler.addEntity(entity);
   }
   
   void removeEntity(Entity entity)
@@ -48,11 +52,13 @@ class SystemSet
     inputHandler.removeEntity(entity);
     collisionHandler.removeEntity(entity);
     soundSystem.removeEntity(entity);
+    timeHandler.removeEntity(entity);
   }
   
   void update(Timer timer)
   {
     physics.setTimer(timer);
+    timeHandler.setTimer(timer);
     
     collisionHandler.update();
     physics.updateFromEntities();
@@ -61,6 +67,7 @@ class SystemSet
     physics.update();
     inputHandler.update();
     soundSystem.update();
+    timeHandler.update();
     
     physics.updateEntities();
     //graphics.updateFromEntities();
