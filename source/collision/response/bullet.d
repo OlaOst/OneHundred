@@ -91,13 +91,16 @@ Entity[] bulletCollisionResponse(Collision collision)
     auto position = (firstCollider.contactPoint + otherCollider.contactPoint) * 0.5;
     auto particle = new Entity();
     particle.vectors["position"] = position;
-    particle.vectors["velocity"] = (first.velocity + other.velocity) * 0.5 + vec2(uniform(-1.0, 1.0), uniform(-1.0, 1.0));
-    particle.scalars["angle"] = uniform(-PI, PI);
-    particle.scalars["rotation"] = uniform(-1.0, 1.0);
-    particle.scalars["lifeTime"] = uniform(0.5, 1.5);
-    particle.scalars["mass"] = 100;
     
-    auto drawable = new Polygon(size, 3, vec4(1.0, 0.0, 0.0, 0.0));
+    auto momentum = first.velocity*first.mass + other.velocity*other.mass;
+    
+    particle.vectors["velocity"] = momentum + vec2(uniform(-1.0, 1.0), uniform(-1.0, 1.0)).normalized * uniform(momentum.magnitude * 4.0, momentum.magnitude * 6.0);
+    particle.scalars["angle"] = uniform(-PI, PI) * 10.0;
+    particle.scalars["rotation"] = uniform(-1.0, 1.0) * 10.0;
+    particle.scalars["lifeTime"] = uniform(0.5, 1.5);
+    particle.scalars["mass"] = size;
+    
+    auto drawable = new Polygon(size, 3, vec4(uniformDistribution!float(3).vec3, 0.5));
     particle.polygon = drawable;
     
     hitEffectParticles ~= particle;
