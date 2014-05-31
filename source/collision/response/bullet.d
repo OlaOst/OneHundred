@@ -2,14 +2,19 @@ module collision.response.bullet;
 
 import std.conv;
 import std.math;
+import std.random;
+import std.range;
+
+import gl3n.linalg;
 
 import collision.responsehandler;
 import components.collider;
+import components.drawables.polygon;
 import entity;
 import timer;
 
 
-void bulletCollisionResponse(Collision collision)
+Entity[] bulletCollisionResponse(Collision collision)
 {
   auto first = collision.first;
   auto other = collision.other;
@@ -39,7 +44,7 @@ void bulletCollisionResponse(Collision collision)
   assert(otherCollider.contactPoint.isFinite);
 
   if ("velocity" !in first.vectors || "velocity" !in other.vectors)
-    return;
+    assert(false);
   
   auto firstVelocity = first.velocity * ((first.mass-other.mass) / (first.mass+other.mass)) +
                        other.velocity * ((2 * other.mass) / (first.mass+other.mass));
@@ -77,4 +82,26 @@ void bulletCollisionResponse(Collision collision)
     
   if (other.collider.type == ColliderType.Bullet)
     other.toBeRemoved = true;
+    
+  Entity[] hitEffectParticles;
+  int particleCount = 20;
+  foreach (double index; iota(0, particleCount))
+  {
+    float size = uniform(0.02, 0.05);
+    auto position = (firstCollider.contactPoint + otherCollider.contactPoint) * 0.5;
+    auto particle = new Entity();
+    particle.vectors["position"] = position;
+    particle.vectors["velocity"] = (first.velocity + other.velocity) * 0.5 + vec2(uniform(-2.0, 2.0), uniform(-2.0, 2.0));
+    particle.scalars["angle"] = uniform(-PI, PI);
+    particle.scalars["rotation"] = uniform(-1.0, 1.0);
+    particle.scalars["lifeTime"] = uniform(0.5, 1.5);
+    particle.scalars["mass"] = size ^^ 2;
+    
+    auto drawable = new Polygon(size, 3, vec4(1.0, 0.0, 0.0, 0.0));
+    particle.polygon = drawable;
+    
+    hitEffectParticles ~= particle;
+  }
+  
+  return hitEffectParticles;
 }

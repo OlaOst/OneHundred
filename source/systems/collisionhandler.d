@@ -18,6 +18,7 @@ import system;
 class CollisionHandler : System!CollisionEntity
 {
   SpatialIndex!CollisionEntity index = new SpatialIndex!CollisionEntity();
+  Entity[] collisionEffectParticles;
   
   override bool canAddEntity(Entity entity)
   {
@@ -72,7 +73,7 @@ class CollisionHandler : System!CollisionEntity
                         broadPhaseTimer.peek.usecs*0.001,
                         narrowPhaseTimer.peek.usecs*0.001);
                   
-    handleCollisions(collisions);
+    collisionEffectParticles ~= collisions.handleCollisions;
     
     // reset index for the next update
     index = new SpatialIndex!CollisionEntity();

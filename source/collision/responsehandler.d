@@ -7,6 +7,7 @@ import collision.check;
 import collision.response.bullet;
 import collision.response.ship;
 import components.collider;
+import entity;
 import systems.collisionhandler;
 
 
@@ -21,8 +22,10 @@ struct Collision
   }
 }
 
-void handleCollisions(Collision[] collisions)
+Entity[] handleCollisions(Collision[] collisions)
 {
+  Entity[] collisionEffectParticles;
+
   foreach (collision; collisions)
   {
     auto first = collision.first;
@@ -44,8 +47,10 @@ void handleCollisions(Collision[] collisions)
     
     if (typePair[0] != ColliderType.Player && (first.collider.type == ColliderType.Bullet || 
                                                other.collider.type == ColliderType.Bullet))
-      collision.bulletCollisionResponse();
+      collisionEffectParticles ~= collision.bulletCollisionResponse();
     else
       collision.shipCollisionResponse();
   }
+  
+  return collisionEffectParticles;
 }

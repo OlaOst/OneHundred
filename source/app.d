@@ -74,10 +74,14 @@ void main()
     editController.input.handleEditableText(editableText);
     player.handlePlayerFireAction(systemSet, npcs, timer);
     
+    npcs ~= systemSet.collisionHandler.collisionEffectParticles;
+    foreach (collisionEffectParticle; systemSet.collisionHandler.collisionEffectParticles)
+      systemSet.addEntity(collisionEffectParticle);
+    systemSet.collisionHandler.collisionEffectParticles.length = 0;
+    
     auto entitiesToRemove = npcs.filter!(entity => entity.toBeRemoved);
     foreach (entityToRemove; entitiesToRemove)
       systemSet.removeEntity(entityToRemove);
-      
     npcs = npcs.filter!(entity => !entity.toBeRemoved).array;
     
     mouseCursor.vectors["position"] = 
