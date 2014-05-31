@@ -73,7 +73,7 @@ class CollisionHandler : System!CollisionEntity
                         broadPhaseTimer.peek.usecs*0.001,
                         narrowPhaseTimer.peek.usecs*0.001);
                   
-    collisionEffectParticles ~= collisions.handleCollisions;
+    collisionEffectParticles ~= collisions.handleCollisions();
     
     // reset index for the next update
     index = new SpatialIndex!CollisionEntity();
