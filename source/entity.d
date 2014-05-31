@@ -27,6 +27,8 @@ class Entity
   Sound sound;
   Collider collider;
   
+  bool toBeRemoved = false;
+  
   static long idCounter = 0;
   immutable long id;
   

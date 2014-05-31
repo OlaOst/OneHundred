@@ -8,6 +8,7 @@ import std.stdio;
 import gl3n.linalg;
 
 import collision.check;
+import collision.response.bullet;
 import collision.response.ship;
 import components.collider;
 import components.sound;
@@ -47,6 +48,9 @@ void handleCollisions(Collision[] collisions)
     if (first.collider.type == ColliderType.Cursor || other.collider.type == ColliderType.Cursor)
       continue;
     
-    collision.shipCollisionResponse();
+    if (typePair[0] != ColliderType.Player && (first.collider.type == ColliderType.Bullet || other.collider.type == ColliderType.Bullet))
+      collision.bulletCollisionResponse();
+    else
+      collision.shipCollisionResponse();
   }
 }

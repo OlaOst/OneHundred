@@ -73,7 +73,13 @@ void main()
     gameController.input.handleToggleDebugInfo(systemSet, debugText);
     editController.input.handleEditableText(editableText);
     player.handlePlayerFireAction(systemSet, npcs, timer);
-
+    
+    auto entitiesToRemove = npcs.filter!(entity => entity.toBeRemoved);
+    foreach (entityToRemove; entitiesToRemove)
+      systemSet.removeEntity(entityToRemove);
+      
+    npcs = npcs.filter!(entity => !entity.toBeRemoved).array;
+    
     mouseCursor.vectors["position"] = 
       systemSet.graphics.getWorldPositionFromScreenCoordinates(
       systemSet.inputHandler.mouseScreenPosition);
