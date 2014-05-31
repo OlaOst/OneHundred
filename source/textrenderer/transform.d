@@ -31,7 +31,7 @@ vec2[] getVerticesForText(TextRenderer textRenderer,
       foreach (textTransformedVertex; textTransformedVertices)
         result ~= textTransformedVertex;
       
-      cursor += glyph.advance * text.size * 2.0;
+      cursor += glyph.advance * text.size;
     }
     cursor = vec2(0.0, cursor.y - text.size * 2.0);
   }

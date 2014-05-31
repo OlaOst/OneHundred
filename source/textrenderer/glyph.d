@@ -47,6 +47,9 @@ Glyph loadGlyph(FT_Face face, char letter, uint glyphSize)
   glyph.advance = vec2(face.glyph.advance.x / (64.0 * cast(float)glyphSize), 
                        face.glyph.advance.y / (64.0 * cast(float)glyphSize));
   
+  glyph.offset *= 2.0;
+  glyph.advance *= 2.0;
+  
   auto unalignedGlyph = face.glyph.bitmap.buffer;
   
   auto widthOffset = (glyphWidth - face.glyph.bitmap.width) / 2;
