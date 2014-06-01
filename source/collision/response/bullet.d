@@ -41,30 +41,6 @@ Entity[] bulletCollisionResponse(Collision collision)
   
   assert(firstCollider.contactPoint.isFinite);
   assert(otherCollider.contactPoint.isFinite);
-
-  if ("velocity" !in first.vectors || "velocity" !in other.vectors)
-    assert(false);
-  
-  auto firstVelocity = first.velocity * ((first.mass-other.mass) / (first.mass+other.mass)) +
-                       other.velocity * ((2 * other.mass) / (first.mass+other.mass));
-  auto otherVelocity = other.velocity * ((other.mass-first.mass) / (first.mass+other.mass)) +
-                       first.velocity * ((2 * first.mass) / (first.mass+other.mass));
-  
-  auto momentumBefore = first.velocity * first.mass + other.velocity * other.mass;
-  auto momentumAfter = firstVelocity * first.mass + otherVelocity * other.mass;
-  assert(approxEqual(momentumBefore.magnitude, momentumAfter.magnitude), 
-         "Momentum not conserved in collision: went from " ~ 
-         momentumBefore.to!string ~ " to " ~ momentumAfter.to!string);
-
-  auto firstVel = first.entity.vectors["velocity"];
-  auto otherVel = other.entity.vectors["velocity"];
-  // only change velocities if entities are moving towards each other
-  if (((other.position+other.velocity*0.01) - (first.position+first.velocity*0.01)).magnitude <
-      (other.position-first.position).magnitude)
-  {
-    first.entity.vectors["velocity"] = firstVelocity;
-    other.entity.vectors["velocity"] = otherVelocity;
-  }
   
   if (first.collider.type == ColliderType.Bullet)
     first.toBeRemoved = true;
@@ -73,10 +49,11 @@ Entity[] bulletCollisionResponse(Collision collision)
     
   Entity[] hitEffectParticles;
   int particleCount = uniform(10, 50);
+  auto position = (firstCollider.contactPoint + otherCollider.contactPoint) * 0.5;
   foreach (double index; iota(0, particleCount))
   {
     float size = uniform(0.02, 0.05);
-    auto position = (firstCollider.contactPoint + otherCollider.contactPoint) * 0.5;
+    
     auto particle = new Entity();
     particle.vectors["position"] = position;
     auto momentum = first.velocity*first.mass + other.velocity*other.mass;
@@ -94,5 +71,16 @@ Entity[] bulletCollisionResponse(Collision collision)
     
     hitEffectParticles ~= particle;
   }
+  
+  import components.sound;
+  Entity hitSound = new Entity();
+  hitSound.vectors["position"] = position;
+  static auto hitSounds = ["audio/mgshot1.wav", 
+                           "audio/mgshot2.wav", 
+                           "audio/mgshot3.wav", 
+                           "audio/mgshot4.wav"];
+  hitSound.sound = new Sound(hitSounds.randomSample(1).front.to!string);
+  hitEffectParticles ~= hitSound;
+  
   return hitEffectParticles;
 }

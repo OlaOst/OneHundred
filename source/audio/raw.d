@@ -63,8 +63,8 @@ public:
   
     if (source > 0 && source.alIsSource)
     {
-      source.alSourceQueueBuffers(1, &buffer);
-      source.alSourcePlay;
+      source.alSourcei(AL_BUFFER, buffer);
+      source.alSourcePlay();
     }
   }
   
@@ -82,7 +82,7 @@ public:
     if (source > 0)
     {
       enforce(source.alIsSource);
-      source.alSourceUnqueueBuffers(1, &buffer);
+      source.alSourceStop();
     }
   }
   

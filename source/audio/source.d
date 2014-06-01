@@ -31,7 +31,7 @@ interface Source
         check();
       }
       
-      if (!source.isPlaying)
+      if (!source.isPlaying())
         return source;
     }
     return 0;

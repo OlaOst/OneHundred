@@ -64,6 +64,7 @@ final class SoundSystem : System!Sound
     if (entity in indexForEntity)
     {
       components[indexForEntity[entity]].stopPlaying();
+      entity.toBeRemoved = true;
     }
   }
   
