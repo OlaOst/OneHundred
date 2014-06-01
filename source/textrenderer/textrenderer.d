@@ -25,10 +25,11 @@ class TextRenderer
     
     enforce(!FT_Init_FreeType(&library), "Error initializing FreeType");
     
-    auto defaultFont = "fonts/freesansbold.ttf";
+    //auto defaultFont = "fonts/freesansbold.ttf";
     //auto defaultFont = "fonts/telegrama_render.otf";
     //auto defaultFont = "fonts/Inconsolata.otf";
     //auto defaultFont = "fonts/OxygenMono-Regular.otf";
+    auto defaultFont = "fonts/Orbitron Black.otf";
     
     FT_Face face;
     auto fontError = FT_New_Face(library, ("./" ~ defaultFont).toStringz(), 0, &face);
