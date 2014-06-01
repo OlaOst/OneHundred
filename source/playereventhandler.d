@@ -38,7 +38,7 @@ void handlePlayerFireAction(Entity player, SystemSet systemSet, ref Entity[] npc
                                player.scalars["angle"], 
                                player.vectors["velocity"],
                                5.0);
-                               
+    bullet.collider.spawner = player;
     systemSet.addEntity(bullet);
     npcs ~= bullet;
     reloadTimeLeft = 0.1;

@@ -31,6 +31,7 @@ void main()
     renderer.close();
   }
   
+  Entity[] particles;
   Entity[] npcs = createEntities(100);
   foreach (npc; npcs)
     systemSet.addEntity(npc);
@@ -41,8 +42,8 @@ void main()
   auto mouseCursor = createMouseCursor();
   systemSet.addEntity(mouseCursor);
 
-  //auto music = createMusic();
-  //systemSet.addEntity(music);
+  auto music = createMusic();
+  systemSet.addEntity(music);
   
   //auto startupSound = createStartupSound();
   //systemSet.addEntity(startupSound);  
@@ -75,16 +76,16 @@ void main()
     player.handlePlayerFireAction(systemSet, npcs, timer);
     
     // particle effects
-    // TODO: make particles array, they do not belong in npcs array
-    npcs ~= systemSet.collisionHandler.collisionEffectParticles;
+    particles ~= systemSet.collisionHandler.collisionEffectParticles;
     foreach (collisionEffectParticle; systemSet.collisionHandler.collisionEffectParticles)
       systemSet.addEntity(collisionEffectParticle);
     systemSet.collisionHandler.collisionEffectParticles.length = 0;
     
-    auto entitiesToRemove = npcs.filter!(entity => entity.toBeRemoved);
+    auto entitiesToRemove = npcs.filter!(entity => entity.toBeRemoved).chain(particles.filter!(entity => entity.toBeRemoved));
     foreach (entityToRemove; entitiesToRemove)
       systemSet.removeEntity(entityToRemove);
     npcs = npcs.filter!(entity => !entity.toBeRemoved).array;
+    particles = particles.filter!(entity => !entity.toBeRemoved).array;
     
     mouseCursor.vectors["position"] = 
       systemSet.graphics.getWorldPositionFromScreenCoordinates(
@@ -95,10 +96,9 @@ void main()
                   systemSet.graphics.texCoords, 
                   systemSet.graphics.textureSet);
                   
-    // npc firing randomly
+    // npcs firing randomly
     import components.collider;
     Entity[] npcBullets;
-    //auto actualNpcs = ;
     foreach (npc; npcs.filter!(npc => npc.collider !is null && npc.collider.type == ColliderType.Npc))
     {
       if (uniform(1, 180) == 1)

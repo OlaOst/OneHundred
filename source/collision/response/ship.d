@@ -5,11 +5,12 @@ import std.math;
 
 import collision.responsehandler;
 import components.collider;
+import components.sound;
 import entity;
 import timer;
 
 
-void shipCollisionResponse(Collision collision)
+Entity[] shipCollisionResponse(Collision collision)
 {
   auto first = collision.first;
   auto other = collision.other;
@@ -39,7 +40,7 @@ void shipCollisionResponse(Collision collision)
   assert(otherCollider.contactPoint.isFinite);
 
   if ("velocity" !in first.vectors || "velocity" !in other.vectors)
-    return;
+    assert(false);
   
   auto firstVelocity = first.velocity * ((first.mass-other.mass) / (first.mass+other.mass)) +
                        other.velocity * ((2 * other.mass) / (first.mass+other.mass));
@@ -68,7 +69,15 @@ void shipCollisionResponse(Collision collision)
   otherCollider.force = (otherVelocity * other.mass - other.velocity * other.mass) * 
                         (1.0 / Timer.physicsTimeStep) * 1.0;
   
-  // change positions to ensure colliders does not overlap
+  // TODO: change positions to ensure colliders does not overlap
   auto firstPos = collision.first.entity.vectors["position"];
   auto otherPos = collision.other.entity.vectors["position"];
+  
+  Entity[] hitEffectParticles;
+  auto position = (firstCollider.contactPoint + otherCollider.contactPoint) * 0.5;
+  Entity hitSound = new Entity();
+  hitSound.vectors["position"] = position;
+  hitSound.sound = new Sound("audio/bounce.wav");
+  hitEffectParticles ~= hitSound;
+  return hitEffectParticles;
 }

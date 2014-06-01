@@ -51,11 +51,10 @@ Entity[] handleCollisions(Collision[] collisions)
     if (typePair[0] != ColliderType.Player && 
         (first.collider.type == ColliderType.Bullet || 
          other.collider.type == ColliderType.Bullet) && 
-        (first.collider.spawner is null || first.collider.spawner != other) && 
-        (other.collider.spawner is null || other.collider.spawner != first))
+        first.collider.spawner !is other && other.collider.spawner !is first)
       collisionEffectParticles ~= collision.bulletCollisionResponse();
-    else
-      collision.shipCollisionResponse();
+    else if (first.collider.spawner !is other && other.collider.spawner !is first)
+      collisionEffectParticles ~= collision.shipCollisionResponse();
   }
   
   return collisionEffectParticles;

@@ -10,6 +10,7 @@ import gl3n.linalg;
 import collision.responsehandler;
 import components.collider;
 import components.drawables.polygon;
+import components.sound;
 import entity;
 import timer;
 
@@ -72,7 +73,6 @@ Entity[] bulletCollisionResponse(Collision collision)
     hitEffectParticles ~= particle;
   }
   
-  import components.sound;
   Entity hitSound = new Entity();
   hitSound.vectors["position"] = position;
   static auto hitSounds = ["audio/mgshot1.wav", 
