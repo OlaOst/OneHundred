@@ -36,7 +36,6 @@ Entity[] bulletCollisionResponse(Collision collision)
          other.position.to!string ~ " vs " ~ first.position.to!string ~ 
          ", and radii " ~ other.radius.to!string ~ " vs " ~ first.radius.to!string);
 
-  //writeln("contactpoint: ", contactPoint);
   firstCollider.contactPoint = first.position + contactPoint;
   otherCollider.contactPoint = other.position - contactPoint;
   
@@ -55,7 +54,7 @@ Entity[] bulletCollisionResponse(Collision collision)
   auto momentumAfter = firstVelocity * first.mass + otherVelocity * other.mass;
   assert(approxEqual(momentumBefore.magnitude, momentumAfter.magnitude), 
          "Momentum not conserved in collision: went from " ~ 
-         momentumBefore.to!string ~ " to " ~ momentumAfter.to!string);    
+         momentumBefore.to!string ~ " to " ~ momentumAfter.to!string);
 
   auto firstVel = first.entity.vectors["velocity"];
   auto otherVel = other.entity.vectors["velocity"];
@@ -66,37 +65,27 @@ Entity[] bulletCollisionResponse(Collision collision)
     first.entity.vectors["velocity"] = firstVelocity;
     other.entity.vectors["velocity"] = otherVelocity;
   }
-
-  // TODO: is it right to integrate by physicsTimeStep here?
-  firstCollider.force = (firstVelocity * first.mass - first.velocity * first.mass) * 
-                        (1.0 / Timer.physicsTimeStep) * 1.0;
-  otherCollider.force = (otherVelocity * other.mass - other.velocity * other.mass) * 
-                        (1.0 / Timer.physicsTimeStep) * 1.0;
-  
-  // change positions to ensure colliders does not overlap
-  auto firstPos = collision.first.entity.vectors["position"];
-  auto otherPos = collision.other.entity.vectors["position"];
   
   if (first.collider.type == ColliderType.Bullet)
     first.toBeRemoved = true;
-    
   if (other.collider.type == ColliderType.Bullet)
     other.toBeRemoved = true;
     
   Entity[] hitEffectParticles;
-  int particleCount = 20;
+  int particleCount = uniform(10, 50);
   foreach (double index; iota(0, particleCount))
   {
     float size = uniform(0.02, 0.05);
     auto position = (firstCollider.contactPoint + otherCollider.contactPoint) * 0.5;
     auto particle = new Entity();
     particle.vectors["position"] = position;
-    
     auto momentum = first.velocity*first.mass + other.velocity*other.mass;
+    auto angle = uniform(-PI, PI);
     
-    particle.vectors["velocity"] = momentum + vec2(uniform(-1.0, 1.0), uniform(-1.0, 1.0)).normalized * uniform(momentum.magnitude * 4.0, momentum.magnitude * 6.0);
-    particle.scalars["angle"] = uniform(-PI, PI) * 10.0;
-    particle.scalars["rotation"] = uniform(-1.0, 1.0) * 10.0;
+    particle.vectors["velocity"] = momentum + vec2(cos(angle), sin(angle)) * 
+                                   uniform(momentum.magnitude * 3.0, momentum.magnitude * 6.0);
+    particle.scalars["angle"] = angle;
+    particle.scalars["rotation"] = angle * 10.0;
     particle.scalars["lifeTime"] = uniform(0.5, 1.5);
     particle.scalars["mass"] = size;
     
@@ -105,6 +94,5 @@ Entity[] bulletCollisionResponse(Collision collision)
     
     hitEffectParticles ~= particle;
   }
-  
   return hitEffectParticles;
 }
