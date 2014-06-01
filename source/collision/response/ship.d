@@ -72,12 +72,15 @@ Entity[] shipCollisionResponse(Collision collision)
   // TODO: change positions to ensure colliders does not overlap
   auto firstPos = collision.first.entity.vectors["position"];
   auto otherPos = collision.other.entity.vectors["position"];
-  
+
   Entity[] hitEffectParticles;
-  auto position = (firstCollider.contactPoint + otherCollider.contactPoint) * 0.5;
-  Entity hitSound = new Entity();
-  hitSound.vectors["position"] = position;
-  hitSound.sound = new Sound("audio/bounce.wav");
-  hitEffectParticles ~= hitSound;
+  if ((firstVelocity - otherVelocity).magnitude > 1.0)
+  {
+    auto position = (firstCollider.contactPoint + otherCollider.contactPoint) * 0.5;
+    Entity hitSound = new Entity();
+    hitSound.vectors["position"] = position;
+    hitSound.sound = new Sound("audio/bounce.wav");
+    hitEffectParticles ~= hitSound;
+  }
   return hitEffectParticles;
 }

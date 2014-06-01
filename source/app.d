@@ -9,6 +9,7 @@ import components.input;
 import entity;
 import entityfactory.entities;
 import entityfactory.tests;
+import entityspawns;
 import eventhandler;
 import playereventhandler;
 import renderer;
@@ -75,13 +76,11 @@ void main()
     editController.input.handleEditableText(editableText);
     player.handlePlayerFireAction(systemSet, npcs, timer);
     
-    // particle effects
-    particles ~= systemSet.collisionHandler.collisionEffectParticles;
-    foreach (collisionEffectParticle; systemSet.collisionHandler.collisionEffectParticles)
-      systemSet.addEntity(collisionEffectParticle);
-    systemSet.collisionHandler.collisionEffectParticles.length = 0;
+    addParticles(particles, systemSet);
+    addBullets(npcs, systemSet);
     
-    auto entitiesToRemove = npcs.filter!(entity => entity.toBeRemoved).chain(particles.filter!(entity => entity.toBeRemoved));
+    auto entitiesToRemove = npcs.filter!(entity => entity.toBeRemoved)
+                                .chain(particles.filter!(entity => entity.toBeRemoved));
     foreach (entityToRemove; entitiesToRemove)
       systemSet.removeEntity(entityToRemove);
     npcs = npcs.filter!(entity => !entity.toBeRemoved).array;
@@ -95,31 +94,5 @@ void main()
                   systemSet.graphics.colors, 
                   systemSet.graphics.texCoords, 
                   systemSet.graphics.textureSet);
-                  
-    // npcs firing randomly
-    import components.collider;
-    Entity[] npcBullets;
-    foreach (npc; npcs.filter!(npc => npc.collider !is null && npc.collider.type == ColliderType.Npc))
-    {
-      if (uniform(1, 180) == 1)
-      {
-        assert("position" in npc.vectors);
-        assert("velocity" in npc.vectors);
-        assert("angle" in npc.scalars);
-        auto bullet = createBullet(npc.vectors["position"], 
-                                   npc.scalars["angle"], 
-                                   npc.vectors["velocity"],
-                                   5.0);
-        bullet.collider.spawner = npc;
-        assert(bullet !is null);
-        npcBullets ~= bullet;
-      }
-    }
-    foreach (bullet; npcBullets)
-    {
-      systemSet.addEntity(bullet);
-      npcs ~= bullet;
-    }
-    npcBullets.length = 0;
   }
 }
