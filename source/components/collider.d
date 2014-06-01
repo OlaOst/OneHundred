@@ -27,7 +27,9 @@ class Collider
   
   vec2[] vertices;
   
-  Entity spawner; // what entity did this collider spawn from? good to know in case we do not want npcs firing bullets to instantly get hit by their own bullets...
+  // what entity did this collider spawn from? 
+  // need to know since we do not want npcs firing bullets to get hit by their own bullets
+  Entity spawner; 
   
   this(vec2[] vertices, ColliderType type)
   {
