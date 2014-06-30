@@ -16,15 +16,24 @@ class Input
     Released,
   }
 
-  SDL_Keycode[string] keyForAction;
+  struct InputForAction
+  {
+    SDL_Keycode[string] key;
+    Uint8[string] button; // TODO: mouse left/right/middle button codes are typed as anonymous enums in SDL2 and derelict :(
+  }
+  
+  InputForAction inputForAction;
+  
   ActionState[string] actionState;
   string text;
   
-  this(SDL_Keycode[string] keyForAction)
+  this(InputForAction inputForAction)
   {
-    this.keyForAction = keyForAction;
+    this.inputForAction = inputForAction;
     
-    foreach (string action; this.keyForAction.keys)
+    foreach (string action; this.inputForAction.key.keys)
+      actionState[action] = ActionState.Inactive;
+    foreach (string action; this.inputForAction.button.keys)
       actionState[action] = ActionState.Inactive;
   }
   
@@ -44,30 +53,26 @@ class Input
     value = getActionState(action) == Input.ActionState.Pressed;
   }
   
-  // TODO: would be neat to make these static initalized
-  // but DMD 2.064 cannot static initialize AAs
-  static SDL_Keycode[string] playerInput;/* = ["accelerate" : SDLK_UP,
-                                            "decelerate" : SDLK_DOWN,
-                                            "rotateLeft" : SDLK_LEFT,
-                                            "rotateRight" : SDLK_RIGHT];*/
-  static SDL_Keycode[string] gameControls;
-  static SDL_Keycode[string] textInput;
+  static InputForAction playerInput;
+  static InputForAction gameControls;
+  static InputForAction textInput;
   
   static this()
   {
-    playerInput["accelerate"] = SDLK_UP;
-    playerInput["decelerate"] = SDLK_DOWN;
-    playerInput["rotateLeft"] = SDLK_LEFT;
-    playerInput["rotateRight"] = SDLK_RIGHT;
-    playerInput["fire"] = SDLK_SPACE;
+    playerInput.key["accelerate"] = SDLK_UP;
+    playerInput.key["decelerate"] = SDLK_DOWN;
+    playerInput.key["rotateLeft"] = SDLK_LEFT;
+    playerInput.key["rotateRight"] = SDLK_RIGHT;
+    playerInput.key["fire"] = SDLK_SPACE;
     
-    gameControls["zoomIn"] = SDLK_PAGEUP;
-    gameControls["zoomOut"] = SDLK_PAGEDOWN;
-    gameControls["quit"] = SDLK_ESCAPE;
-    gameControls["addEntity"] = SDLK_INSERT;
-    gameControls["removeEntity"] = SDLK_DELETE;
-    gameControls["toggleDebugInfo"] = SDLK_F1;
+    gameControls.key["zoomIn"] = SDLK_PAGEUP;
+    gameControls.key["zoomOut"] = SDLK_PAGEDOWN;
+    gameControls.key["quit"] = SDLK_ESCAPE;
+    gameControls.key["addEntity"] = SDLK_INSERT;
+    gameControls.key["removeEntity"] = SDLK_DELETE;
+    gameControls.key["toggleDebugInfo"] = SDLK_F1;
+    gameControls.button["toggleInputWindow"] = SDL_BUTTON_RIGHT;
     
-    textInput["backspace"] = SDLK_BACKSPACE;
+    textInput.key["backspace"] = SDLK_BACKSPACE;
   }
 }

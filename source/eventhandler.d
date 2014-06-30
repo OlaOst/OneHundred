@@ -75,6 +75,30 @@ void handleToggleDebugInfo(Input gameInput, SystemSet systemSet, ref Entity debu
   }
 }
 
+void handleToggleInputWindow(Input gameInput, SystemSet systemSet, ref Entity inputWindow, Entity mouseCursor)
+{
+  gameInput.toggleAction("toggleInputWindow", toggleInputWindow);
+  
+  if (toggleInputWindow)
+  {
+    if (inputWindow is null)
+    {
+      // find out what entity the mouseCursor is overlapping
+      inputWindow = createText("hello", mouseCursor.vectors["position"]);
+      systemSet.addEntity(inputWindow);
+    }
+    else
+    {
+      systemSet.removeEntity(inputWindow);
+      inputWindow = null;
+    }
+  }
+  else if (inputWindow !is null)
+  {
+    inputWindow.vectors["position"] = mouseCursor.vectors["position"];
+  }
+}
+
 void handleEditableText(Input textInput, Entity editableText)
 {
   assert(editableText.input !is null);
@@ -93,3 +117,4 @@ bool zoomOut = false;
 bool addEntity = false;
 bool removeEntity = false;
 bool toggleDebugInfo = false;
+bool toggleInputWindow = false;

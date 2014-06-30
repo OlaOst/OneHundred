@@ -40,6 +40,7 @@ void main()
   auto player = createPlayer();
   systemSet.addEntity(player);
   
+  Entity inputWindow = null;
   auto mouseCursor = createMouseCursor();
   systemSet.addEntity(mouseCursor);
 
@@ -73,6 +74,7 @@ void main()
     gameController.input.handleZoom(systemSet.graphics);
     gameController.input.handleAddRemoveEntity(systemSet, npcs);
     gameController.input.handleToggleDebugInfo(systemSet, debugText);
+    gameController.input.handleToggleInputWindow(systemSet, inputWindow, mouseCursor);
     editController.input.handleEditableText(editableText);
     player.handlePlayerFireAction(systemSet, npcs, timer);
     
