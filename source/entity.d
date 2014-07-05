@@ -36,4 +36,9 @@ class Entity
   {
     id = idCounter++;
   }
+  
+  string debugInfo()
+  {
+    return "id: " ~ id.to!string ~ "\nposition: " ~ vectors["position"].to!string;
+  }
 }

@@ -7,7 +7,7 @@ import std.stdio;
     
 import gl3n.linalg;
 
-import collision.check;
+import collision.collisionentity;
 import collision.responsehandler;
 import components.collider;
 import entity;
@@ -39,7 +39,7 @@ class CollisionHandler : System!CollisionEntity
       index.insert(collisionEntity);
     
     Collision[] collisions;
-    foreach (collisionEntity; components)
+    foreach (ref collisionEntity; components)
     {
       auto collider = collisionEntity.collider;
       collider.isColliding = false;
@@ -59,6 +59,7 @@ class CollisionHandler : System!CollisionEntity
                                                           (collision.other == collisionEntity && 
                                                            collision.first == collidingEntity))));
 
+      collisionEntity.overlappingEntities = collidingEntities.array;
       collisions ~= collidingEntities.map!(collidingEntity => 
                                      Collision(collisionEntity, collidingEntity)).array;
                                      

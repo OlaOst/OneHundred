@@ -84,8 +84,16 @@ void handleToggleInputWindow(Input gameInput, SystemSet systemSet, ref Entity in
     if (inputWindow is null)
     {
       // find out what entity the mouseCursor is overlapping
-      inputWindow = createText("hello", mouseCursor.vectors["position"]);
-      systemSet.addEntity(inputWindow);
+      
+      assert(mouseCursor in systemSet.collisionHandler.indexForEntity);
+      auto mouseCursorOverlaps = systemSet.collisionHandler.components[systemSet.collisionHandler.indexForEntity[mouseCursor]].overlappingEntities;
+      
+      if (!mouseCursorOverlaps.empty)
+      {
+        auto overlappingEntity = mouseCursorOverlaps.front;
+        inputWindow = createText("entity " ~ overlappingEntity.entity.debugInfo, mouseCursor.vectors["position"]);
+        systemSet.addEntity(inputWindow);
+      }
     }
     else
     {

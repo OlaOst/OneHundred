@@ -33,7 +33,7 @@ void main()
   }
   
   Entity[] particles;
-  Entity[] npcs = createEntities(100);
+  Entity[] npcs = createEntities(1);
   foreach (npc; npcs)
     systemSet.addEntity(npc);
   
@@ -44,8 +44,8 @@ void main()
   auto mouseCursor = createMouseCursor();
   systemSet.addEntity(mouseCursor);
 
-  auto music = createMusic();
-  systemSet.addEntity(music);
+  //auto music = createMusic();
+  //systemSet.addEntity(music);
   
   //auto startupSound = createStartupSound();
   //systemSet.addEntity(startupSound);  

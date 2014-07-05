@@ -3,7 +3,7 @@ module collision.responsehandler;
 import std.range;
 import std.stdio;
 
-import collision.check;
+import collision.collisionentity;
 import collision.response.bullet;
 import collision.response.ship;
 import components.collider;
@@ -35,11 +35,11 @@ Entity[] handleCollisions(Collision[] collisions)
     assert(other.collider !is null);
     
     auto typePair = (first.collider.type < other.collider.type) ? 
-                      tuple(first.collider.type, other.collider.type) : 
-                      tuple(other.collider.type, first.collider.type);
+                      [first.collider.type, other.collider.type] : 
+                      [other.collider.type, first.collider.type];
     
-    if (typePair == tuple(ColliderType.Player, ColliderType.Cursor))
-      writeln("player pointing, first ", first.collider.type, ", other ", other.collider.type);
+    //if (typePair == [ColliderType.Player, ColliderType.Cursor])
+      //writeln("player pointing, first ", first.collider.type, ", other ", other.collider.type);
     /*if (typePair == tuple(ColliderType.Npc, ColliderType.Bullet))
       writeln("bullethit, first ", first.collider.type, ", other ", other.collider.type);*/
 
