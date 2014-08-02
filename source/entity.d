@@ -1,5 +1,7 @@
 module entity;
 
+import std.algorithm;
+
 import gl3n.linalg;
 
 import components.collider;
@@ -39,6 +41,13 @@ class Entity
   
   string debugInfo()
   {
-    return "id: " ~ id.to!string ~ "\nposition: " ~ vectors["position"].to!string;
+    string info = "id: " ~ id.to!string;
+    
+    foreach (key, value; vectors)
+      info ~= "\n" ~ key ~ ": " ~ value.to!string;
+    foreach (key, value; scalars)
+      info ~= "\n" ~ key ~ ": " ~ value.to!string;
+      
+    return info;
   }
 }

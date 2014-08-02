@@ -32,6 +32,11 @@ class System(ComponentType)
   ComponentType[] components;
   string debugText;
   
+  ComponentType getComponent(Entity entity)
+  {
+    return components[indexForEntity[entity]];
+  }
+  
   void addEntity(Entity entity)
   {
     if (canAddEntity(entity))
