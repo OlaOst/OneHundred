@@ -40,7 +40,10 @@ void handleToggleDebugInfo(Input gameInput, SystemSet systemSet, ref Entity debu
   }
 }
 
-void handleToggleInputWindow(Input gameInput, SystemSet systemSet, ref Entity inputWindow, Entity mouseCursor)
+void handleToggleInputWindow(Input gameInput, 
+                             SystemSet systemSet, 
+                             ref Entity inputWindow, 
+                             Entity mouseCursor)
 {
   gameInput.toggleAction("toggleInputWindow", toggleInputWindow);
   
@@ -51,12 +54,14 @@ void handleToggleInputWindow(Input gameInput, SystemSet systemSet, ref Entity in
       // find out what entity the mouseCursor is overlapping
       
       assert(mouseCursor in systemSet.collisionHandler.indexForEntity);
-      auto mouseCursorOverlaps = systemSet.collisionHandler.getComponent(mouseCursor).overlappingEntities;
+      auto mouseCursorCollider = systemSet.collisionHandler.getComponent(mouseCursor);
+      auto mouseCursorOverlaps = mouseCursorCollider.overlappingEntities;
       
       if (!mouseCursorOverlaps.empty)
       {
         auto overlappingEntity = mouseCursorOverlaps.front;
-        inputWindow = createText(overlappingEntity.entity.debugInfo, overlappingEntity.vectors["position"]);
+        inputWindow = createText(overlappingEntity.entity.debugInfo, 
+                                 overlappingEntity.vectors["position"]);
         systemSet.addEntity(inputWindow);
       }
     }
