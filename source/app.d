@@ -49,9 +49,6 @@ void main()
   //auto music = createMusic();
   //systemSet.addEntity(music);
   
-  //auto startupSound = createStartupSound();
-  //systemSet.addEntity(startupSound);  
-  
   auto debugText = createText("??", vec2(-3.0, -2.0));
   systemSet.addEntity(debugText);
   
