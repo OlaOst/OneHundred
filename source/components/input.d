@@ -19,7 +19,9 @@ class Input
   struct InputForAction
   {
     SDL_Keycode[string] key;
-    Uint8[string] button; // TODO: mouse left/right/middle button codes are typed as anonymous enums in SDL2 and derelict :(
+    
+    // TODO: mouse left/right/middle button codes are typed as anonymous enums in SDL2 and derelict
+    Uint8[string] button; 
   }
   
   InputForAction inputForAction;
