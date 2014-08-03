@@ -14,8 +14,8 @@ void handlePlayerRotateActions(Input playerInput, ref double torque)
   playerInput.setAction("rotateLeft", rotateLeft);
   playerInput.setAction("rotateRight", rotateRight);
   
-  if (rotateLeft) torque += 1.0;
-  if (rotateRight) torque -= 1.0;
+  if (rotateLeft) torque -= 1.0;
+  if (rotateRight) torque += 1.0;
 }
 
 void handlePlayerAccelerateActions(Input playerInput, ref vec2 force, double angle)
