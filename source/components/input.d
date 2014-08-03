@@ -18,10 +18,10 @@ class Input
 
   struct InputForAction
   {
-    SDL_Keycode[string] key;
+    string[SDL_Keycode] key;
     
     // TODO: mouse left/right/middle button codes are typed as anonymous enums in SDL2 and derelict
-    Uint8[string] button; 
+    string[Uint8] button; 
   }
   
   InputForAction inputForAction;
@@ -33,9 +33,9 @@ class Input
   {
     this.inputForAction = inputForAction;
     
-    foreach (string action; this.inputForAction.key.keys)
+    foreach (string action; this.inputForAction.key.values)
       actionState[action] = ActionState.Inactive;
-    foreach (string action; this.inputForAction.button.keys)
+    foreach (string action; this.inputForAction.button.values)
       actionState[action] = ActionState.Inactive;
   }
   
@@ -55,26 +55,45 @@ class Input
     value = getActionState(action) == Input.ActionState.Pressed;
   }
   
+  void updateActionStates()
+  {
+    foreach (SDL_Keycode key, string action; inputForAction.key)
+    {
+      if (actionState[action] == Input.ActionState.Released)
+        actionState[action] = Input.ActionState.Inactive;
+      if (actionState[action] == Input.ActionState.Pressed)
+        actionState[action] = Input.ActionState.Held;
+    }
+    
+    foreach (Uint8 button, string action; inputForAction.button)
+    {
+      if (actionState[action] == Input.ActionState.Released)
+        actionState[action] = Input.ActionState.Inactive;
+      if (actionState[action] == Input.ActionState.Pressed)
+        actionState[action] = Input.ActionState.Held;
+    }
+  }
+  
   static InputForAction playerInput;
   static InputForAction gameControls;
   static InputForAction textInput;
   
   static this()
   {
-    playerInput.key["accelerate"] = SDLK_UP;
-    playerInput.key["decelerate"] = SDLK_DOWN;
-    playerInput.key["rotateLeft"] = SDLK_LEFT;
-    playerInput.key["rotateRight"] = SDLK_RIGHT;
-    playerInput.key["fire"] = SDLK_SPACE;
+    playerInput.key[SDLK_UP] = "accelerate";
+    playerInput.key[SDLK_DOWN] = "decelerate";
+    playerInput.key[SDLK_LEFT] = "rotateLeft";
+    playerInput.key[SDLK_RIGHT] = "rotateRight";
+    playerInput.key[SDLK_SPACE] = "fire";
     
-    gameControls.key["zoomIn"] = SDLK_PAGEUP;
-    gameControls.key["zoomOut"] = SDLK_PAGEDOWN;
-    gameControls.key["quit"] = SDLK_ESCAPE;
-    gameControls.key["addEntity"] = SDLK_INSERT;
-    gameControls.key["removeEntity"] = SDLK_DELETE;
-    gameControls.key["toggleDebugInfo"] = SDLK_F1;
-    gameControls.button["toggleInputWindow"] = SDL_BUTTON_RIGHT;
+    gameControls.key[SDLK_PAGEUP] = "zoomIn";
+    gameControls.key[SDLK_PAGEDOWN] = "zoomOut";
+    gameControls.key[SDLK_ESCAPE] = "quit";
+    gameControls.key[SDLK_INSERT] = "addEntity";
+    gameControls.key[SDLK_DELETE] = "removeEntity";
+    gameControls.key[SDLK_F1] = "toggleDebugInfo";
+    gameControls.button[SDL_BUTTON_RIGHT] = "toggleInputWindow";
     
-    textInput.key["backspace"] = SDLK_BACKSPACE;
+    textInput.key[SDLK_BACKSPACE] = "backspace";
   }
 }
