@@ -49,7 +49,7 @@ class Graphics : System!bool
     foreach (int index, Entity entity; entityForIndex)
     {
       auto transform = delegate (vec2 vertex) => ((vec3(vertex, 0.0) * 
-                                                 mat3.zrotation(entity.scalars["angle"])).xy + 
+                                                 mat3.zrotation(-entity.scalars["angle"])).xy + 
                                                  entity.vectors["position"] - cameraPosition) *
                                                  zoom;
       if (entity.polygon !is null)

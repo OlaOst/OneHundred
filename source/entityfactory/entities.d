@@ -77,7 +77,7 @@ Entity[] createEntities(uint elements)
     auto angle = (index/elements) * PI * 2.0;
     auto size = uniform(0.025, 0.125);
     auto position = vec2(uniform(-5.0, 5.0), uniform(-5.0, 5.0));                   
-    auto entity = createEntity(position, vec2(sin(angle) * 0.5, cos(angle) * 0.5),
+    auto entity = createEntity(position, vec2(cos(angle) * 0.5, sin(angle) * 0.5),
                                size);
     entities ~= entity;
   }
@@ -86,8 +86,8 @@ Entity[] createEntities(uint elements)
 
 Entity createBullet(vec2 position, float angle, vec2 velocity, double lifeTime)
 {
-  auto entity = createEntity(position, velocity + vec2(sin(angle), cos(angle)) * 5.0, 0.1);
-  entity.scalars["angle"] = angle - PI/2;
+  auto entity = createEntity(position, velocity, 0.1);
+  entity.scalars["angle"] = angle;
   entity.scalars["lifeTime"] = lifeTime;
   entity.sprite = null;
   entity.polygon = new Polygon(0.1, uniform(3, 4), 

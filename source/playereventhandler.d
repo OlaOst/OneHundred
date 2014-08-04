@@ -11,11 +11,11 @@ import timer;
 
 void handlePlayerRotateActions(Input playerInput, ref double torque)
 {
-  playerInput.setAction("rotateLeft", rotateLeft);
-  playerInput.setAction("rotateRight", rotateRight);
+  playerInput.setAction("rotateCounterClockwise", rotateCounterClockwise);
+  playerInput.setAction("rotateClockwise", rotateClockwise);
   
-  if (rotateLeft) torque -= 1.0;
-  if (rotateRight) torque += 1.0;
+  if (rotateCounterClockwise) torque += 1.0;
+  if (rotateClockwise) torque -= 1.0;
 }
 
 void handlePlayerAccelerateActions(Input playerInput, ref vec2 force, double angle)
@@ -23,8 +23,8 @@ void handlePlayerAccelerateActions(Input playerInput, ref vec2 force, double ang
   playerInput.setAction("accelerate", accelerate);
   playerInput.setAction("decelerate", decelerate);
   
-  if (accelerate) force += vec2(sin(-angle), cos(-angle)) * 0.5;
-  if (decelerate) force -= vec2(sin(-angle), cos(-angle)) * 0.5;
+  if (accelerate) force += vec2(cos(angle), sin(angle)) * 0.5;
+  if (decelerate) force -= vec2(cos(angle), sin(angle)) * 0.5;
 }
 
 void handlePlayerFireAction(Entity player, SystemSet systemSet, ref Entity[] npcs, Timer timer)
@@ -34,9 +34,11 @@ void handlePlayerFireAction(Entity player, SystemSet systemSet, ref Entity[] npc
   static float reloadTimeLeft = 0.0;
   if (fire && reloadTimeLeft <= 0.0)
   {
+    auto angle = player.scalars["angle"];
+    
     auto bullet = createBullet(player.vectors["position"], 
-                               player.scalars["angle"], 
-                               player.vectors["velocity"],
+                               angle, 
+                               player.vectors["velocity"] + vec2(cos(angle), sin(angle)) * 5.0,
                                5.0);
     bullet.collider.spawner = player;
     systemSet.addEntity(bullet);
@@ -52,5 +54,5 @@ void handlePlayerFireAction(Entity player, SystemSet systemSet, ref Entity[] npc
 bool fire = false;
 bool accelerate = false;
 bool decelerate = false;
-bool rotateLeft = false;
-bool rotateRight = false;
+bool rotateCounterClockwise = false;
+bool rotateClockwise = false;

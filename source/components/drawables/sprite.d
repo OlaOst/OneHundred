@@ -34,7 +34,11 @@ final class Sprite : Drawable
      
     texture = textureCache[fileName];
     
-    vertices = baseSquare.dup.map!(vertex => vertex * size).array;
+    // assume images point up by default.
+    // since our default angle 0 is pointing to the right, 
+    // we need to rotate the sprite 90 degrees clockwise
+    vertices = baseSquare.dup.map!(vertex => (vec3(vertex, 0.0) * mat3.zrotation(PI/2)).xy * 
+                                              size).array;
     texCoords = baseTexCoordsSquare.dup;
   }
 }

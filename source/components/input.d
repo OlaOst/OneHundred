@@ -82,8 +82,8 @@ class Input
   {
     playerInput.key[SDLK_UP] = "accelerate";
     playerInput.key[SDLK_DOWN] = "decelerate";
-    playerInput.key[SDLK_LEFT] = "rotateLeft";
-    playerInput.key[SDLK_RIGHT] = "rotateRight";
+    playerInput.key[SDLK_LEFT] = "rotateCounterClockwise";
+    playerInput.key[SDLK_RIGHT] = "rotateClockwise";
     playerInput.key[SDLK_SPACE] = "fire";
     
     gameControls.key[SDLK_PAGEUP] = "zoomIn";

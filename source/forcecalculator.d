@@ -60,9 +60,9 @@ body
   force += state.velocity * -0.05; // damping force
   
   // twisty clockwise force close to center
-  auto normalPos = vec2(state.position.y, -state.position.x);
+  /*auto normalPos = vec2(state.position.y, -state.position.x);
   if (normalPos.magnitude() > 0.0)
-    force += normalPos.normalized() * ((1.0 / (normalPos.magnitude() + 0.1)) ^^2) * 0.05;
+    force += normalPos.normalized() * ((1.0 / (normalPos.magnitude() + 0.1)) ^^2) * 0.05;*/
     
   // twisty counterclockwise force further out
   force += vec2(-state.position.y, state.position.x) * 0.015;
