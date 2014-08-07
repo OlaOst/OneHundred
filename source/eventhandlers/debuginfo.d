@@ -8,7 +8,6 @@ import gl3n.linalg;
 import components.input;
 import entity;
 import entityfactory.tests;
-import systems.graphics;
 import systemset;
 
 
@@ -51,13 +50,18 @@ void handleToggleInputWindow(Input gameInput,
   {
     if (inputWindow is null)
     {
-      // find out what entity the mouseCursor is overlapping
-      
+      // find out which entities the mouseCursor is overlapping with
       assert(mouseCursor in systemSet.collisionHandler.indexForEntity);
       auto mouseCursorCollider = systemSet.collisionHandler.getComponent(mouseCursor);
       auto mouseCursorOverlaps = mouseCursorCollider.overlappingEntities;
       
-      if (!mouseCursorOverlaps.empty)
+      if (mouseCursorOverlaps.empty)
+      {
+        inputWindow = createText("input: ", mouseCursor.vectors["position"]);
+        inputWindow.input = new Input(Input.textInput);
+        systemSet.addEntity(inputWindow);
+      }
+      else
       {
         auto overlappingEntity = mouseCursorOverlaps.front;
         inputWindow = createText(overlappingEntity.entity.debugInfo, 
@@ -79,14 +83,16 @@ void handleToggleInputWindow(Input gameInput,
 
 void handleEditableText(Input textInput, Entity editableText)
 {
-  assert(editableText.input !is null);
-  foreach (string key, Input.ActionState pressedAction; textInput.actionState)
+  if (editableText !is null && editableText.input !is null)
   {
-    if (pressedAction == Input.ActionState.Pressed && key == "backspace" && 
+    //assert(editableText.input !is null);
+    
+    if (textInput.actionState["backspace"] == Input.ActionState.Pressed && 
         editableText.text.text.length > 0)
         editableText.text.text.popBack();
+
+    editableText.text.text ~= editableText.editText;
   }
-  editableText.text.text ~= editableText.editText;
 }
 
 bool toggleDebugInfo = false;

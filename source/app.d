@@ -52,10 +52,6 @@ void main()
   auto debugText = createText("??", vec2(-3.0, -2.0));
   systemSet.addEntity(debugText);
   
-  auto editableText = createText("", vec2(-3.0, 2.0));
-  editableText.input = new Input(Input.textInput);
-  systemSet.addEntity(editableText);
-  
   auto gameController = createGameController();
   systemSet.addEntity(gameController);
   
@@ -74,7 +70,7 @@ void main()
     gameController.input.handleAddRemoveEntity(systemSet, npcs);
     gameController.input.handleToggleDebugInfo(systemSet, debugText);
     gameController.input.handleToggleInputWindow(systemSet, inputWindow, mouseCursor);
-    editController.input.handleEditableText(editableText);
+    editController.input.handleEditableText(inputWindow);
     player.handlePlayerFireAction(systemSet, npcs, timer);
     
     addParticles(particles, systemSet);
