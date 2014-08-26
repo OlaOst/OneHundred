@@ -46,7 +46,7 @@ class Graphics : System!bool
     vertices = texCoords = null;
     colors = null;
     
-    foreach (int index, Entity entity; entityForIndex)
+    foreach (size_t index, Entity entity; entityForIndex)
     {
       auto transform = delegate (vec2 vertex) => ((vec3(vertex, 0.0) * 
                                                  mat3.zrotation(-entity.scalars["angle"])).xy + 

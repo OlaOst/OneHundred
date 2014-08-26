@@ -16,7 +16,7 @@ class System(ComponentType)
            "indexForEntity/components length mismatch");
     
     // ensure there is a one-to-one mapping between indices and entities
-    foreach (int index, const Entity entity; entityForIndex)
+    foreach (size_t index, const Entity entity; entityForIndex)
     {
       assert(index in entityForIndex);
       assert(entity in indexForEntity);
@@ -27,8 +27,8 @@ class System(ComponentType)
     }
   }
   
-  int[const Entity] indexForEntity;
-  Entity[int] entityForIndex;
+  size_t[const Entity] indexForEntity;
+  Entity[size_t] entityForIndex;
   ComponentType[] components;
   string debugText;
   

@@ -63,7 +63,7 @@ class Physics : System!State
   
   void updateEntities()
   {
-    foreach (int index, Entity entity; entityForIndex)
+    foreach (size_t index, Entity entity; entityForIndex)
     {
       //entity.vectors["position"] = currentStates[index].position;
       //entity.vectors["velocity"] = currentStates[index].velocity;
@@ -76,7 +76,7 @@ class Physics : System!State
   
   void updateFromEntities()
   {
-    foreach (int index, Entity entity; entityForIndex)
+    foreach (size_t index, Entity entity; entityForIndex)
     {
       //currentStates[index].velocity = entity.vectors["velocity"];
       components[index].velocity = entity.vectors["velocity"];

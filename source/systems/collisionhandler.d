@@ -82,7 +82,7 @@ class CollisionHandler : System!CollisionEntity
   
   void updateFromEntities()
   {
-    foreach (int index, Entity entity; entityForIndex)
+    foreach (size_t index, Entity entity; entityForIndex)
       components[index].updateFromEntity();
   }
 }

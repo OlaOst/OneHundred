@@ -44,7 +44,7 @@ public:
         textInput ~= event.text.text.toStringz.to!string;
     }
     
-    foreach (int index, Entity entity; entityForIndex)
+    foreach (size_t index, Entity entity; entityForIndex)
       process(entity, eventsSinceLastUpdate);
   }
   
