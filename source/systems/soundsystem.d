@@ -40,12 +40,12 @@ final class SoundSystem : System!Sound
   
   override bool canAddEntity(Entity entity)
   {
-    return entity.sound !is null;
+    return ("sound" in entity.values) !is null;
   }
   
   override Sound makeComponent(Entity entity)
   {
-    return entity.sound;
+    return new Sound(entity.values["sound"]);
   }
   
   override void update()

@@ -19,12 +19,20 @@ public:
   
   override bool canAddEntity(Entity entity)
   {
-    return entity.input !is null;
+    return ("input" in entity.values) !is null;
   }
   
   override Input makeComponent(Entity entity)
   {
-    return entity.input;
+    if (entity.values["input"] == "playerInput")
+      return new Input(Input.playerInput);
+    if (entity.values["input"] == "gameControls")
+      return new Input(Input.gameControls);
+    if (entity.values["input"] == "textInput")
+      return new Input(Input.textInput);
+      
+    assert(false, "Found unhandled input value: " ~ entity.values["input"]);
+    //return new Input(entity.values["input"].to!(Input.InputForAction));
   }
   
   override void update()
@@ -50,10 +58,10 @@ public:
   
   void process(Entity entity, SDL_Event[] events)
   {
-    auto input = entity.input;
+    auto input = getComponent(entity);
     
     // TODO: only set edittext for components that want to edit text
-    entity.editText = textInput;
+    entity.values["editText"] = textInput;
     
     input.updateActionStates();
     

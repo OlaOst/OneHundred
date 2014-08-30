@@ -29,18 +29,18 @@ void handlePlayerAccelerateActions(Input playerInput, ref vec2 force, double ang
 
 void handlePlayerFireAction(Entity player, SystemSet systemSet, ref Entity[] npcs, Timer timer)
 {
-  player.input.setAction("fire", fire);
+  systemSet.inputHandler.getComponent(player).setAction("fire", fire);
   
   static float reloadTimeLeft = 0.0;
   if (fire && reloadTimeLeft <= 0.0)
   {
-    auto angle = player.scalars["angle"];
+    auto angle = player.values["angle"].to!float;
     
-    auto bullet = createBullet(player.vectors["position"], 
+    auto bullet = createBullet(vec2(player.values["position"].to!(float[2])), 
                                angle, 
-                               player.vectors["velocity"] + vec2(cos(angle), sin(angle)) * 5.0,
+                               vec2(player.values["velocity"].to!(float[2])) + vec2(cos(angle), sin(angle)) * 5.0,
                                5.0);
-    bullet.collider.spawner = player;
+    systemSet.collisionHandler.getComponent(bullet).spawner = player;
     systemSet.addEntity(bullet);
     npcs ~= bullet;
     reloadTimeLeft = 0.1;

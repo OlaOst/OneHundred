@@ -71,6 +71,6 @@ class SystemSet
     
     physics.updateEntities();
     //graphics.updateFromEntities();
-    collisionHandler.updateFromEntities();
+    //collisionHandler.updateFromEntities();
   }
 }

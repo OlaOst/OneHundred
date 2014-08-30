@@ -3,24 +3,27 @@ module collision.response.ship;
 import std.conv;
 import std.math;
 
+import gl3n.linalg;
+
 import collision.responsehandler;
 import components.collider;
 import components.sound;
 import entity;
+import systemset;
 import timer;
 
 
-Entity[] shipCollisionResponse(Collision collision)
+Entity[] shipCollisionResponse(Collision collision, SystemSet systemSet)
 {
   auto first = collision.first;
   auto other = collision.other;
     
-  collision.updateFromEntities();
+  //collision.updateFromEntities();
     
-  auto firstCollider = first.entity.collider;
-  auto otherCollider = other.entity.collider;
-  firstCollider.isColliding = true;
-  otherCollider.isColliding = true;
+  auto firstColliderEntity = systemSet.collisionHandler.getEntity(first);
+  auto otherColliderEntity = systemSet.collisionHandler.getEntity(other);
+  first.isColliding = true;
+  other.isColliding = true;
   
   // TODO: collision.check should calculate the contactpoint
   auto contactPoint = ((other.position - first.position) * first.radius + 
@@ -33,53 +36,59 @@ Entity[] shipCollisionResponse(Collision collision)
          ", and radii " ~ other.radius.to!string ~ " vs " ~ first.radius.to!string);
 
   //writeln("contactpoint: ", contactPoint);
-  firstCollider.contactPoint = first.position + contactPoint;
-  otherCollider.contactPoint = other.position - contactPoint;
+  first.contactPoint = first.position + contactPoint;
+  other.contactPoint = other.position - contactPoint;
   
-  assert(firstCollider.contactPoint.isFinite);
-  assert(otherCollider.contactPoint.isFinite);
+  assert(first.contactPoint.isFinite);
+  assert(other.contactPoint.isFinite);
 
-  if ("velocity" !in first.vectors || "velocity" !in other.vectors)
+  if ("velocity" !in firstColliderEntity.values || "velocity" !in otherColliderEntity.values)
     assert(false);
   
-  auto firstVelocity = first.velocity * ((first.mass-other.mass) / (first.mass+other.mass)) +
-                       other.velocity * ((2 * other.mass) / (first.mass+other.mass));
-  auto otherVelocity = other.velocity * ((other.mass-first.mass) / (first.mass+other.mass)) +
-                       first.velocity * ((2 * first.mass) / (first.mass+other.mass));
+  auto firstMass = systemSet.physics.getComponent(firstColliderEntity).mass;
+  auto otherMass = systemSet.physics.getComponent(otherColliderEntity).mass;
+  auto firstVelocity = first.velocity * ((firstMass-otherMass) / (firstMass+otherMass)) +
+                       other.velocity * ((2 * otherMass) / (firstMass+otherMass));
+  auto otherVelocity = other.velocity * ((otherMass-firstMass) / (firstMass+otherMass)) +
+                       first.velocity * ((2 * firstMass) / (firstMass+otherMass));
   
-  auto momentumBefore = first.velocity * first.mass + other.velocity * other.mass;
-  auto momentumAfter = firstVelocity * first.mass + otherVelocity * other.mass;
+  auto momentumBefore = first.velocity * firstMass + other.velocity * otherMass;
+  auto momentumAfter = firstVelocity * firstMass + otherVelocity * otherMass;
   assert(approxEqual(momentumBefore.magnitude, momentumAfter.magnitude), 
          "Momentum not conserved in collision: went from " ~ 
          momentumBefore.to!string ~ " to " ~ momentumAfter.to!string);    
 
-  auto firstVel = first.entity.vectors["velocity"];
-  auto otherVel = other.entity.vectors["velocity"];
+  // TODO: get velocities from collider component instead?
+  auto firstVel = vec2(firstColliderEntity.values["velocity"].to!(float[2]));
+  auto otherVel = vec2(otherColliderEntity.values["velocity"].to!(float[2]));
+  assert(firstVel == first.velocity);
+  assert(otherVel == other.velocity);
+  
   // only change velocities if entities are moving towards each other
   if (((other.position+other.velocity*0.01) - (first.position+first.velocity*0.01)).magnitude <
       (other.position-first.position).magnitude)
   {
-    first.entity.vectors["velocity"] = firstVelocity;
-    other.entity.vectors["velocity"] = otherVelocity;
+    firstColliderEntity.values["velocity"] = firstVelocity.to!string;
+    otherColliderEntity.values["velocity"] = otherVelocity.to!string;
   }
 
   // TODO: is it right to integrate by physicsTimeStep here?
-  firstCollider.force = (firstVelocity * first.mass - first.velocity * first.mass) * 
-                        (1.0 / Timer.physicsTimeStep) * 1.0;
-  otherCollider.force = (otherVelocity * other.mass - other.velocity * other.mass) * 
-                        (1.0 / Timer.physicsTimeStep) * 1.0;
+  first.force = (firstVelocity * firstMass - first.velocity * firstMass) * 
+                (1.0 / Timer.physicsTimeStep) * 1.0;
+  other.force = (otherVelocity * otherMass - other.velocity * otherMass) * 
+                (1.0 / Timer.physicsTimeStep) * 1.0;
   
   // TODO: change positions to ensure colliders does not overlap
-  auto firstPos = collision.first.entity.vectors["position"];
-  auto otherPos = collision.other.entity.vectors["position"];
+  auto firstPos = firstColliderEntity.values["position"];
+  auto otherPos = otherColliderEntity.values["position"];
 
   Entity[] hitEffectParticles;
   if ((firstVelocity - otherVelocity).magnitude > 1.0)
   {
-    auto position = (firstCollider.contactPoint + otherCollider.contactPoint) * 0.5;
+    auto position = (first.contactPoint + other.contactPoint) * 0.5;
     Entity hitSound = new Entity();
-    hitSound.vectors["position"] = position;
-    hitSound.sound = new Sound("audio/bounce.wav");
+    hitSound.values["position"] = position.to!string;
+    hitSound.values["sound"] = "audio/bounce.wav";
     hitEffectParticles ~= hitSound;
   }
   return hitEffectParticles;

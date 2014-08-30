@@ -34,11 +34,11 @@ struct State
   {
     this.entity = entity;
   
-    auto position = "position" in entity.vectors ? entity.vectors["position"] : vec2(0.0, 0.0);
-    auto velocity = "velocity" in entity.vectors ? entity.vectors["velocity"] : vec2(0.0, 0.0);
-    auto angle = "angle" in entity.scalars ? entity.scalars["angle"] : 0.0;
-    auto rotation = "rotation" in entity.scalars ? entity.scalars["rotation"] : 0.0;
-    auto mass = "mass" in entity.scalars ? entity.scalars["mass"] : 0.0;
+    auto position = "position" in entity.values ? vec2(entity.values["position"].to!(float[2])) : vec2(0.0, 0.0);
+    auto velocity = "velocity" in entity.values ? vec2(entity.values["velocity"].to!(float[2])) : vec2(0.0, 0.0);
+    auto angle = "angle" in entity.values ? entity.values["angle"].to!float : 0.0;
+    auto rotation = "rotation" in entity.values ? entity.values["rotation"].to!float : 0.0;
+    auto mass = "mass" in entity.values ? entity.values["mass"].to!float : 0.0;
     
     this.momentum = velocity * mass;
       

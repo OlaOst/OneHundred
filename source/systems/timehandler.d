@@ -1,5 +1,7 @@
 module systems.timehandler;
 
+import std.conv;
+
 import entity;
 import system;
 import timer;
@@ -16,12 +18,12 @@ final class TimeHandler : System!double
   
   override bool canAddEntity(Entity entity)
   {
-    return ("lifeTime" in entity.scalars) !is null;
+    return ("lifeTime" in entity.values) !is null;
   }
   
   override double makeComponent(Entity entity)
   {
-    return entity.scalars["lifeTime"];
+    return entity.values["lifeTime"].to!double;
   }
   
   override void update()

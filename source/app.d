@@ -65,12 +65,12 @@ void main()
     
     systemSet.update(timer);
     
-    gameController.input.handleQuit();
-    gameController.input.handleZoom(systemSet.graphics);
-    gameController.input.handleAddRemoveEntity(systemSet, npcs);
-    gameController.input.handleToggleDebugInfo(systemSet, debugText);
-    gameController.input.handleToggleInputWindow(systemSet, inputWindow, mouseCursor);
-    editController.input.handleEditableText(inputWindow);
+    systemSet.inputHandler.getComponent(gameController).handleQuit();
+    systemSet.inputHandler.getComponent(gameController).handleZoom(systemSet.graphics);
+    systemSet.inputHandler.getComponent(gameController).handleAddRemoveEntity(systemSet, npcs);
+    systemSet.inputHandler.getComponent(gameController).handleToggleDebugInfo(systemSet, debugText);
+    systemSet.inputHandler.getComponent(gameController).handleToggleInputWindow(systemSet, inputWindow, mouseCursor);
+    systemSet.inputHandler.getComponent(editController).handleEditableText(inputWindow);
     player.handlePlayerFireAction(systemSet, npcs, timer);
     
     addParticles(particles, systemSet);
@@ -83,9 +83,10 @@ void main()
     npcs = npcs.filter!(entity => !entity.toBeRemoved).array;
     particles = particles.filter!(entity => !entity.toBeRemoved).array;
     
-    mouseCursor.vectors["position"] = 
+    mouseCursor.values["position"] = 
       systemSet.graphics.getWorldPositionFromScreenCoordinates(
-      systemSet.inputHandler.mouseScreenPosition);
+      systemSet.inputHandler.mouseScreenPosition).to!string;
+    // TODO: remember to update position of mousecursor components in systems
       
     renderer.draw(systemSet.graphics.vertices, 
                   systemSet.graphics.colors, 

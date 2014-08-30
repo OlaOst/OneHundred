@@ -25,16 +25,17 @@ void handleToggleDebugInfo(Input gameInput, SystemSet systemSet, ref Entity debu
     index++;
   }
   
+  // TODO: ensure entity values get reflected to the relevant components
   final switch (index % 3)
   {
     case 0:
-      debugText.text.text = systemSet.collisionHandler.debugText;
+      debugText.values["text"] = systemSet.collisionHandler.debugText;
       break;
     case 1:
-      debugText.text.text = systemSet.physics.debugText;
+      debugText.values["text"] = systemSet.physics.debugText;
       break;
     case 2:
-      debugText.text.text = systemSet.graphics.debugText;
+      debugText.values["text"] = systemSet.graphics.debugText;
       break;
   }
 }
@@ -53,19 +54,20 @@ void handleToggleInputWindow(Input gameInput,
       // find out which entities the mouseCursor is overlapping with
       assert(mouseCursor in systemSet.collisionHandler.indexForEntity);
       auto mouseCursorCollider = systemSet.collisionHandler.getComponent(mouseCursor);
-      auto mouseCursorOverlaps = mouseCursorCollider.overlappingEntities;
+      auto mouseCursorOverlaps = mouseCursorCollider.overlappingColliders;
       
       if (mouseCursorOverlaps.empty)
       {
-        inputWindow = createText("input: ", mouseCursor.vectors["position"]);
-        inputWindow.input = new Input(Input.textInput);
+        inputWindow = createText("input: ", vec2(mouseCursor.values["position"].to!(float[2])));
+        inputWindow.values["input"] = Input.textInput.to!string; // new Input(Input.textInput);
         systemSet.addEntity(inputWindow);
       }
       else
       {
-        auto overlappingEntity = mouseCursorOverlaps.front;
-        inputWindow = createText(overlappingEntity.entity.debugInfo, 
-                                 overlappingEntity.vectors["position"]);
+        auto overlappingCollider = mouseCursorOverlaps.front;
+        auto overlappingEntity = systemSet.collisionHandler.getEntity(overlappingCollider);
+        inputWindow = createText(overlappingEntity.debugInfo, 
+                                 vec2(overlappingEntity.values["position"].to!(float[2])));
         systemSet.addEntity(inputWindow);
       }
     }
@@ -77,21 +79,22 @@ void handleToggleInputWindow(Input gameInput,
   }
   else if (inputWindow !is null)
   {
-    inputWindow.vectors["position"] = mouseCursor.vectors["position"];
+    inputWindow.values["position"] = mouseCursor.values["position"];
   }
 }
 
 void handleEditableText(Input textInput, Entity editableText)
 {
-  if (editableText !is null && editableText.input !is null)
+  if (editableText !is null && "input" in editableText.values)
   {
     //assert(editableText.input !is null);
     
+    // TODO: make sure text changes are reflected to relevant components
     if (textInput.actionState["backspace"] == Input.ActionState.Pressed && 
-        editableText.text.text.length > 0)
-        editableText.text.text.popBack();
+        editableText.values["text"].length > 0)
+        editableText.values["text"].popBack();
 
-    editableText.text.text ~= editableText.editText;
+    editableText.values["text"] ~= editableText.values["editText"];
   }
 }
 

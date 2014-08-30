@@ -31,7 +31,7 @@ class Physics : System!State
   
   override bool canAddEntity(Entity entity)
   {
-    return "position" in entity.vectors && "mass" in entity.scalars;
+    return "position" in entity.values && "mass" in entity.values;
   }
   
   override State makeComponent(Entity entity)
@@ -68,9 +68,9 @@ class Physics : System!State
       //entity.vectors["position"] = currentStates[index].position;
       //entity.vectors["velocity"] = currentStates[index].velocity;
       //entity.scalars["angle"] = currentStates[index].angle;
-      entity.vectors["position"] = components[index].position;
-      entity.vectors["velocity"] = components[index].velocity;
-      entity.scalars["angle"] = components[index].angle;
+      entity.values["position"] = components[index].position.to!string;
+      entity.values["velocity"] = components[index].velocity.to!string;
+      entity.values["angle"] = components[index].angle.to!string;
     }
   }
   
@@ -79,7 +79,7 @@ class Physics : System!State
     foreach (int index, Entity entity; entityForIndex)
     {
       //currentStates[index].velocity = entity.vectors["velocity"];
-      components[index].velocity = entity.vectors["velocity"];
+      components[index].velocity = vec2(entity.values["velocity"].to!(float[2]));
     }
   }
 }

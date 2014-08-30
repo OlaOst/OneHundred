@@ -1,5 +1,6 @@
 module system;
 
+import std.algorithm;
 import std.array;
 import std.conv;
 
@@ -34,7 +35,18 @@ class System(ComponentType)
   
   ComponentType getComponent(Entity entity)
   {
+    // TODO: handle out-of-bounds in a sensible way - maybe an abstract getNullComponent method to be implemented by systems?
     return components[indexForEntity[entity]];
+  }
+  
+  Entity getEntity(ComponentType component)
+  {
+    auto index = components.countUntil(component);
+    
+    if (index < 0)
+      return null;
+      
+    return entityForIndex[index];
   }
   
   void addEntity(Entity entity)

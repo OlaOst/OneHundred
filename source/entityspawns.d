@@ -3,6 +3,8 @@ module entityspawns;
 import std.algorithm;
 import std.random;
 
+import gl3n.linalg;
+
 import components.collider;
 import entity;
 import entityfactory.entities;
@@ -22,19 +24,18 @@ void addBullets(ref Entity[] npcs, SystemSet systemSet)
 {
   // npcs firing randomly
   Entity[] npcBullets;
-  foreach (npc; npcs.filter!(npc => npc.collider !is null && 
-                                    npc.collider.type == ColliderType.Npc))
+  foreach (npc; npcs.filter!(npc => systemSet.collisionHandler.getComponent(npc).type == ColliderType.Npc))
   {
     if (uniform(1, 180) == 1)
     {
-      assert("position" in npc.vectors);
-      assert("velocity" in npc.vectors);
-      assert("angle" in npc.scalars);
-      auto bullet = createBullet(npc.vectors["position"], 
-                                 npc.scalars["angle"], 
-                                 npc.vectors["velocity"],
+      assert("position" in npc.values);
+      assert("velocity" in npc.values);
+      assert("angle" in npc.values);
+      auto bullet = createBullet(vec2(npc.values["position"].to!(float[2])), 
+                                 npc.values["angle"].to!float, 
+                                 vec2(npc.values["velocity"].to!(float[2])),
                                  5.0);
-      bullet.collider.spawner = npc;
+      bullet.values["collider.spawner"] = npc.id.to!string; //.collider.spawner = npc;
       assert(bullet !is null);
       npcBullets ~= bullet;
     }
