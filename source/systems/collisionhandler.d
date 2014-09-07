@@ -1,15 +1,16 @@
 module systems.collisionhandler;
 
 import std.algorithm;
+import std.conv;
 import std.datetime;
 import std.range;
 import std.stdio;
-    
+
 import gl3n.linalg;
 
-//import collision.collisionentity;
 import collision.responsehandler;
 import components.collider;
+import converters;
 import entity;
 import spatialindex.spatialindex;
 import system;
@@ -29,19 +30,26 @@ class CollisionHandler : System!Collider
   {
     vec2[] verts = [vec2(0.0, 0.0)];
     if (("collider.vertices" in entity.values) !is null)
-      verts = entity.values["collider.vertices"].to!(float[2][]).map!(v => vec2(v)).array; //[vec2(0.0, 0.0)];
+      verts = entity.values["collider.vertices"].myTo!(vec2[]);
+      
     auto component = Collider(verts, entity.values["collider"].to!ColliderType, entity.id);
     
-    component.position = vec2(entity.values["position"].to!(float[2]));
-    if ("radius" in entity.values)
-      component.radius = entity.values["radius"].to!double;
-    else
-      component.radius = 0.0;
+    if ("spawner" in entity.values)
+    {
+      auto search = entityForIndex.values.find!(check => check.id == entity.values["spawner"].to!long);
+
+      assert(!search.empty);
+      
+      if (!search.empty)
+        component.spawner = search.front;
+    }
+    
+    component.updateFromEntity(entity);
     
     return component;
   }
   
-  override void update()
+  override void updateValues()
   {
     int broadPhaseCount, narrowPhaseCount;
     StopWatch broadPhaseTimer, narrowPhaseTimer;
@@ -52,12 +60,9 @@ class CollisionHandler : System!Collider
     Collision[] collisions;
     foreach (ref collider; components)
     {
-      //auto collider = collisionEntity.collider;
       auto collisionEntity = getEntity(collider);
-      //assert(collisionEntity !is null);
-      if (collisionEntity is null)
-        continue;
-        
+      assert(collisionEntity !is null);
+      
       collider.isColliding = false;
     
       broadPhaseTimer.start;
@@ -68,12 +73,12 @@ class CollisionHandler : System!Collider
       narrowPhaseTimer.start;
       auto collidingColliders = 
         candidates.filter!(candidate => candidate.id != collisionEntity.id && 
-                                        candidate.isOverlapping(collider));
-                  /*.filter!(collidingEntity => !(collisions.any!(collision => 
+                                        candidate.isOverlapping(collider))
+                  .filter!(collidingEntity => !(collisions.any!(collision => 
                                                           (collision.first.id == collisionEntity.id && 
                                                            collision.other.id == collidingEntity.id) || 
                                                           (collision.other.id == collisionEntity.id && 
-                                                           collision.first.id == collidingEntity.id))));*/
+                                                           collision.first.id == collidingEntity.id))));
 
       collider.overlappingColliders = collidingColliders.array;
       collisions ~= collidingColliders.map!(collidingCollider => 
@@ -90,17 +95,28 @@ class CollisionHandler : System!Collider
                         broadPhaseTimer.peek.usecs*0.001,
                         narrowPhaseTimer.peek.usecs*0.001);
       
-    // just signal that effect particles should be added here
+    // TODO: just signal that effect particles should be added here
     // let some other system handle the particles
-    //collisionEffectParticles ~= collisions.handleCollisions(systemSet);
+    collisionEffectParticles ~= collisions.handleCollisions(this);
     
     // reset index for the next update
     index = new SpatialIndex!Collider();
   }
   
-  /*void updateFromEntities()
+  override void updateEntities()
+  {
+    // collision responders deal with updating entity values
+    /*foreach (int index, Entity entity; entityForIndex)
+    {
+      
+    }*/
+  }
+  
+  override void updateFromEntities()
   {
     foreach (int index, Entity entity; entityForIndex)
-      components[index].updateFromEntity();
-  }*/
+    {
+      components[index].updateFromEntity(entity);
+    }
+  }
 }

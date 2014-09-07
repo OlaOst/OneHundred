@@ -46,8 +46,8 @@ void main()
   auto mouseCursor = createMouseCursor();
   systemSet.addEntity(mouseCursor);
 
-  //auto music = createMusic();
-  //systemSet.addEntity(music);
+  auto music = createMusic();
+  systemSet.addEntity(music);
   
   auto debugText = createText("??", vec2(-3.0, -2.0));
   systemSet.addEntity(debugText);

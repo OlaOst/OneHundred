@@ -4,6 +4,7 @@ import std.stdio;
 
 import gl3n.linalg;
 
+import converters;
 import entity;
 
 
@@ -22,6 +23,10 @@ struct State
   //constants
   double mass;
   
+  // 'constants' for forceCalculator
+  vec2 force = vec2(0.0, 0.0);
+  double torque;
+  
   vec2 function(State, double time) forceCalculator;
   double function(State, double time) torqueCalculator;
   Entity entity;
@@ -34,11 +39,11 @@ struct State
   {
     this.entity = entity;
   
-    auto position = "position" in entity.values ? vec2(entity.values["position"].to!(float[2])) : vec2(0.0, 0.0);
-    auto velocity = "velocity" in entity.values ? vec2(entity.values["velocity"].to!(float[2])) : vec2(0.0, 0.0);
-    auto angle = "angle" in entity.values ? entity.values["angle"].to!float : 0.0;
-    auto rotation = "rotation" in entity.values ? entity.values["rotation"].to!float : 0.0;
-    auto mass = "mass" in entity.values ? entity.values["mass"].to!float : 0.0;
+    auto position = "position" in entity.values ? entity.values["position"].myTo!vec2 : vec2(0.0, 0.0);
+    auto velocity = "velocity" in entity.values ? entity.values["velocity"].myTo!vec2 : vec2(0.0, 0.0);
+    auto angle = "angle" in entity.values ? entity.values["angle"].to!double : 0.0;
+    auto rotation = "rotation" in entity.values ? entity.values["rotation"].to!double : 0.0;
+    auto mass = "mass" in entity.values ? entity.values["mass"].to!double : 0.0;
     
     this.momentum = velocity * mass;
       

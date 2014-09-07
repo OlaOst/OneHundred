@@ -3,45 +3,31 @@ module playereventhandler;
 import gl3n.linalg;
 
 import components.input;
+import converters;
 import entity;
 import entityfactory.entities;
 import systemset;
 import timer;
 
 
-void handlePlayerRotateActions(Input playerInput, ref double torque)
-{
-  playerInput.setAction("rotateCounterClockwise", rotateCounterClockwise);
-  playerInput.setAction("rotateClockwise", rotateClockwise);
-  
-  if (rotateCounterClockwise) torque += 1.0;
-  if (rotateClockwise) torque -= 1.0;
-}
-
-void handlePlayerAccelerateActions(Input playerInput, ref vec2 force, double angle)
-{
-  playerInput.setAction("accelerate", accelerate);
-  playerInput.setAction("decelerate", decelerate);
-  
-  if (accelerate) force += vec2(cos(angle), sin(angle)) * 0.5;
-  if (decelerate) force -= vec2(cos(angle), sin(angle)) * 0.5;
-}
-
 void handlePlayerFireAction(Entity player, SystemSet systemSet, ref Entity[] npcs, Timer timer)
 {
-  systemSet.inputHandler.getComponent(player).setAction("fire", fire);
+  fire = systemSet.inputHandler.getComponent(player).isActionSet("fire");
   
   static float reloadTimeLeft = 0.0;
   if (fire && reloadTimeLeft <= 0.0)
   {
-    auto angle = player.values["angle"].to!float;
+    auto angle = player.values["angle"].to!double;
     
-    auto bullet = createBullet(vec2(player.values["position"].to!(float[2])), 
+    auto bullet = createBullet(player.values["position"].myTo!vec2, 
                                angle, 
-                               vec2(player.values["velocity"].to!(float[2])) + vec2(cos(angle), sin(angle)) * 5.0,
+                               player.values["velocity"].myTo!vec2 + vec2(cos(angle), sin(angle)) * 5.0,
                                5.0);
-    systemSet.collisionHandler.getComponent(bullet).spawner = player;
+    bullet.values["spawner"] = player.id.to!string;
     systemSet.addEntity(bullet);
+    
+    assert(systemSet.collisionHandler.getComponent(bullet).spawner == player);
+    
     npcs ~= bullet;
     reloadTimeLeft = 0.1;
   }

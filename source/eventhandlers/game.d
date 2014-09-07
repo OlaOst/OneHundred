@@ -9,13 +9,13 @@ import systemset;
 
 void handleQuit(Input gameInput)
 {
-  gameInput.setAction("quit", quit);
+  quit = gameInput.isActionSet("quit");
 }
 
 void handleZoom(Input gameInput, Graphics graphics)
 {
-  gameInput.setAction("zoomIn", zoomIn);
-  gameInput.setAction("zoomOut", zoomOut);
+  zoomIn = gameInput.isActionSet("zoomIn");
+  zoomOut = gameInput.isActionSet("zoomOut");
   if (zoomIn)
     graphics.zoom += graphics.zoom * 1.0/60.0;
   if (zoomOut)

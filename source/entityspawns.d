@@ -6,6 +6,7 @@ import std.random;
 import gl3n.linalg;
 
 import components.collider;
+import converters;
 import entity;
 import entityfactory.entities;
 import systemset;
@@ -31,11 +32,14 @@ void addBullets(ref Entity[] npcs, SystemSet systemSet)
       assert("position" in npc.values);
       assert("velocity" in npc.values);
       assert("angle" in npc.values);
-      auto bullet = createBullet(vec2(npc.values["position"].to!(float[2])), 
-                                 npc.values["angle"].to!float, 
-                                 vec2(npc.values["velocity"].to!(float[2])),
+      
+      auto angle = npc.values["angle"].to!double;
+      
+      auto bullet = createBullet(npc.values["position"].myTo!vec2,
+                                 angle,
+                                 npc.values["velocity"].myTo!vec2 + vec2(cos(angle), sin(angle)) * 5.0,
                                  5.0);
-      bullet.values["collider.spawner"] = npc.id.to!string; //.collider.spawner = npc;
+      bullet.values["spawner"] = npc.id.to!string;
       assert(bullet !is null);
       npcBullets ~= bullet;
     }

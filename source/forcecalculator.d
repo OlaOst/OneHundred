@@ -19,13 +19,14 @@ out (result)
 }
 body
 {
-  auto torque = 0.0;
+  //auto torque = 0.0;
+  double torque = state.torque;
   
-  torque += state.rotation * -0.2; // damping torque
+  torque += state.rotation * -0.02; // damping torque
   
   //if (state.entity.input)
     //state.entity.input.handlePlayerRotateActions(torque);
-
+    
   // torque from collisions
   /*if (auto collider = state.entity.collider)
   {
@@ -54,7 +55,7 @@ out (result)
 }
 body
 {
-  auto force = vec2(0.0, 0.0);
+  auto force = state.force; //vec2(0.0, 0.0);
   
   force += state.position * -0.01; // spring force to center
   force += state.velocity * -0.05; // damping force

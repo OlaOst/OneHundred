@@ -44,7 +44,19 @@ class Input
     return (action in actionState) ? actionState[action] : ActionState.Unknown;
   }
   
-  void setAction(string action, ref bool value)
+  bool isActionSet(string action)
+  {
+    return getActionState(action) == ActionState.Pressed || 
+           getActionState(action) == ActionState.Held;
+  }
+  
+  bool isActionToggled(string action)
+  {
+    return getActionState(action) == Input.ActionState.Pressed;
+  }
+  
+  // TODO: rename this to something sensible - we are not setting actions
+  /*void setAction(string action, ref bool value)
   {
     value = getActionState(action) == ActionState.Pressed || 
             getActionState(action) == ActionState.Held;
@@ -53,7 +65,7 @@ class Input
   void toggleAction(string action, ref bool value)
   {
     value = getActionState(action) == Input.ActionState.Pressed;
-  }
+  }*/
   
   void updateActionStates()
   {

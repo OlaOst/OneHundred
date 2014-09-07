@@ -12,19 +12,20 @@ import components.collider;
 import components.drawables.polygon;
 import components.sound;
 import entity;
-import systemset;
+import systems.collisionhandler;
 import timer;
 
 
-Entity[] bulletCollisionResponse(Collision collision, SystemSet systemSet)
+//Entity[] bulletCollisionResponse(Collision collision, SystemSet systemSet)
+Entity[] bulletCollisionResponse(Collision collision, CollisionHandler collisionHandler)
 {
   auto first = collision.first;
   auto other = collision.other;
     
   //collision.updateFromEntities();
     
-  auto firstColliderEntity = systemSet.collisionHandler.getEntity(first);
-  auto otherColliderEntity = systemSet.collisionHandler.getEntity(other);
+  auto firstColliderEntity = collisionHandler.getEntity(first);
+  auto otherColliderEntity = collisionHandler.getEntity(other);
   first.isColliding = true;
   other.isColliding = true;
   
@@ -58,7 +59,8 @@ Entity[] bulletCollisionResponse(Collision collision, SystemSet systemSet)
     
     auto particle = new Entity();
     particle.values["position"] = position.to!string;
-    auto momentum = first.velocity*systemSet.physics.getComponent(firstColliderEntity).mass + other.velocity*systemSet.physics.getComponent(otherColliderEntity).mass;
+    //auto momentum = first.velocity*systemSet.physics.getComponent(firstColliderEntity).mass + other.velocity*systemSet.physics.getComponent(otherColliderEntity).mass;
+    auto momentum = first.velocity*first.mass + other.velocity*other.mass;
     auto angle = uniform(-PI, PI);
     
     particle.values["velocity"] = (momentum + vec2(cos(angle), sin(angle)) * 

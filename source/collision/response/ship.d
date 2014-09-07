@@ -9,19 +9,20 @@ import collision.responsehandler;
 import components.collider;
 import components.sound;
 import entity;
-import systemset;
+import systems.collisionhandler;
 import timer;
 
 
-Entity[] shipCollisionResponse(Collision collision, SystemSet systemSet)
+//Entity[] shipCollisionResponse(Collision collision, SystemSet systemSet)
+Entity[] shipCollisionResponse(Collision collision, CollisionHandler collisionHandler)
 {
   auto first = collision.first;
   auto other = collision.other;
     
   //collision.updateFromEntities();
     
-  auto firstColliderEntity = systemSet.collisionHandler.getEntity(first);
-  auto otherColliderEntity = systemSet.collisionHandler.getEntity(other);
+  auto firstColliderEntity = collisionHandler.getEntity(first);
+  auto otherColliderEntity = collisionHandler.getEntity(other);
   first.isColliding = true;
   other.isColliding = true;
   
@@ -45,8 +46,10 @@ Entity[] shipCollisionResponse(Collision collision, SystemSet systemSet)
   if ("velocity" !in firstColliderEntity.values || "velocity" !in otherColliderEntity.values)
     assert(false);
   
-  auto firstMass = systemSet.physics.getComponent(firstColliderEntity).mass;
-  auto otherMass = systemSet.physics.getComponent(otherColliderEntity).mass;
+  //auto firstMass = systemSet.physics.getComponent(firstColliderEntity).mass;
+  //auto otherMass = systemSet.physics.getComponent(otherColliderEntity).mass;
+  auto firstMass = first.mass;
+  auto otherMass = other.mass;
   auto firstVelocity = first.velocity * ((firstMass-otherMass) / (firstMass+otherMass)) +
                        other.velocity * ((2 * otherMass) / (firstMass+otherMass));
   auto otherVelocity = other.velocity * ((otherMass-firstMass) / (firstMass+otherMass)) +
@@ -58,11 +61,8 @@ Entity[] shipCollisionResponse(Collision collision, SystemSet systemSet)
          "Momentum not conserved in collision: went from " ~ 
          momentumBefore.to!string ~ " to " ~ momentumAfter.to!string);    
 
-  // TODO: get velocities from collider component instead?
-  auto firstVel = vec2(firstColliderEntity.values["velocity"].to!(float[2]));
-  auto otherVel = vec2(otherColliderEntity.values["velocity"].to!(float[2]));
-  assert(firstVel == first.velocity);
-  assert(otherVel == other.velocity);
+  auto firstVel = first.velocity;
+  auto otherVel = other.velocity;
   
   // only change velocities if entities are moving towards each other
   if (((other.position+other.velocity*0.01) - (first.position+first.velocity*0.01)).magnitude <

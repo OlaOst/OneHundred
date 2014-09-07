@@ -9,7 +9,6 @@ import collision.response.ship;
 import components.collider;
 import entity;
 import systems.collisionhandler;
-import systemset;
 
 
 struct Collision
@@ -23,7 +22,8 @@ struct Collision
   }*/
 }
 
-Entity[] handleCollisions(Collision[] collisions, SystemSet systemSet)
+//Entity[] handleCollisions(Collision[] collisions, SystemSet systemSet)
+Entity[] handleCollisions(Collision[] collisions, CollisionHandler collisionHandler)
 {
   Entity[] collisionEffectParticles;
 
@@ -49,16 +49,18 @@ Entity[] handleCollisions(Collision[] collisions, SystemSet systemSet)
     if (first.type == ColliderType.Cursor || other.type == ColliderType.Cursor)
       continue;
     
-    auto firstEntity = systemSet.collisionHandler.getEntity(first);
-    auto otherEntity = systemSet.collisionHandler.getEntity(other);
+    auto firstEntity = collisionHandler.getEntity(first);
+    auto otherEntity = collisionHandler.getEntity(other);
     
     if (typePair[0] != ColliderType.Player && 
         (first.type == ColliderType.Bullet || 
          other.type == ColliderType.Bullet) && 
         first.spawner !is otherEntity && other.spawner !is firstEntity)
-      collisionEffectParticles ~= collision.bulletCollisionResponse(systemSet);
+      //collisionEffectParticles ~= collision.bulletCollisionResponse(systemSet);
+      collisionEffectParticles ~= collision.bulletCollisionResponse(collisionHandler);
     else if (first.spawner !is otherEntity && other.spawner !is firstEntity)
-      collisionEffectParticles ~= collision.shipCollisionResponse(systemSet);
+      //collisionEffectParticles ~= collision.shipCollisionResponse(systemSet);
+      collisionEffectParticles ~= collision.shipCollisionResponse(collisionHandler);
   }
   
   return collisionEffectParticles;

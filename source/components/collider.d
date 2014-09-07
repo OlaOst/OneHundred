@@ -6,6 +6,7 @@ import std.array;
 import gl3n.linalg;
 
 import collision.check;
+import converters;
 import components.relation;
 import entity;
 
@@ -30,6 +31,7 @@ struct Collider
   vec2 contactPoint;
   vec2 force = vec2(0.0, 0.0);
   double radius;
+  double mass;
   
   ColliderType type;
   
@@ -50,7 +52,7 @@ struct Collider
     this.id = id;
   }
   
-  /*bool opEquals(const Collider other)
+  bool opEquals(const Collider other)
   {
     return this.id == other.id;
   }
@@ -63,7 +65,7 @@ struct Collider
   bool opEquals(const Collider other) const
   {
     return this.id == other.id;
-  }*/
+  }
   
   bool isOverlapping(Collider other)
   {
@@ -83,5 +85,27 @@ struct Collider
              otherVertices.isOverlapping(firstVertices, other.velocity, velocity);      
     }
     return false;
+  }
+  
+  void updateFromEntity(const Entity entity)
+  {
+    if ("position" in entity.values)
+      position = entity.values["position"].myTo!vec2;
+    else
+      position = vec2(0.0, 0.0);
+    if ("velocity" in entity.values)
+      velocity = entity.values["velocity"].myTo!vec2;
+    else
+      velocity = vec2(0.0, 0.0);
+    if ("radius" in entity.values)
+      radius = entity.values["radius"].to!double;
+    else if ("size" in entity.values)
+      radius = entity.values["size"].to!double;
+    else
+      radius = 0.0;
+    if ("mass" in entity.values)
+      mass = entity.values["mass"].to!double;
+    else
+      mass = 0.0;
   }
 }

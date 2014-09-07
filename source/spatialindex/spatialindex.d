@@ -33,7 +33,7 @@ class SpatialIndex(Element)
   body
   { 
     Element[] elements;
-
+    
     foreach (level, indices; findCoveringIndices!(levels, maxIndicesPerLevel, minLevel)
                                                  (position, radius, false))
       foreach (index; indices.filter!(index => index in elementsInIndex[level]))

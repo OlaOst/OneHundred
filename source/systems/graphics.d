@@ -18,6 +18,7 @@ import textrenderer.textrenderer;
 import textrenderer.transform;
 
 
+// TODO: replace this with Drawable
 struct GraphicsComponent
 {
   vec2 position;
@@ -56,12 +57,30 @@ class Graphics : System!GraphicsComponent
       component.sprite = new Sprite(entity.values["size"].to!double, entity.values["sprite"]);
       textureSet[entity.values["sprite"]] = component.sprite.texture;
     }
-    // TODO: make for polygon and text too
+    if (("polygon.vertices" in entity.values) !is null && ("polygon.colors" in entity.values) !is null)
+    {
+      component.polygon = new Polygon(0.0, 1, vec4(0.0, 0.0, 0.0, 0.0));
+      component.polygon.vertices = entity.values["polygon.vertices"].to!(float[2][]).map!(v => vec2(v)).array;
+      component.polygon.colors = entity.values["polygon.colors"].to!(float[4][]).map!(v => vec4(v)).array;
+    }
+    if ("text" in entity.values)
+    {
+      //component.text = new Text(size, text, color);
+      double size = 0.0;
+      if ("size" in entity.values)
+        size = entity.values["size"].to!double;
+        
+      vec4 color = vec4(0.0, 0.0, 0.0, 0.0);
+      if ("color" in entity.values)
+        color = vec4(entity.values["color"].to!(float[4]));
+        
+      component.text = new Text(size, entity.values["text"], color);
+    }
     
     return component;
   }
   
-  override void update()
+  override void updateValues()
   {
     StopWatch debugTimer;
     debugTimer.start;
@@ -102,6 +121,23 @@ class Graphics : System!GraphicsComponent
       }
     }
     debugText = format("graphics timings: %s", debugTimer.peek.usecs*0.001);
+  }
+  
+  override void updateEntities()
+  {
+  }
+  
+  override void updateFromEntities()
+  {
+    foreach (int index, Entity entity; entityForIndex)
+    {
+      //currentStates[index].velocity = entity.vectors["velocity"];
+      components[index].position = vec2(entity.values["position"].to!(float[2]));
+      components[index].angle = entity.values["angle"].to!double;
+      
+      if (components[index].text !is null)
+        components[index].text.text = entity.values["text"];
+    }
   }
   
   vec2 getWorldPositionFromScreenCoordinates(vec2 screenCoordinates)

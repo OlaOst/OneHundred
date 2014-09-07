@@ -60,17 +60,11 @@ class SystemSet
     physics.setTimer(timer);
     timeHandler.setTimer(timer);
     
-    collisionHandler.update();
-    physics.updateFromEntities();
-    
-    graphics.update();
-    physics.update();
     inputHandler.update();
+    collisionHandler.update();
+    physics.update();
     soundSystem.update();
     timeHandler.update();
-    
-    physics.updateEntities();
-    //graphics.updateFromEntities();
-    //collisionHandler.updateFromEntities();
+    graphics.update();
   }
 }

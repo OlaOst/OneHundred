@@ -48,7 +48,7 @@ final class SoundSystem : System!Sound
     return new Sound(entity.values["sound"]);
   }
   
-  override void update()
+  override void updateValues()
   {
     foreach (sound; components)
     {
@@ -57,6 +57,14 @@ final class SoundSystem : System!Sound
       else if (!sound.isPlaying)
         sound.startPlaying();        
     }
+  }
+  
+  override void updateEntities()
+  {
+  }
+  
+  override void updateFromEntities()
+  {
   }
   
   void silence(Entity entity)

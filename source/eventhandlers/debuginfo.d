@@ -6,6 +6,7 @@ import std.array;
 import gl3n.linalg;
 
 import components.input;
+import converters;
 import entity;
 import entityfactory.tests;
 import systemset;
@@ -14,8 +15,7 @@ import systemset;
 void handleToggleDebugInfo(Input gameInput, SystemSet systemSet, ref Entity debugText)
 {
   static int index = 0;
-  gameInput.toggleAction("toggleDebugInfo", toggleDebugInfo);
-  if (toggleDebugInfo)
+  if (gameInput.isActionToggled("toggleDebugInfo"))
   {
     if (debugText is null)
     {
@@ -45,9 +45,7 @@ void handleToggleInputWindow(Input gameInput,
                              ref Entity inputWindow, 
                              Entity mouseCursor)
 {
-  gameInput.toggleAction("toggleInputWindow", toggleInputWindow);
-  
-  if (toggleInputWindow)
+  if (gameInput.isActionToggled("toggleInputWindow"))
   {
     if (inputWindow is null)
     {
@@ -58,7 +56,7 @@ void handleToggleInputWindow(Input gameInput,
       
       if (mouseCursorOverlaps.empty)
       {
-        inputWindow = createText("input: ", vec2(mouseCursor.values["position"].to!(float[2])));
+        inputWindow = createText("input: ", mouseCursor.values["position"].myTo!vec2);
         inputWindow.values["input"] = Input.textInput.to!string; // new Input(Input.textInput);
         systemSet.addEntity(inputWindow);
       }
@@ -67,7 +65,7 @@ void handleToggleInputWindow(Input gameInput,
         auto overlappingCollider = mouseCursorOverlaps.front;
         auto overlappingEntity = systemSet.collisionHandler.getEntity(overlappingCollider);
         inputWindow = createText(overlappingEntity.debugInfo, 
-                                 vec2(overlappingEntity.values["position"].to!(float[2])));
+                                 overlappingEntity.values["position"].myTo!vec2);
         systemSet.addEntity(inputWindow);
       }
     }
@@ -97,6 +95,3 @@ void handleEditableText(Input textInput, Entity editableText)
     editableText.values["text"] ~= editableText.values["editText"];
   }
 }
-
-bool toggleDebugInfo = false;
-bool toggleInputWindow = false;

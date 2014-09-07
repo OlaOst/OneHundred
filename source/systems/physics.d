@@ -8,6 +8,7 @@ import gl3n.linalg;
 
 import components.input;
 import components.relations.gravity;
+import converters;
 import entity;
 import forcecalculator;
 import integrator.integrator;
@@ -39,7 +40,7 @@ class Physics : System!State
     return State(entity, &calculateForce, &calculateTorque);
   }
   
-  override void update()
+  override void updateValues()
   {
     StopWatch debugTimer;
     
@@ -61,25 +62,27 @@ class Physics : System!State
     debugText = format("physics timings: %s", debugTimer.peek.usecs*0.001);
   }
   
-  void updateEntities()
+  override void updateEntities()
   {
     foreach (int index, Entity entity; entityForIndex)
     {
-      //entity.vectors["position"] = currentStates[index].position;
-      //entity.vectors["velocity"] = currentStates[index].velocity;
-      //entity.scalars["angle"] = currentStates[index].angle;
       entity.values["position"] = components[index].position.to!string;
       entity.values["velocity"] = components[index].velocity.to!string;
       entity.values["angle"] = components[index].angle.to!string;
     }
   }
   
-  void updateFromEntities()
+  override void updateFromEntities()
   {
     foreach (int index, Entity entity; entityForIndex)
     {
-      //currentStates[index].velocity = entity.vectors["velocity"];
-      components[index].velocity = vec2(entity.values["velocity"].to!(float[2]));
+      components[index].position = entity.values["position"].myTo!vec2;
+      components[index].velocity = entity.values["velocity"].myTo!vec2;
+      components[index].force = "force" in entity.values ? entity.values["force"].myTo!vec2 : vec2(0.0, 0.0);
+      
+      components[index].angle = "angle" in entity.values ? entity.values["angle"].to!double : 0.0;
+      components[index].rotation = "rotation" in entity.values ? entity.values["rotation"].to!double : 0.0;
+      components[index].torque = "torque" in entity.values ? entity.values["torque"].to!double : 0.0;
     }
   }
 }

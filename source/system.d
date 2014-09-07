@@ -36,6 +36,7 @@ class System(ComponentType)
   ComponentType getComponent(Entity entity)
   {
     // TODO: handle out-of-bounds in a sensible way - maybe an abstract getNullComponent method to be implemented by systems?
+    assert(entity in indexForEntity);
     return components[indexForEntity[entity]];
   }
   
@@ -84,7 +85,17 @@ class System(ComponentType)
     }
   }
     
-  abstract bool canAddEntity(Entity entity);
-  abstract ComponentType makeComponent(Entity entity);
-  abstract void update();
+  protected abstract bool canAddEntity(Entity entity);
+  protected abstract ComponentType makeComponent(Entity entity);
+  protected abstract void updateValues();
+  
+  protected abstract void updateEntities();
+  protected abstract void updateFromEntities();
+  
+  void update()
+  {
+    updateFromEntities();
+    updateValues();
+    updateEntities();
+  }
 }
