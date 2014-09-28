@@ -55,18 +55,6 @@ class Input
     return getActionState(action) == Input.ActionState.Pressed;
   }
   
-  // TODO: rename this to something sensible - we are not setting actions
-  /*void setAction(string action, ref bool value)
-  {
-    value = getActionState(action) == ActionState.Pressed || 
-            getActionState(action) == ActionState.Held;
-  }
-  
-  void toggleAction(string action, ref bool value)
-  {
-    value = getActionState(action) == Input.ActionState.Pressed;
-  }*/
-  
   void updateActionStates()
   {
     foreach (SDL_Keycode key, string action; inputForAction.key)
