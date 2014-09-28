@@ -11,6 +11,7 @@ import collision.responsehandler;
 import components.collider;
 import components.drawables.polygon;
 import components.sound;
+import converters;
 import entity;
 import systems.collisionhandler;
 import timer;
@@ -59,12 +60,12 @@ Entity[] bulletCollisionResponse(Collision collision, CollisionHandler collision
     
     auto particle = new Entity();
     particle.values["position"] = position.to!string;
-    //auto momentum = first.velocity*systemSet.physics.getComponent(firstColliderEntity).mass + other.velocity*systemSet.physics.getComponent(otherColliderEntity).mass;
     auto momentum = first.velocity*first.mass + other.velocity*other.mass;
     auto angle = uniform(-PI, PI);
     
-    particle.values["velocity"] = (momentum + vec2(cos(angle), sin(angle)) * 
-                                   uniform(momentum.magnitude * 3.0, momentum.magnitude * 6.0)).to!string;
+    particle.values["velocity"] = (momentum + vec2FromAngle(angle) * 
+                                   uniform(momentum.magnitude * 3.0, 
+                                           momentum.magnitude * 6.0)).to!string;
     particle.values["angle"] = angle.to!string;
     particle.values["rotation"] = (angle * 10.0).to!string;
     particle.values["lifeTime"] = uniform(0.5, 1.5).to!string;
@@ -83,7 +84,7 @@ Entity[] bulletCollisionResponse(Collision collision, CollisionHandler collision
                            "audio/mgshot2.wav", 
                            "audio/mgshot3.wav", 
                            "audio/mgshot4.wav"];
-  hitSound.values["sound"] = hitSounds.randomSample(1).front.to!string; //new Sound(hitSounds.randomSample(1).front.to!string);
+  hitSound.values["sound"] = hitSounds.randomSample(1).front.to!string;
   hitEffectParticles ~= hitSound;
   
   return hitEffectParticles;
