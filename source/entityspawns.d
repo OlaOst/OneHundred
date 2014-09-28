@@ -25,7 +25,8 @@ void addBullets(ref Entity[] npcs, SystemSet systemSet)
 {
   // npcs firing randomly
   Entity[] npcBullets;
-  foreach (npc; npcs.filter!(npc => systemSet.collisionHandler.getComponent(npc).type == ColliderType.Npc))
+  foreach (npc; npcs.filter!(npc => systemSet.collisionHandler.getComponent(npc).type == 
+                                    ColliderType.Npc))
   {
     if (uniform(1, 180) == 1)
     {
@@ -37,7 +38,7 @@ void addBullets(ref Entity[] npcs, SystemSet systemSet)
       
       auto bullet = createBullet(npc.values["position"].myTo!vec2,
                                  angle,
-                                 npc.values["velocity"].myTo!vec2 + vec2(cos(angle), sin(angle)) * 5.0,
+                                 npc.values["velocity"].myTo!vec2 + vec2FromAngle(angle) * 5.0, 
                                  5.0);
       bullet.values["spawner"] = npc.id.to!string;
       assert(bullet !is null);
