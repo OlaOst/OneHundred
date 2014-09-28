@@ -21,7 +21,7 @@ void handlePlayerFireAction(Entity player, SystemSet systemSet, ref Entity[] npc
     
     auto bullet = createBullet(player.values["position"].myTo!vec2, 
                                angle, 
-                               player.values["velocity"].myTo!vec2 + vec2(cos(angle), sin(angle)) * 5.0,
+                               player.values["velocity"].myTo!vec2 + vec2FromAngle(angle) * 5.0,
                                5.0);
     bullet.values["spawner"] = player.id.to!string;
     systemSet.addEntity(bullet);
