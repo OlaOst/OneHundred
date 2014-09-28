@@ -14,6 +14,7 @@ import components.drawables.sprite;
 import components.drawables.text;
 import components.input;
 import components.sound;
+import converters;
 import entity;
 
 
@@ -74,7 +75,7 @@ Entity[] createEntities(uint elements)
     auto angle = (index/elements) * PI * 2.0;
     auto size = uniform(0.025, 0.125);
     auto position = vec2(uniform(-5.0, 5.0), uniform(-5.0, 5.0));                   
-    auto entity = createEntity(position, vec2(cos(angle) * 0.5, sin(angle) * 0.5),
+    auto entity = createEntity(position, vec2FromAngle(angle) * 0.5,
                                size);
     entities ~= entity;
   }

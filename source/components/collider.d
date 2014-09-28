@@ -38,7 +38,7 @@ struct Collider
   vec2[] vertices;
   
   // what entity did this collider spawn from? 
-  // need to know since we do not want npcs firing bullets to get hit by their own bullets
+  // need to know since we do not want ships firing bullets to get hit by their own bullets
   Entity spawner; 
   
   //bool toBeRemoved = false;

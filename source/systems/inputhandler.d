@@ -71,9 +71,9 @@ public:
       torque = 0.0;
       
       if (component.isActionSet("accelerate"))
-        force += vec2(cos(angle), sin(angle)) * 0.5;
+        force += vec2FromAngle(angle) * 0.5;
       if (component.isActionSet("decelerate"))
-        force -= vec2(cos(angle), sin(angle)) * 0.5;
+        force -= vec2FromAngle(angle) * 0.5;
 
       if (component.isActionSet("rotateCounterClockwise"))
         torque += 50.0;

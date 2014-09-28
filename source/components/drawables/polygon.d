@@ -7,6 +7,7 @@ import std.range;
 import gl3n.linalg;
 
 import components.drawable;
+import converters;
 
 
 final class Polygon : Drawable
@@ -28,8 +29,8 @@ final class Polygon : Drawable
       auto nextangle = angle + (PI*2.0) / points;
       
       vertices ~= [vec2(0.0, 0.0), 
-                   vec2(cos(angle), sin(angle)) * size, 
-                   vec2(cos(nextangle), sin(nextangle)) * size];
+                   vec2FromAngle(angle) * size, 
+                   vec2FromAngle(nextangle) * size];
                    
       colors ~= [vec4(1.0, 1.0, 1.0, 1.0), color, color];
     }
