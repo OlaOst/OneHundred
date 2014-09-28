@@ -11,15 +11,13 @@ class System(ComponentType)
 {
   invariant()
   {
-    assert(indexForEntity.length == entityForIndex.length, 
-           "indexForEntity/entityForIndex length mismatch");
-    assert(indexForEntity.length == components.length, 
-           "indexForEntity/components length mismatch");
+    assert(indexForEntity.length == entityForIndex.length == components.length, 
+           "indexForEntity/entityForIndex/components length mismatch");
     
     // ensure there is a one-to-one mapping between indices and entities
     foreach (int index, const Entity entity; entityForIndex)
     {
-      assert(index in entityForIndex);
+      assert(index in entityForIndex)
       assert(entity in indexForEntity);
       assert(entityForIndex[index] == entity);
       assert(indexForEntity[entity] == index);
@@ -35,7 +33,8 @@ class System(ComponentType)
   
   ComponentType getComponent(Entity entity)
   {
-    // TODO: handle out-of-bounds in a sensible way - maybe an abstract getNullComponent method to be implemented by systems?
+    // TODO: handle out-of-bounds in a sensible way 
+    // maybe an abstract getNullComponent method to be implemented by systems?
     assert(entity in indexForEntity);
     return components[indexForEntity[entity]];
   }
@@ -84,11 +83,10 @@ class System(ComponentType)
       indexForEntity.remove(entity);
     }
   }
-    
+  
   protected abstract bool canAddEntity(Entity entity);
   protected abstract ComponentType makeComponent(Entity entity);
   protected abstract void updateValues();
-  
   protected abstract void updateEntities();
   protected abstract void updateFromEntities();
   
