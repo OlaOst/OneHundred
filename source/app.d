@@ -65,12 +65,15 @@ void main()
     
     systemSet.update(timer);
     
-    systemSet.inputHandler.getComponent(gameController).handleQuit();
-    systemSet.inputHandler.getComponent(gameController).handleZoom(systemSet.graphics);
-    systemSet.inputHandler.getComponent(gameController).handleAddRemoveEntity(systemSet, npcs);
-    systemSet.inputHandler.getComponent(gameController).handleToggleDebugInfo(systemSet, debugText);
-    systemSet.inputHandler.getComponent(gameController).handleToggleInputWindow(systemSet, inputWindow, mouseCursor);
-    systemSet.inputHandler.getComponent(editController).handleEditableText(inputWindow);
+    auto gameControllerInput = systemSet.inputHandler.getComponent(gameController);
+    auto editControllerInput = systemSet.inputHandler.getComponent(editController);
+    
+    gameControllerInput.handleQuit();
+    gameControllerInput.handleZoom(systemSet.graphics);
+    gameControllerInput.handleAddRemoveEntity(systemSet, npcs);
+    gameControllerInput.handleToggleDebugInfo(systemSet, debugText);
+    gameControllerInput.handleToggleInputWindow(systemSet, inputWindow, mouseCursor);
+    editControllerInput.handleEditableText(inputWindow);
     player.handlePlayerFireAction(systemSet, npcs, timer);
     
     addParticles(particles, systemSet);
