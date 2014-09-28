@@ -7,6 +7,7 @@ import gl3n.linalg;
 
 import components.input;
 import entity;
+import entityfactory.controllers;
 import entityfactory.entities;
 import entityfactory.tests;
 import entityspawns;

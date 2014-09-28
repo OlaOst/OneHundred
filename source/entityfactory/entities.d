@@ -18,25 +18,11 @@ import converters;
 import entity;
 
 
-Entity createGameController()
-{
-  auto gameController = new Entity();
-  gameController.values["input"] = "gameControls"; //Input.gameControls.to!string; // = new Input(Input.gameControls);
-  return gameController;
-}
-
-Entity createEditController()
-{
-  auto editController = new Entity();
-  editController.values["input"] = "textInput"; // Input.textInput.to!string; //new Input(Input.textInput);
-  return editController;
-}
-
 Entity createPlayer()
 {
   auto playerEntity = createEntity(vec2(0.0, 0.0), vec2(0.0, 0.0), 0.3);
   
-  playerEntity.values["input"] = "playerInput"; //Input.playerInput.to!string;
+  playerEntity.values["input"] = "playerInput";
   playerEntity.values["angle"] = 0.0.to!string;
   playerEntity.values["sprite"] = "images/playerShip1_blue.png";
   playerEntity.values["collider"] = ColliderType.Player.to!string;
@@ -74,9 +60,8 @@ Entity[] createEntities(uint elements)
   {
     auto angle = (index/elements) * PI * 2.0;
     auto size = uniform(0.025, 0.125);
-    auto position = vec2(uniform(-5.0, 5.0), uniform(-5.0, 5.0));                   
-    auto entity = createEntity(position, vec2FromAngle(angle) * 0.5,
-                               size);
+    auto position = vec2(uniform(-5.0, 5.0), uniform(-5.0, 5.0));
+    auto entity = createEntity(position, vec2FromAngle(angle) * 0.5, size);
     entities ~= entity;
   }
   return entities;
