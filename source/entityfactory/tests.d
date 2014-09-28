@@ -41,7 +41,7 @@ Entity createText(string text, vec2 position)
   textEntity.values["position"] = position.to!string;
   textEntity.values["angle"] = 0.0.to!string;
   textEntity.values["size"] = 0.1.to!string;
-  textEntity.values["text"] = text; // = new Text(0.1, text, vec4(1.0, 0.5, 0.5, 0.0));
+  textEntity.values["text"] = text;
   
   return textEntity;
 }
@@ -62,7 +62,7 @@ Entity createMouseCursor()
                                 drawable.vertices[2..$].stride(3)).
                           map!(vertex => vertex + position).array;
   
-  mouseCursor.values["collider"]= ColliderType.Cursor.to!string; // = new Collider(colliderVertices, ColliderType.Cursor);
+  mouseCursor.values["collider"]= ColliderType.Cursor.to!string;
   mouseCursor.values["collider.vertices"] = colliderVertices.to!string;
   
   return mouseCursor;
