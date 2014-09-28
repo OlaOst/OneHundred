@@ -89,23 +89,10 @@ struct Collider
   
   void updateFromEntity(const Entity entity)
   {
-    if ("position" in entity.values)
-      position = entity.values["position"].myTo!vec2;
-    else
-      position = vec2(0.0, 0.0);
-    if ("velocity" in entity.values)
-      velocity = entity.values["velocity"].myTo!vec2;
-    else
-      velocity = vec2(0.0, 0.0);
-    if ("radius" in entity.values)
-      radius = entity.values["radius"].to!double;
-    else if ("size" in entity.values)
-      radius = entity.values["size"].to!double;
-    else
-      radius = 0.0;
-    if ("mass" in entity.values)
-      mass = entity.values["mass"].to!double;
-    else
-      mass = 0.0;
+    position = ("position" in entity.values) ? entity.values["position"].myTo!vec2 : vec2(0.0,0.0);
+    velocity = ("velocity" in entity.values) ? entity.values["velocity"].myTo!vec2 : vec2(0.0,0.0);
+    radius = ("radius" in entity.values) ? entity.values["radius"].to!double : 
+             ("size" in entity.values) ? entity.values["size"].to!double : 0.0;
+    mass = ("mass" in entity.values) ? entity.values["mass"].to!double : 0.0;
   }
 }
