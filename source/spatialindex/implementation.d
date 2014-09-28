@@ -32,7 +32,7 @@ void populateCoveringIndices(uint levels, uint maxIndicesPerLevel, uint minLevel
       intersectsEquals(object, quadrant) && 
       coveringIndices[level].length < maxIndicesPerLevel)
   {
-    auto index = quadrant.min.xy.index;
+    auto index = quadrant.min.xy.index >> level*2;
     coveringIndices[level] ~= index;
   }
   

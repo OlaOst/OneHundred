@@ -33,19 +33,13 @@ class CollisionHandler : System!Collider
       verts = entity.values["collider.vertices"].myTo!(vec2[]);
       
     auto component = Collider(verts, entity.values["collider"].to!ColliderType, entity.id);
-    
-    if ("spawner" in entity.values)
+    if (auto spawn = ("spawner" in entity.values))
     {
-      auto search = entityForIndex.values.find!(check => check.id == entity.values["spawner"].to!long);
-
+      auto search = entityForIndex.values.find!(check => check.id == (*spawn).to!long);
       assert(!search.empty);
-      
-      if (!search.empty)
-        component.spawner = search.front;
+      component.spawner = search.front;
     }
-    
     component.updateFromEntity(entity);
-    
     return component;
   }
   
@@ -54,62 +48,43 @@ class CollisionHandler : System!Collider
     int broadPhaseCount, narrowPhaseCount;
     StopWatch broadPhaseTimer, narrowPhaseTimer;
     
+    broadPhaseTimer.start();
     foreach (collisionEntity; components)
       index.insert(collisionEntity);
+    auto candidates = index.overlappingElements();
+    broadPhaseTimer.stop();
+    broadPhaseCount += candidates.length;
     
-    Collision[] collisions;
-    foreach (ref collider; components)
+    narrowPhaseTimer.start();
+    auto collisions = cartesianProduct(candidates, candidates)
+                      .filter!(candidatePair => candidatePair[0].id < candidatePair[1].id)
+                      .filter!(candidatePair => candidatePair[0].isOverlapping(candidatePair[1]))
+                      .map!(collisionPair => Collision(collisionPair[0], collisionPair[1])).array;
+    narrowPhaseTimer.stop();
+    narrowPhaseCount += collisions.length;
+    
+    foreach (collision; collisions)
     {
-      auto collisionEntity = getEntity(collider);
-      assert(collisionEntity !is null);
+      collision.first.isColliding = true;
+      collision.other.isColliding = true;
       
-      collider.isColliding = false;
-    
-      broadPhaseTimer.start;
-      auto candidates = index.find(collider.position, collider.radius);
-      broadPhaseTimer.stop;
-      broadPhaseCount += candidates.length;
-      
-      narrowPhaseTimer.start;
-      auto collidingColliders = 
-        candidates.filter!(candidate => candidate.id != collisionEntity.id && 
-                                        candidate.isOverlapping(collider))
-                  .filter!(collidingEntity => !(collisions.any!(collision => 
-                                                          (collision.first.id == collisionEntity.id && 
-                                                           collision.other.id == collidingEntity.id) || 
-                                                          (collision.other.id == collisionEntity.id && 
-                                                           collision.first.id == collidingEntity.id))));
-
-      collider.overlappingColliders = collidingColliders.array;
-      collisions ~= collidingColliders.map!(collidingCollider => 
-                                     Collision(collider, collidingCollider)).array;
-                                     
-      narrowPhaseTimer.stop;
-      narrowPhaseCount += collidingColliders.walkLength;
+      collision.first.overlappingColliders ~= collision.other;
+      collision.other.overlappingColliders ~= collision.first;
     }
     
     debugText = format("collisionhandler checked %s/%s candidates\nbroadphase/narrowphase", 
-                       broadPhaseCount, 
-                       narrowPhaseCount);
+                       broadPhaseCount, narrowPhaseCount);
     debugText ~= format("\ncollisionhandler timings %s/%s milliseconds\nbroadphase/narrowphase", 
-                        broadPhaseTimer.peek.usecs*0.001,
-                        narrowPhaseTimer.peek.usecs*0.001);
-      
-    // TODO: just signal that effect particles should be added here
-    // let some other system handle the particles
+                        broadPhaseTimer.peek.usecs*0.001, narrowPhaseTimer.peek.usecs*0.001);
+
     collisionEffectParticles ~= collisions.handleCollisions(this);
-    
-    // reset index for the next update
+
     index = new SpatialIndex!Collider();
   }
   
   override void updateEntities()
   {
     // collision responders deal with updating entity values
-    /*foreach (int index, Entity entity; entityForIndex)
-    {
-      
-    }*/
   }
   
   override void updateFromEntities()
