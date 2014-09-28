@@ -68,7 +68,6 @@ void main()
     
     auto gameControllerInput = systemSet.inputHandler.getComponent(gameController);
     auto editControllerInput = systemSet.inputHandler.getComponent(editController);
-    
     gameControllerInput.handleQuit();
     gameControllerInput.handleZoom(systemSet.graphics);
     gameControllerInput.handleAddRemoveEntity(systemSet, npcs);
