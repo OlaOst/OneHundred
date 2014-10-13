@@ -83,7 +83,8 @@ void handleToggleInputWindow(Input gameInput,
 
 void handleEditableText(Input textInput, Entity editableText)
 {
-  if (editableText !is null && "inputType" in editableText.values && editableText.values["inputType"] == "textInput")
+  if (editableText !is null && 
+      "inputType" in editableText.values && editableText.values["inputType"] == "textInput")
   {
     //assert(editableText.input !is null);
     
