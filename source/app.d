@@ -14,6 +14,7 @@ import entityspawns;
 import eventhandlers.addremove;
 import eventhandlers.debuginfo;
 import eventhandlers.game;
+import graphicscollector;
 import playereventhandler;
 import renderer;
 import systemset;
@@ -91,37 +92,6 @@ void main()
       systemSet.inputHandler.mouseScreenPosition).to!string;
     // TODO: remember to update position of mousecursor components in systems
     
-                  
-    vec2[][string] vertices;
-    vec4[][string] colors;
-    vec2[][string] texCoords;
-    import glamour.texture;
-    Texture2D[string] textureSet;
-    
-    foreach (key, value; systemSet.polygonGraphics.vertices)
-      vertices[key] = value;
-    foreach (key, value; systemSet.spriteGraphics.vertices)
-      vertices[key] = value;
-    foreach (key, value; systemSet.textGraphics.vertices)
-      vertices[key] = value;
-    
-    foreach (key, value; systemSet.polygonGraphics.colors)
-      colors[key] = value;
-    foreach (key, value; systemSet.spriteGraphics.colors)
-      colors[key] = value;
-    foreach (key, value; systemSet.textGraphics.colors)
-      colors[key] = value;
-      
-    foreach (key, value; systemSet.spriteGraphics.texCoords)
-      texCoords[key] = value;
-    foreach (key, value; systemSet.textGraphics.texCoords)
-      texCoords[key] = value;
-    
-    foreach (key, value; systemSet.spriteGraphics.textureSet)
-      textureSet[key] = value;
-    foreach (key, value; systemSet.textGraphics.textureSet)
-      textureSet[key] = value;
-    
-    renderer.draw(vertices, colors, texCoords, textureSet);
+    systemSet.collectFromGraphicsAndRender(renderer);
   }
 }

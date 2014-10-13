@@ -24,7 +24,6 @@ class Renderer
 
     vao = new VAO();
     vao.bind();
-    
     shaderSet = dirEntries("shader", "*.shader", SpanMode.breadth).
                 map!(dirEntry => tuple(dirEntry.name.chompPrefix("shader\\").chomp(".shader"), 
                                        new Shader(dirEntry.name))).assocArray;
@@ -40,19 +39,17 @@ class Renderer
       vao.remove();
   }
   
-  public void draw(vec2[][string] vertices, vec4[][string] colors, 
-                   vec2[][string] texCoords, Texture2D[string] textureSet)
+  public void render(vec2[][string] vertices, vec4[][string] colors, 
+                     vec2[][string] texCoords, Texture2D[string] textureSet)
   {
     if ("polygon" in vertices && "polygon" in colors)
       drawPolygons(vertices["polygon"], colors["polygon"]);
     
     foreach (string name, vec2[] texCoords; texCoords)
     {
-      assert(name in textureSet, "Could not find " ~ name ~ " in textureSet " ~ textureSet.to!string);
       textureSet[name].bind();
       drawTexture(vertices[name], texCoords);
     }
-    
     toScreen();
   }
   
@@ -66,7 +63,6 @@ class Renderer
   void drawPolygons(vec2[] vertices, vec4[] colors)
   {
     assert(vertices.length == colors.length);
-    
     vboSet["vertices"] = new Buffer(vertices);
     vboSet["colors"] = new Buffer(colors);
     
@@ -82,7 +78,6 @@ class Renderer
   void drawTexture(vec2[] vertices, vec2[] texCoords)
   {
     assert(vertices.length == texCoords.length);
-    
     vboSet["vertices"] = new Buffer(vertices);
     vboSet["texture"] = new Buffer(texCoords);
     
