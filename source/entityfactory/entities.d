@@ -74,7 +74,8 @@ Entity[] createNpcs(uint elements)
   return entities;
 }
 
-Entity createBullet(vec2 position, float angle, vec2 velocity, double lifeTime, const long spawnerId)
+Entity createBullet(vec2 position, float angle, vec2 velocity, 
+                    double lifeTime, const long spawnerId)
 {
   auto entity = createEntity(position, velocity, 0.1);
   
