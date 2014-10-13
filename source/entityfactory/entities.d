@@ -30,6 +30,19 @@ Entity createPlayer()
   return playerEntity;
 }
 
+Entity createNpc(vec2 position, vec2 velocity, double size)
+{
+  auto npcEntity = createEntity(position, velocity, size);
+  
+  auto files = dirEntries("images", "*.png", SpanMode.breadth).
+               map!(dirEntry => dirEntry.name).array();
+  
+  if (!files.empty)
+    npcEntity.values["sprite"] = files.randomSample(1).front;
+    
+  return npcEntity;
+}
+
 Entity createEntity(vec2 position, vec2 velocity, double size)
 {
   auto entity = new Entity();
@@ -43,17 +56,11 @@ Entity createEntity(vec2 position, vec2 velocity, double size)
   entity.values["size"] = size.to!string;
   entity.values["mass"] = (0.1 + size ^^ 2).to!string;
   entity.values["collider"] = ColliderType.Npc.to!string;
-  
-  auto files = dirEntries("images", "*.png", SpanMode.breadth).
-               map!(dirEntry => dirEntry.name).array();
-  
-  if (!files.empty)
-    entity.values["sprite"] = files.randomSample(1).front;
-  
+
   return entity;
 }
 
-Entity[] createEntities(uint elements)
+Entity[] createNpcs(uint elements)
 {
   Entity[] entities;
   foreach (double index; iota(0, elements))
@@ -61,13 +68,13 @@ Entity[] createEntities(uint elements)
     auto angle = (index/elements) * PI * 2.0;
     auto size = uniform(0.025, 0.125);
     auto position = vec2(uniform(-5.0, 5.0), uniform(-5.0, 5.0));
-    auto entity = createEntity(position, vec2FromAngle(angle) * 0.5, size);
+    auto entity = createNpc(position, vec2FromAngle(angle) * 0.5, size);
     entities ~= entity;
   }
   return entities;
 }
 
-Entity createBullet(vec2 position, float angle, vec2 velocity, double lifeTime)
+Entity createBullet(vec2 position, float angle, vec2 velocity, double lifeTime, const long spawnerId)
 {
   auto entity = createEntity(position, velocity, 0.1);
   
@@ -83,5 +90,7 @@ Entity createBullet(vec2 position, float angle, vec2 velocity, double lifeTime)
   entity.values["polygon.colors"] = polygon.colors.to!string;
   entity.values["collider"] = ColliderType.Bullet.to!string;
 
+  entity.values["spawner"] = spawnerId.to!string;
+  
   return entity;
 }

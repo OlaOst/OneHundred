@@ -1,15 +1,14 @@
 #version 330 core
 
 vertex:
-  layout(location = 0) in vec2 position;
-  layout(location = 1) in vec4 color;
+  in vec2 position;
+  in vec4 color;
   
   out vec4 fragmentColor;
   
   void main(void)
   {
-    fragmentColor = color;
-    
+    fragmentColor = color;  
     gl_Position = vec4(position, 0, 1);
   }
 

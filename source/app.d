@@ -36,7 +36,7 @@ void main()
   }
   
   Entity[] particles;
-  Entity[] npcs = createEntities(1);
+  Entity[] npcs = createNpcs(1);
   foreach (npc; npcs)
     systemSet.addEntity(npc);
   
@@ -48,7 +48,7 @@ void main()
   systemSet.addEntity(mouseCursor);
 
   auto music = createMusic();
-  systemSet.addEntity(music);
+  //systemSet.addEntity(music);
   
   auto debugText = createText("??", vec2(-3.0, -2.0));
   systemSet.addEntity(debugText);
@@ -69,7 +69,7 @@ void main()
     auto gameControllerInput = systemSet.inputHandler.getComponent(gameController);
     auto editControllerInput = systemSet.inputHandler.getComponent(editController);
     gameControllerInput.handleQuit();
-    gameControllerInput.handleZoom(systemSet.graphics);
+    gameControllerInput.handleZoom(systemSet.graphics.camera);
     gameControllerInput.handleAddRemoveEntity(systemSet, npcs);
     gameControllerInput.handleToggleDebugInfo(systemSet, debugText);
     gameControllerInput.handleToggleInputWindow(systemSet, inputWindow, mouseCursor);
@@ -90,10 +90,38 @@ void main()
       systemSet.graphics.getWorldPositionFromScreenCoordinates(
       systemSet.inputHandler.mouseScreenPosition).to!string;
     // TODO: remember to update position of mousecursor components in systems
+    
+                  
+    vec2[][string] vertices;
+    vec4[][string] colors;
+    vec2[][string] texCoords;
+    import glamour.texture;
+    Texture2D[string] textureSet;
+    
+    foreach (key, value; systemSet.polygonGraphics.vertices)
+      vertices[key] = value;
+    foreach (key, value; systemSet.spriteGraphics.vertices)
+      vertices[key] = value;
+    foreach (key, value; systemSet.textGraphics.vertices)
+      vertices[key] = value;
+    
+    foreach (key, value; systemSet.polygonGraphics.colors)
+      colors[key] = value;
+    foreach (key, value; systemSet.spriteGraphics.colors)
+      colors[key] = value;
+    foreach (key, value; systemSet.textGraphics.colors)
+      colors[key] = value;
       
-    renderer.draw(systemSet.graphics.vertices, 
-                  systemSet.graphics.colors, 
-                  systemSet.graphics.texCoords, 
-                  systemSet.graphics.textureSet);
+    foreach (key, value; systemSet.spriteGraphics.texCoords)
+      texCoords[key] = value;
+    foreach (key, value; systemSet.textGraphics.texCoords)
+      texCoords[key] = value;
+    
+    foreach (key, value; systemSet.spriteGraphics.textureSet)
+      textureSet[key] = value;
+    foreach (key, value; systemSet.textGraphics.textureSet)
+      textureSet[key] = value;
+    
+    renderer.draw(vertices, colors, texCoords, textureSet);
   }
 }

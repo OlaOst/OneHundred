@@ -42,6 +42,7 @@ Entity createText(string text, vec2 position)
   textEntity.values["angle"] = 0.0.to!string;
   textEntity.values["size"] = 0.1.to!string;
   textEntity.values["text"] = text;
+  textEntity.values["color"] = vec4(1.0, 1.0, 1.0, 1.0).to!string;
   
   return textEntity;
 }

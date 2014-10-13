@@ -48,7 +48,6 @@ public:
       
       if (event.type == SDL_MOUSEMOTION)
         mouseScreenPosition = vec2(event.motion.x, event.motion.y);
-        
       if (event.type == SDL_TEXTINPUT)
         textInput ~= event.text.text.toStringz.to!string;
     }

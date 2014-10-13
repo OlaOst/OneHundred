@@ -17,6 +17,18 @@ final class Polygon : Drawable
   vec2[] vertices;
   vec4[] colors;
   
+  this (vec2[] vertices, vec4[] colors)
+  {
+    this.vertices = vertices;
+    this.colors = colors;
+  }
+  
+  this (vec2[] vertices, vec4 color)
+  {
+    this.vertices = vertices;
+    this.colors = color.repeat(vertices.length).array;
+  }
+  
   this(double size, int points, vec4 color)
   {
     this.size = size;
@@ -34,6 +46,11 @@ final class Polygon : Drawable
                    
       colors ~= [vec4(1.0, 1.0, 1.0, 1.0), color, color];
     }
+  }
+  
+  static bool canMakeComponent(string[string] values)
+  {
+    return "polygon.vertices" in values && ("polygon.colors" in values || "color" in values);
   }
 }
 

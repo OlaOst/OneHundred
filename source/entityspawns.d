@@ -39,8 +39,8 @@ void addBullets(ref Entity[] npcs, SystemSet systemSet)
       auto bullet = createBullet(npc.values["position"].myTo!vec2,
                                  angle,
                                  npc.values["velocity"].myTo!vec2 + vec2FromAngle(angle) * 5.0, 
-                                 5.0);
-      bullet.values["spawner"] = npc.id.to!string;
+                                 5.0,
+                                 npc.id);
       assert(bullet !is null);
       npcBullets ~= bullet;
     }

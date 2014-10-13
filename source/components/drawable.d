@@ -7,12 +7,6 @@ class Drawable
 {
   vec2 position;
   double angle;
-  
-  /*this(vec2 position, double angle)
-  {
-    this.position = position;
-    this.angle = angle;
-  }*/
 }
 
 // commonly used bases for triangles and rectangles

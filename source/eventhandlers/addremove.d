@@ -15,7 +15,7 @@ void handleAddRemoveEntity(Input gameInput, SystemSet systemSet, ref Entity[] np
   bool removeEntity = gameInput.isActionSet("removeEntity");
   if (addEntity)
   {
-    auto entity = createEntities(1)[0];
+    auto entity = createNpcs(1)[0];
     systemSet.addEntity(entity);
     npcs ~= entity;
   }
