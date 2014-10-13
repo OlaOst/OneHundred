@@ -20,19 +20,19 @@ public:
   
   override bool canAddEntity(Entity entity)
   {
-    return ("input" in entity.values) !is null;
+    return ("inputType" in entity.values) !is null;
   }
   
   override Input makeComponent(Entity entity)
   {
-    if (entity.values["input"] == "playerInput")
+    if (entity.values["inputType"] == "playerInput")
       return new Input(Input.playerInput);
-    if (entity.values["input"] == "gameControls")
+    if (entity.values["inputType"] == "gameControls")
       return new Input(Input.gameControls);
-    if (entity.values["input"] == "textInput")
+    if (entity.values["inputType"] == "textInput")
       return new Input(Input.textInput);
       
-    assert(false, "Found unhandled input value: " ~ entity.values["input"]);
+    assert(false, "Found unhandled input value: " ~ entity.values["inputType"]);
     //return new Input(entity.values["input"].to!(Input.InputForAction));
   }
   

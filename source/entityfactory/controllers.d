@@ -6,13 +6,13 @@ import entity;
 Entity createGameController()
 {
   auto gameController = new Entity();
-  gameController.values["input"] = "gameControls";
+  gameController.values["inputType"] = "gameControls";
   return gameController;
 }
 
 Entity createEditController()
 {
   auto editController = new Entity();
-  editController.values["input"] = "textInput";
+  editController.values["inputType"] = "textInput";
   return editController;
 }

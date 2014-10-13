@@ -22,7 +22,7 @@ Entity createPlayer()
 {
   auto playerEntity = createEntity(vec2(0.0, 0.0), vec2(0.0, 0.0), 0.3);
   
-  playerEntity.values["input"] = "playerInput";
+  playerEntity.values["inputType"] = "playerInput";
   playerEntity.values["angle"] = 0.0.to!string;
   playerEntity.values["sprite"] = "images/playerShip1_blue.png";
   playerEntity.values["collider"] = ColliderType.Player.to!string;

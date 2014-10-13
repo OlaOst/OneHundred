@@ -57,7 +57,7 @@ void handleToggleInputWindow(Input gameInput,
       if (mouseCursorOverlaps.empty)
       {
         inputWindow = createText("input: ", mouseCursor.values["position"].myTo!vec2);
-        inputWindow.values["input"] = Input.textInput.to!string; // new Input(Input.textInput);
+        inputWindow.values["inputType"] = "textInput";
         systemSet.addEntity(inputWindow);
       }
       else
@@ -83,7 +83,7 @@ void handleToggleInputWindow(Input gameInput,
 
 void handleEditableText(Input textInput, Entity editableText)
 {
-  if (editableText !is null && "input" in editableText.values)
+  if (editableText !is null && "inputType" in editableText.values && editableText.values["inputType"] == "textInput")
   {
     //assert(editableText.input !is null);
     
@@ -91,7 +91,8 @@ void handleEditableText(Input textInput, Entity editableText)
     if (textInput.actionState["backspace"] == Input.ActionState.Pressed && 
         editableText.values["text"].length > 0)
         editableText.values["text"].popBack();
-
-    editableText.values["text"] ~= editableText.values["editText"];
+    
+    if ("editText" in editableText.values)
+      editableText.values["text"] ~= editableText.values["editText"];
   }
 }
