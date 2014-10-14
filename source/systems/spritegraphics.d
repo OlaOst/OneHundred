@@ -53,9 +53,9 @@ class SpriteGraphics : System!Sprite
     
     foreach (component; components)
     {
-      auto transform = (vec2 vertex) => ((vec3(vertex, 0.0) * mat3.zrotation(-component.angle)).xy + 
-                                                  component.position - camera.position) *
-                                                  camera.zoom;
+      auto transform = (vec2 vertex) => ((vec3(vertex, 0.0)*mat3.zrotation(-component.angle)).xy +
+                                         component.position - camera.position) *
+                                         camera.zoom;
 
       // map with delegate in a variable and then array crashes with release build in dmd 2.066
       vertices[component.fileName] ~= component.vertices.map!transform.array;
