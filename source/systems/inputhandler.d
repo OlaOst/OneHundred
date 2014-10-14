@@ -10,33 +10,23 @@ import gl3n.linalg;
 import components.input;
 import converters;
 import entity;
+import navigationinput;
 import system;
 
 
 class InputHandler : System!Input
 {
-public:
-  vec2 mouseScreenPosition = vec2(0.0, 0.0);
-  
-  override bool canAddEntity(Entity entity)
+  public override bool canAddEntity(Entity entity)
   {
     return ("inputType" in entity.values) !is null;
   }
   
-  override Input makeComponent(Entity entity)
+  public override Input makeComponent(Entity entity)
   {
-    if (entity.values["inputType"] == "playerInput")
-      return new Input(Input.playerInput);
-    if (entity.values["inputType"] == "gameControls")
-      return new Input(Input.gameControls);
-    if (entity.values["inputType"] == "textInput")
-      return new Input(Input.textInput);
-      
-    assert(false, "Found unhandled input value: " ~ entity.values["inputType"]);
-    //return new Input(entity.values["input"].to!(Input.InputForAction));
+    return new Input(entity.values["inputType"]);
   }
   
-  override void updateValues()
+  public override void updateValues()
   {
     textInput = "";
     eventsSinceLastUpdate.length = 0;
@@ -45,7 +35,6 @@ public:
     while (SDL_PollEvent(&event))
     {
       eventsSinceLastUpdate ~= event;
-      
       if (event.type == SDL_MOUSEMOTION)
         mouseScreenPosition = vec2(event.motion.x, event.motion.y);
       if (event.type == SDL_TEXTINPUT)
@@ -56,39 +45,19 @@ public:
       process(entity, eventsSinceLastUpdate);
   }
   
-  override void updateEntities()
+  public override void updateEntities()
   {
     foreach (int index, Entity entity; entityForIndex)
     {
-      auto component = components[index];
-      
-      auto angle = "angle" in entity.values ? entity.values["angle"].to!double : 0.0;
-      auto force = "force" in entity.values ? entity.values["force"].myTo!vec2 : vec2(0.0, 0.0);
-      auto torque = "torque" in entity.values ? entity.values["torque"].to!double : 0.0;
-      
-      force = vec2(0.0, 0.0);
-      torque = 0.0;
-      
-      if (component.isActionSet("accelerate"))
-        force += vec2FromAngle(angle) * 0.5;
-      if (component.isActionSet("decelerate"))
-        force -= vec2FromAngle(angle) * 0.5;
-
-      if (component.isActionSet("rotateCounterClockwise"))
-        torque += 50.0;
-      if (component.isActionSet("rotateClockwise"))
-        torque -= 50.0;
-
-      entity.values["force"] = force.to!string;
-      entity.values["torque"] = torque.to!string;
+      entity.updateValues(components[index]);
     }
   }
   
-  override void updateFromEntities()
+  public override void updateFromEntities()
   {
   }
   
-  void process(Entity entity, SDL_Event[] events)
+  public void process(Entity entity, SDL_Event[] events)
   {
     auto input = getComponent(entity);
     
@@ -102,27 +71,24 @@ public:
       auto keyAction = (event.key.keysym.sym in input.inputForAction.key);
       if (keyAction !is null)
       {
-        string action = *keyAction;
         if (event.type == SDL_KEYUP)
-          input.actionState[action] = Input.ActionState.Released;
+          input.actionState[*keyAction] = Input.ActionState.Released;
         if (event.type == SDL_KEYDOWN)
-          input.actionState[action] = Input.ActionState.Pressed;
+          input.actionState[*keyAction] = Input.ActionState.Pressed;
       }
       
       auto buttonAction = (event.button.button in input.inputForAction.button);
       if (buttonAction !is null)
       {
-        string action = *buttonAction;
-        
         if (event.type == SDL_MOUSEBUTTONDOWN)
-          input.actionState[action] = Input.ActionState.Released;
+          input.actionState[*buttonAction] = Input.ActionState.Released;
         if (event.type == SDL_MOUSEBUTTONUP)
-          input.actionState[action] = Input.ActionState.Pressed;
+          input.actionState[*buttonAction] = Input.ActionState.Pressed;
       }
     }
   }
   
-private:
-  SDL_Event[] eventsSinceLastUpdate;
-  string textInput;
+  private SDL_Event[] eventsSinceLastUpdate;
+  private string textInput;
+  public vec2 mouseScreenPosition = vec2(0.0, 0.0);
 }

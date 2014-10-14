@@ -4,6 +4,8 @@ import std.conv;
 
 import derelict.sdl2.sdl;
 
+import inputdefaults;
+
 
 class Input
 {
@@ -19,23 +21,27 @@ class Input
   struct InputForAction
   {
     string[SDL_Keycode] key;
-    
-    // TODO: mouse left/right/middle button codes are typed as anonymous enums in SDL2 and derelict
     string[Uint8] button; 
   }
   
   InputForAction inputForAction;
-  
   ActionState[string] actionState;
   string text;
   
-  this(InputForAction inputForAction)
+  this(string inputType)
   {
-    this.inputForAction = inputForAction;
+    if (inputType == "playerInput")
+      inputForAction = inputdefaults.playerInput;
+    else if (inputType == "gameControls")
+      inputForAction = inputdefaults.gameControls;
+    else if (inputType == "textInput")
+      inputForAction = textInput;
+    else
+      assert(false, "Found unhandled input type: " ~ inputType);
     
-    foreach (string action; this.inputForAction.key.values)
+    foreach (string action; inputForAction.key.values)
       actionState[action] = ActionState.Inactive;
-    foreach (string action; this.inputForAction.button.values)
+    foreach (string action; inputForAction.button.values)
       actionState[action] = ActionState.Inactive;
   }
   
@@ -72,28 +78,5 @@ class Input
       if (actionState[action] == Input.ActionState.Pressed)
         actionState[action] = Input.ActionState.Held;
     }
-  }
-  
-  static InputForAction playerInput;
-  static InputForAction gameControls;
-  static InputForAction textInput;
-  
-  static this()
-  {
-    playerInput.key[SDLK_UP] = "accelerate";
-    playerInput.key[SDLK_DOWN] = "decelerate";
-    playerInput.key[SDLK_LEFT] = "rotateCounterClockwise";
-    playerInput.key[SDLK_RIGHT] = "rotateClockwise";
-    playerInput.key[SDLK_SPACE] = "fire";
-    
-    gameControls.key[SDLK_PAGEUP] = "zoomIn";
-    gameControls.key[SDLK_PAGEDOWN] = "zoomOut";
-    gameControls.key[SDLK_ESCAPE] = "quit";
-    gameControls.key[SDLK_INSERT] = "addEntity";
-    gameControls.key[SDLK_DELETE] = "removeEntity";
-    gameControls.key[SDLK_F1] = "toggleDebugInfo";
-    gameControls.button[SDL_BUTTON_RIGHT] = "toggleInputWindow";
-    
-    textInput.key[SDLK_BACKSPACE] = "backspace";
   }
 }
