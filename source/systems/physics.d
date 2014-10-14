@@ -78,11 +78,20 @@ class Physics : System!State
     {
       components[index].position = entity.values["position"].myTo!vec2;
       components[index].velocity = entity.values["velocity"].myTo!vec2;
-      components[index].force = "force" in entity.values ? entity.values["force"].myTo!vec2 : vec2(0.0, 0.0);
       
-      components[index].angle = "angle" in entity.values ? entity.values["angle"].to!double : 0.0;
-      components[index].rotation = "rotation" in entity.values ? entity.values["rotation"].to!double : 0.0;
-      components[index].torque = "torque" in entity.values ? entity.values["torque"].to!double : 0.0;
+      components[index].force = vec2(0.0, 0.0);
+      components[index].angle = 0.0;
+      components[index].rotation = 0.0;
+      components[index].torque = 0.0;
+      
+      if ("force" in entity.values)
+        components[index].force = entity.values["force"].myTo!vec2;
+      if ("angle" in entity.values)
+        components[index].angle = entity.values["angle"].to!double;
+      if ("rotation" in entity.values)
+        components[index].rotation = entity.values["rotation"].to!double;
+      if ("torque" in entity.values)
+        components[index].torque = entity.values["torque"].to!double;
     }
   }
 }
