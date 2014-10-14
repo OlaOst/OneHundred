@@ -26,7 +26,8 @@ class SpriteGraphics : System!Sprite
   
   override bool canAddEntity(Entity entity)
   {
-    return "position" in entity.values && "angle" in entity.values && Sprite.canMakeComponent(entity.values);
+    return "position" in entity.values && "angle" in entity.values && 
+           Sprite.canMakeComponent(entity.values);
   }
   
   override Sprite makeComponent(Entity entity)
@@ -52,7 +53,7 @@ class SpriteGraphics : System!Sprite
     
     foreach (component; components)
     {
-      auto transform = delegate (vec2 vertex) => ((vec3(vertex, 0.0) * mat3.zrotation(-component.angle)).xy + 
+      auto transform = (vec2 vertex) => ((vec3(vertex, 0.0) * mat3.zrotation(-component.angle)).xy + 
                                                   component.position - camera.position) *
                                                   camera.zoom;
 
