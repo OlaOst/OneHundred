@@ -30,15 +30,15 @@ class TextGraphics : System!Text
   
   override bool canAddEntity(Entity entity)
   {
-    //assert("position" in entity.values && "angle" in entity.values && Text.canMakeComponent(entity.values), entity.values.to!string);
-    //writeln(entity.values);
-    return "position" in entity.values && "angle" in entity.values && Text.canMakeComponent(entity.values);
+    return "position" in entity.values && "angle" in entity.values && 
+           Text.canMakeComponent(entity.values);
   }
   
   override Text makeComponent(Entity entity)
   {
-    //writeln(entity.values);
-    Text component = new Text(entity.values["size"].to!double, entity.values["text"], entity.values["color"].myTo!vec4);
+    Text component = new Text(entity.values["size"].to!double, 
+                              entity.values["text"], 
+                              entity.values["color"].myTo!vec4);
     
     component.position = vec2(entity.values["position"].to!(float[2]));
     component.angle = entity.values["angle"].to!double;
@@ -55,9 +55,9 @@ class TextGraphics : System!Text
     
     foreach (component; components)
     {
-      auto transform = delegate (vec2 vertex) => ((vec3(vertex, 0.0) * mat3.zrotation(-component.angle)).xy + 
-                                                  component.position - camera.position) *
-                                                  camera.zoom;
+      auto transform = (vec2 vertex) => ((vec3(vertex, 0.0)*mat3.zrotation(-component.angle)).xy +
+                                         component.position - camera.position) *
+                                         camera.zoom;
       
       {
         texCoords["text"] ~= textRenderer.getTexCoordsForText(component);
