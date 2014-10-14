@@ -29,7 +29,8 @@ class PolygonGraphics : System!Polygon
   
   override bool canAddEntity(Entity entity)
   {
-    return "position" in entity.values && "angle" in entity.values && Polygon.canMakeComponent(entity.values);
+    return "position" in entity.values && "angle" in entity.values && 
+           Polygon.canMakeComponent(entity.values);
   }
   
   override Polygon makeComponent(Entity entity)
@@ -40,9 +41,11 @@ class PolygonGraphics : System!Polygon
     if ("polygon.vertices" in entity.values)
     {
       if ("polygon.colors" in entity.values)
-        component = new Polygon(entity.values["polygon.vertices"].myTo!(vec2[]), entity.values["polygon.colors"].myTo!(vec4[]));
+        component = new Polygon(entity.values["polygon.vertices"].myTo!(vec2[]), 
+                                entity.values["polygon.colors"].myTo!(vec4[]));
       else if ("color" in entity.values)
-        component = new Polygon(entity.values["polygon.vertices"].myTo!(vec2[]), entity.values["color"].myTo!vec4);
+        component = new Polygon(entity.values["polygon.vertices"].myTo!(vec2[]), 
+                                entity.values["color"].myTo!vec4);
     }
     
     component.position = vec2(entity.values["position"].to!(float[2]));
@@ -60,9 +63,9 @@ class PolygonGraphics : System!Polygon
     
     foreach (component; components)
     {
-      auto transform = delegate (vec2 vertex) => ((vec3(vertex, 0.0) * mat3.zrotation(-component.angle)).xy + 
-                                                  component.position - camera.position) *
-                                                  camera.zoom;
+      auto transform = (vec2 vertex) => ((vec3(vertex, 0.0)*mat3.zrotation(-component.angle)).xy +
+                                         component.position - camera.position) *
+                                         camera.zoom;
 
       // map with delegate in a variable and then array crashes with release build in dmd 2.066
       vertices["polygon"] ~= component.vertices.map!transform.array;
