@@ -4,6 +4,7 @@ import std.stdio;
 
 import gl3n.linalg;
 
+import converters;
 import entity;
 
 
@@ -22,6 +23,10 @@ struct State
   //constants
   double mass;
   
+  // 'constants' for forceCalculator
+  vec2 force = vec2(0.0, 0.0);
+  double torque;
+  
   vec2 function(State, double time) forceCalculator;
   double function(State, double time) torqueCalculator;
   Entity entity;
@@ -33,27 +38,13 @@ struct State
        double function(State, double time) torqueCalculator)
   {
     this.entity = entity;
-  
-    auto position = "position" in entity.vectors ? entity.vectors["position"] : vec2(0.0, 0.0);
-    auto velocity = "velocity" in entity.vectors ? entity.vectors["velocity"] : vec2(0.0, 0.0);
-    auto angle = "angle" in entity.scalars ? entity.scalars["angle"] : 0.0;
-    auto rotation = "rotation" in entity.scalars ? entity.scalars["rotation"] : 0.0;
-    auto mass = "mass" in entity.scalars ? entity.scalars["mass"] : 0.0;
-    
-    this.momentum = velocity * mass;
-      
-    assert(position.isFinite);
-    assert(velocity.isFinite);
-    assert(!angle.isNaN);
-    
-    assert(!rotation.isNaN);
-    assert(!mass.isNaN);
-  
-    this.position = position;
-    this.velocity = velocity;
-    this.angle = angle;
-    this.rotation = rotation;
-    this.mass = mass;
+
+    position = "position" in entity.values ? entity.values["position"].myTo!vec2 : vec2(0.0, 0.0);
+    velocity = "velocity" in entity.values ? entity.values["velocity"].myTo!vec2 : vec2(0.0, 0.0);
+    angle = "angle" in entity.values ? entity.values["angle"].to!double : 0.0;
+    rotation = "rotation" in entity.values ? entity.values["rotation"].to!double : 0.0;
+    mass = "mass" in entity.values ? entity.values["mass"].to!double : 0.0;
+    momentum = velocity * mass;
     
     this.forceCalculator = forceCalculator;
     this.torqueCalculator = torqueCalculator;

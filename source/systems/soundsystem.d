@@ -40,15 +40,15 @@ final class SoundSystem : System!Sound
   
   override bool canAddEntity(Entity entity)
   {
-    return entity.sound !is null;
+    return ("sound" in entity.values) !is null;
   }
   
   override Sound makeComponent(Entity entity)
   {
-    return entity.sound;
+    return new Sound(entity.values["sound"]);
   }
   
-  override void update()
+  override void updateValues()
   {
     foreach (sound; components)
     {
@@ -57,6 +57,14 @@ final class SoundSystem : System!Sound
       else if (!sound.isPlaying)
         sound.startPlaying();        
     }
+  }
+  
+  override void updateEntities()
+  {
+  }
+  
+  override void updateFromEntities()
+  {
   }
   
   void silence(Entity entity)

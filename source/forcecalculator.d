@@ -19,19 +19,20 @@ out (result)
 }
 body
 {
-  auto torque = 0.0;
+  //auto torque = 0.0;
+  double torque = state.torque;
   
-  torque += state.rotation * -0.2; // damping torque
+  torque += state.rotation * -0.02; // damping torque
   
-  if (state.entity.input)
-    state.entity.input.handlePlayerRotateActions(torque);
-
+  //if (state.entity.input)
+    //state.entity.input.handlePlayerRotateActions(torque);
+    
   // torque from collisions
-  if (auto collider = state.entity.collider)
+  /*if (auto collider = state.entity.collider)
   {
     if (collider.isColliding)
     {
-      auto position = state.entity.vectors["position"];
+      auto position = vec2(state.entity.values["position"].to!(float[2]));
       auto relative = collider.contactPoint - position;
       
       //writeln("calc cross from collider force ", collider.force, " and rel pos ", relative);
@@ -42,7 +43,7 @@ body
       
       torque -= cross;
     }
-  }
+  }*/
   
   return torque;
 }
@@ -54,7 +55,7 @@ out (result)
 }
 body
 {
-  auto force = vec2(0.0, 0.0);
+  auto force = state.force; //vec2(0.0, 0.0);
   
   force += state.position * -0.01; // spring force to center
   force += state.velocity * -0.05; // damping force
@@ -67,17 +68,17 @@ body
   // twisty counterclockwise force further out
   force += vec2(-state.position.y, state.position.x) * 0.015;
   
-  if (state.entity.input)
-    state.entity.input.handlePlayerAccelerateActions(force, state.angle);
+  //if (state.entity.input)
+    //state.entity.input.handlePlayerAccelerateActions(force, state.angle);
 
   // force from collisions
-  if (auto collision = state.entity.collider)
+  /*if (auto collision = state.entity.collider)
   {
     if (collision.isColliding)
     {
       //force -= collision.force;
     }
-  }
+  }*/
   
   return force;
 }

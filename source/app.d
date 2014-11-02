@@ -7,12 +7,14 @@ import gl3n.linalg;
 
 import components.input;
 import entity;
+import entityfactory.controllers;
 import entityfactory.entities;
 import entityfactory.tests;
 import entityspawns;
 import eventhandlers.addremove;
 import eventhandlers.debuginfo;
 import eventhandlers.game;
+import graphicscollector;
 import playereventhandler;
 import renderer;
 import systemset;
@@ -35,7 +37,7 @@ void main()
   }
   
   Entity[] particles;
-  Entity[] npcs = createEntities(1);
+  Entity[] npcs = createNpcs(1);
   foreach (npc; npcs)
     systemSet.addEntity(npc);
   
@@ -46,7 +48,7 @@ void main()
   auto mouseCursor = createMouseCursor();
   systemSet.addEntity(mouseCursor);
 
-  //auto music = createMusic();
+  auto music = createMusic();
   //systemSet.addEntity(music);
   
   auto debugText = createText("??", vec2(-3.0, -2.0));
@@ -65,12 +67,14 @@ void main()
     
     systemSet.update(timer);
     
-    gameController.input.handleQuit();
-    gameController.input.handleZoom(systemSet.graphics);
-    gameController.input.handleAddRemoveEntity(systemSet, npcs);
-    gameController.input.handleToggleDebugInfo(systemSet, debugText);
-    gameController.input.handleToggleInputWindow(systemSet, inputWindow, mouseCursor);
-    editController.input.handleEditableText(inputWindow);
+    auto gameControllerInput = systemSet.inputHandler.getComponent(gameController);
+    auto editControllerInput = systemSet.inputHandler.getComponent(editController);
+    gameControllerInput.handleQuit();
+    gameControllerInput.handleZoom(systemSet.graphics.camera);
+    gameControllerInput.handleAddRemoveEntity(systemSet, npcs);
+    gameControllerInput.handleToggleDebugInfo(systemSet, debugText);
+    gameControllerInput.handleToggleInputWindow(systemSet, inputWindow, mouseCursor);
+    editControllerInput.handleEditableText(inputWindow);
     player.handlePlayerFireAction(systemSet, npcs, timer);
     
     addParticles(particles, systemSet);
@@ -83,13 +87,11 @@ void main()
     npcs = npcs.filter!(entity => !entity.toBeRemoved).array;
     particles = particles.filter!(entity => !entity.toBeRemoved).array;
     
-    mouseCursor.vectors["position"] = 
+    mouseCursor.values["position"] = 
       systemSet.graphics.getWorldPositionFromScreenCoordinates(
-      systemSet.inputHandler.mouseScreenPosition);
-      
-    renderer.draw(systemSet.graphics.vertices, 
-                  systemSet.graphics.colors, 
-                  systemSet.graphics.texCoords, 
-                  systemSet.graphics.textureSet);
+      systemSet.inputHandler.mouseScreenPosition).to!string;
+    // TODO: remember to update position of mousecursor components in systems
+    
+    systemSet.collectFromGraphicsAndRender(renderer);
   }
 }

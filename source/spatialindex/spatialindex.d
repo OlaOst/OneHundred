@@ -24,6 +24,30 @@ class SpatialIndex(Element)
   //double leastQuadrantSize = 1.0;
   Element[][uint][levels] elementsInIndex;
 
+  Element[] overlappingElements()
+  {
+    Element[] overlappingElements;
+    
+    // return all elements that overlap
+    // start at top level
+    auto indices = elementsInIndex[levels-1].keys
+                   .filter!(index => elementsInIndex[levels-1][index].length >= 2)
+                   .array;
+    for (uint level = levels - 2; level >= minLevel; level--)
+    {  
+      indices = elementsInIndex[level].keys
+                .filter!(index => elementsInIndex[level][index].length >= 2)
+                .filter!(index => indices.canFind!(i => i == index >> 2))
+                .array;
+    }
+    
+    // TODO: should we check every level or is it enough with the bottom level?
+    foreach (index; indices)
+      overlappingElements ~= elementsInIndex[minLevel][index];
+    
+    return overlappingElements.sort.uniq.array;
+  }
+  
   Element[] find(vec2 position, double radius)
   in
   {
@@ -33,7 +57,7 @@ class SpatialIndex(Element)
   body
   { 
     Element[] elements;
-
+    
     foreach (level, indices; findCoveringIndices!(levels, maxIndicesPerLevel, minLevel)
                                                  (position, radius, false))
       foreach (index; indices.filter!(index => index in elementsInIndex[level]))

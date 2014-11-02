@@ -1,5 +1,6 @@
 module system;
 
+import std.algorithm;
 import std.array;
 import std.conv;
 
@@ -10,9 +11,9 @@ class System(ComponentType)
 {
   invariant()
   {
-    assert(indexForEntity.length == entityForIndex.length, 
+    assert(indexForEntity.length == entityForIndex.length,
            "indexForEntity/entityForIndex length mismatch");
-    assert(indexForEntity.length == components.length, 
+    assert(indexForEntity.length == components.length,
            "indexForEntity/components length mismatch");
     
     // ensure there is a one-to-one mapping between indices and entities
@@ -34,7 +35,18 @@ class System(ComponentType)
   
   ComponentType getComponent(Entity entity)
   {
+    assert(entity in indexForEntity);
     return components[indexForEntity[entity]];
+  }
+  
+  Entity getEntity(ComponentType component)
+  {
+    auto index = components.countUntil(component);
+    
+    if (index < 0)
+      return null;
+      
+    return entityForIndex[index];
   }
   
   void addEntity(Entity entity)
@@ -71,8 +83,17 @@ class System(ComponentType)
       indexForEntity.remove(entity);
     }
   }
-    
-  abstract bool canAddEntity(Entity entity);
-  abstract ComponentType makeComponent(Entity entity);
-  abstract void update();
+  
+  protected abstract bool canAddEntity(Entity entity);
+  protected abstract ComponentType makeComponent(Entity entity);
+  protected abstract void updateValues();
+  protected abstract void updateEntities();
+  protected abstract void updateFromEntities();
+  
+  void update()
+  {
+    updateFromEntities();
+    updateValues();
+    updateEntities();
+  }
 }

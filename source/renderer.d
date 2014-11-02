@@ -41,23 +41,25 @@ class Renderer
       vao.remove();
   }
 
-  public void draw(vec2[][string] vertices, vec4[][string] colors,
-                   vec2[][string] texCoords, Texture2D[string] textureSet)
+  public void render(vec2[][string] vertices, vec4[][string] colors,
+                     vec2[][string] texCoords, Texture2D[string] textureSet)
   {
-    glClearColor(0.0, 0.0, 0.33, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     if ("polygon" in vertices && "polygon" in colors)
       drawPolygons(vertices["polygon"], colors["polygon"]);
 
     foreach (string name, vec2[] texCoords; texCoords)
     {
-      assert(name in textureSet);
       textureSet[name].bind();
       drawTexture(vertices[name], texCoords);
     }
+    toScreen();
+  }
 
+  void toScreen()
+  {
     SDL_GL_SwapWindow(window);
+    glClearColor(0.0, 0.0, 0.33, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
 
   void drawPolygons(vec2[] vertices, vec4[] colors)

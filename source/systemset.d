@@ -5,7 +5,10 @@ import systems.collisionhandler;
 import systems.graphics;
 import systems.inputhandler;
 import systems.physics;
+import systems.polygongraphics;
 import systems.soundsystem;
+import systems.spritegraphics;
+import systems.textgraphics;
 import systems.timehandler;
 import timer;
 
@@ -13,6 +16,9 @@ import timer;
 class SystemSet
 {
   Graphics graphics;
+  PolygonGraphics polygonGraphics;
+  SpriteGraphics spriteGraphics;
+  TextGraphics textGraphics;
   Physics physics;
   InputHandler inputHandler;
   CollisionHandler collisionHandler;
@@ -22,6 +28,9 @@ class SystemSet
   this(int xres, int yres)
   {
     graphics = new Graphics(xres, yres);
+    polygonGraphics = new PolygonGraphics(xres, yres, graphics.camera);
+    spriteGraphics = new SpriteGraphics(xres, yres, graphics.camera);
+    textGraphics = new TextGraphics(xres, yres, graphics.camera);
     physics = new Physics();
     inputHandler = new InputHandler();
     collisionHandler = new CollisionHandler();
@@ -31,13 +40,16 @@ class SystemSet
   
   void close()
   {
-    graphics.textRenderer.close();
+    textGraphics.textRenderer.close();
     soundSystem.silence();
   }
   
   void addEntity(Entity entity)
   {
     graphics.addEntity(entity);
+    polygonGraphics.addEntity(entity);
+    spriteGraphics.addEntity(entity);
+    textGraphics.addEntity(entity);
     physics.addEntity(entity);
     inputHandler.addEntity(entity);
     collisionHandler.addEntity(entity);
@@ -48,6 +60,9 @@ class SystemSet
   void removeEntity(Entity entity)
   {
     graphics.removeEntity(entity);
+    polygonGraphics.removeEntity(entity);
+    spriteGraphics.removeEntity(entity);
+    textGraphics.removeEntity(entity);
     physics.removeEntity(entity);
     inputHandler.removeEntity(entity);
     collisionHandler.removeEntity(entity);
@@ -60,17 +75,14 @@ class SystemSet
     physics.setTimer(timer);
     timeHandler.setTimer(timer);
     
-    collisionHandler.update();
-    physics.updateFromEntities();
-    
-    graphics.update();
-    physics.update();
     inputHandler.update();
+    collisionHandler.update();
+    physics.update();
     soundSystem.update();
     timeHandler.update();
-    
-    physics.updateEntities();
-    //graphics.updateFromEntities();
-    collisionHandler.updateFromEntities();
+    graphics.update();
+    polygonGraphics.update();
+    spriteGraphics.update();
+    textGraphics.update();
   }
 }

@@ -24,7 +24,7 @@ class Gravity
   {
     vec2 gravityForce = vec2(0.0, 0.0);
     
-    if (relations.length > 0)
+    /*if (relations.length > 0)
     {
       gravityForce = relations.filter!(relation => relation.vectors["position"] && 
                                                    relation.scalars["mass"])
@@ -33,7 +33,7 @@ class Gravity
                                                                 relation.scalars["mass"],
                                                                 mass))
                               .reduce!"a+b";
-    }
+    }*/
     
     return gravityForce;
   }

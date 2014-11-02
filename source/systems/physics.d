@@ -8,6 +8,7 @@ import gl3n.linalg;
 
 import components.input;
 import components.relations.gravity;
+import converters;
 import entity;
 import forcecalculator;
 import integrator.integrator;
@@ -31,7 +32,7 @@ class Physics : System!State
   
   override bool canAddEntity(Entity entity)
   {
-    return "position" in entity.vectors && "mass" in entity.scalars;
+    return "position" in entity.values && "mass" in entity.values;
   }
   
   override State makeComponent(Entity entity)
@@ -39,7 +40,7 @@ class Physics : System!State
     return State(entity, &calculateForce, &calculateTorque);
   }
   
-  override void update()
+  override void updateValues()
   {
     StopWatch debugTimer;
     
@@ -61,25 +62,36 @@ class Physics : System!State
     debugText = format("physics timings: %s", debugTimer.peek.usecs*0.001);
   }
   
-  void updateEntities()
+  override void updateEntities()
   {
     foreach (size_t index, Entity entity; entityForIndex)
     {
-      //entity.vectors["position"] = currentStates[index].position;
-      //entity.vectors["velocity"] = currentStates[index].velocity;
-      //entity.scalars["angle"] = currentStates[index].angle;
-      entity.vectors["position"] = components[index].position;
-      entity.vectors["velocity"] = components[index].velocity;
-      entity.scalars["angle"] = components[index].angle;
+      entity.values["position"] = components[index].position.to!string;
+      entity.values["velocity"] = components[index].velocity.to!string;
+      entity.values["angle"] = components[index].angle.to!string;
     }
   }
   
-  void updateFromEntities()
+  override void updateFromEntities()
   {
     foreach (size_t index, Entity entity; entityForIndex)
     {
-      //currentStates[index].velocity = entity.vectors["velocity"];
-      components[index].velocity = entity.vectors["velocity"];
+      components[index].position = entity.values["position"].myTo!vec2;
+      components[index].velocity = entity.values["velocity"].myTo!vec2;
+      
+      components[index].force = vec2(0.0, 0.0);
+      components[index].angle = 0.0;
+      components[index].rotation = 0.0;
+      components[index].torque = 0.0;
+      
+      if ("force" in entity.values)
+        components[index].force = entity.values["force"].myTo!vec2;
+      if ("angle" in entity.values)
+        components[index].angle = entity.values["angle"].to!double;
+      if ("rotation" in entity.values)
+        components[index].rotation = entity.values["rotation"].to!double;
+      if ("torque" in entity.values)
+        components[index].torque = entity.values["torque"].to!double;
     }
   }
 }

@@ -1,88 +1,97 @@
 module systems.collisionhandler;
 
 import std.algorithm;
+import std.conv;
 import std.datetime;
 import std.range;
 import std.stdio;
-    
+
 import gl3n.linalg;
 
-import collision.collisionentity;
 import collision.responsehandler;
 import components.collider;
+import converters;
 import entity;
 import spatialindex.spatialindex;
 import system;
 
 
-class CollisionHandler : System!CollisionEntity
+class CollisionHandler : System!Collider
 {
-  SpatialIndex!CollisionEntity index = new SpatialIndex!CollisionEntity();
+  SpatialIndex!Collider index = new SpatialIndex!Collider();
   Entity[] collisionEffectParticles;
-  
+
   override bool canAddEntity(Entity entity)
   {
-    return entity.collider !is null;
+    return ("collider" in entity.values) !is null && ("position" in entity.values) !is null;
   }
-  
-  override CollisionEntity makeComponent(Entity entity)
+
+  override Collider makeComponent(Entity entity)
   {
-    return CollisionEntity(entity);
+    vec2[] verts = [vec2(0.0, 0.0)];
+    if (("collider.vertices" in entity.values) !is null)
+      verts = entity.values["collider.vertices"].myTo!(vec2[]);
+
+    auto component = Collider(verts, entity.values["collider"].to!ColliderType, entity.id);
+    if (auto spawn = ("spawner" in entity.values))
+    {
+      auto search = entityForIndex.values.find!(check => check.id == (*spawn).to!long);
+      assert(!search.empty);
+      component.spawner = search.front;
+    }
+    component.updateFromEntity(entity);
+    return component;
   }
-  
-  override void update()
+
+  override void updateValues()
   {
     int broadPhaseCount, narrowPhaseCount;
     StopWatch broadPhaseTimer, narrowPhaseTimer;
-    
+
+    broadPhaseTimer.start();
     foreach (collisionEntity; components)
       index.insert(collisionEntity);
-    
-    Collision[] collisions;
-    foreach (ref collisionEntity; components)
-    {
-      auto collider = collisionEntity.collider;
-      collider.isColliding = false;
-    
-      broadPhaseTimer.start;
-      auto candidates = index.find(collisionEntity.position, collisionEntity.radius);
-      broadPhaseTimer.stop;
-      broadPhaseCount += candidates.length;
-      
-      narrowPhaseTimer.start;
-      auto collidingEntities = 
-        candidates.filter!(candidate => candidate != collisionEntity && 
-                                        candidate.isOverlapping(collisionEntity))
-                  .filter!(collidingEntity => !(collisions.any!(collision => 
-                                                          (collision.first == collisionEntity && 
-                                                           collision.other == collidingEntity) || 
-                                                          (collision.other == collisionEntity && 
-                                                           collision.first == collidingEntity))));
+    auto candidates = index.overlappingElements();
+    broadPhaseTimer.stop();
+    broadPhaseCount += candidates.length;
 
-      collisionEntity.overlappingEntities = collidingEntities.array;
-      collisions ~= collidingEntities.map!(collidingEntity => 
-                                     Collision(collisionEntity, collidingEntity)).array;
-                                     
-      narrowPhaseTimer.stop;
-      narrowPhaseCount += collidingEntities.walkLength;
+    narrowPhaseTimer.start();
+    auto collisions = cartesianProduct(candidates, candidates)
+                      .filter!(candidatePair => candidatePair[0].id < candidatePair[1].id)
+                      .filter!(candidatePair => candidatePair[0].isOverlapping(candidatePair[1]))
+                      .map!(collisionPair => Collision(collisionPair[0], collisionPair[1])).array;
+    narrowPhaseTimer.stop();
+    narrowPhaseCount += collisions.length;
+
+    foreach (collision; collisions)
+    {
+      collision.first.isColliding = true;
+      collision.other.isColliding = true;
+
+      collision.first.overlappingColliders ~= collision.other;
+      collision.other.overlappingColliders ~= collision.first;
     }
-    
-    debugText = format("collisionhandler checked %s/%s candidates\nbroadphase/narrowphase", 
-                       broadPhaseCount, 
-                       narrowPhaseCount);
-    debugText ~= format("\ncollisionhandler timings %s/%s milliseconds\nbroadphase/narrowphase", 
-                        broadPhaseTimer.peek.usecs*0.001,
-                        narrowPhaseTimer.peek.usecs*0.001);
-                  
-    collisionEffectParticles ~= collisions.handleCollisions();
-    
-    // reset index for the next update
-    index = new SpatialIndex!CollisionEntity();
+
+    debugText = format("collisionhandler checked %s/%s candidates\nbroadphase/narrowphase",
+                       broadPhaseCount, narrowPhaseCount);
+    debugText ~= format("\ncollisionhandler timings %s/%s milliseconds\nbroadphase/narrowphase",
+                        broadPhaseTimer.peek.usecs*0.001, narrowPhaseTimer.peek.usecs*0.001);
+
+    collisionEffectParticles ~= collisions.handleCollisions(this);
+
+    index = new SpatialIndex!Collider();
   }
-  
-  void updateFromEntities()
+
+  override void updateEntities()
   {
-    foreach (size_t index, Entity entity; entityForIndex)
-      components[index].updateFromEntity();
+    // collision responders deal with updating entity values
+  }
+
+  override void updateFromEntities()
+  {
+    foreach (int index, Entity entity; entityForIndex)
+    {
+      components[index].updateFromEntity(entity);
+    }
   }
 }

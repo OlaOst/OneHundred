@@ -8,26 +8,25 @@ import derelict.sdl2.sdl;
 import gl3n.linalg;
 
 import components.input;
+import converters;
 import entity;
+import navigationinput;
 import system;
 
 
 class InputHandler : System!Input
 {
-public:
-  vec2 mouseScreenPosition = vec2(0.0, 0.0);
-  
-  override bool canAddEntity(Entity entity)
+  public override bool canAddEntity(Entity entity)
   {
-    return entity.input !is null;
+    return ("inputType" in entity.values) !is null;
   }
   
-  override Input makeComponent(Entity entity)
+  public override Input makeComponent(Entity entity)
   {
-    return entity.input;
+    return new Input(entity.values["inputType"]);
   }
   
-  override void update()
+  public override void updateValues()
   {
     textInput = "";
     eventsSinceLastUpdate.length = 0;
@@ -36,10 +35,8 @@ public:
     while (SDL_PollEvent(&event))
     {
       eventsSinceLastUpdate ~= event;
-      
       if (event.type == SDL_MOUSEMOTION)
         mouseScreenPosition = vec2(event.motion.x, event.motion.y);
-        
       if (event.type == SDL_TEXTINPUT)
         textInput ~= event.text.text.toStringz.to!string;
     }
@@ -48,12 +45,24 @@ public:
       process(entity, eventsSinceLastUpdate);
   }
   
-  void process(Entity entity, SDL_Event[] events)
+  public override void updateEntities()
   {
-    auto input = entity.input;
+    foreach (int index, Entity entity; entityForIndex)
+    {
+      entity.updateValues(components[index]);
+    }
+  }
+  
+  public override void updateFromEntities()
+  {
+  }
+  
+  public void process(Entity entity, SDL_Event[] events)
+  {
+    auto input = getComponent(entity);
     
     // TODO: only set edittext for components that want to edit text
-    entity.editText = textInput;
+    entity.values["editText"] = textInput;
     
     input.updateActionStates();
     
@@ -62,27 +71,24 @@ public:
       auto keyAction = (event.key.keysym.sym in input.inputForAction.key);
       if (keyAction !is null)
       {
-        string action = *keyAction;
         if (event.type == SDL_KEYUP)
-          input.actionState[action] = Input.ActionState.Released;
+          input.actionState[*keyAction] = Input.ActionState.Released;
         if (event.type == SDL_KEYDOWN)
-          input.actionState[action] = Input.ActionState.Pressed;
+          input.actionState[*keyAction] = Input.ActionState.Pressed;
       }
       
       auto buttonAction = (event.button.button in input.inputForAction.button);
       if (buttonAction !is null)
       {
-        string action = *buttonAction;
-        
         if (event.type == SDL_MOUSEBUTTONDOWN)
-          input.actionState[action] = Input.ActionState.Released;
+          input.actionState[*buttonAction] = Input.ActionState.Released;
         if (event.type == SDL_MOUSEBUTTONUP)
-          input.actionState[action] = Input.ActionState.Pressed;
+          input.actionState[*buttonAction] = Input.ActionState.Pressed;
       }
     }
   }
   
-private:
-  SDL_Event[] eventsSinceLastUpdate;
-  string textInput;
+  private SDL_Event[] eventsSinceLastUpdate;
+  private string textInput;
+  public vec2 mouseScreenPosition = vec2(0.0, 0.0);
 }

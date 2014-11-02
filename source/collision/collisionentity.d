@@ -9,7 +9,7 @@ import collision.check;
 import entity;
 
 
-struct CollisionEntity
+/*struct CollisionEntity
 {
   Entity entity;
   vec2 position;
@@ -62,4 +62,4 @@ struct CollisionEntity
     else
       mass = 0.0;
   }
-}
+}*/

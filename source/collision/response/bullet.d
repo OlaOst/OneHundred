@@ -11,21 +11,24 @@ import collision.responsehandler;
 import components.collider;
 import components.drawables.polygon;
 import components.sound;
+import converters;
 import entity;
+import systems.collisionhandler;
 import timer;
 
 
-Entity[] bulletCollisionResponse(Collision collision)
+//Entity[] bulletCollisionResponse(Collision collision, SystemSet systemSet)
+Entity[] bulletCollisionResponse(Collision collision, CollisionHandler collisionHandler)
 {
   auto first = collision.first;
   auto other = collision.other;
     
-  collision.updateFromEntities();
+  //collision.updateFromEntities();
     
-  auto firstCollider = first.entity.collider;
-  auto otherCollider = other.entity.collider;
-  firstCollider.isColliding = true;
-  otherCollider.isColliding = true;
+  auto firstColliderEntity = collisionHandler.getEntity(first);
+  auto otherColliderEntity = collisionHandler.getEntity(other);
+  first.isColliding = true;
+  other.isColliding = true;
   
   // TODO: collision.check should calculate the contactpoint
   auto contactPoint = ((other.position - first.position) * first.radius + 
@@ -37,49 +40,51 @@ Entity[] bulletCollisionResponse(Collision collision)
          other.position.to!string ~ " vs " ~ first.position.to!string ~ 
          ", and radii " ~ other.radius.to!string ~ " vs " ~ first.radius.to!string);
 
-  firstCollider.contactPoint = first.position + contactPoint;
-  otherCollider.contactPoint = other.position - contactPoint;
+  first.contactPoint = first.position + contactPoint;
+  other.contactPoint = other.position - contactPoint;
   
-  assert(firstCollider.contactPoint.isFinite);
-  assert(otherCollider.contactPoint.isFinite);
+  assert(first.contactPoint.isFinite);
+  assert(other.contactPoint.isFinite);
   
-  if (first.collider.type == ColliderType.Bullet)
-    first.toBeRemoved = true;
-  if (other.collider.type == ColliderType.Bullet)
-    other.toBeRemoved = true;
+  if (first.type == ColliderType.Bullet)
+    firstColliderEntity.toBeRemoved = true;
+  if (other.type == ColliderType.Bullet)
+    otherColliderEntity.toBeRemoved = true;
     
   Entity[] hitEffectParticles;
   int particleCount = uniform(10, 50);
-  auto position = (firstCollider.contactPoint + otherCollider.contactPoint) * 0.5;
+  auto position = (first.contactPoint + other.contactPoint) * 0.5;
   foreach (double index; iota(0, particleCount))
   {
     float size = uniform(0.02, 0.05);
     
     auto particle = new Entity();
-    particle.vectors["position"] = position;
+    particle.values["position"] = position.to!string;
     auto momentum = first.velocity*first.mass + other.velocity*other.mass;
     auto angle = uniform(-PI, PI);
     
-    particle.vectors["velocity"] = momentum + vec2(cos(angle), sin(angle)) * 
-                                   uniform(momentum.magnitude * 3.0, momentum.magnitude * 6.0);
-    particle.scalars["angle"] = angle;
-    particle.scalars["rotation"] = angle * 10.0;
-    particle.scalars["lifeTime"] = uniform(0.5, 1.5);
-    particle.scalars["mass"] = size;
+    particle.values["velocity"] = (momentum + vec2FromAngle(angle) * 
+                                   uniform(momentum.magnitude * 3.0, 
+                                           momentum.magnitude * 6.0)).to!string;
+    particle.values["angle"] = angle.to!string;
+    particle.values["rotation"] = (angle * 10.0).to!string;
+    particle.values["lifeTime"] = uniform(0.5, 1.5).to!string;
+    particle.values["mass"] = size.to!string;
     
     auto drawable = new Polygon(size, 3, vec4(uniformDistribution!float(3).vec3, 0.5));
-    particle.polygon = drawable;
+    particle.values["polygon.vertices"] = drawable.vertices.to!string;
+    particle.values["polygon.colors"] = drawable.colors.to!string;
     
     hitEffectParticles ~= particle;
   }
   
   Entity hitSound = new Entity();
-  hitSound.vectors["position"] = position;
+  hitSound.values["position"] = position.to!string;
   static auto hitSounds = ["audio/mgshot1.wav", 
                            "audio/mgshot2.wav", 
                            "audio/mgshot3.wav", 
                            "audio/mgshot4.wav"];
-  hitSound.sound = new Sound(hitSounds.randomSample(1).front.to!string);
+  hitSound.values["sound"] = hitSounds.randomSample(1).front.to!string;
   hitEffectParticles ~= hitSound;
   
   return hitEffectParticles;

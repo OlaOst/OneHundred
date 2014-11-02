@@ -7,6 +7,7 @@ import std.range;
 import gl3n.linalg;
 
 import components.drawable;
+import converters;
 
 
 final class Polygon : Drawable
@@ -15,6 +16,18 @@ final class Polygon : Drawable
   
   vec2[] vertices;
   vec4[] colors;
+  
+  this (vec2[] vertices, vec4[] colors)
+  {
+    this.vertices = vertices;
+    this.colors = colors;
+  }
+  
+  this (vec2[] vertices, vec4 color)
+  {
+    this.vertices = vertices;
+    this.colors = color.repeat(vertices.length).array;
+  }
   
   this(double size, int points, vec4 color)
   {
@@ -28,11 +41,16 @@ final class Polygon : Drawable
       auto nextangle = angle + (PI*2.0) / points;
       
       vertices ~= [vec2(0.0, 0.0), 
-                   vec2(cos(angle), sin(angle)) * size, 
-                   vec2(cos(nextangle), sin(nextangle)) * size];
+                   vec2FromAngle(angle) * size, 
+                   vec2FromAngle(nextangle) * size];
                    
       colors ~= [vec4(1.0, 1.0, 1.0, 1.0), color, color];
     }
+  }
+  
+  static bool canMakeComponent(string[string] values)
+  {
+    return "polygon.vertices" in values && ("polygon.colors" in values || "color" in values);
   }
 }
 
