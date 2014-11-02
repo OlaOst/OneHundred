@@ -20,17 +20,17 @@ class InputHandler : System!Input
   {
     return ("inputType" in entity.values) !is null;
   }
-  
+
   public override Input makeComponent(Entity entity)
   {
     return new Input(entity.values["inputType"]);
   }
-  
+
   public override void updateValues()
   {
     textInput = "";
     eventsSinceLastUpdate.length = 0;
-    
+
     SDL_Event event;
     while (SDL_PollEvent(&event))
     {
@@ -40,32 +40,32 @@ class InputHandler : System!Input
       if (event.type == SDL_TEXTINPUT)
         textInput ~= event.text.text.toStringz.to!string;
     }
-    
+
     foreach (size_t index, Entity entity; entityForIndex)
       process(entity, eventsSinceLastUpdate);
   }
-  
+
   public override void updateEntities()
   {
-    foreach (int index, Entity entity; entityForIndex)
+    foreach (ulong index, Entity entity; entityForIndex)
     {
       entity.updateValues(components[index]);
     }
   }
-  
+
   public override void updateFromEntities()
   {
   }
-  
+
   public void process(Entity entity, SDL_Event[] events)
   {
     auto input = getComponent(entity);
-    
+
     // TODO: only set edittext for components that want to edit text
     entity.values["editText"] = textInput;
-    
+
     input.updateActionStates();
-    
+
     foreach (event; events)
     {
       auto keyAction = (event.key.keysym.sym in input.inputForAction.key);
@@ -76,7 +76,7 @@ class InputHandler : System!Input
         if (event.type == SDL_KEYDOWN)
           input.actionState[*keyAction] = Input.ActionState.Pressed;
       }
-      
+
       auto buttonAction = (event.button.button in input.inputForAction.button);
       if (buttonAction !is null)
       {
@@ -87,7 +87,7 @@ class InputHandler : System!Input
       }
     }
   }
-  
+
   private SDL_Event[] eventsSinceLastUpdate;
   private string textInput;
   public vec2 mouseScreenPosition = vec2(0.0, 0.0);

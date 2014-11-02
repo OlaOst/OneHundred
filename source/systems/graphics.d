@@ -44,45 +44,6 @@ class Graphics : System!bool
 
   override void updateFromEntities()
   {
-    StopWatch debugTimer;
-    debugTimer.start;
-    vertices = texCoords = null;
-    colors = null;
-
-    foreach (size_t index, Entity entity; entityForIndex)
-    {
-      auto transform = delegate (vec2 vertex) => ((vec3(vertex, 0.0) *
-                                                 mat3.zrotation(-entity.scalars["angle"])).xy +
-                                                 entity.vectors["position"] - cameraPosition) *
-                                                 zoom;
-      if (entity.polygon !is null)
-      {
-        // map with delegate in a variable and then array crashes with release build
-        //vertices["polygon"] ~= entity.polygon.vertices.map!transform.array();
-        auto transformedVertices = entity.polygon.vertices.map!transform;
-        foreach (transformedVertex; transformedVertices)
-          vertices["polygon"] ~= transformedVertex;
-
-        if (entity.collider !is null && entity.collider.isColliding)
-          colors["polygon"] ~= entity.polygon.colors.map!(color => vec4(1.0, color.gba)).array;
-        else
-          colors["polygon"] ~= entity.polygon.colors;
-      }
-      else if (entity.text !is null)
-      {
-        texCoords["text"] ~= textRenderer.getTexCoordsForText(entity.text);
-        vertices["text"] ~= textRenderer.getVerticesForText(entity.text, zoom, transform);
-      }
-      else if (entity.sprite !is null)
-      {
-        auto transformedVertices = entity.sprite.vertices.map!transform;
-        foreach (transformedVertex; transformedVertices)
-          vertices[entity.sprite.fileName] ~= transformedVertex;
-
-        texCoords[entity.sprite.fileName] ~= entity.sprite.texCoords;
-      }
-    }
-    debugText = format("graphics timings: %s", debugTimer.peek.usecs*0.001);
   }
 
   vec2 getWorldPositionFromScreenCoordinates(vec2 screenCoordinates)
