@@ -73,7 +73,7 @@ class TextGraphics : System!Text
 
   override void updateFromEntities()
   {
-    foreach (ulong index, Entity entity; entityForIndex)
+    foreach (uint index, Entity entity; entityForIndex)
     {
       //currentStates[index].velocity = entity.vectors["velocity"];
       components[index].position = entity.values["position"].myTo!vec2;

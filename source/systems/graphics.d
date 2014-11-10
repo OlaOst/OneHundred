@@ -36,6 +36,7 @@ class Graphics : System!bool
 
   override void updateValues()
   {
+    //debugText = format("graphics timings: %s", debugTimer.peek.usecs*0.001);
   }
 
   override void updateEntities()

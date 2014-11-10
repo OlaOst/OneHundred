@@ -80,7 +80,7 @@ class PolygonGraphics : System!Polygon
 
   override void updateFromEntities()
   {
-    foreach (ulong index, Entity entity; entityForIndex)
+    foreach (uint index, Entity entity; entityForIndex)
     {
       //currentStates[index].velocity = entity.vectors["velocity"];
       components[index].position = vec2(entity.values["position"].to!(float[2]));

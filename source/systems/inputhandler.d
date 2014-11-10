@@ -47,7 +47,7 @@ class InputHandler : System!Input
 
   public override void updateEntities()
   {
-    foreach (ulong index, Entity entity; entityForIndex)
+    foreach (uint index, Entity entity; entityForIndex)
     {
       entity.updateValues(components[index]);
     }

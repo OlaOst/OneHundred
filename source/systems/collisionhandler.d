@@ -89,7 +89,7 @@ class CollisionHandler : System!Collider
 
   override void updateFromEntities()
   {
-    foreach (ulong index, Entity entity; entityForIndex)
+    foreach (uint index, Entity entity; entityForIndex)
     {
       components[index].updateFromEntity(entity);
     }

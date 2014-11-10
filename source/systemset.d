@@ -1,5 +1,8 @@
 module systemset;
 
+import std.datetime;
+import std.string;
+
 import entity;
 import systems.collisionhandler;
 import systems.graphics;
@@ -80,9 +83,13 @@ class SystemSet
     physics.update();
     soundSystem.update();
     timeHandler.update();
+    
+    StopWatch combinedGraphicsTimer;
+    combinedGraphicsTimer.start();
     graphics.update();
     polygonGraphics.update();
     spriteGraphics.update();
     textGraphics.update();
+    graphics.debugText = format("graphics timings: %s", combinedGraphicsTimer.peek.usecs*0.001);
   }
 }

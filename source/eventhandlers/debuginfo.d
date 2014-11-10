@@ -38,6 +38,8 @@ void handleToggleDebugInfo(Input gameInput, SystemSet systemSet, ref Entity debu
       debugText.values["text"] = systemSet.graphics.debugText;
       break;
   }
+  
+  assert(debugText.values["text"] !is null);
 }
 
 void handleToggleInputWindow(Input gameInput, 
@@ -86,8 +88,6 @@ void handleEditableText(Input textInput, Entity editableText)
   if (editableText !is null && 
       "inputType" in editableText.values && editableText.values["inputType"] == "textInput")
   {
-    //assert(editableText.input !is null);
-    
     // TODO: make sure text changes are reflected to relevant components
     if (textInput.actionState["backspace"] == Input.ActionState.Pressed && 
         editableText.values["text"].length > 0)
