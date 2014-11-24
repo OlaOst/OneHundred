@@ -6,16 +6,17 @@
   "authors": [
     "Your Name"
   ],
+  "version": "0.0.1",
   "mainSourceFile": "source/app.d",
   "dependencies": {
-    "derelict-sdl2": "~master",
+    "derelict-sdl2": ">=1.2.8",
     "derelict-gl3": ">=1.0.10",
-    "derelict-al": "~master",
+    "derelict-al": ">=1.0.0",
     "derelict-ogg": "~master",
-    "derelict-vorbis": "~master",
-    "derelict-ft": "~master",
-    "gl3n": "~master",
-    "glamour": { "version": "~master", "path": "../glamour" },
+    "derelict-vorbis": ">=1.0.0",
+    "derelict-ft": ">=1.0.0",
+    "gl3n": ">=1.0.0",
+    "glamour": { "version": ">=1.0.1", "path": "../glamour" },
   },
   "importPaths" : ["../glamour"],
 
@@ -40,7 +41,7 @@
         "Derelict3", "SDLImage", "gl3n",
       ],
       "dependencies": {
-        "derelict-sdl2": "~master",
+        "derelict-sdl2": ">=1.2.8",
         "derelict-gl3": { "version": ">=1.0.10" },
       }
     },
