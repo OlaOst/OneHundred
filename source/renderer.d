@@ -68,7 +68,7 @@ class Renderer
 
     vboSet["vertices"] = new Buffer(vertices);
     vboSet["colors"] = new Buffer(colors);
-
+    
     shaderSet["default"].bind();
     vboSet["vertices"].bind(shaderSet["default"], "position", GL_FLOAT, 2, 0, 0);
     vboSet["colors"].bind(shaderSet["default"], "color", GL_FLOAT, 4, 0, 0);

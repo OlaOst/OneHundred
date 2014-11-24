@@ -58,7 +58,9 @@ class SpriteGraphics : System!Sprite
                                          camera.zoom;
 
       // map with delegate in a variable and then array crashes with release build in dmd 2.066
-      vertices[component.fileName] ~= component.vertices.map!transform.array;
+      //vertices[component.fileName] ~= component.vertices.map!transform.array;
+      foreach (vertex; component.vertices)
+        vertices[component.fileName] ~= transform(vertex);
       texCoords[component.fileName] ~= component.texCoords;
     }
     debugText = format("spritegraphics timings: %s", debugTimer.peek.usecs*0.001);

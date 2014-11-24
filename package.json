@@ -2,10 +2,8 @@
   "name": "onehundred",
   "description": "An example project skeleton",
   "homepage": "http://example.org",
-  "copyright": "Copyright © 2000, Your Name",
-  "authors": [
-    "Your Name"
-  ],
+  "copyright": "Copyright © 2014, Ola Østtveit",
+  "authors": ["Ola Østtveit"],
   "version": "0.0.1",
   "mainSourceFile": "source/app.d",
   "dependencies": {
@@ -45,5 +43,10 @@
         "derelict-gl3": { "version": ">=1.0.10" },
       }
     },
-  ],
+    {
+      "name": "inline",
+      "targetType": "executable",
+      "buildOptions": ["inline"],
+    }
+  ]
 }
