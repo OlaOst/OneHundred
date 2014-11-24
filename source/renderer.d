@@ -18,7 +18,7 @@ import window;
 
 class Renderer
 {
-  this(int xres, int yres)
+  public this(int xres, int yres)
   {
     window = getWindow(xres, yres);
 
@@ -55,17 +55,16 @@ class Renderer
     toScreen();
   }
 
-  void toScreen()
+  public void toScreen()
   {
     SDL_GL_SwapWindow(window);
     glClearColor(0.0, 0.0, 0.33, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
 
-  void drawPolygons(vec2[] vertices, vec4[] colors)
+  public void drawPolygons(vec2[] vertices, vec4[] colors)
   {
     assert(vertices.length == colors.length);
-
     vboSet["vertices"] = new Buffer(vertices);
     vboSet["colors"] = new Buffer(colors);
     
@@ -78,10 +77,9 @@ class Renderer
     vboSet["colors"].remove();
   }
 
-  void drawTexture(vec2[] vertices, vec2[] texCoords)
+  public void drawTexture(vec2[] vertices, vec2[] texCoords)
   {
     assert(vertices.length == texCoords.length);
-
     vboSet["vertices"] = new Buffer(vertices);
     vboSet["texture"] = new Buffer(texCoords);
 
@@ -94,9 +92,8 @@ class Renderer
     vboSet["texture"].remove();
   }
 
-private:
-  SDL_Window *window;
-  VAO vao;
-  Buffer[string] vboSet;
-  Shader[string] shaderSet;
+  private SDL_Window *window;
+  private VAO vao;
+  private Buffer[string] vboSet;
+  private Shader[string] shaderSet;
 }
