@@ -86,7 +86,6 @@ class PolygonGraphics : System!Polygon
   {
     foreach (uint index, Entity entity; entityForIndex)
     {
-      //currentStates[index].velocity = entity.vectors["velocity"];
       components[index].position = vec2(entity.values["position"].to!(float[2]));
       components[index].angle = entity.values["angle"].to!double;
     }
