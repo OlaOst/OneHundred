@@ -66,7 +66,6 @@ class TextGraphics : System!Text
       auto transform = (vec2 vertex) => ((vec3(vertex, 0.0)*mat3.zrotation(-component.angle)).xy +
                                          component.position - camera.position) *
                                          camera.zoom;
-
       {
         texCoords["text"] ~= textRenderer.getTexCoordsForText(component);
         vertices["text"] ~= textRenderer.getVerticesForText(component, camera.zoom, transform);

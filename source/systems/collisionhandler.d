@@ -32,7 +32,7 @@ class CollisionHandler : System!Collider
     if (("collider.vertices" in entity.values) !is null)
       verts = entity.values["collider.vertices"].myTo!(vec2[]);
 
-    auto component = Collider(verts, entity.values["collider"].to!ColliderType, entity.id);
+    auto component = new Collider(verts, entity.values["collider"].to!ColliderType, entity.id);
     if (auto spawn = ("spawner" in entity.values))
     {
       auto search = entityForIndex.values.find!(check => check.id == (*spawn).to!long);
@@ -63,13 +63,21 @@ class CollisionHandler : System!Collider
     narrowPhaseTimer.stop();
     narrowPhaseCount += collisions.length;
 
-    foreach (collision; collisions)
+    foreach (ref collision; collisions)
     {
       collision.first.isColliding = true;
       collision.other.isColliding = true;
+      
+      collision.first.overlappingColliders ~= getEntity(collision.other);
+      collision.other.overlappingColliders ~= getEntity(collision.first);
 
-      collision.first.overlappingColliders ~= collision.other;
-      collision.other.overlappingColliders ~= collision.first;
+      writeln("registering collision between ", collision.first.type, " and ", collision.other.type);
+      
+      if (collision.first.type == ColliderType.Cursor || collision.other.type == ColliderType.Cursor)
+      {
+        writeln("first overlapping colliders: ", collision.first.overlappingColliders);
+        writeln("other overlapping colliders: ", collision.other.overlappingColliders);
+      }
     }
 
     debugText = format("collisionhandler checked %s/%s candidates\nbroadphase/narrowphase",

@@ -19,12 +19,10 @@ enum ColliderType
   Cursor,
 }
 
-struct Collider
+class Collider
 {  
   bool isColliding;
   // TODO: what about a collisionresponse delegate here?
-  
-  Collider[] overlappingColliders;
   
   vec2 position;
   vec2 velocity;
@@ -39,7 +37,8 @@ struct Collider
   
   // what entity did this collider spawn from? 
   // need to know since we do not want ships firing bullets to get hit by their own bullets
-  Entity spawner; 
+  Entity spawner;
+  Entity[] overlappingColliders;
   
   //bool toBeRemoved = false;
   long id;
@@ -52,7 +51,7 @@ struct Collider
     this.id = id;
   }
   
-  bool opEquals(const Collider other)
+  /*bool opEquals(const Collider other)
   {
     return this.id == other.id;
   }
@@ -65,6 +64,15 @@ struct Collider
   bool opEquals(const Collider other) const
   {
     return this.id == other.id;
+  }*/
+  
+  //alias opCmp = Object.opCmp;
+  override int opCmp(Object other)
+  {
+    //if (this is other) return 0;
+    //if (other is null) return 1;
+    //if (typeid(this) == typeid(other)) return this.opEquals(other);
+    return this.id < cast(Collider)other.id;
   }
   
   bool isOverlapping(Collider other)
