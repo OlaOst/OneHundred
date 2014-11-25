@@ -51,21 +51,6 @@ class Collider
     this.id = id;
   }
   
-  /*bool opEquals(const Collider other)
-  {
-    return this.id == other.id;
-  }
-  
-  bool opEquals(ref const Collider other)
-  {
-    return this.id == other.id;
-  }
-  
-  bool opEquals(const Collider other) const
-  {
-    return this.id == other.id;
-  }*/
-  
   override int opCmp(Object other)
   {
     if (this is other) return 0;
