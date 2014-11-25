@@ -63,21 +63,16 @@ class CollisionHandler : System!Collider
     narrowPhaseTimer.stop();
     narrowPhaseCount += collisions.length;
 
-    foreach (ref collision; collisions)
+    foreach (component; components)
+      component.overlappingColliders.length = 0;
+    
+    foreach (collision; collisions)
     {
       collision.first.isColliding = true;
       collision.other.isColliding = true;
       
       collision.first.overlappingColliders ~= getEntity(collision.other);
       collision.other.overlappingColliders ~= getEntity(collision.first);
-
-      writeln("registering collision between ", collision.first.type, " and ", collision.other.type);
-      
-      if (collision.first.type == ColliderType.Cursor || collision.other.type == ColliderType.Cursor)
-      {
-        writeln("first overlapping colliders: ", collision.first.overlappingColliders);
-        writeln("other overlapping colliders: ", collision.other.overlappingColliders);
-      }
     }
 
     debugText = format("collisionhandler checked %s/%s candidates\nbroadphase/narrowphase",

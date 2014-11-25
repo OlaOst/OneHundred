@@ -66,13 +66,12 @@ class Collider
     return this.id == other.id;
   }*/
   
-  //alias opCmp = Object.opCmp;
   override int opCmp(Object other)
   {
-    //if (this is other) return 0;
-    //if (other is null) return 1;
-    //if (typeid(this) == typeid(other)) return this.opEquals(other);
-    return this.id < cast(Collider)other.id;
+    if (this is other) return 0;
+    if (other is null) return 1;
+    if (typeid(this) == typeid(other)) return this.id < (cast(Collider)other).id;
+    return 1;
   }
   
   bool isOverlapping(Collider other)
