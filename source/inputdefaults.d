@@ -23,6 +23,7 @@ static this()
   gameControls.key[SDLK_INSERT] = "addEntity";
   gameControls.key[SDLK_DELETE] = "removeEntity";
   gameControls.key[SDLK_F1] = "toggleDebugInfo";
+  gameControls.button[SDL_BUTTON_LEFT] = "focusInputWindow";
   gameControls.button[SDL_BUTTON_RIGHT] = "toggleInputWindow";
   
   textInput.key[SDLK_BACKSPACE] = "backspace";

@@ -43,6 +43,7 @@ Entity createText(string text, vec2 position)
   textEntity.values["size"] = 0.1.to!string;
   textEntity.values["text"] = text;
   textEntity.values["color"] = vec4(1.0, 1.0, 1.0, 1.0).to!string;
+  textEntity.values["collider"] = ColliderType.GuiElement.to!string;
   
   return textEntity;
 }

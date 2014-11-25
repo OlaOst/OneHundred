@@ -17,6 +17,7 @@ enum ColliderType
   Npc,
   Bullet,
   Cursor,
+  GuiElement,
 }
 
 class Collider

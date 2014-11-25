@@ -46,7 +46,8 @@ Entity[] handleCollisions(Collision[] collisions, CollisionHandler collisionHand
 
     // TODO: make separate functions for different collidertype pairs, 
     // i.e. npc/bullet, npc/player... 
-    if (first.type == ColliderType.Cursor || other.type == ColliderType.Cursor)
+    if (first.type == ColliderType.Cursor || other.type == ColliderType.Cursor ||
+        first.type == ColliderType.GuiElement || other.type == ColliderType.GuiElement)
       continue;
     
     auto firstEntity = collisionHandler.getEntity(first);

@@ -5,6 +5,7 @@ import std.array;
 
 import gl3n.linalg;
 
+import components.collider;
 import components.input;
 import converters;
 import entity;
@@ -47,40 +48,73 @@ void handleToggleInputWindow(Input gameInput,
                              ref Entity inputWindow, 
                              Entity mouseCursor)
 {
+  // find out which entities the mouseCursor is overlapping with
+  assert(mouseCursor in systemSet.collisionHandler.indexForEntity);
+  auto mouseCursorCollider = systemSet.collisionHandler.getComponent(mouseCursor);
+  auto mouseCursorOverlaps = mouseCursorCollider.overlappingColliders;
+  auto overlappingTexts = mouseCursorOverlaps.filter!(overlap => systemSet.collisionHandler.getComponent(overlap).type == ColliderType.GuiElement);
+      
+  // left click - focus clicked input window to make it editable
+  if (gameInput.isActionToggled("focusInputWindow"))
+  {
+    if (!overlappingTexts.empty) 
+    {
+      if (inputWindow == overlappingTexts.front)
+        overlappingTexts.popFront();
+      if (!overlappingTexts.empty)
+        inputWindow = overlappingTexts.front;
+    }
+    
+    // defocus current window
+    if (overlappingTexts.empty)
+      inputWindow = null;
+  }
+  
+  // right click - toggle input window - close input windows if right clicked, open input window for overlapping entity
+  // open new input window if no overlaps
   if (gameInput.isActionToggled("toggleInputWindow"))
   {
-    if (inputWindow is null)
+    if (!overlappingTexts.empty)
     {
-      // find out which entities the mouseCursor is overlapping with
-      assert(mouseCursor in systemSet.collisionHandler.indexForEntity);
-      auto mouseCursorCollider = systemSet.collisionHandler.getComponent(mouseCursor);
-      auto mouseCursorOverlaps = mouseCursorCollider.overlappingColliders;
+      // remove the last text window added
+      auto lastOne = overlappingTexts.front;
       
-      if (mouseCursorOverlaps.empty)
+      while (!overlappingTexts.empty)
       {
-        inputWindow = createText("input: ", mouseCursor.values["position"].myTo!vec2);
-        inputWindow.values["inputType"] = "textInput";
-        systemSet.addEntity(inputWindow);
+        lastOne = overlappingTexts.front;
+        overlappingTexts.popFront();
       }
-      else
-      {
-        auto overlappingEntity = mouseCursorOverlaps.front;
-        auto overlappingCollider = systemSet.collisionHandler.getComponent(overlappingEntity);
-        inputWindow = createText(overlappingEntity.debugInfo, 
-                                 overlappingEntity.values["position"].myTo!vec2);
-        systemSet.addEntity(inputWindow);
-      }
+      assert(lastOne !is null);
+      systemSet.removeEntity(lastOne);
+    }
+    else if (!mouseCursorOverlaps.empty)
+    {
+      auto overlappingEntity = mouseCursorOverlaps.front;
+      auto overlappingCollider = systemSet.collisionHandler.getComponent(overlappingEntity);
+      inputWindow = createText(overlappingEntity.debugInfo, 
+                               overlappingEntity.values["position"].myTo!vec2);
+      inputWindow.values["connect to entity - ensure position is kept relative to connecting entity"] = overlappingEntity.id.to!string;
+      systemSet.addEntity(inputWindow);
+    }
+    else if (mouseCursorOverlaps.empty)
+    {
+      if (inputWindow !is null)
+        systemSet.removeEntity(inputWindow);
+        
+      inputWindow = createText("input: ", mouseCursor.values["position"].myTo!vec2);
+      inputWindow.values["inputType"] = "textInput";
+      systemSet.addEntity(inputWindow);
     }
     else
     {
-      systemSet.removeEntity(inputWindow);
-      inputWindow = null;
+      assert(0);
     }
   }
-  else if (inputWindow !is null)
+  
+  /*if (inputWindow !is null)
   {
     inputWindow.values["position"] = mouseCursor.values["position"];
-  }
+  }*/
 }
 
 void handleEditableText(Input textInput, Entity editableText)

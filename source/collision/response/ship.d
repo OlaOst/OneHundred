@@ -43,8 +43,10 @@ Entity[] shipCollisionResponse(Collision collision, CollisionHandler collisionHa
   assert(first.contactPoint.isFinite);
   assert(other.contactPoint.isFinite);
 
-  if ("velocity" !in firstColliderEntity.values || "velocity" !in otherColliderEntity.values)
-    assert(false);
+  if ("velocity" !in firstColliderEntity.values)
+    assert(false, "Did not find velocity in firstCollider: " ~ firstColliderEntity.values.to!string);
+  if ("velocity" !in otherColliderEntity.values)
+    assert(false, "Did not find velocity in otherCollider: " ~ otherColliderEntity.values.to!string);
   
   //auto firstMass = systemSet.physics.getComponent(firstColliderEntity).mass;
   //auto otherMass = systemSet.physics.getComponent(otherColliderEntity).mass;
