@@ -75,15 +75,12 @@ class TextGraphics : System!Text
     debugText = format("textgraphics timings: %s", debugTimer.peek.usecs*0.001);
   }
 
-  override void updateEntities()
-  {
-  }
+  override void updateEntities() {}
 
   override void updateFromEntities()
   {
     foreach (uint index, Entity entity; entityForIndex)
     {
-      //currentStates[index].velocity = entity.vectors["velocity"];
       components[index].position = entity.values["position"].myTo!vec2;
       components[index].angle = entity.values["angle"].to!double;
 
