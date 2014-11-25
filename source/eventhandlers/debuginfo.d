@@ -56,9 +56,6 @@ void handleToggleInputWindow(Input gameInput,
       auto mouseCursorCollider = systemSet.collisionHandler.getComponent(mouseCursor);
       auto mouseCursorOverlaps = mouseCursorCollider.overlappingColliders;
       
-      import std.stdio;
-      writeln("mousecursoroverlaps: ", mouseCursorOverlaps);
-      
       if (mouseCursorOverlaps.empty)
       {
         inputWindow = createText("input: ", mouseCursor.values["position"].myTo!vec2);
@@ -67,8 +64,6 @@ void handleToggleInputWindow(Input gameInput,
       }
       else
       {
-        //auto overlappingCollider = mouseCursorOverlaps.front;
-        //auto overlappingEntity = systemSet.collisionHandler.getEntity(overlappingCollider);
         auto overlappingEntity = mouseCursorOverlaps.front;
         auto overlappingCollider = systemSet.collisionHandler.getComponent(overlappingEntity);
         inputWindow = createText(overlappingEntity.debugInfo, 
