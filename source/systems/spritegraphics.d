@@ -24,6 +24,14 @@ class SpriteGraphics : System!Sprite
     this.camera = camera;
   }
 
+  ~this()
+  {
+    foreach (name, texture; textureSet)
+    {
+      texture.remove();
+    }
+  }
+  
   override bool canAddEntity(Entity entity)
   {
     return "position" in entity.values && "angle" in entity.values &&
