@@ -20,11 +20,13 @@ final class Text : Drawable
   alias text this;
   
   vec2[] vertices;
+  vec4 color;
   
   this(double size, string text, vec4 color)
   {
     this.size = size;
     this.text = text;
+    this.color = color;
     
     vertices = baseSquare.dup.map!(vertex => vertex * size).array;
   }

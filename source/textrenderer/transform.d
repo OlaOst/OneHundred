@@ -16,7 +16,7 @@ vec2[] getVerticesForText(TextRenderer textRenderer,
   vec2[] result;
   
   auto cursor = vec2(0.0, 0.0);
-        
+
   auto lines = text.text.split("\n");
   foreach (line; lines)
   {

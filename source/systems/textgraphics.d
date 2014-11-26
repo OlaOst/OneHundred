@@ -3,6 +3,7 @@ module systems.textgraphics;
 import std.algorithm;
 import std.array;
 import std.datetime;
+import std.range;
 import std.stdio;
 
 import glamour.texture;
@@ -70,7 +71,9 @@ class TextGraphics : System!Text
         texCoords["text"] ~= textRenderer.getTexCoordsForText(component);
         vertices["text"] ~= textRenderer.getVerticesForText(component, camera.zoom, transform);
       }
+      colors["text"] ~= component.color.repeat.take(textRenderer.getTexCoordsForText(component).length).array;
     }
+    
     debugText = format("textgraphics timings: %s", debugTimer.peek.usecs*0.001);
   }
 

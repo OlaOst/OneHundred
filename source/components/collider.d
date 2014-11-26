@@ -39,7 +39,7 @@ class Collider
   // what entity did this collider spawn from? 
   // need to know since we do not want ships firing bullets to get hit by their own bullets
   Entity spawner;
-  Entity[] overlappingColliders;
+  Collider[] overlappingColliders;
   
   //bool toBeRemoved = false;
   long id;

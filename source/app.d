@@ -14,6 +14,7 @@ import entityspawns;
 import eventhandlers.addremove;
 import eventhandlers.debuginfo;
 import eventhandlers.game;
+import eventhandlers.inputwindow;
 import graphicscollector;
 import playereventhandler;
 import renderer;

@@ -71,8 +71,8 @@ class CollisionHandler : System!Collider
       collision.first.isColliding = true;
       collision.other.isColliding = true;
       
-      collision.first.overlappingColliders ~= getEntity(collision.other);
-      collision.other.overlappingColliders ~= getEntity(collision.first);
+      collision.first.overlappingColliders ~= collision.other;
+      collision.other.overlappingColliders ~= collision.first;
     }
 
     debugText = format("collisionhandler checked %s/%s candidates\nbroadphase/narrowphase",
