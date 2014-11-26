@@ -27,17 +27,25 @@ void handleToggleInputWindow(Input gameInput,
   // left click - focus clicked input window to make it editable
   if (gameInput.isActionToggled("focusInputWindow"))
   {
-    if (!overlappingTexts.empty) 
+    if (!overlappingTexts.empty)
     {
       if (inputWindow == overlappingTexts.front)
         overlappingTexts.popFront();
       if (!overlappingTexts.empty)
+      {
+        if (inputWindow !is null)
+          systemSet.textGraphics.getComponent(inputWindow).color = vec4(0.5, 0.5, 0.0, 1.0);
         inputWindow = systemSet.collisionHandler.getEntity(overlappingTexts.front);
+        systemSet.textGraphics.getComponent(inputWindow).color = vec4(1.0, 1.0, 1.0, 1.0);
+      }
     }
     
     // defocus current window
-    if (overlappingTexts.empty)
+    if (overlappingTexts.empty && inputWindow !is null)
+    {
+      systemSet.textGraphics.getComponent(inputWindow).color = vec4(0.5, 0.5, 0.0, 1.0);
       inputWindow = null;
+    }
   }
   
   // right click - toggle input window - close input windows if right clicked, open input window for overlapping entity
@@ -56,6 +64,8 @@ void handleToggleInputWindow(Input gameInput,
       }
       assert(lastOne !is null);
       systemSet.removeEntity(systemSet.collisionHandler.getEntity(lastOne));
+      if (inputWindow !is null && lastOne.id == inputWindow.id)
+        inputWindow = null;
     }
     else if (!mouseCursorOverlaps.empty)
     {
