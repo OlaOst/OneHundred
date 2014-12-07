@@ -85,10 +85,8 @@ class CollisionHandler : System!Collider
     index = new SpatialIndex!Collider();
   }
 
-  override void updateEntities()
-  {
-    // collision responders deal with updating entity values
-  }
+  // collision responders deal with updating entity values
+  override void updateEntities() {}
 
   override void updateFromEntities()
   {
