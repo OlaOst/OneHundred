@@ -56,8 +56,12 @@ Entity createTextCover(Entity textEntity, AABB textAABB)
   auto textCover = new Entity();
   textCover.values["position"] = textEntity.values["position"];
   textCover.values["angle"] = 0.0.to!string;
-  textCover.values["polygon.vertices"] = [[textAABB.min.x, textAABB.min.y], [textAABB.min.x, textAABB.max.y], [textAABB.max.x, textAABB.min.y],
-                                          [textAABB.min.x, textAABB.max.y], [textAABB.max.x, textAABB.max.y], [textAABB.max.x, textAABB.min.y]].to!string;
+  textCover.values["polygon.vertices"] = [[textAABB.min.x, textAABB.min.y], 
+                                          [textAABB.min.x, textAABB.max.y], 
+                                          [textAABB.max.x, textAABB.min.y],
+                                          [textAABB.min.x, textAABB.max.y], 
+                                          [textAABB.max.x, textAABB.max.y], 
+                                          [textAABB.max.x, textAABB.min.y]].to!string;
   textCover.values["polygon.colors"] = [0.0, 0.5, 0.5, 0.5].repeat.take(6).array.to!string;
   
   textCover.values["relation.types"] = ["RelativePosition", "DieTogether"].to!string;
