@@ -1,17 +1,13 @@
 module systems.textgraphics;
 
-import std.algorithm;
-import std.array;
 import std.datetime;
 import std.range;
-import std.stdio;
 
 import glamour.texture;
 import gl3n.aabb;
 import gl3n.linalg;
 
 import camera;
-import components.collider;
 import components.drawables.text;
 import converters;
 import entity;
@@ -33,9 +29,7 @@ class TextGraphics : System!Text
   ~this()
   {
     foreach (name, texture; textureSet)
-    {
       texture.remove();
-    }
   }
 
   override bool canAddEntity(Entity entity)
@@ -53,7 +47,6 @@ class TextGraphics : System!Text
     component.position = vec2(entity.values["position"].to!(float[2]));
     component.angle = entity.values["angle"].to!double;
 
-    //auto transform = (vec2 vertex) => ((vec3(vertex, 0.0)*mat3.zrotation(-component.angle)).xy);
     auto textVertices = textRenderer.getVerticesForText(component, 1.0, (vec2 vertex) => vertex);
     component.aabb = AABB.from_points(textVertices.map!(vertex => vec3(vertex, 0.0)).array);
     
@@ -72,15 +65,14 @@ class TextGraphics : System!Text
       auto transform = (vec2 vertex) => ((vec3(vertex, 0.0)*mat3.zrotation(-component.angle)).xy +
                                          component.position - camera.position) *
                                          camera.zoom;
-      {
-        texCoords["text"] ~= textRenderer.getTexCoordsForText(component);
-        auto textVertices = textRenderer.getVerticesForText(component, camera.zoom, transform);
-        vertices["text"] ~= textVertices;
-        component.aabb = AABB.from_points(textRenderer.getVerticesForText(component, 1.0, (vec2 vertex) => vertex).map!(vertex => vec3(vertex, 0.0)).array);
-      }
-      colors["text"] ~= component.color.repeat.take(textRenderer.getTexCoordsForText(component).length).array;
+      
+      texCoords["text"] ~= textRenderer.getTexCoordsForText(component);
+      vertices["text"] ~= textRenderer.getVerticesForText(component, camera.zoom, transform);
+      component.aabb = AABB.from_points(textRenderer.getVerticesForText(component, 1.0, 
+                        (vec2 vertex) => vertex).map!(vertex => vec3(vertex, 0.0)).array);
+      colors["text"] ~= component.color.repeat.take
+                          (textRenderer.getTexCoordsForText(component).length).array;
     }
-    
     debugText = format("textgraphics timings: %s", debugTimer.peek.usecs*0.001);
   }
 
