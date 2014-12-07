@@ -6,6 +6,7 @@ import gl3n.linalg;
 
 import components.relation;
 import components.relations.dietogether;
+import components.relations.inspectvalues;
 import components.relations.relativeposition;
 import converters;
 import entity;
@@ -37,6 +38,10 @@ class RelationHandler : System!(Relation[])
     if (relationTypes.canFind("DieTogether"))
     {
       relationComponents ~= new DieTogether(entity);
+    }
+    if (relationTypes.canFind("InspectValues"))
+    {
+      relationComponents ~= new InspectValues(entity);
     }
     
     foreach (relationComponent; relationComponents)

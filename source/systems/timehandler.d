@@ -30,7 +30,7 @@ final class TimeHandler : System!double
   {
     foreach (int index, ref double lifeTime; components)
     {
-      lifeTime -= timer.frameTime;     
+      lifeTime -= timer.frameTime;
       
       if (lifeTime <= 0.0)
         entityForIndex[index].toBeRemoved = true;
@@ -39,6 +39,10 @@ final class TimeHandler : System!double
   
   override void updateEntities()
   {
+    foreach (int index, ref double lifeTime; components)
+    {
+      entityForIndex[index].values["lifeTime"] = lifeTime.to!string;
+    }
   }
   
   override void updateFromEntities()

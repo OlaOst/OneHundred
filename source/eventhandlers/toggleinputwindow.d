@@ -51,7 +51,7 @@ void handleToggleInputWindow(Input gameInput,
       auto overlappingEntity = systemSet.collisionHandler.getEntity(overlappingCollider);
       inputWindow = createText(overlappingEntity.debugInfo, 
                                overlappingEntity.values["position"].myTo!vec2);
-      inputWindow.values["relation.types"] = ["RelativePosition"].to!string;
+      inputWindow.values["relation.types"] = ["RelativePosition", "InspectValues"].to!string;
       inputWindow.values["relativePosition"] = 
         vec2(overlappingEntity.values["size"].to!double * 2.0, 0.0).to!string;
       inputWindow.values["relation.targetId"] = overlappingEntity.id.to!string;
