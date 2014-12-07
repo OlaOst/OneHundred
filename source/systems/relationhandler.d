@@ -4,54 +4,20 @@ import std.algorithm;
 
 import gl3n.linalg;
 
+import components.relation;
+import components.relations.dietogether;
+import components.relations.relativeposition;
 import converters;
 import entity;
 import system;
 
 
-interface Relation
-{
-  void updateValues(Entity target);
-}
-
-class DieTogetherRelation : Relation
-{
-  Entity source;
-  
-  this(Entity source)
-  {
-    this.source = source;
-  }
-  
-  void updateValues(Entity target)
-  {
-    source.toBeRemoved = target.toBeRemoved;
-  }
-}
-
-class RelativePositionRelation : Relation
-{
-  Entity source;
-  const vec2 relativePosition;
-  
-  this(Entity source, vec2 relativePosition)
-  {
-    this.source = source;
-    this.relativePosition = relativePosition;
-  }
-  
-  void updateValues(Entity target)
-  {
-    auto newPosition = target.values["position"].myTo!vec2 + relativePosition;
-    source.values["position"] = newPosition.to!string;
-  }
-}
-
 class RelationHandler : System!(Relation[])
 {
   override bool canAddEntity(Entity entity)
   {
-    entityIdMapping[entity.id] = entity; // register all entities as they might be targets for relation components
+    // register all entities as they might be targets for relation components
+    entityIdMapping[entity.id] = entity;
     return ("relation.types" in entity.values) !is null;
   }
   
@@ -66,15 +32,15 @@ class RelationHandler : System!(Relation[])
       vec2 relativePosition = vec2(0.0, 0.0);
       if ("relativePosition" in entity.values)
         relativePosition = entity.values["relativePosition"].myTo!vec2;
-      relationComponents ~= new RelativePositionRelation(entity, relativePosition);
+      relationComponents ~= new RelativePosition(entity, relativePosition);
     }
     if (relationTypes.canFind("DieTogether"))
     {
-      relationComponents ~= new DieTogetherRelation(entity);
+      relationComponents ~= new DieTogether(entity);
     }
     
     foreach (relationComponent; relationComponents)
-      targetIdMapping[relationComponent] = entity.values["relation.targetId"].to!long; // the target entity may not have been registered yet
+      targetIdMapping[relationComponent] = entity.values["relation.targetId"].to!long;
 
     return relationComponents;
   }
