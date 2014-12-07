@@ -7,7 +7,6 @@ import std.range;
 import gl3n.linalg;
 
 import components.input;
-import components.relations.gravity;
 import converters;
 import entity;
 import forcecalculator;

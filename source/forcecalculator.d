@@ -6,7 +6,6 @@ import gl3n.linalg;
 
 import components.collider;
 import components.input;
-import components.relations.gravity;
 import entity;
 import integrator.state;
 import playereventhandler;
