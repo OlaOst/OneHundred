@@ -7,6 +7,7 @@ import std.range;
 import std.stdio;
 
 import glamour.texture;
+import gl3n.aabb;
 import gl3n.linalg;
 
 import camera;
@@ -52,6 +53,10 @@ class TextGraphics : System!Text
     component.position = vec2(entity.values["position"].to!(float[2]));
     component.angle = entity.values["angle"].to!double;
 
+    //auto transform = (vec2 vertex) => ((vec3(vertex, 0.0)*mat3.zrotation(-component.angle)).xy);
+    auto textVertices = textRenderer.getVerticesForText(component, 1.0, (vec2 vertex) => vertex);
+    component.aabb = AABB.from_points(textVertices.map!(vertex => vec3(vertex, 0.0)).array);
+    
     return component;
   }
 
@@ -69,7 +74,9 @@ class TextGraphics : System!Text
                                          camera.zoom;
       {
         texCoords["text"] ~= textRenderer.getTexCoordsForText(component);
-        vertices["text"] ~= textRenderer.getVerticesForText(component, camera.zoom, transform);
+        auto textVertices = textRenderer.getVerticesForText(component, camera.zoom, transform);
+        vertices["text"] ~= textVertices;
+        component.aabb = AABB.from_points(textRenderer.getVerticesForText(component, 1.0, (vec2 vertex) => vertex).map!(vertex => vec3(vertex, 0.0)).array);
       }
       colors["text"] ~= component.color.repeat.take(textRenderer.getTexCoordsForText(component).length).array;
     }
@@ -90,7 +97,6 @@ class TextGraphics : System!Text
         components[index].text = entity.values["text"];
     }
   }
-
 
   immutable int xres, yres;
   TextRenderer textRenderer;

@@ -81,12 +81,9 @@ void main()
     addParticles(particles, systemSet);
     addBullets(npcs, systemSet);
     
-    auto entitiesToRemove = npcs.filter!(entity => entity.toBeRemoved)
-                                .chain(particles.filter!(entity => entity.toBeRemoved));
-    foreach (entityToRemove; entitiesToRemove)
-      systemSet.removeEntity(entityToRemove);
     npcs = npcs.filter!(entity => !entity.toBeRemoved).array;
     particles = particles.filter!(entity => !entity.toBeRemoved).array;
+    systemSet.removeEntitiesToBeRemoved();
     
     mouseCursor.values["position"] = 
       systemSet.graphics.getWorldPositionFromScreenCoordinates(

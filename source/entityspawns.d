@@ -48,7 +48,7 @@ void addBullets(ref Entity[] npcs, SystemSet systemSet)
   foreach (bullet; npcBullets)
   {
     systemSet.addEntity(bullet);
-    npcs ~= bullet;
+    //npcs ~= bullet;
   }
   npcBullets.length = 0;
 }

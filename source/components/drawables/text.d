@@ -7,6 +7,7 @@ import std.range;
 import std.string;
 
 import derelict.freetype.ft;
+import gl3n.aabb;
 import gl3n.linalg;
 
 import components.drawable;
@@ -21,6 +22,8 @@ final class Text : Drawable
   
   vec2[] vertices;
   vec4 color;
+  
+  AABB aabb;
   
   this(double size, string text, vec4 color)
   {

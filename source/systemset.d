@@ -1,6 +1,8 @@
 module systemset;
 
+import std.algorithm;
 import std.datetime;
+import std.range;
 import std.string;
 
 import entity;
@@ -9,6 +11,7 @@ import systems.graphics;
 import systems.inputhandler;
 import systems.physics;
 import systems.polygongraphics;
+import systems.relationhandler;
 import systems.soundsystem;
 import systems.spritegraphics;
 import systems.textgraphics;
@@ -18,6 +21,7 @@ import timer;
 
 class SystemSet
 {
+  Entity[] entities;
   Graphics graphics;
   PolygonGraphics polygonGraphics;
   SpriteGraphics spriteGraphics;
@@ -27,6 +31,7 @@ class SystemSet
   CollisionHandler collisionHandler;
   SoundSystem soundSystem;
   TimeHandler timeHandler;
+  RelationHandler relationHandler;
   
   this(int xres, int yres)
   {
@@ -39,6 +44,7 @@ class SystemSet
     collisionHandler = new CollisionHandler();
     soundSystem = new SoundSystem();
     timeHandler = new TimeHandler();
+    relationHandler = new RelationHandler();
   }
   
   void close()
@@ -58,9 +64,12 @@ class SystemSet
     collisionHandler.addEntity(entity);
     soundSystem.addEntity(entity);
     timeHandler.addEntity(entity);
+    relationHandler.addEntity(entity);
+    
+    entities ~= entity;
   }
   
-  void removeEntity(Entity entity)
+  private void removeEntity(Entity entity)
   {
     graphics.removeEntity(entity);
     polygonGraphics.removeEntity(entity);
@@ -71,6 +80,13 @@ class SystemSet
     collisionHandler.removeEntity(entity);
     soundSystem.removeEntity(entity);
     timeHandler.removeEntity(entity);
+    relationHandler.removeEntity(entity);
+    
+    // swap last entity with the one to be deleted, then pop off the last entity
+    //auto index = entities.countUntil(entity);
+    //auto indexToMove = entities.length - 1;
+    //entities[index] = entities[indexToMove];
+    //entities.popBack();
   }
   
   void update(Timer timer)
@@ -83,6 +99,7 @@ class SystemSet
     physics.update();
     soundSystem.update();
     timeHandler.update();
+    relationHandler.update();
     
     StopWatch combinedGraphicsTimer;
     combinedGraphicsTimer.start();
@@ -91,5 +108,14 @@ class SystemSet
     spriteGraphics.update();
     textGraphics.update();
     graphics.debugText = format("graphics timings: %s", combinedGraphicsTimer.peek.usecs*0.001);
+  }
+  
+  Entity[] removeEntitiesToBeRemoved()
+  {
+    auto removedEntities = entities.filter!(entity => entity.toBeRemoved);
+    foreach (removedEntity; removedEntities)
+      removeEntity(removedEntity);
+    entities = entities.filter!(entity => !entity.toBeRemoved).array;
+    return removedEntities.array;
   }
 }

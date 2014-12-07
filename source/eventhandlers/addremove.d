@@ -23,8 +23,9 @@ void handleAddRemoveEntity(Input gameInput, SystemSet systemSet, ref Entity[] np
   if (removeEntity && npcs.length > 0)
   {
     auto entity = npcs[$-1];
-    systemSet.removeEntity(entity);
-    npcs.popBack();
+    entity.toBeRemoved = true;
+    //systemSet.removeEntity(entity);
+    //npcs.popBack();
   }
 }
 

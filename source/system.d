@@ -86,9 +86,9 @@ class System(ComponentType)
   
   protected abstract bool canAddEntity(Entity entity);
   protected abstract ComponentType makeComponent(Entity entity);
+  protected abstract void updateFromEntities();
   protected abstract void updateValues();
   protected abstract void updateEntities();
-  protected abstract void updateFromEntities();
   
   void update()
   {

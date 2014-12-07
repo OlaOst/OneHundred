@@ -63,7 +63,8 @@ void handleToggleInputWindow(Input gameInput,
         overlappingTexts.popFront();
       }
       assert(lastOne !is null);
-      systemSet.removeEntity(systemSet.collisionHandler.getEntity(lastOne));
+      systemSet.collisionHandler.getEntity(lastOne).toBeRemoved = true;
+      //systemSet.removeEntity(systemSet.collisionHandler.getEntity(lastOne));
       if (inputWindow !is null && lastOne.id == inputWindow.id)
         inputWindow = null;
     }
@@ -75,15 +76,22 @@ void handleToggleInputWindow(Input gameInput,
                                overlappingEntity.values["position"].myTo!vec2);
       inputWindow.values["connect to entity - ensure position is kept relative to connecting entity"] = overlappingEntity.id.to!string;
       systemSet.addEntity(inputWindow);
+      
+      auto inputWindowCover = createTextCover(inputWindow, systemSet.textGraphics.getComponent(inputWindow).aabb);
+      systemSet.addEntity(inputWindowCover);
     }
     else if (mouseCursorOverlaps.empty)
     {
       if (inputWindow !is null)
-        systemSet.removeEntity(inputWindow);
-        
+        //systemSet.removeEntity(inputWindow);
+        inputWindow.toBeRemoved = true;
+
       inputWindow = createText("input: ", mouseCursor.values["position"].myTo!vec2);
       inputWindow.values["inputType"] = "textInput";
       systemSet.addEntity(inputWindow);
+      
+      auto inputWindowCover = createTextCover(inputWindow, systemSet.textGraphics.getComponent(inputWindow).aabb);
+      systemSet.addEntity(inputWindowCover);
     }
     else
     {

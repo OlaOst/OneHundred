@@ -54,13 +54,13 @@ Entity[] bulletCollisionResponse(Collision collision, CollisionHandler collision
   Entity[] hitEffectParticles;
   int particleCount = uniform(10, 50);
   auto position = (first.contactPoint + other.contactPoint) * 0.5;
+  auto momentum = first.velocity*first.mass - other.velocity*other.mass;
   foreach (double index; iota(0, particleCount))
   {
     float size = uniform(0.02, 0.05);
     
     auto particle = new Entity();
     particle.values["position"] = position.to!string;
-    auto momentum = first.velocity*first.mass + other.velocity*other.mass;
     auto angle = uniform(-PI, PI);
     
     particle.values["velocity"] = (momentum + vec2FromAngle(angle) * 
@@ -86,6 +86,14 @@ Entity[] bulletCollisionResponse(Collision collision, CollisionHandler collision
                            "audio/mgshot4.wav"];
   hitSound.values["sound"] = hitSounds.randomSample(1).front.to!string;
   hitEffectParticles ~= hitSound;
+  
+  import entityfactory.tests;
+  Entity hitText = createText(ceil(momentum.magnitude * 10.0).to!string, position);
+  hitText.values["size"] = (momentum.magnitude / 4.0).to!string;
+  hitText.values["lifeTime"] = 1.0.to!string;
+  hitText.values["mass"] = 0.03.to!string;
+  hitText.values["velocity"] = vec2(uniform(-0.5, 0.5), 5.0).to!string;
+  hitEffectParticles ~= hitText;
   
   return hitEffectParticles;
 }
