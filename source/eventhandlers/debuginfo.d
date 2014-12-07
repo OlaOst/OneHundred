@@ -31,7 +31,7 @@ void handleToggleDebugInfo(Input gameInput, SystemSet systemSet, ref Entity debu
       debugText.values["text"] = systemSet.physics.debugText;
       break;
     case 2:
-      debugText.values["text"] = systemSet.graphics.debugText;
+      debugText.values["text"] = "Grapics timings not implemented yet"; //systemSet.graphics.debugText;
       break;
   }
   

@@ -5,9 +5,10 @@ import std.array;
 import std.conv;
 
 import entity;
+import entityhandler;
 
 
-class System(ComponentType)
+class System(ComponentType) : EntityHandler
 {
   invariant()
   {
@@ -42,10 +43,8 @@ class System(ComponentType)
   Entity getEntity(ComponentType component)
   {
     auto index = components.countUntil(component);
-    
     if (index < 0)
       return null;
-      
     return entityForIndex[index];
   }
   
