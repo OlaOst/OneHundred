@@ -39,6 +39,10 @@ class InputHandler : System!Input
         mouseScreenPosition = vec2(event.motion.x, event.motion.y);
       if (event.type == SDL_TEXTINPUT)
         textInput ~= event.text.text.toStringz.to!string;
+        
+      import std.stdio;
+      if (textInput.canFind("\r"))
+        writeln("detected linebreak");
     }
 
     foreach (size_t index, Entity entity; entityForIndex)

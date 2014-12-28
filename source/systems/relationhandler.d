@@ -1,13 +1,16 @@
 module systems.relationhandler;
 
 import std.algorithm;
+import std.string;
 
+import gl3n.aabb;
 import gl3n.linalg;
 
 import components.relation;
 import components.relations.dietogether;
 import components.relations.inspectvalues;
-import components.relations.relativeposition;
+import components.relations.relativevalue;
+import components.relations.sameshape;
 import converters;
 import entity;
 import system;
@@ -17,7 +20,7 @@ class RelationHandler : System!(Relation[])
 {
   override bool canAddEntity(Entity entity)
   {
-    // register all entities as they might be targets for relation components
+    // keep track of all entities as they might be targets for relation components
     entityIdMapping[entity.id] = entity;
     return ("relation.types" in entity.values) !is null;
   }
@@ -28,12 +31,23 @@ class RelationHandler : System!(Relation[])
     
     auto relationTypes = entity.values["relation.types"].to!(string[]);
     
-    if (relationTypes.canFind("RelativePosition"))
+    if (relationTypes.canFind("RelativeValues"))
     {
-      vec2 relativePosition = vec2(0.0, 0.0);
-      if ("relativePosition" in entity.values)
-        relativePosition = entity.values["relativePosition"].myTo!vec2;
-      relationComponents ~= new RelativePosition(entity, relativePosition);
+      foreach (relationValueKey; entity.values.keys.filter!(key => key.startsWith("relation.value.")))
+      {
+        auto relationValueName = relationValueKey.chompPrefix("relation.value.");
+        
+        auto immutable vec2Types = ["position", "velocity", "force"];
+        auto immutable doubleTypes = ["size", "angle", "rotation", "torque"];
+        //auto immutable aabbTypes = ["aabb"];
+        
+        if (vec2Types.canFind(relationValueName))
+          relationComponents ~= new RelativeValue!vec2(entity, relationValueName, entity.values[relationValueKey].myTo!vec2);
+        //if (aabbTypes.canFind(relationValueName))
+          //relationComponents ~= new RelativeValue!AABB(entity, relationValueName);
+        if (doubleTypes.canFind(relationValueName))
+          relationComponents ~= new RelativeValue!double(entity, relationValueName, entity.values[relationValueKey].to!double);
+      }
     }
     if (relationTypes.canFind("DieTogether"))
     {
@@ -42,6 +56,10 @@ class RelationHandler : System!(Relation[])
     if (relationTypes.canFind("InspectValues"))
     {
       relationComponents ~= new InspectValues(entity);
+    }
+    if (relationTypes.canFind("SameShape"))
+    {
+      relationComponents ~= new SameShape(entity);
     }
     
     foreach (relationComponent; relationComponents)
@@ -52,7 +70,7 @@ class RelationHandler : System!(Relation[])
   
   override void updateFromEntities()
   {
-    // TODO: ensure relativePosition/etc of components get updated if entity values are updated
+    // TODO: ensure relativeValue/etc of components get updated if entity values are updated
     // ie mouse drag to change relativePosition of an entity
   }
   

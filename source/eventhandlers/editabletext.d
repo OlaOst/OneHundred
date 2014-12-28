@@ -16,6 +16,9 @@ void handleEditableText(Input textInput, Entity editableText)
         editableText.values["text"].length > 0)
         editableText.values["text"].popBack();
     
+    if (textInput.actionState["newline"] == Input.ActionState.Pressed)
+        editableText.values["text"] ~= "\n";
+    
     if ("editText" in editableText.values)
       editableText.values["text"] ~= editableText.values["editText"];
   }

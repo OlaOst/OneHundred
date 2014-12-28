@@ -93,6 +93,8 @@ class PolygonGraphics : System!Polygon
       components[index].position = vec2(entity.values["position"].to!(float[2]));
       components[index].angle = entity.values["angle"].to!double;
       
+      components[index].vertices = entity.values["polygon.vertices"].myTo!(vec2[]);
+      
       assert(components[index].angle < 20.0*PI && components[index].angle > -20.0*PI, "Polygon component angle out of bounds: " ~ components[index].angle.to!string);
     }
   }

@@ -64,9 +64,10 @@ Entity createTextCover(Entity textEntity, AABB textAABB)
                                           [textAABB.max.x, textAABB.min.y]].to!string;
   textCover.values["polygon.colors"] = [0.0, 0.5, 0.5, 0.5].repeat.take(6).array.to!string;
   
-  textCover.values["relation.types"] = ["RelativePosition", "DieTogether"].to!string;
+  textCover.values["relation.types"] = ["RelativeValues", "SameShape", "DieTogether"].to!string;
   textCover.values["relation.targetId"] = textEntity.id.to!string;
-  //textCover.values["relativePosition"] = vec2(0.0, 0.0);
+  textCover.values["relation.value.position"] = vec2(0.0, 0.0).to!string;
+  //textCover.values["relation.value.aabb"] = "same";//AABB(vec3(0,0,0),vec3(0,0,0)).to!string;
   
   return textCover;
 }
@@ -87,7 +88,7 @@ Entity createMouseCursor()
                                 drawable.vertices[2..$].stride(3)).
                           map!(vertex => vertex + position).array;
   
-  mouseCursor.values["collider"]= ColliderType.Cursor.to!string;
+  mouseCursor.values["collider"] = ColliderType.Cursor.to!string;
   mouseCursor.values["collider.vertices"] = colliderVertices.to!string;
   
   return mouseCursor;

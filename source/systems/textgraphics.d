@@ -76,7 +76,13 @@ class TextGraphics : System!Text
     debugText = format("textgraphics timings: %s", debugTimer.peek.usecs*0.001);
   }
 
-  override void updateEntities() {}
+  override void updateEntities() 
+  {
+    foreach (uint index, Entity entity; entityForIndex)
+    {
+      entity.values["aabb"] = [components[index].aabb.min.xy, components[index].aabb.max.xy].to!string;
+    }
+  }
 
   override void updateFromEntities()
   {

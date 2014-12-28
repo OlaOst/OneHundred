@@ -27,4 +27,5 @@ static this()
   gameControls.button[SDL_BUTTON_RIGHT] = "toggleInputWindow";
   
   textInput.key[SDLK_BACKSPACE] = "backspace";
+  textInput.key[SDLK_RETURN] = "newline";
 }

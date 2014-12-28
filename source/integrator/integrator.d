@@ -39,6 +39,7 @@ body
   if (state.angle > PI || state.angle < -PI)
   {
     //writeln("normalizing state angle from ", state.angle, " to " , (state.angle - (state.angle/PI).floor * PI));
+    // TODO: does not work in one direction, fix
     state.angle -= (state.angle/PI).floor * PI;
   }
   
@@ -107,6 +108,7 @@ body
   if (state.angle > PI || state.angle < -PI)
   {
     //writeln("normalizing state angle from ", state.angle, " to " , (state.angle - (state.angle/PI).floor * PI));
+    // TODO: does not work in one direction, fix
     state.angle -= (state.angle/PI).floor * PI;
   }
 }
