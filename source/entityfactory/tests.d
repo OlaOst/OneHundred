@@ -40,8 +40,8 @@ Entity createText(string text, vec2 position)
   auto textEntity = new Entity();
   
   textEntity.values["position"] = position.to!string;
-  textEntity.values["velocity"] = vec2(0.0, 0.1).to!string;
-  textEntity.values["mass"] = 1000.1.to!string;
+  //textEntity.values["velocity"] = vec2(0.0, 0.1).to!string;
+  //textEntity.values["mass"] = 1000.1.to!string;
   textEntity.values["angle"] = 0.0.to!string;
   textEntity.values["size"] = 0.1.to!string;
   textEntity.values["text"] = text;

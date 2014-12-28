@@ -39,7 +39,7 @@ final class TimeHandler : System!double
   
   override void updateEntities()
   {
-    foreach (int index, ref double lifeTime; components)
+    foreach (int index, double lifeTime; components)
     {
       entityForIndex[index].values["lifeTime"] = lifeTime.to!string;
     }

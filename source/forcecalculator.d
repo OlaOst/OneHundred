@@ -11,17 +11,20 @@ import integrator.state;
 import playereventhandler;
 
 
-double calculateTorque(State state, double time)
+double calculateTorque(State state, double time) pure nothrow @nogc
 out (result)
 {
   assert(!result.isNaN);
 }
 body
 {
+  //import std.stdio;
+  //debug writeln("calculateTorque for ", state.entity.id, " begin");
+  
   //auto torque = 0.0;
   double torque = state.torque;
   
-  torque += state.rotation * -0.02; // damping torque
+  torque += state.rotation * -0.2; // damping torque
   
   //if (state.entity.input)
     //state.entity.input.handlePlayerRotateActions(torque);
@@ -44,29 +47,34 @@ body
     }
   }*/
   
+  //debug writeln("calculateTorque for ", state.entity.id, " end");
+  
   return torque;
 }
 
-vec2 calculateForce(State state, double time)
+vec2 calculateForce(State state, double time) pure nothrow @nogc
 out (result)
 {
   assert(result.isFinite);
 }
 body
 {
+  //import std.stdio;
+  //debug writeln("calculateForce for ", state.entity.id, " begin");
+  
   auto force = state.force; //vec2(0.0, 0.0);
   
-  force += state.position * -0.01; // spring force to center
+  force += state.position * -0.025; // spring force to center
   force += state.velocity * -0.05; // damping force
   
   // twisty clockwise force close to center
-  /*auto normalPos = vec2(state.position.y, -state.position.x);
+  auto normalPos = vec2(state.position.y, -state.position.x);
   if (normalPos.magnitude() > 0.0)
-    force += normalPos.normalized() * ((1.0 / (normalPos.magnitude() + 0.1)) ^^2) * 0.05;*/
-    
+    force += normalPos.normalized() * ((1.0 / (normalPos.magnitude() + 0.1)) ^^2) * 0.05;
+
   // twisty counterclockwise force further out
   force += vec2(-state.position.y, state.position.x) * 0.015;
-  
+
   //if (state.entity.input)
     //state.entity.input.handlePlayerAccelerateActions(force, state.angle);
 
@@ -78,6 +86,12 @@ body
       //force -= collision.force;
     }
   }*/
+  
+  // clamp force magnitude
+  if (force.magnitude > 1_000_000)
+    force = force.normalized * 1_000_000;
+  
+  //debug writeln("calculateForce for ", state.entity.id, " end, force from ", state.force, " to ", force, ", position is ", state.position);
   
   return force;
 }

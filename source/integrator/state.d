@@ -25,17 +25,17 @@ struct State
   
   // 'constants' for forceCalculator
   vec2 force = vec2(0.0, 0.0);
-  double torque;
+  double torque = 0.0;
   
-  vec2 function(State, double time) forceCalculator;
-  double function(State, double time) torqueCalculator;
+  vec2 function(State, double time) pure nothrow @nogc forceCalculator;
+  double function(State, double time) pure nothrow @nogc torqueCalculator;
   Entity entity;
   
-  @disable this();
+  this() @disable;
   
   this(Entity entity, 
-       vec2 function(State, double time) forceCalculator, 
-       double function(State, double time) torqueCalculator)
+       vec2 function(State, double time) pure nothrow @nogc forceCalculator, 
+       double function(State, double time) pure nothrow @nogc torqueCalculator)
   {
     this.entity = entity;
 
@@ -50,7 +50,7 @@ struct State
     this.torqueCalculator = torqueCalculator;
   }
   
-  void interpolate(State other, double alpha)
+  void interpolate(State other, double alpha) pure nothrow @nogc
   {
     position = position * alpha + other.position * (1.0-alpha);
     momentum = momentum * alpha + other.momentum * (1.0-alpha);
@@ -62,15 +62,23 @@ struct State
   
   invariant()
   {
+    //import std.stdio;
+    //writeln("state invariant for entity ", entity.id, " begin");
+    
     assert(position.isFinite);
     assert(momentum.isFinite);
-    assert(velocity.isFinite);
+    assert(velocity.isFinite, "Infinite speed, force is " ~ force.to!string);
+    assert(force.isFinite, "Infinite force");
     assert(!angle.isNaN);
+    assert(angle < 2.0*PI && angle > -2.0*PI, "Angle out of bounds: " ~ angle.to!string);
     assert(!rotation.isNaN);
+    assert(!torque.isNaN);
     //assert(!rotationalMomentum.isNaN);
     assert(mass > 0.0, "Must have positive nonzero mass");    
     assert(forceCalculator !is null);
     assert(torqueCalculator !is null);
     assert(entity !is null);
+    
+    //writeln("state invariant for entity ", entity.id, " end");
   }
 }

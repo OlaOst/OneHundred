@@ -52,48 +52,53 @@ Entity[] bulletCollisionResponse(Collision collision, CollisionHandler collision
     otherColliderEntity.toBeRemoved = true;
     
   Entity[] hitEffectParticles;
-  int particleCount = uniform(10, 50);
-  auto position = (first.contactPoint + other.contactPoint) * 0.5;
-  auto momentum = first.velocity*first.mass - other.velocity*other.mass;
-  foreach (double index; iota(0, particleCount))
+  
+  // no effects for bullet collisions
+  //if (first.type != ColliderType.Bullet || other.type != ColliderType.Bullet)
   {
-    float size = uniform(0.02, 0.05);
+    int particleCount = uniform(10, 50);
+    auto position = (first.contactPoint + other.contactPoint) * 0.5;
+    auto momentum = first.velocity*first.mass - other.velocity*other.mass;
+    foreach (double index; iota(0, particleCount))
+    {
+      float size = uniform(0.02, 0.05);
+      
+      auto particle = new Entity();
+      particle.values["position"] = position.to!string;
+      auto angle = uniform(-PI, PI);
+      
+      particle.values["velocity"] = (momentum + vec2FromAngle(angle) * 
+                                     uniform(momentum.magnitude * 3.0, 
+                                             momentum.magnitude * 6.0 + 0.001)).to!string;
+      particle.values["angle"] = angle.to!string;
+      particle.values["rotation"] = (angle * 10.0).to!string;
+      particle.values["lifeTime"] = uniform(0.5, 1.5).to!string;
+      particle.values["mass"] = size.to!string;
+      
+      auto drawable = new Polygon(size, 3, vec4(uniformDistribution!float(3).vec3, 0.5));
+      particle.values["polygon.vertices"] = drawable.vertices.to!string;
+      particle.values["polygon.colors"] = drawable.colors.to!string;
+      
+      hitEffectParticles ~= particle;
+    }
     
-    auto particle = new Entity();
-    particle.values["position"] = position.to!string;
-    auto angle = uniform(-PI, PI);
+    Entity hitSound = new Entity();
+    hitSound.values["position"] = position.to!string;
+    static auto hitSounds = ["audio/mgshot1.wav", 
+                             "audio/mgshot2.wav", 
+                             "audio/mgshot3.wav", 
+                             "audio/mgshot4.wav"];
+    hitSound.values["sound"] = hitSounds.randomSample(1).front.to!string;
+    hitEffectParticles ~= hitSound;
     
-    particle.values["velocity"] = (momentum + vec2FromAngle(angle) * 
-                                   uniform(momentum.magnitude * 3.0, 
-                                           momentum.magnitude * 6.0)).to!string;
-    particle.values["angle"] = angle.to!string;
-    particle.values["rotation"] = (angle * 10.0).to!string;
-    particle.values["lifeTime"] = uniform(0.5, 1.5).to!string;
-    particle.values["mass"] = size.to!string;
-    
-    auto drawable = new Polygon(size, 3, vec4(uniformDistribution!float(3).vec3, 0.5));
-    particle.values["polygon.vertices"] = drawable.vertices.to!string;
-    particle.values["polygon.colors"] = drawable.colors.to!string;
-    
-    hitEffectParticles ~= particle;
+    import entityfactory.tests;
+    Entity hitText = createText(ceil(momentum.magnitude * 10.0).to!string, position);
+    hitText.values["size"] = min((momentum.magnitude / 4.0), 10.0).to!string;
+    hitText.values["lifeTime"] = 1.0.to!string;
+    hitText.values["mass"] = 0.03.to!string;
+    hitText.values["velocity"] = vec2(uniform(-0.5, 0.5), 5.0).to!string;
+    hitEffectParticles ~= hitText;
   }
-  
-  Entity hitSound = new Entity();
-  hitSound.values["position"] = position.to!string;
-  static auto hitSounds = ["audio/mgshot1.wav", 
-                           "audio/mgshot2.wav", 
-                           "audio/mgshot3.wav", 
-                           "audio/mgshot4.wav"];
-  hitSound.values["sound"] = hitSounds.randomSample(1).front.to!string;
-  hitEffectParticles ~= hitSound;
-  
-  import entityfactory.tests;
-  Entity hitText = createText(ceil(momentum.magnitude * 10.0).to!string, position);
-  hitText.values["size"] = (momentum.magnitude / 4.0).to!string;
-  hitText.values["lifeTime"] = 1.0.to!string;
-  hitText.values["mass"] = 0.03.to!string;
-  hitText.values["velocity"] = vec2(uniform(-0.5, 0.5), 5.0).to!string;
-  hitEffectParticles ~= hitText;
   
   return hitEffectParticles;
 }
