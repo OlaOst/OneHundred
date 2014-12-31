@@ -7,7 +7,7 @@
   "version": "0.0.1",
   "mainSourceFile": "source/app.d",
   "dependencies": {
-    "derelict-sdl2": ">=1.2.8",
+    "derelict-sdl2": ">=1.9.0",
     "derelict-gl3": ">=1.0.10",
     "derelict-al": ">=1.0.0",
     "derelict-ogg": "~master",
