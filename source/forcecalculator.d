@@ -91,7 +91,5 @@ body
   if (force.magnitude > 1_000_000)
     force = force.normalized * 1_000_000;
   
-  //debug writeln("calculateForce for ", state.entity.id, " end, force from ", state.force, " to ", force, ", position is ", state.position);
-  
   return force;
 }
