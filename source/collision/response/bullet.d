@@ -13,18 +13,16 @@ import components.drawables.polygon;
 import components.sound;
 import converters;
 import entity;
+import entityfactory.tests;
 import systems.collisionhandler;
 import timer;
 
 
-//Entity[] bulletCollisionResponse(Collision collision, SystemSet systemSet)
 Entity[] bulletCollisionResponse(Collision collision, CollisionHandler collisionHandler)
 {
   auto first = collision.first;
   auto other = collision.other;
-    
-  //collision.updateFromEntities();
-    
+
   auto firstColliderEntity = collisionHandler.getEntity(first);
   auto otherColliderEntity = collisionHandler.getEntity(other);
   first.isColliding = true;
@@ -84,16 +82,13 @@ Entity[] bulletCollisionResponse(Collision collision, CollisionHandler collision
     
     Entity hitSound = new Entity();
     hitSound.values["position"] = position.to!string;
-    static auto hitSounds = ["audio/mgshot1.wav", 
-                             "audio/mgshot2.wav", 
-                             "audio/mgshot3.wav", 
-                             "audio/mgshot4.wav"];
+    static auto hitSounds = ["audio/mgshot1.wav", "audio/mgshot2.wav", 
+                             "audio/mgshot3.wav", "audio/mgshot4.wav"];
     hitSound.values["sound"] = hitSounds.randomSample(1).front.to!string;
     hitEffectParticles ~= hitSound;
     
-    import entityfactory.tests;
     Entity hitText = createText(ceil(momentum.magnitude * 10.0).to!string, position);
-    hitText.values["size"] = min((momentum.magnitude / 4.0), 10.0).to!string;
+    hitText.values["size"] = min((momentum.magnitude / 4.0), 6.0).to!string;
     hitText.values["lifeTime"] = 1.0.to!string;
     hitText.values["mass"] = 0.03.to!string;
     hitText.values["velocity"] = vec2(uniform(-0.5, 0.5), 5.0).to!string;
