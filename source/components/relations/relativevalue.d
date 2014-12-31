@@ -14,12 +14,11 @@ class RelativeValue(ValueType) : Relation
   const string valueName;
   const ValueType relativeValue;
   
-  // TODO: this constructor should only be used for AABB types
   this(Entity source, string valueName)
   {
     this.source = source;
     this.valueName = valueName;
-    this.relativeValue = ValueType.init;//relativeValue;
+    this.relativeValue = ValueType.init;
   }
   
   this(Entity source, string valueName, ValueType relativeValue)
@@ -33,13 +32,8 @@ class RelativeValue(ValueType) : Relation
   {
     static if (is(ValueType == vec2))
       auto newValue = target.values[valueName].myTo!vec2 + relativeValue;
-    //else static if (is(ValueType == AABB))
-      //auto newValue = target.values[valueName].myTo!AABB; // no meaningful relativevalue for AABBs
     else
       auto newValue = target.values[valueName].to!ValueType + relativeValue;
-      
-    //import std.stdio;
-    //writeln("setting ", source.id, ".", valueName, " from ", (valueName in source.values ? source.values[valueName] : "null"), " to ", newValue);
     
     source.values[valueName] = newValue.to!string;
   }
