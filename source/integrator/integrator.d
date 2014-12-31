@@ -9,7 +9,19 @@ import integrator.derivative;
 import integrator.state;
 
 
-Derivative evaluate(State initial, double time, double timestep, const Derivative derivative) pure nothrow @nogc
+static double normalizedAngle(double angle) pure nothrow @nogc
+{
+  // TODO: idiot case in case the integrator flips out and gives gigantic angles. make better
+  if (angle.abs > 1_000_000_000)
+      angle = 0.0;
+      
+  if (angle.abs > PI)
+    angle -= (angle/PI*2).rndtol * PI;
+  return angle;
+}
+
+Derivative evaluate(State initial, double time, double timestep, const Derivative derivative) 
+pure nothrow @nogc
 in
 {
   assert(&initial);
@@ -27,21 +39,8 @@ body
   
   state.position += derivative.velocity * timestep;
   state.velocity += derivative.force * timestep;
-  state.angle += derivative.rotation * timestep;
+  state.angle = (state.angle + derivative.rotation * timestep).normalizedAngle;
   state.rotation += derivative.torque * timestep;
-  
-  // normalize angle
-  
-  // TODO: idiot case in case the integrator flips out and gives gigantic angles. make better
-  if (state.angle > 1_000_000_000 || state.angle < -1_000_000_000)
-      state.angle = 0.0;
-      
-  if (state.angle > PI || state.angle < -PI)
-  {
-    //writeln("normalizing state angle from ", state.angle, " to " , (state.angle - (state.angle/PI).floor * PI));
-    // TODO: does not work in one direction, fix
-    state.angle -= (state.angle/PI).floor * PI;
-  }
   
   assert(&state);
   
@@ -51,9 +50,7 @@ body
   output.force = state.forceCalculator(state, time + timestep) * (1.0 / state.mass);
   output.rotation = state.rotation;
   // TODO: adjust rotation by shape tensor thingy instead of assuming perfectly regular shape
-  output.torque = state.torqueCalculator(state, time + timestep) * (1.0 / state.mass); 
-  
-  //writeln("integrator.evaluate for ", initial.entity.id, " end, force is ", output.force);
+  output.torque = state.torqueCalculator(state, time + timestep) * (1.0 / state.mass);
   
   return output;
 }
@@ -85,9 +82,6 @@ body
   double angleChange = 1.0/6.0 * (a.rotation + 2.0 * (b.rotation + c.rotation) + d.rotation);
   double rotationChange = 1.0/6.0 * (a.torque + 2.0 * (b.torque + c.torque) + d.torque);
   
-  // TODO: ...is this right?
-  //state.force = 1.0/6.0 * (a.force + 2.0 * (b.force + c.force) + d.force);
-  //state.torque = 1.0/6.0 * (a.torque + 2.0 * (b.torque + c.torque) + d.torque);
   state.force = a.force;
   state.torque = a.torque;
   
@@ -97,18 +91,6 @@ body
   
   state.position += positionChange * timestep;
   state.velocity += velocityChange * timestep;
-  state.angle += angleChange * timestep;
+  state.angle = (state.angle + angleChange * timestep).normalizedAngle;
   state.rotation += rotationChange * timestep;
-  
-  // normalize angle
-  // TODO: idiot case in case the integrator flips out and gives gigantic angles. make better
-  if (state.angle > 1_000_000_000 || state.angle < -1_000_000_000)
-      state.angle = 0.0;
-      
-  if (state.angle > PI || state.angle < -PI)
-  {
-    //writeln("normalizing state angle from ", state.angle, " to " , (state.angle - (state.angle/PI).floor * PI));
-    // TODO: does not work in one direction, fix
-    state.angle -= (state.angle/PI).floor * PI;
-  }
 }
