@@ -10,8 +10,8 @@ import derelict.sdl2.sdl;
 
 SDL_Window* getWindow(int screenWidth, int screenHeight)
 {
-  DerelictSDL2.load();
-  DerelictSDL2Image.load();
+  DerelictSDL2.load(SharedLibVersion(2, 0, 3));
+  DerelictSDL2Image.load(SharedLibVersion(2, 0, 0));
   DerelictGL3.load();
   
   enforce(SDL_Init(SDL_INIT_VIDEO) == 0, "Failed to initialize SDL: " ~ SDL_GetError().to!string);
