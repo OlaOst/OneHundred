@@ -16,7 +16,8 @@ static double normalizedAngle(double angle) pure nothrow @nogc
       angle = 0.0;
       
   if (angle.abs > PI)
-    angle -= (angle/PI*2).rndtol * PI;
+    angle -= (angle/(PI*2.0)).rndtol * PI*2.0;
+    
   return angle;
 }
 

@@ -70,7 +70,7 @@ struct State
     assert(velocity.isFinite, "Infinite speed, force is " ~ force.to!string);
     assert(force.isFinite, "Infinite force");
     assert(!angle.isNaN);
-    assert(angle < 2.0*PI && angle > -2.0*PI, "Angle out of bounds: " ~ angle.to!string);
+    assert(angle <= PI && angle >= -PI, "Angle out of bounds: " ~ angle.to!string);
     assert(!rotation.isNaN);
     assert(!torque.isNaN);
     //assert(!rotationalMomentum.isNaN);
