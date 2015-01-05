@@ -10,12 +10,28 @@ import gl3n.linalg;
 //import components.drawables.text;
 //import components.input;
 //import components.sound;
+import converters;
 
 
 class Entity
 {
   string[string] values;
-
+  
+  ValueType get(ValueType)(string value)
+  {
+    return value in values ? values[value].to!ValueType : ValueType.init;
+  }
+  
+  ValueType get(ValueType : double)(string value)
+  {
+    return value in values ? values[value].to!ValueType : 0.0;
+  }
+  
+  ValueType get(ValueType : vec2)(string value)
+  {
+    return value in values ? values[value].myTo!vec2 : vec2(0.0, 0.0);
+  }
+  
   //double[string] scalars;
   //vec2[string] vectors;
   //vec4[string] bigVectors;
