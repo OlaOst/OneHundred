@@ -19,15 +19,8 @@ import timer;
 
 class Physics : System!State
 {
-  invariant
-  {
-    foreach (component; components)
-      assert(component.angle < 20.0*PI && component.angle > -20.0*PI, "Physics component angle out of bounds: " ~ component.angle.to!string);
-  }
-
+  alias components currentStates;
   State[] previousStates;
-  //State[] currentStates;
-
   Timer timer;
 
   void setTimer(Timer timer)
@@ -53,20 +46,12 @@ class Physics : System!State
     // these should be combined into one stop shop for handling forces
     foreach (size_t index, Entity entity; entityForIndex)
     {
-      components[index].position = entity.values["position"].myTo!vec2;
-      components[index].velocity = entity.values["velocity"].myTo!vec2;
-      components[index].force = vec2(0.0, 0.0);
-      
-      components[index].angle = "angle" in entity.values ? entity.values["angle"].to!double : 0.0;
-      components[index].rotation = "rotation" in entity.values ? entity.values["rotation"].to!double : 0.0;
-      components[index].torque = 0.0;
-      
-      if ("force" in entity.values)
-        components[index].force = entity.values["force"].myTo!vec2;
-      if ("torque" in entity.values)
-        components[index].torque = entity.values["torque"].to!double;
-        
-      assert(components[index].force.magnitude < 1_000_000);
+      components[index].position = entity.get!vec2("position");
+      components[index].velocity = entity.get!vec2("velocity");
+      components[index].force = entity.get!vec2("force");
+      components[index].angle = entity.get!double("angle");
+      components[index].rotation = entity.get!double("rotation");
+      components[index].torque = entity.get!double("torque");
     }
   }
   
@@ -76,27 +61,17 @@ class Physics : System!State
     
     debugTimer.start;
     
-    import std.stdio;
-    import std.math;
-    //writeln("running ", (timer.accumulator / timer.physicsTimeStep).floor, " physics integrations for this frame");
-    
+    previousStates = currentStates;
     while (timer.accumulator >= timer.physicsTimeStep)
     {
-      if (timer.accumulator >= Timer.maxFrametime)
-        writeln("maxframetime physicsstep, running integrateStates on ", components.length, " components, accumulator ", timer.accumulator);
-      //integrateStates(currentStates, previousStates, timer.time, timer.physicsTimeStep);
-      integrateStates(components, previousStates, timer.time, timer.physicsTimeStep);
+      integrateStates(currentStates, previousStates, timer.time, timer.physicsTimeStep);
       timer.accumulator -= timer.physicsTimeStep;
       timer.time += timer.physicsTimeStep;
     }
-    //writeln("finished physics integration");
+    interpolateStates(currentStates, previousStates, timer.accumulator / timer.physicsTimeStep);
     
-    //previousStates = currentStates;
-    
-    //interpolateStates(currentStates, previousStates, timer.accumulator / timer.physicsTimeStep);
-    interpolateStates(components, previousStates, timer.accumulator / timer.physicsTimeStep);
-    
-    debugText = format("physics components: %s\nphysics timings: %s", components.length, debugTimer.peek.usecs*0.001);
+    debugText = format("physics components: %s\nphysics timings: %s", components.length, 
+                                                                      debugTimer.peek.usecs*0.001);
   }
   
   override void updateEntities()
