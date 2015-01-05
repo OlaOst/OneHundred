@@ -62,9 +62,6 @@ struct State
   
   invariant()
   {
-    //import std.stdio;
-    //writeln("state invariant for entity ", entity.id, " begin");
-    
     assert(position.isFinite);
     assert(momentum.isFinite);
     assert(velocity.isFinite, "Infinite speed, force is " ~ force.to!string);
@@ -78,7 +75,5 @@ struct State
     assert(forceCalculator !is null);
     assert(torqueCalculator !is null);
     assert(entity !is null);
-    
-    //writeln("state invariant for entity ", entity.id, " end");
   }
 }
