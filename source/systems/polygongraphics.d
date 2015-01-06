@@ -50,8 +50,6 @@ class PolygonGraphics : System!Polygon
 
     component.position = vec2(entity.values["position"].to!(float[2]));
     component.angle = entity.values["angle"].to!double;
-
-    assert(component.angle < 20.0*PI && component.angle > -20.0*PI, "Polygon component angle out of bounds: " ~ component.angle.to!string);
     
     return component;
   }
@@ -65,12 +63,9 @@ class PolygonGraphics : System!Polygon
 
     foreach (component; components)
     {
-      assert(component.angle < 20.0*PI && component.angle > -20.0*PI, "Polygon component angle out of bounds: " ~ component.angle.to!string);
-      
       auto transform = (vec2 vertex) => ((vec3(vertex, 0.0)*mat3.zrotation(-component.angle)).xy +
                                          component.position - camera.position) *
                                          camera.zoom;
-
       // map with delegate in a variable and then array crashes with release build in dmd 2.066
       //vertices["polygon"] ~= component.vertices.map!transform.array;
       vec2[] transformedVertices;
@@ -94,11 +89,8 @@ class PolygonGraphics : System!Polygon
       components[index].angle = entity.values["angle"].to!double;
       
       components[index].vertices = entity.values["polygon.vertices"].myTo!(vec2[]);
-      
-      assert(components[index].angle < 20.0*PI && components[index].angle > -20.0*PI, "Polygon component angle out of bounds: " ~ components[index].angle.to!string);
     }
   }
-
 
   immutable int xres, yres;
   Camera camera;
