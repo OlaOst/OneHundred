@@ -29,24 +29,24 @@ class RelationHandler : System!(Relation[])
   {
     Relation[] relationComponents;
     
-    auto relationTypes = entity.values["relation.types"].to!(string[]);
+    auto relationTypes = entity.get!(string[])("relation.types");
     
     if (relationTypes.canFind("RelativeValues"))
     {
-      foreach (relationValueKey; entity.values.keys.filter!(key => key.startsWith("relation.value.")))
+      foreach (relationValueKey; entity.values.keys.filter!
+                                 (key => key.startsWith("relation.value.")))
       {
         auto relationValueName = relationValueKey.chompPrefix("relation.value.");
         
         auto immutable vec2Types = ["position", "velocity", "force"];
         auto immutable doubleTypes = ["size", "angle", "rotation", "torque"];
-        //auto immutable aabbTypes = ["aabb"];
         
         if (vec2Types.canFind(relationValueName))
-          relationComponents ~= new RelativeValue!vec2(entity, relationValueName, entity.values[relationValueKey].myTo!vec2);
-        //if (aabbTypes.canFind(relationValueName))
-          //relationComponents ~= new RelativeValue!AABB(entity, relationValueName);
+          relationComponents ~= new RelativeValue!vec2(entity, relationValueName, 
+                                                       entity.get!vec2("relationValueKey"));
         if (doubleTypes.canFind(relationValueName))
-          relationComponents ~= new RelativeValue!double(entity, relationValueName, entity.values[relationValueKey].to!double);
+          relationComponents ~= new RelativeValue!double(entity, relationValueName, 
+                                                         entity.get!double("relationValueKey"));
       }
     }
     if (relationTypes.canFind("DieTogether"))
@@ -90,10 +90,6 @@ class RelationHandler : System!(Relation[])
   override void updateEntities()
   {
     // entity values should have been updated by the relation components
-    /*foreach (uint index, Entity entity; entityForIndex)
-    {
-      components[index]
-    }*/
   }
   
   Entity[long] entityIdMapping;
