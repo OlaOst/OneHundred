@@ -40,23 +40,18 @@ class TextGraphics : System!Text
 
   override Text makeComponent(Entity entity)
   {
-    Text component = new Text(entity.values["size"].to!double,
+    Text component = new Text(entity.get!double("size"),
                               entity.values["text"],
-                              entity.values["color"].myTo!vec4);
-
-    component.position = vec2(entity.values["position"].to!(float[2]));
-    component.angle = entity.values["angle"].to!double;
-
+                              entity.get!vec4("color"));
+    component.position = entity.get!vec2("position");
+    component.angle = entity.get!double("angle");
     auto textVertices = textRenderer.getVerticesForText(component, 1.0, (vec2 vertex) => vertex);
     component.aabb = AABB.from_points(textVertices.map!(vertex => vec3(vertex, 0.0)).array);
-    
     return component;
   }
 
   override void updateValues()
   {
-    StopWatch debugTimer;
-    debugTimer.start;
     vertices = texCoords = null;
     colors = null;
 
@@ -65,7 +60,6 @@ class TextGraphics : System!Text
       auto transform = (vec2 vertex) => ((vec3(vertex, 0.0)*mat3.zrotation(-component.angle)).xy +
                                          component.position - camera.position) *
                                          camera.zoom;
-      
       texCoords["text"] ~= textRenderer.getTexCoordsForText(component);
       vertices["text"] ~= textRenderer.getVerticesForText(component, camera.zoom, transform);
       component.aabb = AABB.from_points(textRenderer.getVerticesForText(component, 1.0, 
@@ -73,24 +67,23 @@ class TextGraphics : System!Text
       colors["text"] ~= component.color.repeat.take
                           (textRenderer.getTexCoordsForText(component).length).array;
     }
-    debugText = format("textgraphics timings: %s", debugTimer.peek.usecs*0.001);
   }
 
   override void updateEntities() 
   {
-    foreach (uint index, Entity entity; entityForIndex)
+    foreach (index, entity; entityForIndex)
     {
-      entity.values["aabb"] = [components[index].aabb.min.xy, components[index].aabb.max.xy].to!string;
+      entity.values["aabb"] = [components[index].aabb.min.xy, 
+                               components[index].aabb.max.xy].to!string;
     }
   }
 
   override void updateFromEntities()
   {
-    foreach (uint index, Entity entity; entityForIndex)
+    foreach (index, entity; entityForIndex)
     {
-      components[index].position = entity.values["position"].myTo!vec2;
-      components[index].angle = entity.values["angle"].to!double;
-
+      components[index].position = entity.get!vec2("position");
+      components[index].angle = entity.get!double("angle");
       if (components[index].text !is null)
         components[index].text = entity.values["text"];
     }
