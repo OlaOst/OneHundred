@@ -32,6 +32,11 @@ class Entity
     return value in values ? values[value].myTo!vec2 : vec2(0.0, 0.0);
   }
   
+  ValueType get(ValueType : vec4)(string value)
+  {
+    return value in values ? values[value].myTo!vec4 : vec4(0.0, 0.0, 0.0, 0.0);
+  }
+  
   //double[string] scalars;
   //vec2[string] vectors;
   //vec4[string] bigVectors;
