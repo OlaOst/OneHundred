@@ -79,8 +79,8 @@ Entity[] shipCollisionResponse(Collision collision, CollisionHandler collisionHa
                 (1.0 / Timer.physicsTimeStep) * 1.0;
   
   // TODO: change positions to ensure colliders does not overlap
-  auto firstPos = firstColliderEntity.values["position"];
-  auto otherPos = otherColliderEntity.values["position"];
+  auto firstPos = firstColliderEntity.get!vec2("position");
+  auto otherPos = otherColliderEntity.get!vec2("position");
 
   Entity[] hitEffectParticles;
   if ((firstVelocity - otherVelocity).magnitude > 1.0)
