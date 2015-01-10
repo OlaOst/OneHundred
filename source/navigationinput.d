@@ -11,9 +11,9 @@ import entity;
 
 void updateValues(Entity entity, Input component)
 {
-  auto angle = "angle" in entity.values ? entity.values["angle"].to!double : 0.0;
-  auto force = "force" in entity.values ? entity.values["force"].myTo!vec2 : vec2(0.0, 0.0);
-  auto torque = "torque" in entity.values ? entity.values["torque"].to!double : 0.0;
+  auto angle = entity.get!double("angle");
+  auto force = entity.get!vec2("force");
+  auto torque = entity.get!double("torque");
   
   if (component.isActionSet("accelerate"))
     force += vec2FromAngle(angle) * 0.5;

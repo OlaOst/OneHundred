@@ -49,10 +49,10 @@ void handleToggleInputWindow(Input gameInput,
     {
       auto overlappingCollider = mouseCursorOverlaps.front;
       auto overlappingEntity = systemSet.collisionHandler.getEntity(overlappingCollider);
-      auto relativePosition = vec2(overlappingEntity.values["size"].to!double * 2.0, 0.0);
+      auto relativePosition = vec2(overlappingEntity.get!double("size") * 2.0, 0.0);
       
       inputWindow = createText(overlappingEntity.debugInfo, 
-                               overlappingEntity.values["position"].myTo!vec2);
+                               overlappingEntity.get!vec2("position"));
       inputWindow.values["relation.types"] = ["RelativeValues", "InspectValues"].to!string;
       inputWindow.values["relation.value.position"] = relativePosition.to!string;
       inputWindow.values["relation.targetId"] = overlappingEntity.id.to!string;
@@ -67,7 +67,7 @@ void handleToggleInputWindow(Input gameInput,
       if (inputWindow !is null)
         inputWindow.toBeRemoved = true;
 
-      inputWindow = createText("input: ", mouseCursor.values["position"].myTo!vec2);
+      inputWindow = createText("input: ", mouseCursor.get!vec2("position"));
       inputWindow.values["inputType"] = "textInput";
       systemSet.addEntity(inputWindow);
       

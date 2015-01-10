@@ -42,12 +42,12 @@ class SpriteGraphics : System!Sprite
   {
     assert(canAddEntity(entity));
 
-    auto component = new Sprite(entity.values["size"].to!double, entity.values["sprite"]);
+    auto component = new Sprite(entity.get!double("size"), entity.get!string("sprite"));
 
-    textureSet[entity.values["sprite"]] = component.texture;
+    textureSet[entity.get!string("sprite")] = component.texture;
 
-    component.position = vec2(entity.values["position"].to!(float[2]));
-    component.angle = entity.values["angle"].to!double;
+    component.position = entity.get!vec2("position");
+    component.angle = entity.get!double("angle");
 
     return component;
   }
@@ -82,9 +82,8 @@ class SpriteGraphics : System!Sprite
   {
     foreach (uint index, Entity entity; entityForIndex)
     {
-      //currentStates[index].velocity = entity.vectors["velocity"];
-      components[index].position = vec2(entity.values["position"].to!(float[2]));
-      components[index].angle = entity.values["angle"].to!double;
+      components[index].position = entity.get!vec2("position");
+      components[index].angle = entity.get!double("angle");
     }
   }
 

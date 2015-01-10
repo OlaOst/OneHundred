@@ -82,10 +82,9 @@ class Collider
   
   void updateFromEntity(const Entity entity)
   {
-    position = ("position" in entity.values) ? entity.values["position"].myTo!vec2 : vec2(0.0,0.0);
-    velocity = ("velocity" in entity.values) ? entity.values["velocity"].myTo!vec2 : vec2(0.0,0.0);
-    radius = ("radius" in entity.values) ? entity.values["radius"].to!double : 
-             ("size" in entity.values) ? entity.values["size"].to!double : 0.0;
-    mass = ("mass" in entity.values) ? entity.values["mass"].to!double : 0.0;
+    position = entity.get!vec2("position");
+    velocity = entity.get!vec2("velocity");
+    radius = entity.get!double("radius", entity.get!double("size"));
+    mass = entity.get!double("mass");
   }
 }

@@ -30,9 +30,9 @@ class CollisionHandler : System!Collider
   {
     vec2[] verts = [vec2(0.0, 0.0)];
     if (("collider.vertices" in entity.values) !is null)
-      verts = entity.values["collider.vertices"].myTo!(vec2[]);
+      verts = entity.get!(vec2[])("collider.vertices");
 
-    auto component = new Collider(verts, entity.values["collider"].to!ColliderType, entity.id);
+    auto component = new Collider(verts, entity.get!ColliderType("collider"), entity.id);
     if (auto spawn = ("spawner" in entity.values))
     {
       auto search = entityForIndex.values.find!(check => check.id == (*spawn).to!long);

@@ -45,7 +45,7 @@ final class SoundSystem : System!Sound
   
   override Sound makeComponent(Entity entity)
   {
-    return new Sound(entity.values["sound"]);
+    return new Sound(entity.get!string("sound"));
   }
   
   override void updateValues()

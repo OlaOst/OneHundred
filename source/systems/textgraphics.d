@@ -41,7 +41,7 @@ class TextGraphics : System!Text
   override Text makeComponent(Entity entity)
   {
     Text component = new Text(entity.get!double("size"),
-                              entity.values["text"],
+                              entity.get!string("text"),
                               entity.get!vec4("color"));
     component.position = entity.get!vec2("position");
     component.angle = entity.get!double("angle");
@@ -85,7 +85,7 @@ class TextGraphics : System!Text
       components[index].position = entity.get!vec2("position");
       components[index].angle = entity.get!double("angle");
       if (components[index].text !is null)
-        components[index].text = entity.values["text"];
+        components[index].text = entity.get!string("text");
     }
   }
 

@@ -41,15 +41,15 @@ class PolygonGraphics : System!Polygon
     if ("polygon.vertices" in entity.values)
     {
       if ("polygon.colors" in entity.values)
-        component = new Polygon(entity.values["polygon.vertices"].myTo!(vec2[]),
-                                entity.values["polygon.colors"].myTo!(vec4[]));
+        component = new Polygon(entity.get!(vec2[])("polygon.vertices"),
+                                entity.get!(vec4[])("polygon.colors"));
       else if ("color" in entity.values)
-        component = new Polygon(entity.values["polygon.vertices"].myTo!(vec2[]),
-                                entity.values["color"].myTo!vec4);
+        component = new Polygon(entity.get!(vec2[])("polygon.vertices"),
+                                entity.get!vec4("color"));
     }
 
-    component.position = vec2(entity.values["position"].to!(float[2]));
-    component.angle = entity.values["angle"].to!double;
+    component.position = entity.get!vec2("position");
+    component.angle = entity.get!double("angle");
     
     return component;
   }
@@ -85,10 +85,10 @@ class PolygonGraphics : System!Polygon
   {
     foreach (uint index, Entity entity; entityForIndex)
     {
-      components[index].position = vec2(entity.values["position"].to!(float[2]));
-      components[index].angle = entity.values["angle"].to!double;
+      components[index].position = entity.get!vec2("position");
+      components[index].angle = entity.get!double("angle");
       
-      components[index].vertices = entity.values["polygon.vertices"].myTo!(vec2[]);
+      components[index].vertices = entity.get!(vec2[])("polygon.vertices");
     }
   }
 

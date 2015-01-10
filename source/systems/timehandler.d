@@ -23,7 +23,7 @@ final class TimeHandler : System!double
   
   override double makeComponent(Entity entity)
   {
-    return entity.values["lifeTime"].to!double;
+    return entity.get!double("lifeTime");
   }
   
   override void updateValues()

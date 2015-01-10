@@ -23,7 +23,7 @@ class InputHandler : System!Input
 
   public override Input makeComponent(Entity entity)
   {
-    return new Input(entity.values["inputType"]);
+    return new Input(entity.get!string("inputType"));
   }
 
   public override void updateValues()

@@ -63,7 +63,7 @@ class RelationHandler : System!(Relation[])
     }
     
     foreach (relationComponent; relationComponents)
-      targetIdMapping[relationComponent] = entity.values["relation.targetId"].to!long;
+      targetIdMapping[relationComponent] = entity.get!long("relation.targetId");
 
     return relationComponents;
   }
