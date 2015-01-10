@@ -4,12 +4,6 @@ import std.algorithm;
 
 import gl3n.linalg;
 
-//import components.collider;
-//import components.drawables.polygon;
-//import components.drawables.sprite;
-//import components.drawables.text;
-//import components.input;
-//import components.sound;
 import converters;
 
 
@@ -17,24 +11,28 @@ class Entity
 {
   string[string] values;
   
-  ValueType get(ValueType)(string value)
+  static ValueType DefaultValue(ValueType)()
   {
-    return value in values ? values[value].to!ValueType : ValueType.init;
+    static if (is(ValueType == double))
+      return 0.0;
+    else static if (is(ValueType == vec2))
+      return vec2(0.0, 0.0);
+    else static if (is(ValueType == vec4))
+      return vec4(0.0, 0.0, 0.0, 0.0);
+    else
+      return ValueType.init;
   }
   
-  ValueType get(ValueType : double)(string value)
+  ValueType get(ValueType)(string valueName, 
+                           lazy ValueType defaultValue = DefaultValue!ValueType) const
   {
-    return value in values ? values[value].to!ValueType : 0.0;
-  }
-  
-  ValueType get(ValueType : vec2)(string value)
-  {
-    return value in values ? values[value].myTo!vec2 : vec2(0.0, 0.0);
-  }
-  
-  ValueType get(ValueType : vec4)(string value)
-  {
-    return value in values ? values[value].myTo!vec4 : vec4(0.0, 0.0, 0.0, 0.0);
+    if (auto value = valueName in values)
+      static if (__traits(compiles, (*value).to!ValueType))
+        return (*value).to!ValueType;
+      else
+        return (*value).myTo!ValueType;
+    else
+      return defaultValue;
   }
   
   //double[string] scalars;
