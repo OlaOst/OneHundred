@@ -76,19 +76,20 @@ body
   Derivative c = evaluate(state, time, timestep * 0.5, b);
   Derivative d = evaluate(state, time, timestep * 1.0, c);
   
-  // RK4 style
-  vec2 positionChange = 1.0/6.0 * (a.velocity + 2.0 * (b.velocity + c.velocity) + d.velocity);
-  vec2 velocityChange = 1.0/6.0 * (a.force + 2.0 * (b.force + c.force) + d.force);
-  
-  double angleChange = 1.0/6.0 * (a.rotation + 2.0 * (b.rotation + c.rotation) + d.rotation);
-  double rotationChange = 1.0/6.0 * (a.torque + 2.0 * (b.torque + c.torque) + d.torque);
-  
   state.force = a.force;
   state.torque = a.torque;
   
+  // RK4 style
+  vec2 positionChange = 1.0/6.0 * (a.velocity + 2.0 * (b.velocity + c.velocity) + d.velocity);
+  vec2 velocityChange = 1.0/6.0 * (a.force + 2.0 * (b.force + c.force) + d.force);
+  double angleChange = 1.0/6.0 * (a.rotation + 2.0 * (b.rotation + c.rotation) + d.rotation);
+  double rotationChange = 1.0/6.0 * (a.torque + 2.0 * (b.torque + c.torque) + d.torque);
+  
   // euler style
-  //vec2 positionChange = a.position;
-  //vec2 velocityChange = a.velocity;
+  //vec2 positionChange = a.velocity;
+  //vec2 velocityChange = a.force;
+  //double angleChange = a.rotation;
+  //double rotationChange = a.torque;
   
   state.position += positionChange * timestep;
   state.velocity += velocityChange * timestep;
