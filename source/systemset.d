@@ -85,10 +85,10 @@ class SystemSet
   
   Entity[] removeEntitiesToBeRemoved()
   {
-    auto removedEntities = entities.filter!(entity => entity.toBeRemoved);
+    auto removedEntities = entities.filter!(entity => entity.get!bool("ToBeRemoved"));
     foreach (removedEntity; removedEntities)
       removeEntity(removedEntity);
-    entities = entities.filter!(entity => !entity.toBeRemoved).array;
+    entities = entities.filter!(entity => !entity.get!bool("ToBeRemoved")).array;
     return removedEntities.array;
   }
 }

@@ -41,7 +41,6 @@ class Collider
   Entity spawner;
   Collider[] overlappingColliders;
   
-  //bool toBeRemoved = false;
   long id;
   
   this(vec2[] vertices, ColliderType type, long id)

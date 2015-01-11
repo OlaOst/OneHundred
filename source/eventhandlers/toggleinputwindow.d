@@ -41,7 +41,7 @@ void handleToggleInputWindow(Input gameInput,
         overlappingTexts.popFront();
       }
       assert(lastOne !is null);
-      systemSet.collisionHandler.getEntity(lastOne).toBeRemoved = true;
+      systemSet.collisionHandler.getEntity(lastOne).values["ToBeRemoved"] = true.to!string;
       if (inputWindow !is null && lastOne.id == inputWindow.id)
         inputWindow = null;
     }
@@ -65,7 +65,7 @@ void handleToggleInputWindow(Input gameInput,
     else if (mouseCursorOverlaps.empty)
     {
       if (inputWindow !is null)
-        inputWindow.toBeRemoved = true;
+        inputWindow.values["ToBeRemoved"] = true.to!string;
 
       inputWindow = createText("input: ", mouseCursor.get!vec2("position"));
       inputWindow.values["inputType"] = "textInput";

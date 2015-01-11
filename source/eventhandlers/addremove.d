@@ -2,6 +2,7 @@ module eventhandlers.addremove;
 
 import std.algorithm;
 import std.array;
+import std.conv;
 
 import components.input;
 import entity;
@@ -23,11 +24,6 @@ void handleAddRemoveEntity(Input gameInput, SystemSet systemSet, ref Entity[] np
   if (removeEntity && npcs.length > 0)
   {
     auto entity = npcs[$-1];
-    entity.toBeRemoved = true;
-    //systemSet.removeEntity(entity);
-    //npcs.popBack();
+    entity.values["ToBeRemoved"] = true.to!string;
   }
 }
-
-//bool addEntity = false;
-//bool removeEntity = false;

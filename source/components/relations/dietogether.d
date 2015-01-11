@@ -1,5 +1,7 @@
 module components.relations.dietogether;
 
+import std.conv;
+
 import components.relation;
 import entity;
 
@@ -15,6 +17,6 @@ class DieTogether : Relation
   
   void updateValues(Entity target)
   {
-    source.toBeRemoved = target.toBeRemoved;
+    source.values["ToBeRemoved"] = target.get!bool("ToBeRemoved").to!string;
   }
 }

@@ -82,8 +82,8 @@ void main()
     addParticles(particles, systemSet);
     addBullets(npcs, systemSet);
     
-    npcs = npcs.filter!(entity => !entity.toBeRemoved).array;
-    particles = particles.filter!(entity => !entity.toBeRemoved).array;
+    npcs = npcs.filter!(entity => !entity.get!bool("ToBeRemoved")).array;
+    particles = particles.filter!(entity => !entity.get!bool("ToBeRemoved")).array;
     systemSet.removeEntitiesToBeRemoved();
     
     mouseCursor.values["position"] = 

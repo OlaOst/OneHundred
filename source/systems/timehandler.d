@@ -33,7 +33,7 @@ final class TimeHandler : System!double
       lifeTime -= timer.frameTime;
       
       if (lifeTime <= 0.0)
-        entityForIndex[index].toBeRemoved = true;
+        entityForIndex[index].values["ToBeRemoved"] = true.to!string;
     }
   }
   

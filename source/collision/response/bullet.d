@@ -45,9 +45,9 @@ Entity[] bulletCollisionResponse(Collision collision, CollisionHandler collision
   assert(other.contactPoint.isFinite);
   
   if (first.type == ColliderType.Bullet)
-    firstColliderEntity.toBeRemoved = true;
+    firstColliderEntity.values["ToBeRemoved"] = true.to!string;
   if (other.type == ColliderType.Bullet)
-    otherColliderEntity.toBeRemoved = true;
+    otherColliderEntity.values["ToBeRemoved"] = true.to!string;
     
   Entity[] hitEffectParticles;
   

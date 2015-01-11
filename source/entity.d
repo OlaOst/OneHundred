@@ -9,8 +9,6 @@ import converters;
 
 class Entity
 {
-  string[string] values;
-  
   static ValueType DefaultValue(ValueType)()
   {
     static if (is(ValueType == double))
@@ -33,27 +31,7 @@ class Entity
         return (*value).myTo!ValueType;
     else
       return defaultValue;
-  }
-  
-  //double[string] scalars;
-  //vec2[string] vectors;
-  //vec4[string] bigVectors;
-  
-  // temp drawable stuff
-  //Polygon polygon;
-  //Text text;
-  //Sprite sprite;
-  
-  // temp stuff
-  //Input input;
-  //string editText;
-  //Sound sound;
-  //Collider collider;
-  
-  bool toBeRemoved = false;
-  
-  static long idCounter = 0;
-  immutable long id;
+  }  
   
   this()
   {
@@ -66,9 +44,11 @@ class Entity
     
     foreach (key, value; values)
       info ~= "\n" ~ key ~ ": " ~ value;
-    //foreach (key, value; scalars)
-      //info ~= "\n" ~ key ~ ": " ~ value.to!string;
       
     return info;
   }
+  
+  string[string] values;
+  immutable long id;
+  static long idCounter = 0;
 }

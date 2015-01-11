@@ -34,7 +34,7 @@ body
   {
     if (collider.isColliding)
     {
-      auto position = vec2(state.entity.values["position"].to!(float[2]));
+      auto position = state.entity.get!vec2("position");
       auto relative = collider.contactPoint - position;
       
       //writeln("calc cross from collider force ", collider.force, " and rel pos ", relative);
