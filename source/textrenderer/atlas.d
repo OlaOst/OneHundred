@@ -22,7 +22,6 @@ Texture2D createFontAtlas(Glyph[char] glyphSet, string font, uint glyphSize)
   int rows = cast(int)sqrt(cast(float)glyphSet.length);
   int cols = cast(int)sqrt(cast(float)glyphSet.length);
   
-  // TODO: figure out all the magic numbers, replace with descriptive variables
   data.length = ((rows * glyphSize) * (cols * glyphSize) * colorComponents) + 
                 (cols * glyphSize * colorComponents * colorComponents);
   
