@@ -23,5 +23,5 @@ fragment:
 
   void main(void)
   { 
-    color = texture(textureMap, coords).a * inColor;
+    color = texture(textureMap, coords) * inColor;
   }

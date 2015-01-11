@@ -3,6 +3,7 @@ module renderer;
 import std.algorithm;
 import std.array;
 import std.file;
+import std.range;
 import std.string;
 
 import derelict.opengl3.gl3;
@@ -47,16 +48,11 @@ class Renderer
     if ("polygon" in vertices && "polygon" in colors)
       drawPolygons(vertices["polygon"], colors["polygon"]);
 
-    foreach (name; texCoords.keys.filter!(name => name in colors))
+    foreach (name; texCoords.byKey)
     {
       textureSet[name].bind();
-      drawColoredTexture(vertices[name], texCoords[name], colors[name]);
-    }
-    
-    foreach (name; texCoords.keys.filter!(name => name !in colors))
-    {
-      textureSet[name].bind();
-      drawTexture(vertices[name], texCoords[name]);
+      auto colorsForTexture = colors.get(name, vec4(1.0, 1.0, 1.0, 1.0).repeat.take(vertices[name].length).array);
+      drawColoredTexture(vertices[name], texCoords[name], colorsForTexture);
     }
     toScreen();
   }
@@ -103,21 +99,6 @@ class Renderer
     vboSet["colors"].remove();
   }
   
-  public void drawTexture(vec2[] vertices, vec2[] texCoords)
-  {
-    assert(vertices.length == texCoords.length);
-    vboSet["vertices"] = new Buffer(vertices);
-    vboSet["texture"] = new Buffer(texCoords);
-
-    shaderSet["texture"].bind();
-    vboSet["vertices"].bind(shaderSet["texture"], "position", GL_FLOAT, 2, 0, 0);
-    vboSet["texture"].bind(shaderSet["texture"], "texCoords", GL_FLOAT, 2, 0, 0);
-    glDrawArrays(GL_TRIANGLES, 0, cast(int)(vertices.length));
-
-    vboSet["vertices"].remove();
-    vboSet["texture"].remove();
-  }
-
   private SDL_Window *window;
   private VAO vao;
   private Buffer[string] vboSet;

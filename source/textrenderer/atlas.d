@@ -28,7 +28,7 @@ Texture2D createFontAtlas(Glyph[char] glyphSet, string font, uint glyphSize)
   // directly iterating the glyphSet is bad since associative arrays do not specify the order
   // letters must be put in a specified order in the atlas to be able to retrieve them later
   //foreach (index; iota(0, 256))
-  foreach (uint index, char letter; glyphSet.keys)
+  foreach (index, letter; glyphSet.keys)
   {
     auto glyph = glyphSet[letter];
     
