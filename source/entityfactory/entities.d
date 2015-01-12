@@ -5,6 +5,7 @@ import std.file;
 import std.random;
 import std.range;
 import std.stdio;
+import std.string;
 
 import gl3n.linalg;
 
@@ -20,14 +21,14 @@ import entity;
 
 Entity createPlayer()
 {
-  auto playerEntity = createEntity(vec2(0.0, 0.0), vec2(0.0, 0.0), 0.3);
-  
-  playerEntity.values["inputType"] = "playerInput";
-  playerEntity.values["angle"] = 0.0.to!string;
-  playerEntity.values["sprite"] = "images/playerShip1_blue.png";
-  playerEntity.values["collider"] = ColliderType.Player.to!string;
-  
-  return playerEntity;
+  string[string] values;
+  foreach (keyvalue; "data/player.txt".File.byLine.map!(line => line.strip)
+                                                  .filter!(line => !line.empty)
+                                                  .filter!(line => !line.startsWith("#"))
+                                                  .map!(line => line.split("=")))
+    values[keyvalue[0].strip.to!string] = keyvalue[1].strip.to!string;
+
+  return new Entity(values);
 }
 
 Entity createNpc(vec2 position, vec2 velocity, double size)

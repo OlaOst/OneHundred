@@ -34,8 +34,7 @@ class SpriteGraphics : System!Sprite
   
   override bool canAddEntity(Entity entity)
   {
-    return "position" in entity.values && "angle" in entity.values &&
-           Sprite.canMakeComponent(entity.values);
+    return "position" in entity.values && Sprite.canMakeComponent(entity.values);
   }
 
   override Sprite makeComponent(Entity entity)

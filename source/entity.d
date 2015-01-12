@@ -38,6 +38,12 @@ class Entity
     id = idCounter++;
   }
   
+  this(string[string] values)
+  {
+    this();
+    this.values = values;
+  }
+  
   string debugInfo()
   {
     string info = "id: " ~ id.to!string;

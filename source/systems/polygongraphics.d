@@ -29,8 +29,7 @@ class PolygonGraphics : System!Polygon
 
   override bool canAddEntity(Entity entity)
   {
-    return "position" in entity.values && "angle" in entity.values &&
-           Polygon.canMakeComponent(entity.values);
+    return "position" in entity.values && Polygon.canMakeComponent(entity.values);
   }
 
   override Polygon makeComponent(Entity entity)

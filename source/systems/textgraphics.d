@@ -34,8 +34,7 @@ class TextGraphics : System!Text
 
   override bool canAddEntity(Entity entity)
   {
-    return "position" in entity.values && "angle" in entity.values &&
-           Text.canMakeComponent(entity.values);
+    return "position" in entity.values && Text.canMakeComponent(entity.values);
   }
 
   override Text makeComponent(Entity entity)
