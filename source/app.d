@@ -43,7 +43,7 @@ void main()
   foreach (npc; npcs)
     systemSet.addEntity(npc);
   
-  auto player = createPlayer();
+  auto player = "data/player.txt".createEntityFromFile;
   systemSet.addEntity(player);
   
   Entity inputWindow = null;

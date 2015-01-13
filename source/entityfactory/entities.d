@@ -17,31 +17,22 @@ import components.input;
 import components.sound;
 import converters;
 import entity;
+import valueparser;
 
 
-Entity createPlayer()
+Entity createEntityFromFile(string file)
 {
   string[string] values;
-  foreach (keyvalue; "data/player.txt".File.byLine.map!(line => line.strip)
-                                                  .filter!(line => !line.empty)
-                                                  .filter!(line => !line.startsWith("#"))
-                                                  .map!(line => line.split("=")))
-    values[keyvalue[0].strip.to!string] = keyvalue[1].strip.to!string;
-
+  foreach (keyvalue; file.File.byLine.map!(line => line.strip)
+                                     .filter!(line => !line.empty)
+                                     .filter!(line => !line.startsWith("#"))
+                                     .map!(line => line.split("=")))
+  {
+    auto key = keyvalue[0].strip.to!string;
+    auto value = keyvalue[1].strip.to!string;
+    values[key] = value.parseValue(key);
+  }
   return new Entity(values);
-}
-
-Entity createNpc(vec2 position, vec2 velocity, double size)
-{
-  auto npcEntity = createEntity(position, velocity, size);
-  
-  auto files = dirEntries("images", "*.png", SpanMode.breadth).
-               map!(dirEntry => dirEntry.name).array();
-  
-  if (!files.empty)
-    npcEntity.values["sprite"] = files.randomSample(1).front;
-    
-  return npcEntity;
 }
 
 Entity createEntity(vec2 position, vec2 velocity, double size)
@@ -64,14 +55,10 @@ Entity createEntity(vec2 position, vec2 velocity, double size)
 Entity[] createNpcs(uint elements)
 {
   Entity[] entities;
-  foreach (double index; iota(0, elements))
-  {
-    auto angle = (index/elements) * PI * 2.0;
-    auto size = uniform(0.025, 0.125);
-    auto position = vec2(uniform(-5.0, 5.0), uniform(-5.0, 5.0));
-    auto entity = createNpc(position, vec2FromAngle(angle) * 0.5, size);
-    entities ~= entity;
-  }
+  
+  foreach (index; iota(0, elements))
+    entities ~= "data/npc.txt".createEntityFromFile;
+    
   return entities;
 }
 
