@@ -76,8 +76,8 @@ body
   Derivative c = evaluate(state, time, timestep * 0.5, b);
   Derivative d = evaluate(state, time, timestep * 1.0, c);
   
-  state.force = a.force;
-  state.torque = a.torque;
+  //state.force = a.force;
+  //state.torque = a.torque;
   
   // RK4 style
   vec2 positionChange = 1.0/6.0 * (a.velocity + 2.0 * (b.velocity + c.velocity) + d.velocity);
