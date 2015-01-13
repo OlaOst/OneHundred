@@ -6,7 +6,6 @@
 *.lib
 /.dub
 /Frame*
-/Shaders
 gli*
 trace*
 README-SDL.txt

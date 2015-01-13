@@ -24,9 +24,9 @@ class Renderer
     window = getWindow(xres, yres);
     vao = new VAO();
     vao.bind();
-    shaderSet = dirEntries("shader", "*.shader", SpanMode.breadth).
-                map!(dirEntry => tuple(dirEntry.name.chompPrefix("shader\\")
-                                                    .chompPrefix("shader/")
+    shaderSet = dirEntries("shaders", "*.shader", SpanMode.breadth).
+                map!(dirEntry => tuple(dirEntry.name.chompPrefix("shaders\\")
+                                                    .chompPrefix("shaders/")
                                                     .chomp(".shader"),
                                        new Shader(dirEntry.name))).assocArray;
   }
