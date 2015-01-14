@@ -76,9 +76,9 @@ class CollisionHandler : System!Collider
     }
 
     debugText = format("collisionhandler checked %s/%s candidates\nbroadphase/narrowphase",
-                       broadPhaseCount, narrowPhaseCount);
-    debugText ~= format("\ncollisionhandler timings %s/%s milliseconds\nbroadphase/narrowphase",
-                        broadPhaseTimer.peek.usecs*0.001, narrowPhaseTimer.peek.usecs*0.001);
+                       broadPhaseCount, narrowPhaseCount) ~
+                format("\ncollisionhandler timings %s/%s milliseconds\nbroadphase/narrowphase",
+                       broadPhaseTimer.peek.usecs*0.001, narrowPhaseTimer.peek.usecs*0.001);
 
     collisionEffectParticles ~= collisions.handleCollisions(this);
 

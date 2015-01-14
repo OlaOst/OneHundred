@@ -24,6 +24,8 @@ class SystemSet
 {
   Entity[] entities;
   EntityHandler[] entityHandlers;
+  EntityHandler[] graphicsHandlers;
+  string graphicsTimingText;
   Graphics graphics;
   PolygonGraphics polygonGraphics;
   SpriteGraphics spriteGraphics;
@@ -52,6 +54,8 @@ class SystemSet
                                            polygonGraphics, spriteGraphics, textGraphics, 
                                            inputHandler, collisionHandler,  
                                            timeHandler, relationHandler];
+                                           
+    graphicsHandlers = cast(EntityHandler[])[polygonGraphics, spriteGraphics, textGraphics];
   }
   
   void close()
@@ -79,8 +83,16 @@ class SystemSet
     physics.setTimer(timer);
     timeHandler.setTimer(timer);
 
-    foreach (entityHandler; entityHandlers)
+    foreach (entityHandler; entityHandlers.filter!(handler => !graphicsHandlers.canFind(handler)))
       entityHandler.update();
+      
+    StopWatch graphicsTimer;
+    graphicsTimer.start;
+    foreach (graphicsHandler; graphicsHandlers)
+      graphicsHandler.update();
+    
+    auto graphicsComponentCount = polygonGraphics.components.length + spriteGraphics.components.length + textGraphics.components.length;
+    graphicsTimingText = format("graphics components: %s\ngraphics timings: %s", graphicsComponentCount, graphicsTimer.peek.usecs*0.001);
   }
   
   Entity[] removeEntitiesToBeRemoved()

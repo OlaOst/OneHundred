@@ -18,11 +18,11 @@ void handleToggleDebugInfo(Input gameInput, SystemSet systemSet, ref Entity debu
       debugText = createText("??", vec2(-3.0, -2.0));
       systemSet.addEntity(debugText);
     }
-    index++;
+    index = (index + 1) % systemSet.entityHandlers.length;
   }
   
   // TODO: ensure entity values get reflected to the relevant components
-  final switch (index % 3)
+  /*final switch (index % 3)
   {
     case 0:
       debugText.values["text"] = systemSet.collisionHandler.debugText;
@@ -31,9 +31,11 @@ void handleToggleDebugInfo(Input gameInput, SystemSet systemSet, ref Entity debu
       debugText.values["text"] = systemSet.physics.debugText;
       break;
     case 2:
-      debugText.values["text"] = "Grapics timings not implemented yet";
+      debugText.values["text"] = systemSet.graphicsTimingText;
       break;
-  }
+  }*/
+  
+  debugText.values["text"] = systemSet.entityHandlers[index].debugText;
   
   assert(debugText.values["text"] !is null);
 }

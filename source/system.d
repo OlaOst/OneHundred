@@ -3,6 +3,9 @@ module system;
 import std.algorithm;
 import std.array;
 import std.conv;
+import std.datetime;
+import std.range;
+import std.string;
 
 import entity;
 import entityhandler;
@@ -32,7 +35,7 @@ class System(ComponentType) : EntityHandler
   size_t[const Entity] indexForEntity;
   Entity[size_t] entityForIndex;
   ComponentType[] components;
-  string debugText;
+  string debugTextInternal;
   
   ComponentType getComponent(Entity entity)
   {
@@ -89,10 +92,30 @@ class System(ComponentType) : EntityHandler
   protected abstract void updateValues();
   protected abstract void updateEntities();
   
+  string debugText() @property
+  {
+    return debugTextInternal;
+  }
+  
+  void debugText(string debugTextParameter) @property
+  {
+    debugTextInternal = debugTextParameter;
+  }
+  
   void update()
   {
+    StopWatch debugTimer;
+    
+    debugTimer.start;
+    
     updateFromEntities();
     updateValues();
     updateEntities();
+    
+    auto name = this.classinfo.name.retro.until(".").to!string.retro;
+    debugTextInternal = format("%s components: %s\n%s timings: %s", name,
+                                                                    components.length,
+                                                                    name,
+                                                                    debugTimer.peek.usecs*0.001);
   }
 }

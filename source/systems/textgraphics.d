@@ -46,6 +46,8 @@ class TextGraphics : System!Text
     component.angle = entity.get!double("angle");
     auto textVertices = textRenderer.getVerticesForText(component, 1.0, (vec2 vertex) => vertex);
     component.aabb = AABB.from_points(textVertices.map!(vertex => vec3(vertex, 0.0)).array);
+    entity.values["aabb"] = [component.aabb.min.xy, 
+                             component.aabb.max.xy].to!string;
     return component;
   }
 
@@ -72,7 +74,7 @@ class TextGraphics : System!Text
   {
     foreach (index, entity; entityForIndex)
     {
-      entity.values["aabb"] = [components[index].aabb.min.xy, 
+      entity.values["aabb"] = [components[index].aabb.min.xy,
                                components[index].aabb.max.xy].to!string;
     }
   }
