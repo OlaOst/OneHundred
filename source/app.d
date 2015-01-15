@@ -62,6 +62,8 @@ void main()
   auto editController = createEditController();
   systemSet.addEntity(editController);
   
+  systemSet.addDebugEntities();
+  
   timer.start();
   while (!quit)
   {
@@ -90,6 +92,8 @@ void main()
       systemSet.graphics.getWorldPositionFromScreenCoordinates(
       systemSet.inputHandler.mouseScreenPosition).to!string;
     // TODO: remember to update position of mousecursor components in systems
+    
+    systemSet.updateDebugEntities();
     
     systemSet.collectFromGraphicsAndRender(renderer);
   }

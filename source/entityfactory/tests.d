@@ -93,3 +93,28 @@ Entity createMouseCursor()
   
   return mouseCursor;
 }
+
+import systemset;
+void addDebugEntities(SystemSet systemSet)
+{
+  foreach (index, entityHandler; systemSet.entityHandlers)
+  {
+    auto position = vec2(-3.0, index*0.8 - 4);
+    
+    auto text = new Entity();
+    text.values["position"] = vec2(position.x + 0.35, position.y).to!string;
+    text.values["text"] = entityHandler.className;
+    text.values["color"] = vec4(1.0, 1.0, 1.0, 1.0).to!string;
+    text.values["size"] = 0.1.to!string;
+    systemSet.addEntity(text);
+    
+    auto debugEntity = new Entity();
+    debugEntity.values["position"] = position.to!string;
+    debugEntity.values["size"] = 0.3.to!string;
+    auto polygon = new Polygon(0.3, 16, vec4(0.0, 0.67, 0.33, 1.0));
+    debugEntity.values["polygon.vertices"] = polygon.vertices.to!string;
+    debugEntity.values["polygon.colors"] = polygon.colors.to!string;
+    debugEntity.values["name"] = entityHandler.className;
+    systemSet.addEntity(debugEntity);
+  }
+}

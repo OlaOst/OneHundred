@@ -35,6 +35,7 @@ class System(ComponentType) : EntityHandler
   size_t[const Entity] indexForEntity;
   Entity[size_t] entityForIndex;
   ComponentType[] components;
+  double debugTimingInternal;
   string debugTextInternal;
   
   ComponentType getComponent(Entity entity)
@@ -92,6 +93,16 @@ class System(ComponentType) : EntityHandler
   protected abstract void updateValues();
   protected abstract void updateEntities();
   
+  double debugTiming() @property
+  {
+    return debugTimingInternal;
+  }
+  
+  void debugTiming(double debugTimingParameter) @property
+  {
+    debugTimingInternal = debugTimingParameter;
+  }
+  
   string debugText() @property
   {
     return debugTextInternal;
@@ -100,6 +111,16 @@ class System(ComponentType) : EntityHandler
   void debugText(string debugTextParameter) @property
   {
     debugTextInternal = debugTextParameter;
+  }
+  
+  int componentCount() @property
+  {
+    return components.length;
+  }
+  
+  string className() @property
+  {
+    return this.classinfo.name.retro.until(".").to!string.retro.to!string;
   }
   
   void update()
@@ -112,10 +133,10 @@ class System(ComponentType) : EntityHandler
     updateValues();
     updateEntities();
     
-    auto name = this.classinfo.name.retro.until(".").to!string.retro;
-    debugTextInternal = format("%s components: %s\n%s timings: %s", name,
+    debugTimingInternal = debugTimer.peek.usecs*0.001;
+    debugTextInternal = format("%s components: %s\n%s timings: %s", className,
                                                                     components.length,
-                                                                    name,
-                                                                    debugTimer.peek.usecs*0.001);
+                                                                    className,
+                                                                    debugTimingInternal);
   }
 }

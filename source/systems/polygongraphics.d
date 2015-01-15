@@ -88,6 +88,7 @@ class PolygonGraphics : System!Polygon
       components[index].angle = entity.get!double("angle");
       
       components[index].vertices = entity.get!(vec2[])("polygon.vertices");
+      components[index].colors = entity.get!(vec4[])("polygon.colors");
     }
   }
 
