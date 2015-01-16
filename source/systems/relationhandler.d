@@ -38,8 +38,8 @@ class RelationHandler : System!(Relation[])
       {
         auto relationValueName = relationValueKey.chompPrefix("relation.value.");
         
-        auto immutable vec2Types = ["position", "velocity", "force"];
-        auto immutable doubleTypes = ["size", "angle", "rotation", "torque"];
+        //auto immutable vec2Types = ["position", "velocity", "force"];
+        //auto immutable doubleTypes = ["size", "angle", "rotation", "torque"];
         
         if (vec2Types.canFind(relationValueName))
           relationComponents ~= new RelativeValue!vec2(entity, relationValueName, 

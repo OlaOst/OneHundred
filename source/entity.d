@@ -7,6 +7,10 @@ import gl3n.linalg;
 import converters;
 
 
+auto immutable vec2Types = ["position", "velocity", "force"];
+auto immutable doubleTypes = ["size", "angle", "rotation", "torque"];
+auto immutable fileTypes = ["sprite", "sound"];
+
 class Entity
 {
   static ValueType DefaultValue(ValueType)()

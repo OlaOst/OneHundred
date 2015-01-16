@@ -54,7 +54,7 @@ void main()
   //systemSet.addEntity(music);
   
   auto debugText = createText("??", vec2(-3.0, -2.0));
-  systemSet.addEntity(debugText);
+  //systemSet.addEntity(debugText);
   
   auto gameController = createGameController();
   systemSet.addEntity(gameController);
@@ -94,7 +94,6 @@ void main()
     // TODO: remember to update position of mousecursor components in systems
     
     systemSet.updateDebugEntities();
-    
     systemSet.collectFromGraphicsAndRender(renderer);
   }
 }
