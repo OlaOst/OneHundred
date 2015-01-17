@@ -4,3 +4,4 @@ size = 0.3
 sprite = images/playerShip1_blue.png
 collider = Player
 inputType = playerInput
+networked = true

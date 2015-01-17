@@ -11,6 +11,7 @@ import entityhandler;
 import systems.collisionhandler;
 import systems.graphics;
 import systems.inputhandler;
+import systems.networkhandler;
 import systems.physics;
 import systems.polygongraphics;
 import systems.relationhandler;
@@ -37,6 +38,7 @@ class SystemSet
   SoundSystem soundSystem;
   TimeHandler timeHandler;
   RelationHandler relationHandler;
+  NetworkHandler networkHandler;
   
   this(int xres, int yres)
   {
@@ -50,11 +52,12 @@ class SystemSet
     soundSystem = new SoundSystem();
     timeHandler = new TimeHandler();
     relationHandler = new RelationHandler();
+    networkHandler = new NetworkHandler();
     
     entityHandlers = cast(EntityHandler[])[graphics, physics, soundSystem,
                                            polygonGraphics, spriteGraphics, textGraphics, 
                                            inputHandler, collisionHandler,  
-                                           timeHandler, relationHandler];
+                                           timeHandler, relationHandler, networkHandler];
                                            
     graphicsHandlers = cast(EntityHandler[])[polygonGraphics, spriteGraphics, textGraphics];
   }
