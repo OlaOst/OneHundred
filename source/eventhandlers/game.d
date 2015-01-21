@@ -2,8 +2,10 @@ module eventhandlers.game;
 
 import gl3n.linalg;
 
+import app;
 import camera;
 import components.input;
+import systemset;
 
 
 void handleQuit(Input gameInput)
@@ -21,6 +23,13 @@ void handleZoom(Input gameInput, Camera camera)
     camera.zoom -= camera.zoom * 1.0/60.0;
 }
 
+void handleNetworking(Input gameInput, SystemSet systemSet)
+{
+  if (gameInput.isActionSet("attemptNetworkConnection"))
+  {
+    systemSet.networkHandler.attemptConnection(cast(ushort)(port + 1));
+  }
+}
 
 bool quit = false;
 bool zoomIn = false;

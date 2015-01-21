@@ -5,4 +5,4 @@ sprite = images/playerShip1_blue.png
 collider = Player
 inputType = playerInput
 networked = true
-remoteEntityId = 1
+remoteEntityId = 0

@@ -8,6 +8,7 @@ import std.stdio;
 
 import vibe.d;
 
+import app;
 import entity;
 import system;
 
@@ -25,11 +26,11 @@ class NetworkWriter : InputStream
 {
   string message = "ikke no nytt\n";
   
-  bool empty() @ property
+  bool empty() @property
   {
-    dur!"msecs"(1000).sleep;
+    dur!"msecs"(100).sleep;
     
-    return false;
+    return message.length <= 0;
   }
   
   ulong leastSize() @property
@@ -59,7 +60,7 @@ class NetworkHandler : System!(NetworkInfo)
 {
   NetworkWriter writer;
   
-  bool hasLoopbackConnection = false;
+  bool isConnected = false;
   
   this()
   {    
@@ -70,30 +71,19 @@ class NetworkHandler : System!(NetworkInfo)
     
     ubyte[1024] buffer;
     
-    listenTCP(5577, (connection) 
+    listenTCP(port, (connection) 
     { 
       writeln("got connection from ", connection.remoteAddress, " to ", connection.localAddress);
       
       connection.write("hello\r\n");
+      connection.flush;
       
-      // setup loopback connection
-      /*if (!hasLoopbackConnection)
-      {
-        hasLoopbackConnection = true;
-        auto loopbackConnection = connectTCP(connection.remoteAddress.toAddressString, 5577);
-        loopbackConnection.write("holla");
-        loopbackConnection.flush;
-      }*/
-      
-      //connection.write(writer);
-      
-      /*writeln("empty: ", connection.empty);
-      writeln("leastsize: ", connection.leastSize);
-      writeln("dataavailable: ", connection.dataAvailableForRead);*/
+      // establish twoway connection
+      attemptConnection(cast(ushort)(connection.localAddress.port - 1));
       
       while(!connection.empty)
       {
-        scope(exit) writeln("exit conn");
+        scope(exit) writeln("connection empty");
         
         ubyte[] buffer;
         buffer.length = cast(size_t)connection.leastSize;
@@ -105,10 +95,28 @@ class NetworkHandler : System!(NetworkInfo)
       }
       
     }, TCPListenOptions.distribute);
+  }
+
+  TCPConnection connection;
+  
+  void attemptConnection(ushort targetPort)
+  {
+    if (!isConnected)
+    {
+      writeln("attempting connection on port ", targetPort);
     
-    //auto connection = connectTCP("127.0.0.1", 5577);
-    //connection.write("holla");
-    //connection.flush();
+      isConnected = true;
+      connection = connectTCP("127.0.0.1", targetPort);
+      //connection.write("connected!");
+      //connection.flush;
+      //connection.write(writer);
+      
+      // TODO: the connection should stream network data
+    }
+    else
+    {
+      writeln("attempConnection when already connected");
+    }
   }
     
   override bool canAddEntity(Entity entity)
@@ -143,12 +151,6 @@ class NetworkHandler : System!(NetworkInfo)
   
   void parseMessage(string message)
   {
-  //string[string] values;
-  //foreach (keyvalue; file.File.byLine.map!(line => line.strip)
-                                     //.filter!(line => !line.empty)
-                                     //.filter!(line => !line.startsWith("#"))
-                                     //.map!(line => line.split("=")))
-  
     writeln("parsing message ", message);
   
     foreach (keyValue; message.splitLines.map!(line => line.strip)
@@ -220,6 +222,8 @@ class NetworkHandler : System!(NetworkInfo)
         outgoingData[entityForIndex[index].id.to!string ~ "." ~ key] = value;
       }
     }
+    
+    writeln("outgoing data ", outgoingData.length);
 
     string[string] data;
     foreach (key, value; outgoingData)
@@ -228,9 +232,19 @@ class NetworkHandler : System!(NetworkInfo)
         data[key] = value;
     }
     
-    data["timestamp"] = Clock.currTime.toISOExtString();
+    //data["timestamp"] = Clock.currTime.toISOExtString();
+
+    writer.message = "";
+    foreach (key, value; data)
+      writer.message ~= key ~ " = " ~ value ~ "\r\n";
     
-    writer.message = data.to!string ~ "\r\n";
+    if (writer.message.length > 0)
+      writeln("setting networkwriter message to ", writer.message);
+    
+    if (connection !is null && connection.connected)
+      connection.write(writer);
+    
+    //writer.message = data.to!string ~ "\r\n";
     
     formerOutgoingData = outgoingData;
   }

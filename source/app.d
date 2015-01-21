@@ -1,3 +1,5 @@
+module app;
+
 import std.algorithm;
 import std.random;
 import std.range;
@@ -23,8 +25,13 @@ import systemset;
 import timer;
 
 
-void main()
+static ushort port = 5577;
+
+void main(string[] args)
 {
+  if (args.length > 1)
+    port = args[1].to!ushort;
+
   int xres = 1024;
   int yres = 768;
   
@@ -39,7 +46,7 @@ void main()
   }
   
   Entity[] particles;
-  Entity[] npcs = createNpcs(1);
+  Entity[] npcs = createNpcs(0);
   foreach (npc; npcs)
     systemSet.addEntity(npc);
   
@@ -78,6 +85,7 @@ void main()
     gameControllerInput.handleAddRemoveEntity(systemSet, npcs);
     gameControllerInput.handleToggleDebugInfo(systemSet, debugText);
     gameControllerInput.handleToggleInputWindow(systemSet, inputWindow, mouseCursor);
+    gameControllerInput.handleNetworking(systemSet);
     editControllerInput.handleEditableText(inputWindow);
     player.handlePlayerFireAction(systemSet, npcs, timer);
     
