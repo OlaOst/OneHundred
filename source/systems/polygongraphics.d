@@ -49,7 +49,7 @@ class PolygonGraphics : System!Polygon
 
     component.position = entity.get!vec2("position");
     component.angle = entity.get!double("angle");
-    
+
     return component;
   }
 
@@ -82,11 +82,11 @@ class PolygonGraphics : System!Polygon
 
   override void updateFromEntities()
   {
-    foreach (uint index, Entity entity; entityForIndex)
+    foreach (index, entity; entityForIndex)
     {
       components[index].position = entity.get!vec2("position");
       components[index].angle = entity.get!double("angle");
-      
+
       components[index].vertices = entity.get!(vec2[])("polygon.vertices");
       components[index].colors = entity.get!(vec4[])("polygon.colors");
     }

@@ -31,7 +31,7 @@ class SpriteGraphics : System!Sprite
       texture.remove();
     }
   }
-  
+
   override bool canAddEntity(Entity entity)
   {
     return "position" in entity.values && Sprite.canMakeComponent(entity.values);
@@ -79,7 +79,7 @@ class SpriteGraphics : System!Sprite
 
   override void updateFromEntities()
   {
-    foreach (uint index, Entity entity; entityForIndex)
+    foreach (index, entity; entityForIndex)
     {
       components[index].position = entity.get!vec2("position");
       components[index].angle = entity.get!double("angle");

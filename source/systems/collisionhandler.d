@@ -65,12 +65,12 @@ class CollisionHandler : System!Collider
 
     foreach (component; components)
       component.overlappingColliders.length = 0;
-    
+
     foreach (collision; collisions)
     {
       collision.first.isColliding = true;
       collision.other.isColliding = true;
-      
+
       collision.first.overlappingColliders ~= collision.other;
       collision.other.overlappingColliders ~= collision.first;
     }
@@ -90,7 +90,7 @@ class CollisionHandler : System!Collider
 
   override void updateFromEntities()
   {
-    foreach (uint index, Entity entity; entityForIndex)
+    foreach (index, entity; entityForIndex)
     {
       components[index].updateFromEntity(entity);
     }

@@ -7,7 +7,7 @@
   "version": "0.0.1",
   "mainSourceFile": "source/app.d",
   "dependencies": {
-    "derelict-sdl2": ">=1.9.0",
+    "derelict-sdl2": { "version": ">=1.9.0", "path": "../DerelictSDL2" },
     "derelict-gl3": ">=1.0.10",
     "derelict-al": ">=1.0.0",
     "derelict-vorbis": ">=1.0.1",
@@ -19,34 +19,4 @@
   "importPaths" : ["../glamour"],
 
   "versions": ["Derelict3", "SDLImage", "gl3n", "VibeCustomMain"],
-
-  "configurations": [
-    {
-      "name": "default",
-      "targetType": "executable",
-    },
-    {
-      "name": "test",
-      "targetType": "executable",
-      "targetName": "testrun",
-      "sourcePaths": [
-        "source/tests",
-      ],
-      "excludedSourceFiles": [
-        "source/app.d",
-      ],
-      "versions": [
-        "Derelict3", "SDLImage", "gl3n",
-      ],
-      "dependencies": {
-        "derelict-sdl2": ">=1.2.8",
-        "derelict-gl3": { "version": ">=1.0.10" },
-      }
-    },
-    {
-      "name": "inline",
-      "targetType": "executable",
-      "buildOptions": ["inline"],
-    }
-  ]
 }
