@@ -22,82 +22,31 @@ class NetworkInfo
   string[string] remoteValueUpdates;
 }
 
-class NetworkWriter : InputStream
-{
-  string message = "ikke no nytt\n";
-  
-  bool empty() @property
-  {
-    dur!"msecs"(100).sleep;
-    
-    return message.length <= 0;
-  }
-  
-  ulong leastSize() @property
-  {
-    return message.length;
-  }
-  
-  bool dataAvailableForRead() @property
-  {
-    return true;
-  }
-  
-  const(ubyte)[] peek()
-  {
-    return message.to!(ubyte[]);
-  }
-  
-  void read(ubyte[] dst)
-  {
-    writeln("reading message ", message);
-    foreach (index, thebyte; dst)
-      dst[index] = message[index];
-  }
-}
-
 class NetworkHandler : System!(NetworkInfo)
 {
-  NetworkWriter writer;
+  ubyte[] data;
+  ConnectionStream outgoingConnection;
+  MemoryStream outgoingStream;
+  MemoryOutputStream incomingStream;
   
   bool isConnected = false;
   
   this()
-  {    
+  {
+    outgoingStream = new MemoryStream(data);
+    incomingStream = new MemoryOutputStream();
+    
     auto vibeTask = task(&runEventLoop);
     vibeTask.executeInNewThread();
-    
-    writer = new NetworkWriter();
-    
-    ubyte[1024] buffer;
     
     listenTCP(port, (connection) 
     { 
       writeln("got connection from ", connection.remoteAddress, " to ", connection.localAddress);
       
-      connection.write("hello\r\n");
-      connection.flush;
-      
-      // establish twoway connection
-      attemptConnection(cast(ushort)(connection.localAddress.port - 1));
-      
-      while(!connection.empty)
-      {
-        scope(exit) writeln("connection empty");
-        
-        ubyte[] buffer;
-        buffer.length = cast(size_t)connection.leastSize;
-        
-        connection.read(buffer);
-        
-        writeln("recieved data: ", cast(string)buffer, ", size ", buffer.length);
-        parseMessage(cast(string)buffer);
-      }
-      
+      pipeRealtime(incomingStream, connection);
     }, TCPListenOptions.distribute);
   }
 
-  TCPConnection connection;
   
   void attemptConnection(ushort targetPort)
   {
@@ -106,16 +55,13 @@ class NetworkHandler : System!(NetworkInfo)
       writeln("attempting connection on port ", targetPort);
     
       isConnected = true;
-      connection = connectTCP("127.0.0.1", targetPort);
-      //connection.write("connected!");
-      //connection.flush;
-      //connection.write(writer);
-      
-      // TODO: the connection should stream network data
+      outgoingConnection = connectTCP("127.0.0.1", targetPort);
+  
+      //outgoingConnection.write(outgoingStream);
     }
     else
     {
-      writeln("attempConnection when already connected");
+      writeln("attemptConnection when already connected");
     }
   }
     
@@ -194,59 +140,43 @@ class NetworkHandler : System!(NetworkInfo)
   
   override void updateValues()
   {
-    // read stream of key/values from network
-    // key should identify component/entity and the value to update, i.e. playership.position = [0.5, 0.4]
-    string[string] incomingData;
+    // TODO: for now we just assume we get a fully formed perfect block of data
+    auto incomingMessage = cast(string)incomingStream.data;
     
-    /*foreach (fullKey, value; incomingData)
+    if (incomingMessage.length > 0)
     {
-      // find matching component
-      auto keyParts = fullKey.retro.findSplit(".");
-      auto remoteEntityId = keyParts[0].to!string.retro.to!string;
-      auto key = keyParts[1].to!string.retro.to!string;
-      
-      auto remoteId = key.to!long;
-      
-      if (key !in componentForRemoteId)
-      //auto component = componentForRemoteId[key.to!long];
-      
-      component.valuesToRead[key] = value;
-    }*/
+      //writeln("updateValues, incomingmessage ", incomingMessage);
+      parseMessage(incomingMessage);
+      incomingStream.reset;
+    }
     
-    string[string] outgoingData;
-    
-    foreach (index, component; components)
+    if (isConnected)
     {
-      foreach (key, value; component.valuesToWrite)
+      string[string] outgoingData;
+      
+      foreach (index, component; components)
       {
-        outgoingData[entityForIndex[index].id.to!string ~ "." ~ key] = value;
+        foreach (key, value; component.valuesToWrite)
+        {
+          outgoingData[entityForIndex[index].id.to!string ~ "." ~ key] = value;
+        }
       }
+      
+      string[string] data;
+      foreach (key, value; outgoingData)
+      {
+        if (key !in formerOutgoingData || formerOutgoingData[key] != value)
+          data[key] = value;
+      }
+      
+      string message = "";
+      foreach (key, value; data)
+      {
+        message ~= key ~ " = " ~ value ~ "\r\n";
+      }
+      //writeln("writing message to outgoingConnection: ", message);
+      outgoingConnection.write(cast(ubyte[])message);      
     }
-    
-    writeln("outgoing data ", outgoingData.length);
-
-    string[string] data;
-    foreach (key, value; outgoingData)
-    {
-      if (key in formerOutgoingData && formerOutgoingData[key] != value)
-        data[key] = value;
-    }
-    
-    //data["timestamp"] = Clock.currTime.toISOExtString();
-
-    writer.message = "";
-    foreach (key, value; data)
-      writer.message ~= key ~ " = " ~ value ~ "\r\n";
-    
-    if (writer.message.length > 0)
-      writeln("setting networkwriter message to ", writer.message);
-    
-    if (connection !is null && connection.connected)
-      connection.write(writer);
-    
-    //writer.message = data.to!string ~ "\r\n";
-    
-    formerOutgoingData = outgoingData;
   }
   
   string[string] formerOutgoingData;
@@ -262,7 +192,7 @@ class NetworkHandler : System!(NetworkInfo)
         //auto remoteEntityId = keyParts[0].to!string.retro.to!string;
         //auto key = keyParts[1].to!string.retro.to!string;
       
-        writeln("NetworkHandler, entity ", entityForIndex[index].id, ", updating ", key, " to ", value);
+        writeln("updateEntities, entity ", entityForIndex[index].id, ", updating ", key, " to ", value);
       
         entityForIndex[index].values[key] = value;
       }
