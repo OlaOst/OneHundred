@@ -8,6 +8,7 @@ import std.stdio;
 
 import vibe.d;
 
+import app;
 import entity;
 import system;
 
@@ -21,94 +22,47 @@ class NetworkInfo
   string[string] remoteValueUpdates;
 }
 
-class NetworkWriter : InputStream
-{
-  string message = "ikke no nytt\n";
-  
-  bool empty() @ property
-  {
-    dur!"msecs"(1000).sleep;
-    
-    return false;
-  }
-  
-  ulong leastSize() @property
-  {
-    return message.length;
-  }
-  
-  bool dataAvailableForRead() @property
-  {
-    return true;
-  }
-  
-  const(ubyte)[] peek()
-  {
-    return message.to!(ubyte[]);
-  }
-  
-  void read(ubyte[] dst)
-  {
-    writeln("reading message ", message);
-    foreach (index, thebyte; dst)
-      dst[index] = message[index];
-  }
-}
-
 class NetworkHandler : System!(NetworkInfo)
 {
-  NetworkWriter writer;
+  ubyte[] data;
+  ConnectionStream outgoingConnection;
+  MemoryStream outgoingStream;
+  MemoryOutputStream incomingStream;
   
-  bool hasLoopbackConnection = false;
+  bool isConnected = false;
   
   this()
-  {    
+  {
+    outgoingStream = new MemoryStream(data);
+    incomingStream = new MemoryOutputStream();
+    
     auto vibeTask = task(&runEventLoop);
     vibeTask.executeInNewThread();
     
-    writer = new NetworkWriter();
-    
-    ubyte[1024] buffer;
-    
-    listenTCP(5577, (connection) 
+    listenTCP(port, (connection) 
     { 
       writeln("got connection from ", connection.remoteAddress, " to ", connection.localAddress);
       
-      connection.write("hello\r\n");
-      
-      // setup loopback connection
-      /*if (!hasLoopbackConnection)
-      {
-        hasLoopbackConnection = true;
-        auto loopbackConnection = connectTCP(connection.remoteAddress.toAddressString, 5577);
-        loopbackConnection.write("holla");
-        loopbackConnection.flush;
-      }*/
-      
-      //connection.write(writer);
-      
-      /*writeln("empty: ", connection.empty);
-      writeln("leastsize: ", connection.leastSize);
-      writeln("dataavailable: ", connection.dataAvailableForRead);*/
-      
-      while(!connection.empty)
-      {
-        scope(exit) writeln("exit conn");
-        
-        ubyte[] buffer;
-        buffer.length = cast(size_t)connection.leastSize;
-        
-        connection.read(buffer);
-        
-        writeln("recieved data: ", cast(string)buffer, ", size ", buffer.length);
-        parseMessage(cast(string)buffer);
-      }
-      
+      pipeRealtime(incomingStream, connection);
     }, TCPListenOptions.distribute);
+  }
+
+  
+  void attemptConnection(ushort targetPort)
+  {
+    if (!isConnected)
+    {
+      writeln("attempting connection on port ", targetPort);
     
-    //auto connection = connectTCP("127.0.0.1", 5577);
-    //connection.write("holla");
-    //connection.flush();
+      isConnected = true;
+      outgoingConnection = connectTCP("127.0.0.1", targetPort);
+  
+      //outgoingConnection.write(outgoingStream);
+    }
+    else
+    {
+      writeln("attemptConnection when already connected");
+    }
   }
     
   override bool canAddEntity(Entity entity)
@@ -143,12 +97,6 @@ class NetworkHandler : System!(NetworkInfo)
   
   void parseMessage(string message)
   {
-  //string[string] values;
-  //foreach (keyvalue; file.File.byLine.map!(line => line.strip)
-                                     //.filter!(line => !line.empty)
-                                     //.filter!(line => !line.startsWith("#"))
-                                     //.map!(line => line.split("=")))
-  
     writeln("parsing message ", message);
   
     foreach (keyValue; message.splitLines.map!(line => line.strip)
@@ -192,47 +140,43 @@ class NetworkHandler : System!(NetworkInfo)
   
   override void updateValues()
   {
-    // read stream of key/values from network
-    // key should identify component/entity and the value to update, i.e. playership.position = [0.5, 0.4]
-    string[string] incomingData;
+    // TODO: for now we just assume we get a fully formed perfect block of data
+    auto incomingMessage = cast(string)incomingStream.data;
     
-    /*foreach (fullKey, value; incomingData)
+    if (incomingMessage.length > 0)
     {
-      // find matching component
-      auto keyParts = fullKey.retro.findSplit(".");
-      auto remoteEntityId = keyParts[0].to!string.retro.to!string;
-      auto key = keyParts[1].to!string.retro.to!string;
-      
-      auto remoteId = key.to!long;
-      
-      if (key !in componentForRemoteId)
-      //auto component = componentForRemoteId[key.to!long];
-      
-      component.valuesToRead[key] = value;
-    }*/
+      //writeln("updateValues, incomingmessage ", incomingMessage);
+      parseMessage(incomingMessage);
+      incomingStream.reset;
+    }
     
-    string[string] outgoingData;
-    
-    foreach (index, component; components)
+    if (isConnected)
     {
-      foreach (key, value; component.valuesToWrite)
+      string[string] outgoingData;
+      
+      foreach (index, component; components)
       {
-        outgoingData[entityForIndex[index].id.to!string ~ "." ~ key] = value;
+        foreach (key, value; component.valuesToWrite)
+        {
+          outgoingData[entityForIndex[index].id.to!string ~ "." ~ key] = value;
+        }
       }
+      
+      string[string] data;
+      foreach (key, value; outgoingData)
+      {
+        if (key !in formerOutgoingData || formerOutgoingData[key] != value)
+          data[key] = value;
+      }
+      
+      string message = "";
+      foreach (key, value; data)
+      {
+        message ~= key ~ " = " ~ value ~ "\r\n";
+      }
+      //writeln("writing message to outgoingConnection: ", message);
+      outgoingConnection.write(cast(ubyte[])message);      
     }
-
-    string[string] data;
-    foreach (key, value; outgoingData)
-    {
-      if (key in formerOutgoingData && formerOutgoingData[key] != value)
-        data[key] = value;
-    }
-    
-    data["timestamp"] = Clock.currTime.toISOExtString();
-    
-    writer.message = data.to!string ~ "\r\n";
-    
-    formerOutgoingData = outgoingData;
   }
   
   string[string] formerOutgoingData;
@@ -248,7 +192,7 @@ class NetworkHandler : System!(NetworkInfo)
         //auto remoteEntityId = keyParts[0].to!string.retro.to!string;
         //auto key = keyParts[1].to!string.retro.to!string;
       
-        writeln("NetworkHandler, entity ", entityForIndex[index].id, ", updating ", key, " to ", value);
+        writeln("updateEntities, entity ", entityForIndex[index].id, ", updating ", key, " to ", value);
       
         entityForIndex[index].values[key] = value;
       }
