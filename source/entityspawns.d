@@ -21,6 +21,17 @@ void addParticles(ref Entity[] particles, SystemSet systemSet)
   systemSet.collisionHandler.collisionEffectParticles.length = 0;
 }
 
+void addNetworkEntities(SystemSet systemSet)
+{
+  foreach (entity; systemSet.networkHandler.entitiesToBeAdded)
+  {
+    import std.stdio;
+    writeln("adding remoteentity from networkhandler with values ", entity.values);
+    systemSet.addEntity(entity);
+  }
+  systemSet.networkHandler.entitiesToBeAdded.length = 0;
+}
+
 void addBullets(ref Entity[] npcs, SystemSet systemSet)
 {
   // npcs firing randomly

@@ -10,7 +10,7 @@ import systemset;
 import timer;
 
 
-void handlePlayerFireAction(Entity player, SystemSet systemSet, ref Entity[] npcs, Timer timer)
+void handlePlayerFireAction(Entity player, SystemSet systemSet, ref Entity[] npcs)
 {
   fire = systemSet.inputHandler.getComponent(player).isActionSet("fire");
   
@@ -33,7 +33,7 @@ void handlePlayerFireAction(Entity player, SystemSet systemSet, ref Entity[] npc
   }
   else if (reloadTimeLeft > 0.0)
   {
-    reloadTimeLeft -= timer.frameTime;
+    reloadTimeLeft -= systemSet.physics.timer.frameTime;
   }
 }
 

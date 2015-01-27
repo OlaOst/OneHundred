@@ -1,10 +1,10 @@
-module timer;
+module accumulatortimer;
 
 import std.algorithm;
 import std.datetime;
 
 
-class Timer
+class AccumulatorTimer
 {
 public:
   this(double maxFrametime, double timeStep)
@@ -28,7 +28,7 @@ public:
   }
 
   private StopWatch timer;
-  private double currentTime;
+  public double currentTime;
   
   public double frameTime = 0.0;
   
