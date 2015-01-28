@@ -25,19 +25,21 @@ import systemset;
 import timer;
 
 
-static ushort port = 5577;
+static __gshared ushort port = 5577;
 
 void main(string[] args)
 {
+  writeln("main start, args are ", args);
   if (args.length > 1)
     port = args[1].to!ushort;
 
+  writeln("port is ", port);
+    
   int xres = 1024;
   int yres = 768;
   
   auto renderer = new Renderer(xres, yres);
   auto systemSet = new SystemSet(xres, yres);
-  auto timer = new Timer();
   
   scope(exit)
   {
@@ -71,12 +73,9 @@ void main(string[] args)
   
   systemSet.addDebugEntities();
   
-  timer.start();
   while (!quit)
   {
-    timer.incrementAccumulator();
-    
-    systemSet.update(timer);
+    systemSet.update();
     
     auto gameControllerInput = systemSet.inputHandler.getComponent(gameController);
     auto editControllerInput = systemSet.inputHandler.getComponent(editController);
@@ -87,10 +86,11 @@ void main(string[] args)
     gameControllerInput.handleToggleInputWindow(systemSet, inputWindow, mouseCursor);
     gameControllerInput.handleNetworking(systemSet);
     editControllerInput.handleEditableText(inputWindow);
-    player.handlePlayerFireAction(systemSet, npcs, timer);
+    player.handlePlayerFireAction(systemSet, npcs);
     
     addParticles(particles, systemSet);
     addBullets(npcs, systemSet);
+    addNetworkEntities(systemSet);
     
     npcs = npcs.filter!(entity => !entity.get!bool("ToBeRemoved")).array;
     particles = particles.filter!(entity => !entity.get!bool("ToBeRemoved")).array;

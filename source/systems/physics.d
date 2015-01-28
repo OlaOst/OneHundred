@@ -6,6 +6,7 @@ import std.range;
     
 import gl3n.linalg;
 
+import accumulatortimer;
 import components.input;
 import converters;
 import entity;
@@ -14,18 +15,17 @@ import integrator.integrator;
 import integrator.state;
 import integrator.states;
 import system;
-import timer;
 
 
 class Physics : System!State
 {
   alias components currentStates;
   State[] previousStates;
-  Timer timer;
+  AccumulatorTimer timer;
 
-  void setTimer(Timer timer)
+  this()
   {
-    this.timer = timer;
+    timer = new AccumulatorTimer(0.25, 1.0/60.0);
   }
   
   override bool canAddEntity(Entity entity)
@@ -60,15 +60,17 @@ class Physics : System!State
     //StopWatch debugTimer;
     
     //debugTimer.start;
+    timer.incrementAccumulator();
     
     previousStates = currentStates;
-    while (timer.accumulator >= timer.physicsTimeStep)
+    double time = timer.currentTime;
+    while (timer.accumulator >= timer.timeStep)
     {
-      integrateStates(currentStates, previousStates, timer.time, timer.physicsTimeStep);
-      timer.accumulator -= timer.physicsTimeStep;
-      timer.time += timer.physicsTimeStep;
+      integrateStates(currentStates, previousStates, time, timer.timeStep);
+      timer.accumulator -= timer.timeStep;
+      time += timer.timeStep;
     }
-    interpolateStates(currentStates, previousStates, timer.accumulator / timer.physicsTimeStep);
+    interpolateStates(currentStates, previousStates, timer.accumulator / timer.timeStep);
     
     //debugText = format("physics components: %s\nphysics timings: %s", components.length, 
     //                                                                  debugTimer.peek.usecs*0.001);

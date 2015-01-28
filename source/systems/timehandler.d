@@ -2,18 +2,18 @@ module systems.timehandler;
 
 import std.conv;
 
+import accumulatortimer;
 import entity;
 import system;
-import timer;
 
 
 final class TimeHandler : System!double
 {
-  Timer timer;
+  AccumulatorTimer timer;
 
-  void setTimer(Timer timer)
+  this()
   {
-    this.timer = timer;
+    timer = new AccumulatorTimer(0.25, 1.0/60.0);
   }
   
   override bool canAddEntity(Entity entity)
@@ -28,6 +28,8 @@ final class TimeHandler : System!double
   
   override void updateValues()
   {
+    timer.incrementAccumulator();
+    
     foreach (int index, ref double lifeTime; components)
     {
       lifeTime -= timer.frameTime;

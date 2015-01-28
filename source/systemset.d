@@ -82,11 +82,8 @@ class SystemSet
       entityHandler.removeEntity(entity);
   }
   
-  void update(Timer timer)
+  void update()
   {
-    physics.setTimer(timer);
-    timeHandler.setTimer(timer);
-
     foreach (entityHandler; entityHandlers.filter!(handler => !graphicsHandlers.canFind(handler)))
       entityHandler.update();
       
