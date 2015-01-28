@@ -21,119 +21,61 @@ class NetworkInfo
   string[string] valuesToWrite; // to network
   string[string] valuesToRead; // from network
   
-  string[string] remoteValueUpdates;
+  //string[string] remoteValueUpdates;
 }
 
 class NetworkHandler : System!(NetworkInfo)
 {
   AccumulatorTimer timer;
   ubyte[] data;
-  ConnectionStream outgoingConnection;
-  MemoryStream outgoingStream;
-  MemoryOutputStream incomingStream;
-  
+  /*__gshared*/ UDPConnection outgoingConnection;
+  UDPConnection incomingConnection;
   bool hasOutgoingConnection = false;
   
   this()
   {
-    timer = new AccumulatorTimer(double.max, 1.0/2.0);
-    
-    outgoingStream = new MemoryStream(data);
-    incomingStream = new MemoryOutputStream();
-    
-    //auto vibeTask = task(&vibeLoop);
-    //vibeLoop.executeInNewThread();
-    auto vibeThread = new Thread({ vibeLoop(); });
-    vibeThread.start();
+    //timer = new AccumulatorTimer(double.max, 1.0/20.0);
     
     //setLogLevel(LogLevel.trace);
     
-    /+listenTCP(port, (connection) 
-    { 
-      writeln("got connection from ", connection.remoteAddress, " to ", connection.localAddress);
-      
-      pipeRealtime(incomingStream, connection);//, 0, 20.msecs); //(timer.timeStep * 1_000_000).to!long.usecs);
-      //incomingStream.write(connection);
-      connection.tcpNoDelay = true;
-    }, TCPListenOptions.distribute);+/
-  }
-
-  void vibeLoop()
-  {
-    runTask({udpListen();});
-    //runTask({udpSender(cast(ushort)(port+1));});
-    runEventLoop();
+    auto listenTask = task({ runTask({udpListen();}); runEventLoop(); });
+    listenTask.executeInNewThread();
   }
   
   void udpListen()
   {
-    //logTrace("setting up udpListener on port ", port.to!string);
-    writeln("setting up udpListener on port ", port.to!string);
-    auto udpListener = listenUDP(port);    
-    writeln("set up udpListener");
+    incomingConnection = listenUDP(port);
     
     while (true)
     {
-      //logTrace("updListen, receiving pack from ", udpListener.localAddress.to!string, ", bindaddress ", udpListener.bindAddress.to!string);
-      try
-      {
-        auto pack = udpListener.recv();
-        writeln("got udp packet: ", cast(string)pack);
-        incomingStream.write(/*cast(string)*/pack);
-      }
-      catch (Exception e)
-      {
-        writeln("timeout on udp listen, retrying");
-      }
+      auto pack = incomingConnection.recv();
+      // TODO: for now assume one pack contains a complete message.
+      parseMessage(cast(string)pack);
     }
   }
   
   void udpSender(ushort targetPort)
   {
-    writeln("setting up udpsender on port ", targetPort.to!string);
-    auto udpSenderConn = listenUDP(0);
-    udpSenderConn.connect("127.0.0.1", targetPort);
-    writeln("set up udpsender");
+    outgoingConnection = listenUDP(0);
+    outgoingConnection.connect("127.0.0.1", targetPort);
     
-    while (true)
+    /*while (true)
     {
+      // TODO: use AccumulatorTimer instead to slow down outgoing messages
       sleep(dur!"msecs"(100));
-      writeln("sending packet from ", udpSenderConn.localAddress, ", bindaddress ", udpSenderConn.bindAddress, " on port ", targetPort.to!string, ", content ", outgoingMessage);
-      //udpSenderConn.send(cast(ubyte[])"hello"); //, &host);
-      udpSenderConn.send(cast(ubyte[])outgoingMessage); //, &host);
-    }
+      if (outgoingMessage != null && outgoingMessage.length > 0)
+        outgoingConnection.send(cast(ubyte[])outgoingMessage);
+    }*/
   }
   
   void attemptConnection(ushort targetPort)
   {
     if (!hasOutgoingConnection)
     {
-      writeln("attempting connection on port ", targetPort);
-      /+
-      outgoingConnection = connectTCP("127.0.0.1", targetPort);
-      (cast(TCPConnection)outgoingConnection).tcpNoDelay = true;
-      
-      hasOutgoingConnection = true;
-      
-      //runTask({
-        if (outgoingMessage.length > 0)
-        {
-          writeln("writing message to outgoingConnection: ", outgoingMessage);
-          outgoingConnection.write(cast(ubyte[])outgoingMessage);
-          
-          //outgoingConnection.write(cast(ubyte[])message);
-          //writeln("leastsize before flush: ", outgoingConnection.leastSize);
-          outgoingConnection.flush();
-          //writeln("leastsize after flush: ", outgoingConnection.leastSize);
-        }
-      //});
-
-      //outgoingConnection.write(outgoingStream);
-      +/
-      
-      //runTask({udpSender();});
       auto senderTask = task({ runTask({udpSender(targetPort);}); runEventLoop(); });
       senderTask.executeInNewThread();
+      
+      timer = new AccumulatorTimer(double.max, 1.0/20.0);
       
       hasOutgoingConnection = true;
     }
@@ -145,7 +87,8 @@ class NetworkHandler : System!(NetworkInfo)
     
   override bool canAddEntity(Entity entity)
   {
-    return ("networked" in entity.values) !is null || ("remoteEntityId" in entity.values) !is null;
+    return ("networked" in entity.values) !is null || 
+           ("remoteEntityId" in entity.values) !is null;
   }
   
   override NetworkInfo makeComponent(Entity entity)
@@ -154,10 +97,11 @@ class NetworkHandler : System!(NetworkInfo)
 
     component.valuesToWrite = entity.values;
     
-    //componentForRemoteId[entity.id] = component;
-    
     if ("remoteEntityId" in entity.values)
-      componentForRemoteId[entity.values["remoteEntityId"].to!long] = component;
+    {
+      writeln("networkhandler makeComponent with remoteid ", entity.values["remoteEntityId"]);
+      entityForRemoteId[entity.values["remoteEntityId"].to!long] = entity;
+    }
     
     return component;
   }
@@ -175,8 +119,8 @@ class NetworkHandler : System!(NetworkInfo)
   
   void parseMessage(string message)
   {
-    writeln("parsing message with length ", message.length);
-  
+    //writeln("parsing message ", message);
+    
     string[string][long] valuesForNewEntities;
   
     foreach (keyValue; message.splitLines.map!(line => line.strip)
@@ -185,44 +129,33 @@ class NetworkHandler : System!(NetworkInfo)
                                          .map!(line => line.split("=")))
     {
       auto fullKey = keyValue[0].strip.to!string;
-      //auto value = keyValue[1].strip.to!string;
-      //values[key] = value.parseValue(key);
-      
       auto keyParts = fullKey.retro.findSplit(".");
-      
-      //writeln("parsing keyParts, remote id ", keyParts[2].to!string.retro.to!string);
-      //writeln("parsing keyParts, key ", keyParts[0].to!string.retro.to!string);
-      
       auto remoteEntityId = keyParts[2].to!string.retro.to!string.to!long;
       auto key = keyParts[0].to!string.retro.to!string;
       
-      //writeln("parsed remoteid ", remoteEntityId, " and key ", key);
-      
       auto value = keyValue[1].strip.to!string; //.parseValue(key).to!string;
       
-      //writeln("attempting to find ", remoteEntityId);
-      
-      if (remoteEntityId !in componentForRemoteId)
+      if (remoteEntityId !in entityForRemoteId)
       {
-        // create new entity
-        writeln("did not find remoteEntityId ", remoteEntityId, " in componentForRemoteId ", componentForRemoteId, ", supposed to create new entity now");
-        //auto entity = new Entity();
-        //entitiesToBeAdded ~= entity;
         valuesForNewEntities[remoteEntityId][key] = value;
       }
       else
       {
-        auto component = componentForRemoteId[remoteEntityId];
+        auto entity = entityForRemoteId[remoteEntityId];
         
         //writeln("found remoteEntityId, setting remoteValueUpdates on component");
         
-        component.remoteValueUpdates[key] = value;
+        //component.remoteValueUpdates[key] = value;
+        // TODO: filter away keys that should not be updated over network
+        // TODO: updating entity values directly like this should be done in updateEntities
+        entity.values[key] = value;
       }
     }
     
+    //writeln("valuesfornewentities: ", valuesForNewEntities);
     foreach (remoteEntityId, keyValues; valuesForNewEntities)
     {
-      writeln("adding remote entity with remotekey ", remoteEntityId, ", values ", keyValues);
+      //writeln("adding remote entity with remotekey ", remoteEntityId, ", values ", keyValues);
       
       auto entity = new Entity(keyValues);
       entity.values["remoteEntityId"] = remoteEntityId.to!string;
@@ -233,23 +166,12 @@ class NetworkHandler : System!(NetworkInfo)
   
   override void updateValues()
   {
-    yield();
-    
-    // TODO: for now we just assume we get a fully formed perfect block of data
-    auto incomingMessage = cast(string)incomingStream.data;
-    
-    // TODO: what if incomingMessage contains multiple updates for a value? need to sort/order by timestamp?
-    if (incomingMessage.length > 0)
-    {
-      //writeln("updateValues, incomingmessage ", incomingMessage);
-      parseMessage(incomingMessage);
-      incomingStream.reset;
-    }
-    
-    if (hasOutgoingConnection)
+    if (hasOutgoingConnection && outgoingConnection !is null)
     {
       timer.incrementAccumulator();
       
+      //import std.math;
+      //writeln("updatevalues running ", (timer.accumulator / timer.timeStep).floor, " updates");
       while (timer.accumulator >= timer.timeStep)
       {
         timer.accumulator -= timer.timeStep;
@@ -282,53 +204,27 @@ class NetworkHandler : System!(NetworkInfo)
         }
         outgoingMessage = message;
         //message ~= "timestamp" ~ " = " ~ Clock.currTime.to!string;
+        //writeln("setting outgoingmessage to ", outgoingMessage);
         
-        //runTask({
-          //writeln("writing message to outgoingConnection: ", message);
-          //outgoingBuffer[] = 0;
-          //outgoingBuffer[0..message.length] = cast(ubyte[])message;
-          //outgoingConnection.write(outgoingBuffer);
-          //outgoingConnection.write(cast(ubyte[])message);
-          
-          // calling leastSize here locks up while waiting for new data
-          //writeln("leastsize before flush: ", outgoingConnection.leastSize);
-          
-          //auto duhTask = task(&outgoingConnection.leastSize);
-          //duhTask.executeInNewThread();
-          
-          //outgoingConnection.flush();
-          //writeln("leastsize after flush: ", outgoingConnection.leastSize);
-        //});
+        outgoingConnection.send(cast(ubyte[])outgoingMessage);
       }
     }
   }
-  
-  ubyte[4096] outgoingBuffer;
-  
-  string outgoingMessage;
-  
-  string[string] formerOutgoingData;
   
   override void updateEntities()
   {
-    foreach (index, component; components)
+    /*foreach (index, component; components)
     {
-      //foreach (fullKey, value; component.valuesToRead)
       foreach (key, value; component.remoteValueUpdates)
-      {
-        //auto keyParts = fullKey.retro.findSplit(".");
-        //auto remoteEntityId = keyParts[0].to!string.retro.to!string;
-        //auto key = keyParts[1].to!string.retro.to!string;
-      
-        //writeln("updateEntities, entity ", entityForIndex[index].id, ", updating ", key, " to ", value);
-      
         entityForIndex[index].values[key] = value;
-      }
       
       component.remoteValueUpdates = null;
-    }
+    }*/
   }
   
-  NetworkInfo[long] componentForRemoteId;
+  string outgoingMessage;
+  string[string] formerOutgoingData;
+  //NetworkInfo[long] componentForRemoteId;
+  Entity[long] entityForRemoteId;
   Entity[] entitiesToBeAdded;
 }
