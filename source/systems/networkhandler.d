@@ -1,17 +1,14 @@
 module systems.networkhandler;
 
-import core.thread;
 import std.algorithm;
 import std.conv;
-import std.parallelism;
 import std.range;
 import std.stdio;
-
-import vibe.d;
+import std.string;
 
 import accumulatortimer;
-import app;
 import entity;
+import networkconnection;
 import system;
 
 
@@ -21,70 +18,20 @@ class NetworkInfo
   string[string] valuesToWrite; // to network
   string[string] valuesToRead; // from network
   
-  //string[string] remoteValueUpdates;
+  bool remoteComponent = false;
 }
 
+// TODO: NetworkHandler could be generalized into a StreamHandler that populates entities with data from streams, and writes entity data to streams
 class NetworkHandler : System!(NetworkInfo)
 {
-  AccumulatorTimer timer;
-  ubyte[] data;
-  /*__gshared*/ UDPConnection outgoingConnection;
-  UDPConnection incomingConnection;
-  bool hasOutgoingConnection = false;
-  
-  this()
+  private AccumulatorTimer timer;
+  private NetworkConnection connection;
+
+  this(ushort listenPort)
   {
-    //timer = new AccumulatorTimer(double.max, 1.0/20.0);
-    
-    //setLogLevel(LogLevel.trace);
-    
-    auto listenTask = task({ runTask({udpListen();}); runEventLoop(); });
-    listenTask.executeInNewThread();
+    connection = new NetworkConnection(listenPort, &parseMessage);
   }
   
-  void udpListen()
-  {
-    incomingConnection = listenUDP(port);
-    
-    while (true)
-    {
-      auto pack = incomingConnection.recv();
-      // TODO: for now assume one pack contains a complete message.
-      parseMessage(cast(string)pack);
-    }
-  }
-  
-  void udpSender(ushort targetPort)
-  {
-    outgoingConnection = listenUDP(0);
-    outgoingConnection.connect("127.0.0.1", targetPort);
-    
-    /*while (true)
-    {
-      // TODO: use AccumulatorTimer instead to slow down outgoing messages
-      sleep(dur!"msecs"(100));
-      if (outgoingMessage != null && outgoingMessage.length > 0)
-        outgoingConnection.send(cast(ubyte[])outgoingMessage);
-    }*/
-  }
-  
-  void attemptConnection(ushort targetPort)
-  {
-    if (!hasOutgoingConnection)
-    {
-      auto senderTask = task({ runTask({udpSender(targetPort);}); runEventLoop(); });
-      senderTask.executeInNewThread();
-      
-      timer = new AccumulatorTimer(double.max, 1.0/20.0);
-      
-      hasOutgoingConnection = true;
-    }
-    else
-    {
-      writeln("attemptConnection when already connected");
-    }
-  }
-    
   override bool canAddEntity(Entity entity)
   {
     return ("networked" in entity.values) !is null || 
@@ -94,13 +41,15 @@ class NetworkHandler : System!(NetworkInfo)
   override NetworkInfo makeComponent(Entity entity)
   {
     NetworkInfo component = new NetworkInfo();
-
-    component.valuesToWrite = entity.values;
     
     if ("remoteEntityId" in entity.values)
     {
       writeln("networkhandler makeComponent with remoteid ", entity.values["remoteEntityId"]);
       entityForRemoteId[entity.values["remoteEntityId"].to!long] = entity;
+    }
+    else
+    {
+      component.valuesToWrite = entity.values;
     }
     
     return component;
@@ -117,56 +66,9 @@ class NetworkHandler : System!(NetworkInfo)
     }
   }
   
-  void parseMessage(string message)
-  {
-    //writeln("parsing message ", message);
-    
-    string[string][long] valuesForNewEntities;
-  
-    foreach (keyValue; message.splitLines.map!(line => line.strip)
-                                         .filter!(line => !line.empty)
-                                         .filter!(line => !line.startsWith("#"))
-                                         .map!(line => line.split("=")))
-    {
-      auto fullKey = keyValue[0].strip.to!string;
-      auto keyParts = fullKey.retro.findSplit(".");
-      auto remoteEntityId = keyParts[2].to!string.retro.to!string.to!long;
-      auto key = keyParts[0].to!string.retro.to!string;
-      
-      auto value = keyValue[1].strip.to!string; //.parseValue(key).to!string;
-      
-      if (remoteEntityId !in entityForRemoteId)
-      {
-        valuesForNewEntities[remoteEntityId][key] = value;
-      }
-      else
-      {
-        auto entity = entityForRemoteId[remoteEntityId];
-        
-        //writeln("found remoteEntityId, setting remoteValueUpdates on component");
-        
-        //component.remoteValueUpdates[key] = value;
-        // TODO: filter away keys that should not be updated over network
-        // TODO: updating entity values directly like this should be done in updateEntities
-        entity.values[key] = value;
-      }
-    }
-    
-    //writeln("valuesfornewentities: ", valuesForNewEntities);
-    foreach (remoteEntityId, keyValues; valuesForNewEntities)
-    {
-      //writeln("adding remote entity with remotekey ", remoteEntityId, ", values ", keyValues);
-      
-      auto entity = new Entity(keyValues);
-      entity.values["remoteEntityId"] = remoteEntityId.to!string;
-      
-      entitiesToBeAdded ~= entity;
-    }
-  }
-  
   override void updateValues()
   {
-    if (hasOutgoingConnection && outgoingConnection !is null)
+    if (connection.sendingData)
     {
       timer.incrementAccumulator();
       
@@ -198,15 +100,17 @@ class NetworkHandler : System!(NetworkInfo)
         //formerOutgoingData = data.dup;
         
         string message = "";
+        
+        //message ~= "connection.port" ~ " = " ~ connection.listenPort.to!string ~ "\r\n";
+        
         foreach (key, value; data)
         {
           message ~= key ~ " = " ~ value ~ "\r\n";
         }
-        outgoingMessage = message;
         //message ~= "timestamp" ~ " = " ~ Clock.currTime.to!string;
-        //writeln("setting outgoingmessage to ", outgoingMessage);
+        //writeln("setting outgoing message to \n", message);
         
-        outgoingConnection.send(cast(ubyte[])outgoingMessage);
+        connection.sendMessage(message);
       }
     }
   }
@@ -222,9 +126,74 @@ class NetworkHandler : System!(NetworkInfo)
     }*/
   }
   
-  string outgoingMessage;
+  void startSendingData(ushort targetPort)
+  {
+    writeln("networkhandler startsendingdata on port ", targetPort);
+    timer = new AccumulatorTimer(double.max, 1.0/20.0);
+    connection.startSendingData(targetPort);
+  }
+  
+  void parseMessage(string message)
+  {
+    //writeln("parsing message ", message);
+    
+    string[string][long] valuesForNewEntities;
+  
+    foreach (keyValue; message.splitLines.map!(line => line.strip)
+                                         .filter!(line => !line.empty)
+                                         .filter!(line => !line.startsWith("#"))
+                                         .map!(line => line.split("=")))
+    {
+      auto fullKey = keyValue[0].strip.to!string;
+      auto keyParts = fullKey.retro.findSplit(".");
+      auto messageType = keyParts[2].to!string.retro.to!string;
+      auto key = keyParts[0].to!string.retro.to!string;
+      auto value = keyValue[1].strip.to!string; //.parseValue(key).to!string;
+      
+      if (messageType == "connection")
+      {
+        // connect back to connector
+        if (key == "port")
+        {
+          auto sourcePort = value.to!ushort;
+          startSendingData(sourcePort);
+        }
+      }
+      else
+      {
+        auto remoteEntityId = messageType.to!long;
+        
+        if (remoteEntityId !in entityForRemoteId)
+        {
+          valuesForNewEntities[remoteEntityId][key] = value;
+        }
+        else
+        {
+          auto entity = entityForRemoteId[remoteEntityId];
+          
+          //writeln("found remoteEntityId, setting remoteValueUpdates on component");
+          
+          //component.remoteValueUpdates[key] = value;
+          // TODO: filter away keys that should not be updated over network
+          // TODO: updating entity values directly like this should be done in updateEntities
+          entity.values[key] = value;
+        }
+      }
+    }
+    
+    //writeln("valuesfornewentities: ", valuesForNewEntities);
+    foreach (remoteEntityId, keyValues; valuesForNewEntities)
+    {
+      //writeln("adding remote entity with remotekey ", remoteEntityId, ", values ", keyValues);
+      
+      auto entity = new Entity(keyValues);
+      entity.values["remoteEntityId"] = remoteEntityId.to!string;
+      
+      entitiesToBeAdded ~= entity;
+    }
+  }
+  
   string[string] formerOutgoingData;
-  //NetworkInfo[long] componentForRemoteId;
   Entity[long] entityForRemoteId;
   Entity[] entitiesToBeAdded;
 }

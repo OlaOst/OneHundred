@@ -40,7 +40,7 @@ class SystemSet
   RelationHandler relationHandler;
   NetworkHandler networkHandler;
   
-  this(int xres, int yres)
+  this(int xres, int yres, ushort listenPort)
   {
     graphics = new Graphics(xres, yres);
     polygonGraphics = new PolygonGraphics(xres, yres, graphics.camera);
@@ -52,7 +52,7 @@ class SystemSet
     soundSystem = new SoundSystem();
     timeHandler = new TimeHandler();
     relationHandler = new RelationHandler();
-    networkHandler = new NetworkHandler();
+    networkHandler = new NetworkHandler(listenPort);
     
     entityHandlers = cast(EntityHandler[])[graphics, physics, soundSystem,
                                            polygonGraphics, spriteGraphics, textGraphics, 

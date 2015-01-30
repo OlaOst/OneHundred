@@ -23,11 +23,11 @@ void handleZoom(Input gameInput, Camera camera)
     camera.zoom -= camera.zoom * 1.0/60.0;
 }
 
-void handleNetworking(Input gameInput, SystemSet systemSet)
+void handleNetworking(Input gameInput, SystemSet systemSet, ushort listenPort)
 {
   if (gameInput.isActionSet("attemptNetworkConnection"))
   {
-    systemSet.networkHandler.attemptConnection(cast(ushort)(port + 1));
+    systemSet.networkHandler.startSendingData(cast(ushort)(listenPort + 1));
   }
 }
 

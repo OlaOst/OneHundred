@@ -25,21 +25,22 @@ import systemset;
 import timer;
 
 
-static __gshared ushort port = 5577;
+//static __gshared ushort listenPort = 5577;
 
 void main(string[] args)
 {
-  writeln("main start, args are ", args);
+  ushort listenPort = 5577;
+  writeln("main start, args are ", listenPort);
   if (args.length > 1)
-    port = args[1].to!ushort;
+    listenPort = args[1].to!ushort;
 
-  writeln("port is ", port);
-    
+  writeln("port is ", listenPort);
+  
   int xres = 1024;
   int yres = 768;
   
   auto renderer = new Renderer(xres, yres);
-  auto systemSet = new SystemSet(xres, yres);
+  auto systemSet = new SystemSet(xres, yres, listenPort);
   
   scope(exit)
   {
@@ -53,6 +54,10 @@ void main(string[] args)
     systemSet.addEntity(npc);
   
   auto player = "data/player.txt".createEntityFromFile;
+  
+  if (listenPort == 5578)
+    player.values["sprite"] =  "images/playerShip1_red.png";
+  
   systemSet.addEntity(player);
   
   Entity inputWindow = null;
@@ -84,7 +89,7 @@ void main(string[] args)
     gameControllerInput.handleAddRemoveEntity(systemSet, npcs);
     gameControllerInput.handleToggleDebugInfo(systemSet, debugText);
     gameControllerInput.handleToggleInputWindow(systemSet, inputWindow, mouseCursor);
-    gameControllerInput.handleNetworking(systemSet);
+    gameControllerInput.handleNetworking(systemSet, listenPort);
     editControllerInput.handleEditableText(inputWindow);
     player.handlePlayerFireAction(systemSet, npcs);
     
