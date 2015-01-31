@@ -4,10 +4,13 @@ import std.parallelism;
 
 import vibe.d;
 
+import systems.networkhandler;
+
+
 // TODO: error handling, checksums, rate and volume limiting
 class NetworkConnection
 {
-  this(ushort listenPort, void delegate(string) parseMessage)
+  this(ushort listenPort, void function(string, NetworkHandler) parseMessage, NetworkHandler networkHandler)
   {
     //setLogLevel(LogLevel.trace);
     
@@ -21,7 +24,7 @@ class NetworkConnection
         {
           auto pack = connection.recv();
           // TODO: for now assume one pack contains a complete message.
-          parseMessage(cast(string)pack);
+          parseMessage(cast(string)pack, networkHandler);
         }
       }); 
       
