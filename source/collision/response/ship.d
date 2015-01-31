@@ -71,17 +71,6 @@ Entity[] shipCollisionResponse(Collision collision, CollisionHandler collisionHa
     firstColliderEntity.values["velocity"] = firstVelocity.to!string;
     otherColliderEntity.values["velocity"] = otherVelocity.to!string;
   }
-
-  // TODO: is it right to integrate by timeStep here?
-  /*first.force = (firstVelocity * firstMass - first.velocity * firstMass) * 
-                (1.0 / Timer.timeStep) * 1.0;
-  other.force = (otherVelocity * otherMass - other.velocity * otherMass) * 
-                (1.0 / Timer.timeStep) * 1.0;*/
-  // TODO: need timeStep from Physics timer for (1.0/60.0) term
-  first.force = (firstVelocity * firstMass - first.velocity * firstMass) * 
-                (1.0 / (1.0/60.0)) * 1.0;
-  other.force = (otherVelocity * otherMass - other.velocity * otherMass) * 
-                (1.0 / (1.0/60.0)) * 1.0;
   
   // TODO: change positions to ensure colliders does not overlap
   auto firstPos = firstColliderEntity.get!vec2("position");
