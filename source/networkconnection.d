@@ -4,28 +4,7 @@ import std.parallelism;
 
 import vibe.d;
 
-
-// what kind of messages can the networkhandler send?
-// 'i want to connect' message
-// 'i accept your connection'
-// ('i refuse your connection' - implicit if just ignoring, no reply gotten?)
-// 'send me all your stuff'
-// 'send me diffs'
-
-// sequence
-// 1. Foo sends connect message to Bar
-// 2. Bar receives connect message, sends back accept connect message
-// 3. Foo receives accept message, sends 'request full update' message to Bar
-// 4. Bar receives 'request full update' message, sends all values of networked entities to Foo
-// 4b. Bar sends 'requests full update' message to Foo
-// 5. Foo receives full update message, creates remote-controlled entities ready to receive updates from Bar
-// 6. Foo sends 'request incremental updates' to Bar
-// 7. Bar receives 'request incremental updates', starts streaming messages of diffs of values of networked entities to Foo
-
-// which sequence elements can be done simultaneously?
-// no requesting data until accept connect message received
-// TODO: error handling, checksums, what values should be sent, how often, how many at once, how many per second
-
+// TODO: error handling, checksums, rate and volume limiting
 class NetworkConnection
 {
   this(ushort listenPort, void delegate(string) parseMessage)
