@@ -20,7 +20,8 @@ class SameShape : Relation
   
   void updateValues(Entity target)
   {
-    assert("aabb" in target.values, "Could not find AABB in target values: " ~ target.values.to!string);
+    assert("aabb" in target.values, 
+           "Could not find AABB in target values: " ~ target.values.to!string);
     
     auto aabb = target.values["aabb"].myTo!AABB;
     source.values["polygon.vertices"] = [[aabb.min.x, aabb.min.y], 
