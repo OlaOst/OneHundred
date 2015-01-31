@@ -13,7 +13,7 @@ import components.drawables.polygon;
 import components.sound;
 import converters;
 import entity;
-import entityfactory.tests;
+import entityfactory.texts;
 import systems.collisionhandler;
 import timer;
 

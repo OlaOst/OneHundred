@@ -9,7 +9,7 @@ import components.collider;
 import components.input;
 import converters;
 import entity;
-import entityfactory.tests;
+import entityfactory.texts;
 import systemset;
 
 

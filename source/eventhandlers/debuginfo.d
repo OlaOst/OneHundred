@@ -4,7 +4,7 @@ import gl3n.linalg;
 
 import components.input;
 import entity;
-import entityfactory.tests;
+import entityfactory.texts;
 import systemset;
 
 
