@@ -81,5 +81,7 @@ Entity createBullet(vec2 position, float angle, vec2 velocity,
 
   entity.values["spawner"] = spawnerId.to!string;
   
+  entity.values["networked"] = true.to!string;
+  
   return entity;
 }

@@ -14,12 +14,12 @@ import system;
 
 class NetworkInfo
 {
+  long localEntityId;
   long remoteEntityId;
   string[string] valuesToWrite; // to network
   string[string] lastSentValues;
   
   bool remoteComponent = false;
-  bool sendAllValues = false;
   bool sendChangedValues = false;
 }
 
@@ -45,15 +45,22 @@ class NetworkHandler : System!(NetworkInfo)
   {
     NetworkInfo component = new NetworkInfo();
     
+    //writeln("making network component from entity ", entity.id, " with values ", entity.values);
+    
+    component.localEntityId = entity.id;
+    
     if ("remoteEntityId" in entity.values)
     {
-      writeln("networkhandler makeComponent with remoteid ", entity.values["remoteEntityId"]);
+      //writeln("networkhandler makeComponent with remoteid ", entity.values["remoteEntityId"]);
       entityForRemoteId[entity.values["remoteEntityId"].to!long] = entity;
       component.remoteComponent = true;
     }
     else
     {
       component.valuesToWrite = entity.values;
+      
+      if (requestedChangedValues)
+        component.sendChangedValues = true;
     }
     
     return component;
@@ -84,48 +91,22 @@ class NetworkHandler : System!(NetworkInfo)
       
         string[string] outgoingData;
         
-        foreach (index, component; components.filter!(component => component.sendAllValues).array)
-        {
-          foreach (key, value; component.valuesToWrite)
-          {
-            auto sendKey = entityForIndex[index].id.to!string ~ "." ~ key;
-            
-            //writeln("building sendKey from key ", key, " and entityid ", entityForIndex[index].id, ": ", sendKey);
-            
-            outgoingData[sendKey] = value;
-            component.lastSentValues[key] = value;
-          }
-          component.sendAllValues = false; // all values have been sent, no need to resend later on
-        }
-        
-        foreach (index, component; components.filter!(component => component.sendChangedValues).array)
+        foreach (component; components.filter!(component => component.sendChangedValues))
         {
           foreach (key; component.valuesToWrite.byKey.filter!(key => component.lastSentValues.get(key, null) != component.valuesToWrite[key]))
           {
-            auto sendKey = entityForIndex[index].id.to!string ~ "." ~ key;
+            auto sendKey = component.localEntityId.to!string ~ "." ~ key;
             outgoingData[sendKey] = component.valuesToWrite[key];
             component.lastSentValues[key] = component.valuesToWrite[key];
           }
         }
         
-        //string message = "";
-        
-        //message ~= "connection.port" ~ " = " ~ connection.listenPort.to!string ~ "\r\n";
-        
-        //foreach (key, value; outgoingData)
-        //{
-          //message ~= key ~ " = " ~ value ~ "\r\n";
-        //}
-        //message ~= "timestamp" ~ " = " ~ Clock.currTime.to!string;
-        
-                
-        //string message = reduce!((key, value) => key ~ " = " ~ value ~ "\r\n")("", outgoingData);
         string message = "";
         foreach (key, value; outgoingData)
           message ~= key ~ " = " ~ value ~ "\r\n";
         
-        if (message.length > 0)
-          writeln("setting outgoing message to \n---\n", message, "\n---");
+        //if (message.length > 0)
+          //writeln("setting outgoing message to \n---\n", message, "\n---");
         
         connection.sendMessage(message);
       }
@@ -134,34 +115,23 @@ class NetworkHandler : System!(NetworkInfo)
   
   override void updateEntities()
   {
-    /*foreach (index, component; components)
-    {
-      foreach (key, value; component.remoteValueUpdates)
-        entityForIndex[index].values[key] = value;
-      
-      component.remoteValueUpdates = null;
-    }*/
   }
   
   void startSendingData(ushort targetPort)
   {
-    //assert(!connection.sendingData);
     if (connection.sendingData)
       return;
     
     writeln("networkhandler startsendingdata on port ", targetPort);
-    timer = new AccumulatorTimer(double.max, 1.0/20.0);
+    timer = new AccumulatorTimer(double.max, 1.0/30.0);
     connection.startSendingData(targetPort);
     
-    //message ~= "connection.port" ~ " = " ~ connection.listenPort.to!string ~ "\r\n";
     connection.sendMessage("connection.port = " ~ connection.connection.localAddress.port.to!string ~ "\r\n");
   }
   
-  bool requestedAllValues = false;
-  bool requestedChangedValues = false;
   void parseMessage(string message)
   {
-    writeln("parsing message \n---\n", message, "\n---");
+    //writeln("parsing message \n---\n", message, "\n---");
     
     string[string][long] valuesForNewEntities;
   
@@ -171,10 +141,20 @@ class NetworkHandler : System!(NetworkInfo)
                                          .map!(line => line.split("=")))
     {
       auto fullKey = keyValue[0].strip.to!string;
-      auto keyParts = fullKey.retro.findSplit(".");
-      auto messageType = keyParts[2].to!string.retro.to!string;
-      auto key = keyParts[0].to!string.retro.to!string;
+      //auto keyParts = fullKey.retro.findSplit(".");
+      //auto messageType = keyParts[2].to!string.retro.to!string;
+      //auto key = keyParts[0].to!string.retro.to!string;
+      auto keyParts = fullKey.findSplit(".");
+      auto messageType = keyParts[0];
+      auto key = keyParts[2];
       auto value = keyValue[1].strip.to!string; //.parseValue(key).to!string;
+      
+      scope(failure) writeln("parseMessage failure, keyvalue ", keyValue, 
+                                                "\nfullKey ", fullKey,
+                                                "\nkeyParts ", keyParts,
+                                                "\nmessageType ", messageType,
+                                                "\nkey ", key,
+                                                "\nvalue ", value);
       
       if (messageType == "connection")
       {
@@ -187,36 +167,20 @@ class NetworkHandler : System!(NetworkInfo)
           connection.sendMessage("connection.accepted = true");
         }
         
-        if (key == "accepted" && connection.sendingData && !requestedAllValues)
+        if (key == "accepted" && connection.sendingData)
         {
           writeln("got connection.accepted message");
-          //connection.sendMessage("request.allValues = true");
-          //requestedAllValues = true;
           connection.sendMessage("request.changedValues = true");
           requestedChangedValues = true;
         }
       }
       else if (messageType == "request" && connection.sendingData)
       {
-        if (key == "allValues")
-        {
-          foreach (component; components.filter!(component => !component.remoteComponent))
-          {
-            component.sendAllValues = true;
-            component.sendChangedValues = false;
-          }
-          
-          if (!requestedAllValues)
-          {
-            connection.sendMessage("request.allValues = true");
-            requestedAllValues = true;
-          }
-        }
         if (key == "changedValues")
         {
           foreach (component; components.filter!(component => !component.remoteComponent))
           {
-            component.sendAllValues = false;
+            //component.sendAllValues = false;
             component.sendChangedValues = true;
           }
           
@@ -264,4 +228,5 @@ class NetworkHandler : System!(NetworkInfo)
   string[string] formerOutgoingData;
   Entity[long] entityForRemoteId;
   Entity[] entitiesToBeAdded;
+  bool requestedChangedValues = false;
 }
