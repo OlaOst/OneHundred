@@ -8,10 +8,10 @@ import std.range;
 import std.string;
 
 import entity;
-import entityhandler;
+import systemdebug;
 
 
-class System(ComponentType) : EntityHandler
+abstract class System(ComponentType) : SystemDebug
 {
   invariant()
   {
@@ -35,8 +35,6 @@ class System(ComponentType) : EntityHandler
   size_t[const Entity] indexForEntity;
   Entity[size_t] entityForIndex;
   ComponentType[] components;
-  double debugTimingInternal;
-  string debugTextInternal;
   
   ComponentType getComponent(Entity entity)
   {
@@ -92,26 +90,6 @@ class System(ComponentType) : EntityHandler
   protected abstract void updateFromEntities();
   protected abstract void updateValues();
   protected abstract void updateEntities();
-  
-  double debugTiming() @property
-  {
-    return debugTimingInternal;
-  }
-  
-  void debugTiming(double debugTimingParameter) @property
-  {
-    debugTimingInternal = debugTimingParameter;
-  }
-  
-  string debugText() @property
-  {
-    return debugTextInternal;
-  }
-  
-  void debugText(string debugTextParameter) @property
-  {
-    debugTextInternal = debugTextParameter;
-  }
   
   int componentCount() @property
   {

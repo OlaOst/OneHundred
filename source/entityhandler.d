@@ -10,6 +10,7 @@ interface EntityHandler
   void update();
   
   string debugText() @property;
+  void debugText(string debugTextParameter) @property;
   double debugTiming() @property;
   int componentCount() @property;
   
