@@ -18,7 +18,7 @@ class InputHandler : System!Input
 {
   public override bool canAddEntity(Entity entity)
   {
-    return ("inputType" in entity.values) !is null;
+    return ("inputType" in entity.values) !is null && "remoteEntityId" !in entity.values;
   }
 
   public override Input makeComponent(Entity entity)
