@@ -8,6 +8,7 @@ import std.stdio;
 import gl3n.linalg;
 
 import components.input;
+import debugentities;
 import entity;
 import entityfactory.controllers;
 import entityfactory.entities;
