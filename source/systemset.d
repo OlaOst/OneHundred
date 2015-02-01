@@ -1,9 +1,8 @@
 module systemset;
 
 import std.algorithm;
-import std.conv;
+import std.array;
 import std.datetime;
-import std.range;
 import std.string;
 
 import entity;
@@ -19,7 +18,6 @@ import systems.soundsystem;
 import systems.spritegraphics;
 import systems.textgraphics;
 import systems.timehandler;
-import timer;
 
 
 class SystemSet
@@ -53,12 +51,10 @@ class SystemSet
     timeHandler = new TimeHandler();
     relationHandler = new RelationHandler();
     networkHandler = new NetworkHandler(listenPort);
-    
     entityHandlers = cast(EntityHandler[])[graphics, physics, soundSystem,
                                            polygonGraphics, spriteGraphics, textGraphics, 
                                            inputHandler, collisionHandler,  
                                            timeHandler, relationHandler, networkHandler];
-                                           
     graphicsHandlers = cast(EntityHandler[])[polygonGraphics, spriteGraphics, textGraphics];
   }
   
@@ -72,35 +68,31 @@ class SystemSet
   {
     foreach (entityHandler; entityHandlers)
       entityHandler.addEntity(entity);
-    
     entities ~= entity;
-  }
-  
-  private void removeEntity(Entity entity)
-  {
-    foreach (entityHandler; entityHandlers)
-      entityHandler.removeEntity(entity);
   }
   
   void update()
   {
     foreach (entityHandler; entityHandlers.filter!(handler => !graphicsHandlers.canFind(handler)))
       entityHandler.update();
-      
     StopWatch graphicsTimer;
     graphicsTimer.start;
     foreach (graphicsHandler; graphicsHandlers)
       graphicsHandler.update();
-    
-    auto graphicsComponentCount = polygonGraphics.components.length + spriteGraphics.components.length + textGraphics.components.length;
-    graphicsTimingText = format("graphics components: %s\ngraphics timings: %s", graphicsComponentCount, graphicsTimer.peek.usecs*0.001);
+    auto graphicsComponentCount = polygonGraphics.components.length + 
+                                  spriteGraphics.components.length + 
+                                  textGraphics.components.length;
+    graphicsTimingText = format("graphics components: %s\ngraphics timings: %s", 
+                                graphicsComponentCount, 
+                                graphicsTimer.peek.usecs*0.001);
   }
   
   Entity[] removeEntitiesToBeRemoved()
   {
     auto removedEntities = entities.filter!(entity => entity.get!bool("ToBeRemoved"));
     foreach (removedEntity; removedEntities)
-      removeEntity(removedEntity);
+      foreach (entityHandler; entityHandlers)
+        entityHandler.removeEntity(removedEntity);
     entities = entities.filter!(entity => !entity.get!bool("ToBeRemoved")).array;
     return removedEntities.array;
   }
