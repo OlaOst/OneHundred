@@ -10,7 +10,9 @@ import systems.networkhandler;
 // TODO: error handling, checksums, rate and volume limiting
 class NetworkConnection
 {
-  this(ushort listenPort, void function(string, NetworkHandler) parseMessage, NetworkHandler networkHandler)
+  this(ushort listenPort, 
+       void function(string, NetworkHandler) parseMessage, 
+       NetworkHandler networkHandler)
   {
     //setLogLevel(LogLevel.trace);
     
