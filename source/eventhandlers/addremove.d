@@ -24,6 +24,6 @@ void handleAddRemoveEntity(Input gameInput, SystemSet systemSet, ref Entity[] np
   if (removeEntity && npcs.length > 0)
   {
     auto entity = npcs[$-1];
-    entity.values["ToBeRemoved"] = true.to!string;
+    entity["ToBeRemoved"] = true;
   }
 }

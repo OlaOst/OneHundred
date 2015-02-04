@@ -15,6 +15,6 @@ class InspectValues : Relation
   
   void updateValues(Entity target)
   {
-    source.values["text"] = target.debugInfo;
+    source["text"] = target.debugInfo;
   }
 }

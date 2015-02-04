@@ -14,14 +14,14 @@ Entity createText(string text, vec2 position)
 {
   auto textEntity = new Entity();
   
-  textEntity.values["position"] = position.to!string;
-  //textEntity.values["velocity"] = vec2(0.0, 0.1).to!string;
-  //textEntity.values["mass"] = 1000.1.to!string;
-  textEntity.values["angle"] = 0.0.to!string;
-  textEntity.values["size"] = 0.1.to!string;
-  textEntity.values["text"] = text;
-  textEntity.values["color"] = vec4(1.0, 1.0, 1.0, 1.0).to!string;
-  textEntity.values["collider"] = ColliderType.GuiElement.to!string;
+  textEntity["position"] = position;
+  //textEntity["velocity"] = vec2(0.0, 0.1);
+  //textEntity["mass"] = 1000.1;
+  textEntity["angle"] = 0.0;
+  textEntity["size"] = 0.1;
+  textEntity["text"] = text;
+  textEntity["color"] = vec4(1.0, 1.0, 1.0, 1.0);
+  textEntity["collider"] = ColliderType.GuiElement;
   
   return textEntity;
 }
@@ -29,20 +29,20 @@ Entity createText(string text, vec2 position)
 Entity createTextCover(Entity textEntity, AABB textAABB)
 {
   auto textCover = new Entity();
-  textCover.values["position"] = textEntity.values["position"];
-  textCover.values["angle"] = 0.0.to!string;
-  textCover.values["polygon.vertices"] = [[textAABB.min.x, textAABB.min.y], 
-                                          [textAABB.min.x, textAABB.max.y], 
-                                          [textAABB.max.x, textAABB.min.y],
-                                          [textAABB.min.x, textAABB.max.y], 
-                                          [textAABB.max.x, textAABB.max.y], 
-                                          [textAABB.max.x, textAABB.min.y]].to!string;
-  textCover.values["polygon.colors"] = [0.0, 0.5, 0.5, 0.5].repeat.take(6).array.to!string;
+  textCover["position"] = textEntity.get!vec2("position");
+  textCover["angle"] = 0.0.to!string;
+  textCover["polygon.vertices"] = [[textAABB.min.x, textAABB.min.y], 
+                                   [textAABB.min.x, textAABB.max.y], 
+                                   [textAABB.max.x, textAABB.min.y],
+                                   [textAABB.min.x, textAABB.max.y], 
+                                   [textAABB.max.x, textAABB.max.y], 
+                                   [textAABB.max.x, textAABB.min.y]];
+  textCover["polygon.colors"] = [0.0, 0.5, 0.5, 0.5].repeat.take(6).array;
   
-  textCover.values["relation.types"] = ["RelativeValues", "SameShape", "DieTogether"].to!string;
-  textCover.values["relation.targetId"] = textEntity.id.to!string;
-  textCover.values["relation.value.position"] = vec2(0.0, 0.0).to!string;
-  //textCover.values["relation.value.aabb"] = "same";//AABB(vec3(0,0,0),vec3(0,0,0)).to!string;
+  textCover["relation.types"] = ["RelativeValues", "SameShape", "DieTogether"];
+  textCover["relation.targetId"] = textEntity.id;
+  textCover["relation.value.position"] = vec2(0.0, 0.0);
+  //textCover["relation.value.aabb"] = "same";//AABB(vec3(0,0,0),vec3(0,0,0));
   
   return textCover;
 }

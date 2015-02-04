@@ -47,11 +47,6 @@ final class Polygon : Drawable
       colors ~= [vec4(1.0, 1.0, 1.0, 1.0), color, color];
     }
   }
-  
-  static bool canMakeComponent(string[string] values)
-  {
-    return "polygon.vertices" in values && ("polygon.colors" in values || "color" in values);
-  }
 }
 
 bool isClockwise(vec2 p1, vec2 p2, vec2 p3)

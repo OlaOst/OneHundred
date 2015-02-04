@@ -33,9 +33,4 @@ final class Text : Drawable
     
     vertices = baseSquare.dup.map!(vertex => vertex * size).array;
   }
-  
-  static bool canMakeComponent(string[string] values)
-  {
-    return "text" in values && "size" in values && "color" in values;
-  }
 }

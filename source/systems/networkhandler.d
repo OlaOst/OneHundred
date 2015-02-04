@@ -23,8 +23,7 @@ class NetworkHandler : System!(NetworkInfo)
   
   override bool canAddEntity(Entity entity)
   {
-    return ("networked" in entity.values) !is null || 
-           ("remoteEntityId" in entity.values) !is null;
+    return entity.has("networked") || entity.has("remoteEntityId");
   }
   
   override NetworkInfo makeComponent(Entity entity)
@@ -32,9 +31,9 @@ class NetworkHandler : System!(NetworkInfo)
     NetworkInfo component = new NetworkInfo();
     component.localEntityId = entity.id;
     
-    if ("remoteEntityId" in entity.values)
+    if (entity.has("remoteEntityId"))
     {
-      entityForRemoteId[entity.values["remoteEntityId"].to!long] = entity;
+      entityForRemoteId[entity.get!long("remoteEntityId")] = entity;
       component.remoteComponent = true;
     }
     else
@@ -48,7 +47,7 @@ class NetworkHandler : System!(NetworkInfo)
   {
     foreach (index, component; components)
       foreach (key; component.valuesToWrite.byKey)
-        component.valuesToWrite[key] = entityForIndex[index].values[key];
+        component.valuesToWrite[key] = entityForIndex[index][key];
   }
   
   override void updateValues()

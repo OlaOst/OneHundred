@@ -35,7 +35,7 @@ void handleToggleDebugInfo(Input gameInput, SystemSet systemSet, ref Entity debu
       break;
   }*/
   
-  debugText.values["text"] = systemSet.entityHandlers[index].debugText;
+  debugText["text"] = systemSet.entityHandlers[index].debugText;
   
-  assert(debugText.values["text"] !is null);
+  assert(debugText.get!string("text") !is null);
 }

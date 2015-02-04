@@ -17,11 +17,11 @@ void handlePlayerFireAction(Entity player, SystemSet systemSet, ref Entity[] npc
   static float reloadTimeLeft = 0.0;
   if (fire && reloadTimeLeft <= 0.0)
   {
-    auto angle = player.values["angle"].to!double;
+    auto angle = player.get!double("angle");
     
-    auto bullet = createBullet(player.values["position"].myTo!vec2, 
+    auto bullet = createBullet(player.get!vec2("position"), 
                                angle, 
-                               player.values["velocity"].myTo!vec2 + vec2FromAngle(angle) * 5.0,
+                               player.get!vec2("velocity") + vec2FromAngle(angle) * 5.0,
                                5.0,
                                player.id);
     systemSet.addEntity(bullet);

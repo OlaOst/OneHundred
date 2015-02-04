@@ -45,9 +45,9 @@ Entity[] bulletCollisionResponse(Collision collision, CollisionHandler collision
   assert(other.contactPoint.isFinite);
   
   if (first.type == ColliderType.Bullet)
-    firstColliderEntity.values["ToBeRemoved"] = true.to!string;
+    firstColliderEntity["ToBeRemoved"] = true;
   if (other.type == ColliderType.Bullet)
-    otherColliderEntity.values["ToBeRemoved"] = true.to!string;
+    otherColliderEntity["ToBeRemoved"] = true;
     
   Entity[] hitEffectParticles;
   
@@ -59,39 +59,44 @@ Entity[] bulletCollisionResponse(Collision collision, CollisionHandler collision
     auto momentum = first.velocity*first.mass - other.velocity*other.mass;
     foreach (double index; iota(0, particleCount))
     {
-      float size = uniform(0.02, 0.05);
+      double size = uniform(0.02, 0.05);
       
       auto particle = new Entity();
-      particle.values["position"] = position.to!string;
+      particle["position"] = position;
       auto angle = uniform(-PI, PI);
       
-      particle.values["velocity"] = (momentum + vec2FromAngle(angle) * 
+      particle["velocity"] = (momentum + vec2FromAngle(angle) * 
                                      uniform(momentum.magnitude * 3.0, 
-                                             momentum.magnitude * 6.0 + 0.001)).to!string;
-      particle.values["angle"] = angle.to!string;
-      particle.values["rotation"] = (angle * 10.0).to!string;
-      particle.values["lifeTime"] = uniform(0.5, 1.5).to!string;
-      particle.values["mass"] = size.to!string;
+                                             momentum.magnitude * 6.0 + 0.001));
+      particle["angle"] = angle;
+      particle["rotation"] = (angle * 10.0);
+      particle["lifeTime"] = uniform(0.5, 1.5);
+      particle["mass"] = size;
       
       auto drawable = new Polygon(size, 3, vec4(uniformDistribution!float(3).vec3, 0.5));
-      particle.values["polygon.vertices"] = drawable.vertices.to!string;
-      particle.values["polygon.colors"] = drawable.colors.to!string;
+      particle["polygon.vertices"] = drawable.vertices;
+      particle["polygon.colors"] = drawable.colors;
+      
+      assert(particle.get!double("mass") > 0.0);
       
       hitEffectParticles ~= particle;
     }
     
     Entity hitSound = new Entity();
-    hitSound.values["position"] = position.to!string;
+    hitSound["position"] = position;
     static auto hitSounds = ["audio/mgshot1.wav", "audio/mgshot2.wav", 
                              "audio/mgshot3.wav", "audio/mgshot4.wav"];
-    hitSound.values["sound"] = hitSounds.randomSample(1).front.to!string;
+    hitSound["sound"] = hitSounds.randomSample(1).front;
     hitEffectParticles ~= hitSound;
     
     Entity hitText = createText(ceil(momentum.magnitude * 10.0).to!string, position);
-    hitText.values["size"] = min((momentum.magnitude / 4.0), 6.0).to!string;
-    hitText.values["lifeTime"] = 1.0.to!string;
-    hitText.values["mass"] = 0.03.to!string;
-    hitText.values["velocity"] = vec2(uniform(-0.5, 0.5), 5.0).to!string;
+    hitText["size"] = min((momentum.magnitude / 4.0), 6.0);
+    hitText["lifeTime"] = 1.0;
+    hitText["mass"] = 0.03;
+    hitText["velocity"] = vec2(uniform(-0.5, 0.5), 5.0);
+    
+    assert(hitText.get!double("mass") > 0.0);
+    
     hitEffectParticles ~= hitText;
   }
   

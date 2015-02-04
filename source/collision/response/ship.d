@@ -43,7 +43,8 @@ Entity[] shipCollisionResponse(Collision collision, CollisionHandler collisionHa
   assert(first.contactPoint.isFinite);
   assert(other.contactPoint.isFinite);
 
-  if ("velocity" !in firstColliderEntity.values || "velocity" !in otherColliderEntity.values)
+  //if ("velocity" !in firstColliderEntity || "velocity" !in otherColliderEntity)
+  if (!firstColliderEntity.has("velocity") || !otherColliderEntity.has("velocity"))
     assert(false);
   
   //auto firstMass = systemSet.physics.getComponent(firstColliderEntity).mass;
@@ -68,8 +69,8 @@ Entity[] shipCollisionResponse(Collision collision, CollisionHandler collisionHa
   if (((other.position+other.velocity*0.01) - (first.position+first.velocity*0.01)).magnitude <
       (other.position-first.position).magnitude)
   {
-    firstColliderEntity.values["velocity"] = firstVelocity.to!string;
-    otherColliderEntity.values["velocity"] = otherVelocity.to!string;
+    firstColliderEntity["velocity"] = firstVelocity;
+    otherColliderEntity["velocity"] = otherVelocity;
   }
   
   // TODO: change positions to ensure colliders does not overlap
@@ -81,8 +82,8 @@ Entity[] shipCollisionResponse(Collision collision, CollisionHandler collisionHa
   {
     auto position = (first.contactPoint + other.contactPoint) * 0.5;
     Entity hitSound = new Entity();
-    hitSound.values["position"] = position.to!string;
-    hitSound.values["sound"] = "audio/bounce.wav";
+    hitSound["position"] = position;
+    hitSound["sound"] = "audio/bounce.wav";
     hitEffectParticles ~= hitSound;
   }
   return hitEffectParticles;

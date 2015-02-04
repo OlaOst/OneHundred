@@ -19,7 +19,7 @@ void updateDebugEntities(SystemSet systemSet)
     assert(!entityHandler.debugTiming.isNaN);
     
     auto found = systemSet.entities.find!
-                    (entity => entity.values.get("name", "") == entityHandler.className);
+                    (entity => entity.get("name", "") == entityHandler.className);
     
     if (!found.empty)
     {
@@ -31,15 +31,17 @@ void updateDebugEntities(SystemSet systemSet)
       auto prevTimePerComponent = debugEntity.get!double("timePerComponent");
       auto timePerComponent = prevTimePerComponent * 0.9 + 
                               (entityHandler.debugTiming / entityHandler.componentCount) * 0.1;
-      debugEntity.values["timePerComponent"] = timePerComponent.to!string;
+      debugEntity["timePerComponent"] = timePerComponent;
       
-      assert("name" in debugEntity.values, debugEntity.values.to!string);
-      assert("size" in debugEntity.values, debugEntity.values.to!string);
+      //assert("name" in debugEntity.values, debugEntity.values.to!string);
+      //assert("size" in debugEntity.values, debugEntity.values.to!string);
+      assert(debugEntity.has("name"));
+      assert(debugEntity.has("size"));
       
       auto polygon = new Polygon(size, 16, vec4(timePerComponent, 0.67, 0.33, 1.0));
-      debugEntity.values["size"] = size.to!string;
-      debugEntity.values["polygon.vertices"] = polygon.vertices.to!string;
-      debugEntity.values["polygon.colors"] = polygon.colors.to!string;
+      debugEntity["size"] = size;
+      debugEntity["polygon.vertices"] = polygon.vertices;
+      debugEntity["polygon.colors"] = polygon.colors;
     }
   }
 }

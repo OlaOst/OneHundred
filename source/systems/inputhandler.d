@@ -18,7 +18,7 @@ class InputHandler : System!Input
 {
   public override bool canAddEntity(Entity entity)
   {
-    return ("inputType" in entity.values) !is null && "remoteEntityId" !in entity.values;
+    return entity.has("inputType") && !entity.has("remoteEntityId");
   }
 
   public override Input makeComponent(Entity entity)
@@ -66,7 +66,7 @@ class InputHandler : System!Input
     auto input = getComponent(entity);
 
     // TODO: only set edittext for components that want to edit text
-    entity.values["editText"] = textInput;
+    entity["editText"] = textInput;
 
     input.updateActionStates();
 

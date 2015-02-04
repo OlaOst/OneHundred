@@ -22,7 +22,7 @@ class RelationHandler : System!(Relation[])
   {
     // keep track of all entities as they might be targets for relation components
     entityIdMapping[entity.id] = entity;
-    return ("relation.types" in entity.values) !is null;
+    return entity.has("relation.types");
   }
   
   override Relation[] makeComponent(Entity entity)

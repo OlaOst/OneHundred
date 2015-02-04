@@ -41,7 +41,7 @@ void handleToggleInputWindow(Input gameInput,
         overlappingTexts.popFront();
       }
       assert(lastOne !is null);
-      systemSet.collisionHandler.getEntity(lastOne).values["ToBeRemoved"] = true.to!string;
+      systemSet.collisionHandler.getEntity(lastOne)["ToBeRemoved"] = true;
       if (inputWindow !is null && lastOne.id == inputWindow.id)
         inputWindow = null;
     }
@@ -53,9 +53,9 @@ void handleToggleInputWindow(Input gameInput,
       
       inputWindow = createText(overlappingEntity.debugInfo, 
                                overlappingEntity.get!vec2("position"));
-      inputWindow.values["relation.types"] = ["RelativeValues", "InspectValues"].to!string;
-      inputWindow.values["relation.value.position"] = relativePosition.to!string;
-      inputWindow.values["relation.targetId"] = overlappingEntity.id.to!string;
+      inputWindow["relation.types"] = ["RelativeValues", "InspectValues"];
+      inputWindow["relation.value.position"] = relativePosition;
+      inputWindow["relation.targetId"] = overlappingEntity.id;
       systemSet.addEntity(inputWindow);
       
       auto inputWindowAABB = systemSet.textGraphics.getComponent(inputWindow).aabb;
@@ -65,10 +65,10 @@ void handleToggleInputWindow(Input gameInput,
     else if (mouseCursorOverlaps.empty)
     {
       if (inputWindow !is null)
-        inputWindow.values["ToBeRemoved"] = true.to!string;
+        inputWindow["ToBeRemoved"] = true;
 
       inputWindow = createText("input: ", mouseCursor.get!vec2("position"));
-      inputWindow.values["inputType"] = "textInput";
+      inputWindow["inputType"] = "textInput";
       systemSet.addEntity(inputWindow);
       
       auto inputWindowAABB = systemSet.textGraphics.getComponent(inputWindow).aabb;

@@ -29,7 +29,7 @@ class PolygonGraphics : System!Polygon
 
   override bool canAddEntity(Entity entity)
   {
-    return "position" in entity.values && Polygon.canMakeComponent(entity.values);
+    return entity.has("position") && entity.has("polygon.vertices") && (entity.has("polygon.colors") || entity.has("color"));
   }
 
   override Polygon makeComponent(Entity entity)
@@ -37,12 +37,12 @@ class PolygonGraphics : System!Polygon
     Polygon component;
 
     // TODO: maybe split into separate systems for drawing polygons/texts/sprites?
-    if ("polygon.vertices" in entity.values)
+    if (entity.has("polygon.vertices"))
     {
-      if ("polygon.colors" in entity.values)
+      if (entity.has("polygon.colors"))
         component = new Polygon(entity.get!(vec2[])("polygon.vertices"),
                                 entity.get!(vec4[])("polygon.colors"));
-      else if ("color" in entity.values)
+      else if (entity.has("color"))
         component = new Polygon(entity.get!(vec2[])("polygon.vertices"),
                                 entity.get!vec4("color"));
     }

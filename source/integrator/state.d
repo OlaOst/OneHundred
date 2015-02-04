@@ -71,7 +71,7 @@ struct State
     assert(!rotation.isNaN);
     assert(!torque.isNaN);
     //assert(!rotationalMomentum.isNaN);
-    assert(mass > 0.0, "Must have positive nonzero mass");    
+    assert(mass > 0.0, "Must have positive nonzero mass, was " ~ mass.to!string);
     assert(forceCalculator !is null);
     assert(torqueCalculator !is null);
     assert(entity !is null);

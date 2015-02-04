@@ -40,7 +40,7 @@ final class SoundSystem : System!Sound
   
   override bool canAddEntity(Entity entity)
   {
-    return ("sound" in entity.values) !is null;
+    return entity.has("sound");
   }
   
   override Sound makeComponent(Entity entity)
@@ -72,7 +72,7 @@ final class SoundSystem : System!Sound
     if (entity in indexForEntity)
     {
       components[indexForEntity[entity]].stopPlaying();
-      entity.values["ToBeRemoved"] = true.to!string;
+      entity["ToBeRemoved"] = true;
     }
   }
   

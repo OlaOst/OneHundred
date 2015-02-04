@@ -41,15 +41,15 @@ void addBullets(ref Entity[] npcs, SystemSet systemSet)
   {
     if (uniform(1, 180) == 1)
     {
-      assert("position" in npc.values);
-      assert("velocity" in npc.values);
-      assert("angle" in npc.values);
+      assert(npc.has("position"));
+      assert(npc.has("velocity"));
+      assert(npc.has("angle"));
       
-      auto angle = npc.values["angle"].to!double;
+      auto angle = npc.get!double("angle");
       
-      auto bullet = createBullet(npc.values["position"].myTo!vec2,
+      auto bullet = createBullet(npc.get!vec2("position"),
                                  angle,
-                                 npc.values["velocity"].myTo!vec2 + vec2FromAngle(angle) * 5.0, 
+                                 npc.get!vec2("velocity") + vec2FromAngle(angle) * 5.0, 
                                  5.0,
                                  npc.id);
       assert(bullet !is null);

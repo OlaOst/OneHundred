@@ -30,11 +30,12 @@ class Physics : System!State
   
   override bool canAddEntity(Entity entity)
   {
-    return "position" in entity.values && "mass" in entity.values;
+    return entity.has("position") && entity.has("mass");
   }
   
   override State makeComponent(Entity entity)
   {
+    assert(entity.get!double("mass") > 0.0, entity.values.to!string);
     return State(entity, &calculateForce, &calculateTorque);
   }
   
@@ -81,18 +82,18 @@ class Physics : System!State
   {
     foreach (size_t index, Entity entity; entityForIndex)
     {
-      entity.values["position"] = components[index].position.to!string;
-      entity.values["velocity"] = components[index].velocity.to!string;
-      entity.values["angle"] = components[index].angle.to!string;
-      entity.values["rotation"] = components[index].rotation.to!string;
+      entity["position"] = components[index].position;
+      entity["velocity"] = components[index].velocity;
+      entity["angle"] = components[index].angle;
+      entity["rotation"] = components[index].rotation;
         
       // reset force and torque for next update
-      entity.values["force"] = vec2(0.0, 0.0).to!string;
-      entity.values["torque"] = 0.0.to!string;
+      entity["force"] = vec2(0.0, 0.0);
+      entity["torque"] = 0.0;
       
       // keep old values, from forceCalculator
-      entity.values["previousForce"] = components[index].force.to!string;
-      entity.values["previousTorque"] = components[index].torque.to!string;
+      entity["previousForce"] = components[index].force;
+      entity["previousTorque"] = components[index].torque;
     }
   }
 }

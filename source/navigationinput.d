@@ -24,6 +24,6 @@ void updateValues(Entity entity, Input component)
   if (component.isActionSet("rotateClockwise"))
     torque -= 1.0;
 
-  entity.values["force"] = force.to!string;
-  entity.values["torque"] = torque.to!string;
+  entity["force"] = force;
+  entity["torque"] = torque;
 }

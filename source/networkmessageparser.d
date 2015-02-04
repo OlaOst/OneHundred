@@ -76,7 +76,7 @@ void parseMessage(string message, NetworkHandler networkHandler)
         //component.remoteValueUpdates[key] = value;
         // TODO: filter away keys that should not be updated over network
         // TODO: updating entity values directly like this should be done in updateEntities
-        entity.values[key] = value;
+        entity[key] = value;
       }
     }
   }
@@ -84,7 +84,7 @@ void parseMessage(string message, NetworkHandler networkHandler)
   foreach (remoteEntityId, keyValues; valuesForNewEntities)
   {
     auto entity = new Entity(keyValues);
-    entity.values["remoteEntityId"] = remoteEntityId.to!string;
+    entity["remoteEntityId"] = remoteEntityId;
     networkHandler.entitiesToBeAdded ~= entity;
   }
 }

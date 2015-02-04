@@ -41,9 +41,4 @@ final class Sprite : Drawable
                                               size).array;
     texCoords = baseTexCoordsSquare.dup;
   }
-  
-  static bool canMakeComponent(string[string] values)
-  {
-    return "size" in values && "sprite" in values;
-  }
 }

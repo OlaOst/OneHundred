@@ -34,7 +34,7 @@ class TextGraphics : System!Text
 
   override bool canAddEntity(Entity entity)
   {
-    return "position" in entity.values && Text.canMakeComponent(entity.values);
+    return entity.has("position") && entity.has("text") && entity.has("size") && entity.has("color");
   }
 
   override Text makeComponent(Entity entity)
@@ -46,8 +46,8 @@ class TextGraphics : System!Text
     component.angle = entity.get!double("angle");
     auto textVertices = textRenderer.getVerticesForText(component, 1.0, (vec2 vertex) => vertex);
     component.aabb = AABB.from_points(textVertices.map!(vertex => vec3(vertex, 0.0)).array);
-    entity.values["aabb"] = [component.aabb.min.xy, 
-                             component.aabb.max.xy].to!string;
+    entity["aabb"] = [component.aabb.min.xy, 
+                      component.aabb.max.xy];
     return component;
   }
 
@@ -74,8 +74,8 @@ class TextGraphics : System!Text
   {
     foreach (index, entity; entityForIndex)
     {
-      entity.values["aabb"] = [components[index].aabb.min.xy,
-                               components[index].aabb.max.xy].to!string;
+      entity["aabb"] = [components[index].aabb.min.xy,
+                        components[index].aabb.max.xy];
     }
   }
 
