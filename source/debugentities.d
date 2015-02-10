@@ -40,8 +40,9 @@ void updateDebugEntities(SystemSet systemSet)
       
       auto polygon = new Polygon(size, 16, vec4(timePerComponent, 0.67, 0.33, 1.0));
       debugEntity["size"] = size;
-      debugEntity["polygon.vertices"] = polygon.vertices;
-      debugEntity["polygon.colors"] = polygon.colors;
+      //debugEntity["polygon.vertices"] = polygon.vertices;
+      //debugEntity["polygon.colors"] = polygon.colors;
+      debugEntity.polygon = polygon;
     }
   }
 }

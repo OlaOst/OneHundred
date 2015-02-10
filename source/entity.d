@@ -115,6 +115,10 @@ class Entity
     return info;
   }
   
+  // polygon data should be in values, but we need a 'denormalization' here for performance reasons
+  import components.drawables.polygon;
+  Polygon polygon;
+  
   vec2[string] vec2Values;
   vec4[string] vec4Values;
   double[string] doubleValues;
