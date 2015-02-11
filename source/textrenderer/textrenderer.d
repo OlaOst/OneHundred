@@ -43,9 +43,9 @@ class TextRenderer
     
     FT_Set_Pixel_Sizes(face, glyphSize, glyphSize);
     
-    foreach (index; iota(0, 256))
+    foreach (size_t index; iota(0, 256))
     {
-      glyphSet[index.to!char] = face.loadGlyph(index.to!char, glyphSize);
+      glyphSet[index/*.to!char*/] = face.loadGlyph(index.to!char, glyphSize);
     }
     
     atlas = glyphSet.createFontAtlas(defaultFont, glyphSize);
@@ -62,7 +62,7 @@ class TextRenderer
     atlas.bind_and_activate();
   }
 
-  vec2[] getTexCoordsForLetter(dchar letter) 
+  vec2[6] getTexCoordsForLetter(dchar letter) @nogc
   {
     int rows = cast(int)sqrt(cast(float)glyphSet.length);
     int cols = cast(int)sqrt(cast(float)glyphSet.length);
@@ -80,12 +80,12 @@ class TextRenderer
             vec2(x2, y2), vec2(x1, y2), vec2(x1, y1)];
   }
 
-  public Glyph getGlyphForLetter(char letter)
+  public Glyph getGlyphForLetter(char letter) @nogc
   {
     return glyphSet[letter];
   }
   
   private static uint colorComponents = 4;
-  private Glyph[char] glyphSet;
+  private Glyph[256] glyphSet;
   public Texture2D atlas;
 }

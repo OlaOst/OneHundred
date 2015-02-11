@@ -11,7 +11,7 @@ import glamour.texture;
 import textrenderer.glyph;
 
 
-Texture2D createFontAtlas(Glyph[char] glyphSet, string font, uint glyphSize)
+Texture2D createFontAtlas(Glyph[256] glyphSet, string font, uint glyphSize)
 {
   static uint colorComponents = 4;
 
@@ -28,9 +28,10 @@ Texture2D createFontAtlas(Glyph[char] glyphSet, string font, uint glyphSize)
   // directly iterating the glyphSet is bad since associative arrays do not specify the order
   // letters must be put in a specified order in the atlas to be able to retrieve them later
   //foreach (index; iota(0, 256))
-  foreach (index, letter; glyphSet.keys)
+  //foreach (index, letter; glyphSet.keys)
+  foreach (index, glyph; glyphSet)
   {
-    auto glyph = glyphSet[letter];
+    //auto glyph = glyphSet[letter];
     
     int row = index / rows;
     int col = index % cols;

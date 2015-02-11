@@ -44,30 +44,65 @@ class TextGraphics : System!Text
                               entity.get!vec4("color"));
     component.position = entity.get!vec2("position");
     component.angle = entity.get!double("angle");
-    auto textVertices = textRenderer.getVerticesForText(component, 1.0, (vec2 vertex) => vertex);
+    
+    //auto textVertices = textRenderer.getVerticesForText(component, 1.0, (vec2 vertex, /*Text*/ component, /*Camera*/ camera) => vertex);
+    auto textVertices = textRenderer.getVerticesForText(component, camera);
+    
     component.aabb = AABB.from_points(textVertices.map!(vertex => vec3(vertex, 0.0)).array);
     entity["aabb"] = [component.aabb.min.xy, 
                       component.aabb.max.xy];
     return component;
   }
 
-  override void updateValues()
+  override void updateValues() //@nogc
   {
     vertices = texCoords = null;
     colors = null;
 
+    //StopWatch timer;
+    //timer.start;
+    
+    static vec2[65536] texCoordBuffer;
+    static vec2[65536] verticesBuffer;
+    static vec4[65536] colorBuffer;
+    
+    size_t texCoordIndex = 0;
+    size_t verticesIndex = 0;
+    size_t colorIndex = 0;
+    
     foreach (component; components)
     {
-      auto transform = (vec2 vertex) => ((vec3(vertex, 0.0)*mat3.zrotation(-component.angle)).xy +
-                                         component.position - camera.position) *
-                                         camera.zoom;
-      texCoords["text"] ~= textRenderer.getTexCoordsForText(component);
-      vertices["text"] ~= textRenderer.getVerticesForText(component, camera.zoom, transform);
-      component.aabb = AABB.from_points(textRenderer.getVerticesForText(component, 1.0, 
-                        (vec2 vertex) => vertex).map!(vertex => vec3(vertex, 0.0)).array);
-      colors["text"] ~= component.color.repeat.take
-                          (textRenderer.getTexCoordsForText(component).length).array;
+      /*static auto transform = function (vec2 vertex, Text component, Camera camera) => ((vec3(vertex, 0.0)*mat3.zrotation(-component.angle)).xy +
+                                                                                        component.position - camera.position) *
+                                                                                        camera.zoom;*/
+      //texCoords["text"] ~= textRenderer.getTexCoordsForText(component);
+      //vertices["text"] ~= textRenderer.getVerticesForText(component, camera.zoom, transform);
+      //component.aabb = AABB.from_points(textRenderer.getVerticesForText(component, 1.0, 
+      //                  (vec2 vertex) => vertex).map!(vertex => vec3(vertex, 0.0)).array);
+      //colors["text"] ~= component.color.repeat.take
+      //                    (textRenderer.getTexCoordsForText(component).length).array;
+      
+      auto texCoords = textRenderer.getTexCoordsForText(component);
+      texCoordBuffer[texCoordIndex .. texCoordIndex + texCoords.length] = texCoords;
+      texCoordIndex += texCoords.length;
+       
+      //auto vertices = textRenderer.getVerticesForText(component, camera.zoom, transform);
+      auto vertices = textRenderer.getVerticesForText(component, camera);
+      verticesBuffer[verticesIndex .. verticesIndex + vertices.length] = vertices;
+      verticesIndex += vertices.length;
+      
+      //auto colors = component.color.repeat.take(textRenderer.getTexCoordsForText(component).length).array;
+      auto colors = textRenderer.getTexCoordsForText(component).length;
+      colorBuffer[colorIndex .. colorIndex + colors] = component.color;
+      colorIndex += colors;
     }
+    
+    texCoords["text"] = texCoordBuffer[0 .. texCoordIndex];
+    vertices["text"] = verticesBuffer[0 .. verticesIndex];
+    colors["text"] = colorBuffer[0 .. colorIndex];
+    
+    //import std.stdio;
+    //writeln("textgraphics.updatevalues timing: ", timer.peek.usecs*0.001);
   }
 
   override void updateEntities() 
