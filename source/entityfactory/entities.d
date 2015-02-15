@@ -75,8 +75,9 @@ Entity createBullet(vec2 position, float angle, vec2 velocity,
   auto polygon = new Polygon(0.1, uniform(3, 4), 
                              vec4(uniformDistribution!float(3).vec3, 0.5));
   
-  entity["polygon.vertices"] = polygon.vertices;
-  entity["polygon.colors"] = polygon.colors;
+  //entity["polygon.vertices"] = polygon.vertices;
+  //entity["polygon.colors"] = polygon.colors;
+  entity.polygon = polygon;
   entity["collider"] = ColliderType.Bullet;
 
   entity["spawner"] = spawnerId;

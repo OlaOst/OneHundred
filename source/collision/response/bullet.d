@@ -73,9 +73,10 @@ Entity[] bulletCollisionResponse(Collision collision, CollisionHandler collision
       particle["lifeTime"] = uniform(0.5, 1.5);
       particle["mass"] = size;
       
-      auto drawable = new Polygon(size, 3, vec4(uniformDistribution!float(3).vec3, 0.5));
-      particle["polygon.vertices"] = drawable.vertices;
-      particle["polygon.colors"] = drawable.colors;
+      auto polygon = new Polygon(size, 3, vec4(uniformDistribution!float(3).vec3, 0.5));
+      //particle["polygon.vertices"] = drawable.vertices;
+      //particle["polygon.colors"] = drawable.colors;
+      particle.polygon = polygon;
       assert(particle.get!double("mass") > 0.0);
       hitEffectParticles ~= particle;
     }

@@ -48,6 +48,9 @@ class TextGraphics : System!Text
     //auto textVertices = textRenderer.getVerticesForText(component, 1.0, (vec2 vertex, /*Text*/ component, /*Camera*/ camera) => vertex);
     auto textVertices = textRenderer.getVerticesForText(component, camera);
     
+    import std.stdio;
+    writeln("setting textcomp aabb from\n", [component.aabb.min.xy, component.aabb.max.xy], "\nto\n", [textVertices[0], textVertices[4]]);
+    
     component.aabb = AABB.from_points(textVertices.map!(vertex => vec3(vertex, 0.0)).array);
     entity["aabb"] = [component.aabb.min.xy, 
                       component.aabb.max.xy];

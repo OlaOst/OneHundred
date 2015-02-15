@@ -23,7 +23,7 @@ void handleToggleInputWindow(Input gameInput,
   auto mouseCursorCollider = systemSet.collisionHandler.getComponent(mouseCursor);
   auto mouseCursorOverlaps = mouseCursorCollider.overlappingColliders;
   auto overlappingTexts = mouseCursorOverlaps.filter!(overlap => 
-                            overlap.type == ColliderType.GuiElement);
+                            overlap.type == ColliderType.GuiElement && systemSet.collisionHandler.getEntity(overlap).has("text"));
 
   // right click to toggle input window 
   // close input windows if right clicked, open input window for overlapping entity

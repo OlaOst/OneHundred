@@ -44,8 +44,9 @@ Entity createMouseCursor()
   mouseCursor["angle"] = 0.0;
   
   auto drawable = new Polygon(size, 3, vec4(1.0, 0.0, 0.0, 0.0));
-  mouseCursor["polygon.vertices"] = drawable.vertices;
-  mouseCursor["polygon.colors"] = drawable.colors;
+  //mouseCursor["polygon.vertices"] = drawable.vertices;
+  //mouseCursor["polygon.colors"] = drawable.colors;
+  mouseCursor.polygon = drawable;
   
   auto colliderVertices = chain(drawable.vertices[1..$].stride(3), 
                                 drawable.vertices[2..$].stride(3)).
@@ -74,9 +75,11 @@ void addDebugEntities(SystemSet systemSet)
     debugEntity["position"] = position;
     debugEntity["size"] = 0.3;
     auto polygon = new Polygon(0.25, 16, vec4(0.0, 0.67, 0.33, 1.0));
-    debugEntity["polygon.vertices"] = polygon.vertices;
-    debugEntity["polygon.colors"] = polygon.colors;
+    //debugEntity["polygon.vertices"] = polygon.vertices;
+    //debugEntity["polygon.colors"] = polygon.colors;
+    debugEntity.polygon = polygon;
     debugEntity["name"] = entityHandler.className;
+    debugEntity["collider"] = ColliderType.GuiElement;
     systemSet.addEntity(debugEntity);
   }
 }

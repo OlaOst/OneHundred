@@ -32,6 +32,7 @@ void updateDebugEntities(SystemSet systemSet)
       auto timePerComponent = prevTimePerComponent * 0.9 + 
                               (entityHandler.debugTiming / entityHandler.componentCount) * 0.1;
       debugEntity["timePerComponent"] = timePerComponent;
+      debugEntity["componentCount"] = entityHandler.componentCount;
       
       //assert("name" in debugEntity.values, debugEntity.values.to!string);
       //assert("size" in debugEntity.values, debugEntity.values.to!string);

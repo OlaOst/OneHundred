@@ -11,14 +11,16 @@ public:
   {
     this.maxFrametime = maxFrametime;
     this.timeStep = timeStep;
-    
+        
     timer.start();
     currentTime = timer.peek().usecs * (1.0 / 1_000_000);
   }
   
-  void incrementAccumulator()
+  void incrementAccumulator() //@nogc
   {
     double newTime = timer.peek().usecs * (1.0 / 1_000_000);
+    //import core.time;
+    //double newTime = (TickDuration.currSystemTick - TickDuration.appOrigin).length / cast(double)TickDuration.ticksPerSec;
     frameTime = min(newTime - currentTime, maxFrametime);
     
     currentTime = newTime;

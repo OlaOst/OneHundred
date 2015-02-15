@@ -56,7 +56,7 @@ class Physics : System!State
     }
   }
   
-  override void updateValues()
+  override void updateValues() //@nogc
   {
     //StopWatch debugTimer;
     
@@ -78,7 +78,7 @@ class Physics : System!State
     //                   debugTimer.peek.usecs*0.001);
   }
   
-  override void updateEntities()
+  override void updateEntities() @nogc
   {
     foreach (size_t index, Entity entity; entityForIndex)
     {
