@@ -48,12 +48,10 @@ class TextGraphics : System!Text
     //auto textVertices = textRenderer.getVerticesForText(component, 1.0, (vec2 vertex, /*Text*/ component, /*Camera*/ camera) => vertex);
     auto textVertices = textRenderer.getVerticesForText(component, camera);
     
-    import std.stdio;
-    writeln("setting textcomp aabb from\n", [component.aabb.min.xy, component.aabb.max.xy], "\nto\n", [textVertices[0], textVertices[4]]);
-    
     component.aabb = AABB.from_points(textVertices.map!(vertex => vec3(vertex, 0.0)).array);
     entity["aabb"] = [component.aabb.min.xy, 
                       component.aabb.max.xy];
+                      
     return component;
   }
 
@@ -98,22 +96,21 @@ class TextGraphics : System!Text
       auto colors = textRenderer.getTexCoordsForText(component).length;
       colorBuffer[colorIndex .. colorIndex + colors] = component.color;
       colorIndex += colors;
+      
+      component.aabb = AABB.from_points(textRenderer.getVerticesForText(component, camera).map!(vertex => vec3(vertex, 0.0)).array);
     }
     
     texCoords["text"] = texCoordBuffer[0 .. texCoordIndex];
     vertices["text"] = verticesBuffer[0 .. verticesIndex];
     colors["text"] = colorBuffer[0 .. colorIndex];
-    
-    //import std.stdio;
-    //writeln("textgraphics.updatevalues timing: ", timer.peek.usecs*0.001);
   }
 
   override void updateEntities() 
   {
     foreach (index, entity; entityForIndex)
     {
-      entity["aabb"] = [components[index].aabb.min.xy,
-                        components[index].aabb.max.xy];
+      entity["aabb"] = [components[index].aabb.min.xy * (1.0/camera.zoom) - components[index].position,
+                        components[index].aabb.max.xy * (1.0/camera.zoom) - components[index].position];
     }
   }
 

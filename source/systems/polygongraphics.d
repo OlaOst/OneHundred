@@ -77,9 +77,6 @@ class PolygonGraphics : System!Polygon
       colors["polygon"] ~= component.colors;
     }
     debugText = format("polygongraphics timings: %s", debugTimer.peek.usecs*0.001);
-    
-    //writeln("polygongraphics updating ", components.length, " components");
-    //writeln(debugText);
   }
 
   override void updateEntities()
@@ -93,11 +90,8 @@ class PolygonGraphics : System!Polygon
       components[index].position = entity.get!vec2("position");
       components[index].angle = entity.get!double("angle");
       
-      //writeln("polygongraphics entity ", entity.id, " polygon is ", entity.polygon);
-      
       if (entity.polygon !is null)
       {
-        //components[index] = entity.polygon;
         components[index].vertices = entity.polygon.vertices;
         components[index].colors = entity.polygon.colors;
       }

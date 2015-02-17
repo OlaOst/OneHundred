@@ -32,13 +32,13 @@ class SameShape : Relation
                                   [aabb.min.x, aabb.max.y], 
                                   [aabb.max.x, aabb.max.y], 
                                   [aabb.max.x, aabb.min.y]];*/
-    import std.stdio;
-    writeln("setting polygonverts from\n", [source.polygon.vertices[0], source.polygon.vertices[4]], "\nto\n", [aabb.min.xy, aabb.max.xy]);
     source.polygon.vertices = [vec2(aabb.min.x, aabb.min.y), 
                                vec2(aabb.min.x, aabb.max.y), 
                                vec2(aabb.max.x, aabb.min.y),
                                vec2(aabb.min.x, aabb.max.y), 
                                vec2(aabb.max.x, aabb.max.y), 
                                vec2(aabb.max.x, aabb.min.y)];
+                               
+    source.polygon.position = target.get!vec2("position");
   }
 }
