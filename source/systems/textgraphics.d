@@ -109,8 +109,8 @@ class TextGraphics : System!Text
   {
     foreach (index, entity; entityForIndex)
     {
-      entity["aabb"] = [components[index].aabb.min.xy * (1.0/camera.zoom) - components[index].position,
-                        components[index].aabb.max.xy * (1.0/camera.zoom) - components[index].position];
+      entity["aabb"] = [components[index].aabb.min.xy * (1.0/camera.zoom) - components[index].position + camera.position,
+                        components[index].aabb.max.xy * (1.0/camera.zoom) - components[index].position + camera.position];
     }
   }
 

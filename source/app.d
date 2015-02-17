@@ -80,6 +80,8 @@ void main(string[] args)
     editControllerInput.handleEditableText(inputWindow);
     player.handlePlayerFireAction(systemSet, npcs);
     
+    systemSet.graphics.camera.position = player.get!vec2("position");
+    
     addParticles(particles, systemSet);
     addBullets(npcs, systemSet);
     addNetworkEntities(systemSet);

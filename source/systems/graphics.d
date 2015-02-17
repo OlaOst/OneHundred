@@ -50,7 +50,7 @@ class Graphics : System!bool
   vec2 getWorldPositionFromScreenCoordinates(vec2 screenCoordinates)
   {
     return vec2(screenCoordinates.x / cast(float)xres - 0.5,
-                0.5 - screenCoordinates.y / cast(float)yres) * (1.0 / camera.zoom) * 2.0;
+                0.5 - screenCoordinates.y / cast(float)yres) * (1.0 / camera.zoom) * 2.0 + camera.position;
   }
 
   immutable int xres, yres;
