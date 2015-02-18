@@ -12,13 +12,8 @@ import gl3n.linalg;
 
 import converters;
 import entity;
+import valuetypes;
 
-
-// TODO: common place for these, typemapping.d or something
-// or get them by reflecting components
-//auto immutable vec2Types = ["position", "velocity", "force"];
-//auto immutable doubleTypes = ["size", "angle", "rotation", "torque"];
-//auto immutable fileTypes = ["sprite", "sound"];
 
 string parseValue(string value, string key)
 {

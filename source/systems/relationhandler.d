@@ -14,6 +14,7 @@ import components.relations.sameshape;
 import converters;
 import entity;
 import system;
+import valuetypes;
 
 
 class RelationHandler : System!(Relation[])
