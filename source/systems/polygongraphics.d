@@ -29,26 +29,14 @@ class PolygonGraphics : System!Polygon
 
   override bool canAddEntity(Entity entity)
   {
-    return entity.has("position") &&
-           (entity.polygon !is null || (entity.has("polygon.vertices") && (entity.has("polygon.colors") || entity.has("color"))));
+    return entity.has("position") && (entity.polygon !is null);
   }
 
   override Polygon makeComponent(Entity entity)
   {
     Polygon component;
 
-    // TODO: maybe split into separate systems for drawing polygons/texts/sprites?
-    if (entity.polygon !is null)
-      component = entity.polygon;
-    else if (entity.has("polygon.vertices"))
-    {
-      if (entity.has("polygon.colors"))
-        component = new Polygon(entity.get!(vec2[])("polygon.vertices"),
-                                entity.get!(vec4[])("polygon.colors"));
-      else if (entity.has("color"))
-        component = new Polygon(entity.get!(vec2[])("polygon.vertices"),
-                                entity.get!vec4("color"));
-    }
+    component = entity.polygon;
 
     component.position = entity.get!vec2("position");
     component.angle = entity.get!double("angle");
@@ -79,7 +67,7 @@ class PolygonGraphics : System!Polygon
     debugText = format("polygongraphics timings: %s", debugTimer.peek.usecs*0.001);
   }
 
-  override void updateEntities()
+  override void updateEntities() 
   {
   }
 
@@ -87,19 +75,11 @@ class PolygonGraphics : System!Polygon
   {
     foreach (uint index, Entity entity; entityForIndex)
     {
+      assert(entity.polygon !is null);
       components[index].position = entity.get!vec2("position");
       components[index].angle = entity.get!double("angle");
-      
-      if (entity.polygon !is null)
-      {
-        components[index].vertices = entity.polygon.vertices;
-        components[index].colors = entity.polygon.colors;
-      }
-      else
-      {
-        components[index].vertices = entity.get!(vec2[])("polygon.vertices");
-        components[index].colors = entity.get!(vec4[])("polygon.colors");
-      }
+      components[index].vertices = entity.polygon.vertices;
+      components[index].colors = entity.polygon.colors;
     }
   }
 
