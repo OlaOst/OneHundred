@@ -16,6 +16,8 @@ vec2[] getVerticesForText(TextRenderer textRenderer,
                           //Text text, double zoom, vec2 function (vec2, Text, Camera) @nogc transform) @nogc
                           Text text, Camera camera) @nogc
 {
+  assert(camera !is null);
+  
   //vec2[] result;
   vec2[65536] buffer;
   size_t index = 0;

@@ -14,14 +14,14 @@ import components.drawables.sprite;
 import converters;
 import entity;
 import system;
+import systems.graphics;
 
 
-class SpriteGraphics : System!Sprite
+class SpriteGraphics : Graphics!Sprite
 {
   this(int xres, int yres, Camera camera)
   {
-    this.xres = xres; this.yres = yres;
-    this.camera = camera;
+    super(xres, yres, camera);
   }
 
   ~this()
@@ -86,9 +86,6 @@ class SpriteGraphics : System!Sprite
     }
   }
 
-
-  immutable int xres, yres;
-  Camera camera;
   vec2[][string] vertices, texCoords;
   vec4[][string] colors;
   Texture2D[string] textureSet;

@@ -17,14 +17,14 @@ import components.drawables.text;
 import converters;
 import entity;
 import system;
+import systems.graphics;
 
 
-class PolygonGraphics : System!Polygon
+class PolygonGraphics : Graphics!Polygon
 {
   this(int xres, int yres, Camera camera)
   {
-    this.xres = xres; this.yres = yres;
-    this.camera = camera;
+    super(xres, yres, camera);
   }
 
   override bool canAddEntity(Entity entity)
@@ -83,8 +83,6 @@ class PolygonGraphics : System!Polygon
     }
   }
 
-  immutable int xres, yres;
-  Camera camera;
   vec2[][string] vertices;
   vec4[][string] colors;
 }

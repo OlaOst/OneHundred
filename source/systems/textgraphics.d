@@ -12,16 +12,16 @@ import components.drawables.text;
 import converters;
 import entity;
 import system;
+import systems.graphics;
 import textrenderer.textrenderer;
 import textrenderer.transform;
 
 
-class TextGraphics : System!Text
+class TextGraphics : Graphics!Text
 {
   this(int xres, int yres, Camera camera)
   {
-    this.xres = xres; this.yres = yres;
-    this.camera = camera;
+    super(xres, yres, camera);
     textRenderer = new TextRenderer();
     textureSet["text"] = textRenderer.atlas;
   }
@@ -45,7 +45,7 @@ class TextGraphics : System!Text
     component.position = entity.get!vec2("position");
     component.angle = entity.get!double("angle");
     
-    //auto textVertices = textRenderer.getVerticesForText(component, 1.0, (vec2 vertex, /*Text*/ component, /*Camera*/ camera) => vertex);
+    assert(camera !is null);
     auto textVertices = textRenderer.getVerticesForText(component, camera);
     
     component.aabb = AABB.from_points(textVertices.map!(vertex => vec3(vertex, 0.0)).array);
@@ -59,9 +59,6 @@ class TextGraphics : System!Text
   {
     vertices = texCoords = null;
     colors = null;
-
-    //StopWatch timer;
-    //timer.start;
     
     static vec2[65536] texCoordBuffer;
     static vec2[65536] verticesBuffer;
@@ -73,30 +70,9 @@ class TextGraphics : System!Text
     
     foreach (component; components)
     {
-      /*static auto transform = function (vec2 vertex, Text component, Camera camera) => ((vec3(vertex, 0.0)*mat3.zrotation(-component.angle)).xy +
-                                                                                        component.position - camera.position) *
-                                                                                        camera.zoom;*/
-      //texCoords["text"] ~= textRenderer.getTexCoordsForText(component);
-      //vertices["text"] ~= textRenderer.getVerticesForText(component, camera.zoom, transform);
-      //component.aabb = AABB.from_points(textRenderer.getVerticesForText(component, 1.0, 
-      //                  (vec2 vertex) => vertex).map!(vertex => vec3(vertex, 0.0)).array);
-      //colors["text"] ~= component.color.repeat.take
-      //                    (textRenderer.getTexCoordsForText(component).length).array;
-      
-      auto texCoords = textRenderer.getTexCoordsForText(component);
-      texCoordBuffer[texCoordIndex .. texCoordIndex + texCoords.length] = texCoords;
-      texCoordIndex += texCoords.length;
-       
-      //auto vertices = textRenderer.getVerticesForText(component, camera.zoom, transform);
-      auto vertices = textRenderer.getVerticesForText(component, camera);
-      verticesBuffer[verticesIndex .. verticesIndex + vertices.length] = vertices;
-      verticesIndex += vertices.length;
-      
-      //auto colors = component.color.repeat.take(textRenderer.getTexCoordsForText(component).length).array;
-      auto colors = textRenderer.getTexCoordsForText(component).length;
-      colorBuffer[colorIndex .. colorIndex + colors] = component.color;
-      colorIndex += colors;
-      
+      texCoordIndex += texCoordBuffer.fillBuffer(textRenderer.getTexCoordsForText(component), texCoordIndex);
+      verticesIndex += verticesBuffer.fillBuffer(textRenderer.getVerticesForText(component, camera), verticesIndex);
+      colorIndex += colorBuffer.fillBuffer(component.color.repeat.take(textRenderer.getTexCoordsForText(component).length).array, colorIndex);
       component.aabb = AABB.from_points(textRenderer.getVerticesForText(component, camera).map!(vertex => vec3(vertex, 0.0)).array);
     }
     
@@ -104,7 +80,7 @@ class TextGraphics : System!Text
     vertices["text"] = verticesBuffer[0 .. verticesIndex];
     colors["text"] = colorBuffer[0 .. colorIndex];
   }
-
+  
   override void updateEntities() 
   {
     foreach (index, entity; entityForIndex)
@@ -125,9 +101,7 @@ class TextGraphics : System!Text
     }
   }
 
-  immutable int xres, yres;
   TextRenderer textRenderer;
-  Camera camera;
   vec2[][string] vertices, texCoords;
   vec4[][string] colors;
   Texture2D[string] textureSet;
