@@ -27,13 +27,14 @@ abstract class Graphics(ComponentType) : System!ComponentType
   Camera camera;
 }
 
-size_t fillBuffer(Type)(Type[] buffer, Type[] source, size_t index) @nogc
+void fillBuffer(Type)(Type[] buffer, Type[] source, ref size_t index) @nogc
 {
   buffer[index .. index + source.length] = source;
-  return source.length;
+  index += source.length;
 }
 
-vec2 getWorldPositionFromScreenCoordinates(Camera camera, vec2 screenCoordinates, int xres, int yres)
+vec2 getWorldPositionFromScreenCoordinates(Camera camera, vec2 screenCoordinates, 
+                                           int xres, int yres)
 {
   return camera.transform(vec2(screenCoordinates.x / cast(float)xres - 0.5,
                                0.5 - screenCoordinates.y / cast(float)yres));
