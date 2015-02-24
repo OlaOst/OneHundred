@@ -59,7 +59,7 @@ void main(string[] args)
   systemSet.addEntity(mouseCursor);
 
   auto music = createMusic();
-  //systemSet.addEntity(music);
+  systemSet.addEntity(music);
   
   auto gameController = createGameController();
   systemSet.addEntity(gameController);
@@ -74,29 +74,24 @@ void main(string[] args)
     systemSet.update();
     
     auto gameControllerInput = systemSet.inputHandler.getComponent(gameController);
-    auto editControllerInput = systemSet.inputHandler.getComponent(editController);
     gameControllerInput.handleQuit();
     gameControllerInput.handleZoom(camera);
     gameControllerInput.handleAddRemoveEntity(systemSet, npcs);
     gameControllerInput.handleToggleInputWindow(systemSet, inputWindow, mouseCursor);
     gameControllerInput.handleNetworking(systemSet, listenPort);
-    editControllerInput.handleEditableText(inputWindow);
+    systemSet.inputHandler.getComponent(editController).handleEditableText(inputWindow);
     player.handlePlayerFireAction(systemSet, npcs);
-    
     camera.position = player.get!vec2("position");
+    mouseCursor["position"] = getWorldPositionFromScreenCoordinates(camera, 
+                                systemSet.inputHandler.mouseScreenPosition, xres, yres);
+    // TODO: remember to update position of mousecursor components in systems
     
     addParticles(particles, systemSet);
     addBullets(npcs, systemSet);
     addNetworkEntities(systemSet);
-    
     npcs = npcs.filter!(entity => !entity.get!bool("ToBeRemoved")).array;
     particles = particles.filter!(entity => !entity.get!bool("ToBeRemoved")).array;
     systemSet.removeEntitiesToBeRemoved();
-    
-    mouseCursor["position"] = getWorldPositionFromScreenCoordinates(camera, systemSet.inputHandler.mouseScreenPosition, xres, yres);
-      //systemSet.graphics.getWorldPositionFromScreenCoordinates(
-      //systemSet.inputHandler.mouseScreenPosition);
-    // TODO: remember to update position of mousecursor components in systems
     
     systemSet.updateDebugEntities();
     systemSet.collectFromGraphicsAndRender(renderer);
