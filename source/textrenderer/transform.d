@@ -15,7 +15,7 @@ vec3[] getVerticesForText(TextRenderer textRenderer, Text text, Camera camera) @
 {
   assert(camera !is null);
   
-  vec3[65536] buffer;
+  static vec3[65536] buffer;
   size_t index = 0;
   
   auto cursor = vec2(0.0, 0.0);

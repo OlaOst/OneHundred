@@ -1,6 +1,8 @@
 module systems.textgraphics;
 
+import std.datetime;
 import std.range;
+import std.stdio;
 
 import glamour.texture;
 import gl3n.aabb;
@@ -53,9 +55,7 @@ class TextGraphics : Graphics!Text
     vertices = null;
     texCoords = null;
     colors = null;
-    static vec3[65536] verticesBuffer;
-    static vec2[65536] texCoordBuffer;
-    static vec4[65536] colorBuffer;
+    
     size_t texCoordIndex, verticesIndex, colorIndex;
     foreach (component; components)
     {
@@ -63,8 +63,9 @@ class TextGraphics : Graphics!Text
       auto vertices = textRenderer.getVerticesForText(component, camera);
       texCoordBuffer.fillBuffer(texCoords, texCoordIndex);
       verticesBuffer.fillBuffer(vertices, verticesIndex);
-      colorBuffer.fillBuffer(component.color.repeat(texCoords.length).array, colorIndex);
-      component.aabb = AABB.from_points(textRenderer.getVerticesForText(component, camera));
+      colorBuffer[colorIndex .. colorIndex + texCoords.length] = component.color;
+      colorIndex += texCoords.length;
+      component.aabb = AABB.from_points(vertices);
     }
     texCoords["text"] = texCoordBuffer[0 .. texCoordIndex];
     vertices["text"] = verticesBuffer[0 .. verticesIndex];
@@ -89,9 +90,13 @@ class TextGraphics : Graphics!Text
       components[index].angle = entity.get!double("angle");
       if (components[index].text !is null)
         components[index].text = entity.get!string("text");
-    }
+    }   
   }
 
+  vec3[65536] verticesBuffer;
+  vec2[65536] texCoordBuffer;
+  vec4[65536] colorBuffer;
+  
   TextRenderer textRenderer;
   vec3[][string] vertices;
   vec2[][string] texCoords;
