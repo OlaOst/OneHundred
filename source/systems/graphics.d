@@ -33,9 +33,10 @@ void fillBuffer(Type)(Type[] buffer, Type[] source, ref size_t index) @nogc
   index += source.length;
 }
 
-vec2 getWorldPositionFromScreenCoordinates(Camera camera, vec2 screenCoordinates, 
+vec3 getWorldPositionFromScreenCoordinates(Camera camera, vec2 screenCoordinates, 
                                            int xres, int yres)
 {
-  return camera.transform(vec2(screenCoordinates.x / cast(float)xres - 0.5,
-                               0.5 - screenCoordinates.y / cast(float)yres));
+  return camera.transform(vec3(screenCoordinates.x / cast(float)xres - 0.5,
+                               0.5 - screenCoordinates.y / cast(float)yres,
+                               0.0));
 }

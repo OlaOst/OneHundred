@@ -14,16 +14,16 @@ final class Polygon : Drawable
 {  
   double size;
   
-  vec2[] vertices;
+  vec3[] vertices;
   vec4[] colors;
   
-  this (vec2[] vertices, vec4[] colors)
+  this (vec3[] vertices, vec4[] colors)
   {
     this.vertices = vertices;
     this.colors = colors;
   }
   
-  this (vec2[] vertices, vec4 color)
+  this (vec3[] vertices, vec4 color)
   {
     this.vertices = vertices;
     this.colors = color.repeat(vertices.length).array;
@@ -40,9 +40,9 @@ final class Polygon : Drawable
     {
       auto nextangle = angle + (PI*2.0) / points;
       
-      vertices ~= [vec2(0.0, 0.0), 
-                   vec2FromAngle(angle) * size, 
-                   vec2FromAngle(nextangle) * size];
+      vertices ~= [vec3(0.0, 0.0, 0.0), 
+                   vec3(vec2FromAngle(angle) * size, 0.0), 
+                   vec3(vec2FromAngle(nextangle) * size, 0.0)];
                    
       colors ~= [vec4(1.0, 1.0, 1.0, 1.0), color, color];
     }

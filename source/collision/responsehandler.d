@@ -3,7 +3,6 @@ module collision.responsehandler;
 import std.range;
 import std.stdio;
 
-import collision.collisionentity;
 import collision.response.bullet;
 import collision.response.ship;
 import components.collider;

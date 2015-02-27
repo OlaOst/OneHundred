@@ -11,11 +11,11 @@ import components.drawables.text;
 import textrenderer.textrenderer;
 
 
-vec2[] getVerticesForText(TextRenderer textRenderer, Text text, Camera camera) @nogc
+vec3[] getVerticesForText(TextRenderer textRenderer, Text text, Camera camera) @nogc
 {
   assert(camera !is null);
   
-  vec2[65536] buffer;
+  vec3[65536] buffer;
   size_t index = 0;
   
   auto cursor = vec2(0.0, 0.0);
@@ -29,9 +29,9 @@ vec2[] getVerticesForText(TextRenderer textRenderer, Text text, Camera camera) @
       
       foreach (vertex; text.vertices)
       {
-        buffer[index] = ((vec3(vertex, 0.0) * mat3.zrotation(-text.angle)).xy + 
+        buffer[index] = (vertex * mat3.zrotation(-text.angle) + 
                          text.position - camera.position) * 
-                        camera.zoom + (glyph.offset * text.size + cursor) * camera.zoom;
+                        camera.zoom + vec3((glyph.offset * text.size + cursor), 0.0) * camera.zoom;
         index++;
       }
       

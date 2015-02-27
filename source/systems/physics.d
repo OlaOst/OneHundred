@@ -47,9 +47,9 @@ class Physics : System!State
     // these should be combined into one stop shop for handling forces
     foreach (size_t index, Entity entity; entityForIndex)
     {
-      components[index].position = entity.get!vec2("position");
-      components[index].velocity = entity.get!vec2("velocity");
-      components[index].force = entity.get!vec2("force");
+      components[index].position = entity.get!vec3("position");
+      components[index].velocity = entity.get!vec3("velocity");
+      components[index].force = entity.get!vec3("force");
       components[index].angle = entity.get!double("angle");
       components[index].rotation = entity.get!double("rotation");
       components[index].torque = entity.get!double("torque");
@@ -88,7 +88,7 @@ class Physics : System!State
       entity["rotation"] = components[index].rotation;
         
       // reset force and torque for next update
-      entity["force"] = vec2(0.0, 0.0);
+      entity["force"] = vec3(0.0, 0.0, 0.0);
       entity["torque"] = 0.0;
       
       // keep old values, from forceCalculator

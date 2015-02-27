@@ -12,7 +12,7 @@ import systems.textgraphics;
 
 void collectFromGraphicsAndRender(SystemSet systemSet, Renderer renderer)
 {
-  vec2[][string] vertices;
+  vec3[][string] vertices;
   vec4[][string] colors;
   vec2[][string] texCoords;
   Texture2D[string] textureSet;

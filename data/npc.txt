@@ -1,6 +1,6 @@
-position = [-5.0, -5.0] to [5.0, 5.0]
+position = [-5.0, -5.0, 0.0] to [5.0, 5.0, 0.0]
 angle = -PI to PI
-velocity = [-0.5, -0.5] to [0.5, 0.5]
+velocity = [-0.5, -0.5, 0.0] to [0.5, 0.5, 0.0]
 mass = 0.1
 size = 0.025 to 0.125
 sprite = images/*.png

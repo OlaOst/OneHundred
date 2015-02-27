@@ -81,7 +81,7 @@ void main(string[] args)
     gameControllerInput.handleNetworking(systemSet, listenPort);
     systemSet.inputHandler.getComponent(editController).handleEditableText(inputWindow);
     player.handlePlayerFireAction(systemSet, npcs);
-    camera.position = player.get!vec2("position");
+    camera.position = player.get!vec3("position");
     mouseCursor["position"] = getWorldPositionFromScreenCoordinates(camera, 
                                 systemSet.inputHandler.mouseScreenPosition, xres, yres);
     // TODO: remember to update position of mousecursor components in systems

@@ -28,9 +28,9 @@ class CollisionHandler : System!Collider
 
   override Collider makeComponent(Entity entity)
   {
-    vec2[] verts = [vec2(0.0, 0.0)];
+    vec3[] verts = [vec3(0.0, 0.0, 0.0)];
     if (entity.has("collider.vertices"))
-      verts = entity.get!(vec2[])("collider.vertices");
+      verts = entity.get!(vec3[])("collider.vertices");
 
     auto component = new Collider(verts, entity.get!ColliderType("collider"), entity.id);
     if (entity.has("spawner"))

@@ -15,7 +15,7 @@ void handleToggleDebugInfo(Input gameInput, SystemSet systemSet, ref Entity debu
   {
     if (debugText is null)
     {
-      debugText = createText("??", vec2(-3.0, -2.0));
+      debugText = createText("??", vec3(-3.0, -2.0, 0.0));
       systemSet.addEntity(debugText);
     }
     index = (index + 1) % systemSet.entityHandlers.length;

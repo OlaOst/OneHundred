@@ -45,7 +45,7 @@ class SpriteGraphics : Graphics!Sprite
 
     textureSet[entity.get!string("sprite")] = component.texture;
 
-    component.position = entity.get!vec2("position");
+    component.position = entity.get!vec3("position");
     component.angle = entity.get!double("angle");
 
     return component;
@@ -55,12 +55,13 @@ class SpriteGraphics : Graphics!Sprite
   {
     StopWatch debugTimer;
     debugTimer.start;
-    vertices = texCoords = null;
+    vertices = null;
+    texCoords = null;
     colors = null;
 
     foreach (component; components)
     {
-      auto transform = (vec2 vertex) => ((vec3(vertex, 0.0)*mat3.zrotation(-component.angle)).xy +
+      auto transform = (vec3 vertex) => (vertex * mat3.zrotation(-component.angle) +
                                          component.position - camera.position) *
                                          camera.zoom;
 
@@ -81,12 +82,13 @@ class SpriteGraphics : Graphics!Sprite
   {
     foreach (uint index, Entity entity; entityForIndex)
     {
-      components[index].position = entity.get!vec2("position");
+      components[index].position = entity.get!vec3("position");
       components[index].angle = entity.get!double("angle");
     }
   }
 
-  vec2[][string] vertices, texCoords;
+  vec3[][string] vertices;
+  vec2[][string] texCoords;
   vec4[][string] colors;
   Texture2D[string] textureSet;
 }

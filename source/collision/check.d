@@ -8,16 +8,16 @@ import gl3n.linalg;
 import components.collider;
 
 
-bool isOverlapping(vec2[] firstVertices, vec2[] otherVertices, 
-                   vec2 firstVelocity, vec2 otherVelocity)
+bool isOverlapping(vec3[] firstVertices, vec3[] otherVertices, 
+                   vec3 firstVelocity, vec3 otherVelocity)
 {
-  foreach (vec2 line; zip(firstVertices[0..$-1], firstVertices[1..$]).
+  foreach (vec3 line; zip(firstVertices[0..$-1], firstVertices[1..$]).
                       map!(vertexPair => vertexPair[1] - vertexPair[0]))
   {
     auto perpendicular = vec2(-line.y, line.x).normalized;
     
-    auto firstProjections = firstVertices.map!(vertex => perpendicular.dot(vertex));
-    auto otherProjections = otherVertices.map!(vertex => perpendicular.dot(vertex));
+    auto firstProjections = firstVertices.map!(vertex => perpendicular.dot(vertex.xy));
+    auto otherProjections = otherVertices.map!(vertex => perpendicular.dot(vertex.xy));
     
     auto firstMin = firstProjections.reduce!((a,b) => min(a,b));
     auto firstMax = firstProjections.reduce!((a,b) => max(a,b));
@@ -27,7 +27,7 @@ bool isOverlapping(vec2[] firstVertices, vec2[] otherVertices,
     if (firstMin < otherMax && firstMax > otherMin)
     {
       // TODO: also take angular velocity into account
-      float velocityProjection = perpendicular.dot(otherVelocity - firstVelocity);
+      float velocityProjection = perpendicular.dot(otherVelocity.xy - firstVelocity.xy);
       if (velocityProjection < 0)
         firstMin += velocityProjection;
       else

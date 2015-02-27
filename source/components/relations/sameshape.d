@@ -32,13 +32,20 @@ class SameShape : Relation
                                   [aabb.min.x, aabb.max.y], 
                                   [aabb.max.x, aabb.max.y], 
                                   [aabb.max.x, aabb.min.y]];*/
-    source.polygon.vertices = [vec2(aabb.min.x, aabb.min.y), 
+    /*source.polygon.vertices = [vec2(aabb.min.x, aabb.min.y), 
                                vec2(aabb.min.x, aabb.max.y), 
                                vec2(aabb.max.x, aabb.min.y),
                                vec2(aabb.min.x, aabb.max.y), 
                                vec2(aabb.max.x, aabb.max.y), 
-                               vec2(aabb.max.x, aabb.min.y)];
+                               vec2(aabb.max.x, aabb.min.y)];*/
+
+    source.polygon.vertices = [vec3(aabb.min.x, aabb.min.y, 0.0), 
+                               vec3(aabb.min.x, aabb.max.y, 0.0), 
+                               vec3(aabb.max.x, aabb.min.y, 0.0),
+                               vec3(aabb.min.x, aabb.max.y, 0.0), 
+                               vec3(aabb.max.x, aabb.max.y, 0.0), 
+                               vec3(aabb.max.x, aabb.min.y, 0.0)];
                                
-    source.polygon.position = target.get!vec2("position");
+    source.polygon.position = target.get!vec3("position");
   }
 }

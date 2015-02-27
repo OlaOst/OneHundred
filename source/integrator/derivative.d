@@ -5,8 +5,8 @@ import gl3n.linalg;
 
 struct Derivative
 {
-  vec2 velocity = vec2(0.0, 0.0);
-  vec2 force = vec2(0.0, 0.0);
+  vec3 velocity = vec3(0.0, 0.0, 0.0);
+  vec3 force = vec3(0.0, 0.0, 0.0);
   double rotation = 0.0;
   double torque = 0.0;
   

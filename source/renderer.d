@@ -41,7 +41,7 @@ class Renderer
       vao.remove();
   }
 
-  public void render(vec2[][string] vertices, vec4[][string] colors,
+  public void render(vec3[][string] vertices, vec4[][string] colors,
                      vec2[][string] texCoords, Texture2D[string] textureSet)
   {
     if ("polygon" in vertices && "polygon" in colors)
@@ -62,20 +62,20 @@ class Renderer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
 
-  public void drawPolygons(vec2[] vertices, vec4[] colors)
+  public void drawPolygons(vec3[] vertices, vec4[] colors)
   {
     assert(vertices.length == colors.length);
     vboSet["vertices"] = new Buffer(vertices);
     vboSet["colors"] = new Buffer(colors);
     shaderSet["default"].bind();
-    vboSet["vertices"].bind(shaderSet["default"], "position", GL_FLOAT, 2, 0, 0);
+    vboSet["vertices"].bind(shaderSet["default"], "position", GL_FLOAT, 3, 0, 0);
     vboSet["colors"].bind(shaderSet["default"], "color", GL_FLOAT, 4, 0, 0);
     glDrawArrays(GL_TRIANGLES, 0, cast(int)(vertices.length));
     vboSet["vertices"].remove();
     vboSet["colors"].remove();
   }
 
-  public void drawColoredTexture(vec2[] vertices, vec2[] texCoords, vec4[] colors)
+  public void drawColoredTexture(vec3[] vertices, vec2[] texCoords, vec4[] colors)
   {
     assert(vertices.length == texCoords.length);
     assert(vertices.length == colors.length);
@@ -83,7 +83,7 @@ class Renderer
     vboSet["texture"] = new Buffer(texCoords);
     vboSet["colors"] = new Buffer(colors);
     shaderSet["coloredtexture"].bind();
-    vboSet["vertices"].bind(shaderSet["coloredtexture"], "position", GL_FLOAT, 2, 0, 0);
+    vboSet["vertices"].bind(shaderSet["coloredtexture"], "position", GL_FLOAT, 3, 0, 0);
     vboSet["texture"].bind(shaderSet["coloredtexture"], "texCoords", GL_FLOAT, 2, 0, 0);
     vboSet["colors"].bind(shaderSet["coloredtexture"], "color", GL_FLOAT, 4, 0, 0);
     glDrawArrays(GL_TRIANGLES, 0, cast(int)(vertices.length));

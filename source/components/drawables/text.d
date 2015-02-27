@@ -20,7 +20,7 @@ final class Text : Drawable
   
   alias text this;
   
-  vec2[] vertices;
+  vec3[] vertices;
   vec4 color;
   
   AABB aabb;

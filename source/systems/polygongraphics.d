@@ -38,7 +38,7 @@ class PolygonGraphics : Graphics!Polygon
 
     component = entity.polygon;
 
-    component.position = entity.get!vec2("position");
+    component.position = entity.get!vec3("position");
     component.angle = entity.get!double("angle");
     
     return component;
@@ -53,12 +53,12 @@ class PolygonGraphics : Graphics!Polygon
     
     foreach (component; components)
     {
-      auto transform = (vec2 vertex) => ((vec3(vertex, 0.0)*mat3.zrotation(-component.angle)).xy +
+      auto transform = (vec3 vertex) => (vertex * mat3.zrotation(-component.angle) +
                                          component.position - camera.position) *
                                          camera.zoom;
       // map with delegate in a variable and then array crashes with release build in dmd 2.066
       //vertices["polygon"] ~= component.vertices.map!transform.array;
-      vec2[] transformedVertices;
+      vec3[] transformedVertices;
       foreach (vertex; component.vertices)
         transformedVertices ~= transform(vertex);
       vertices["polygon"] ~= transformedVertices;
@@ -76,13 +76,13 @@ class PolygonGraphics : Graphics!Polygon
     foreach (uint index, Entity entity; entityForIndex)
     {
       assert(entity.polygon !is null);
-      components[index].position = entity.get!vec2("position");
+      components[index].position = entity.get!vec3("position");
       components[index].angle = entity.get!double("angle");
       components[index].vertices = entity.polygon.vertices;
       components[index].colors = entity.polygon.colors;
     }
   }
 
-  vec2[][string] vertices;
+  vec3[][string] vertices;
   vec4[][string] colors;
 }

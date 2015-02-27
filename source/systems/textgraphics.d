@@ -40,19 +40,21 @@ class TextGraphics : Graphics!Text
     Text component = new Text(entity.get!double("size"),
                               entity.get!string("text"),
                               entity.get!vec4("color"));
-    component.position = entity.get!vec2("position");
+    component.position = entity.get!vec3("position");
     component.angle = entity.get!double("angle");
     auto textVertices = textRenderer.getVerticesForText(component, camera);
-    component.aabb = AABB.from_points(textVertices.map!(vertex => vec3(vertex, 0.0)).array);
-    entity["aabb"] = [component.aabb.min.xy, component.aabb.max.xy];
+    component.aabb = AABB.from_points(textVertices);
+    entity["aabb"] = [component.aabb.min, component.aabb.max];
     return component;
   }
 
   override void updateValues() //@nogc
   {
-    vertices = texCoords = null;
+    vertices = null;
+    texCoords = null;
     colors = null;
-    static vec2[65536] texCoordBuffer, verticesBuffer;
+    static vec3[65536] verticesBuffer;
+    static vec2[65536] texCoordBuffer;
     static vec4[65536] colorBuffer;
     size_t texCoordIndex, verticesIndex, colorIndex;
     foreach (component; components)
@@ -62,8 +64,7 @@ class TextGraphics : Graphics!Text
       texCoordBuffer.fillBuffer(texCoords, texCoordIndex);
       verticesBuffer.fillBuffer(vertices, verticesIndex);
       colorBuffer.fillBuffer(component.color.repeat(texCoords.length).array, colorIndex);
-      component.aabb = AABB.from_points(textRenderer.getVerticesForText(component, camera)
-                           .map!(vertex => vec3(vertex, 0.0)).array);
+      component.aabb = AABB.from_points(textRenderer.getVerticesForText(component, camera));
     }
     texCoords["text"] = texCoordBuffer[0 .. texCoordIndex];
     vertices["text"] = verticesBuffer[0 .. verticesIndex];
@@ -75,8 +76,8 @@ class TextGraphics : Graphics!Text
     foreach (index, entity; entityForIndex)
     {
       auto relativePosition = camera.position - components[index].position;
-      entity["aabb"] = [components[index].aabb.min.xy * (1.0/camera.zoom) + relativePosition,
-                        components[index].aabb.max.xy * (1.0/camera.zoom) + relativePosition];
+      entity["aabb"] = [components[index].aabb.min * (1.0/camera.zoom) + relativePosition,
+                        components[index].aabb.max * (1.0/camera.zoom) + relativePosition];
     }
   }
 
@@ -84,7 +85,7 @@ class TextGraphics : Graphics!Text
   {
     foreach (index, entity; entityForIndex)
     {
-      components[index].position = entity.get!vec2("position");
+      components[index].position = entity.get!vec3("position");
       components[index].angle = entity.get!double("angle");
       if (components[index].text !is null)
         components[index].text = entity.get!string("text");
@@ -92,7 +93,8 @@ class TextGraphics : Graphics!Text
   }
 
   TextRenderer textRenderer;
-  vec2[][string] vertices, texCoords;
+  vec3[][string] vertices;
+  vec2[][string] texCoords;
   vec4[][string] colors;
   Texture2D[string] textureSet;
 }

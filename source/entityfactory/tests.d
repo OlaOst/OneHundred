@@ -19,8 +19,8 @@ import systemset;
 Entity createMusic()
 {
   auto entity = new Entity();
-  entity["position"] = vec2(300.0, 0.0);
-  entity["velocity"] = vec2(0.0, 3.0);
+  entity["position"] = vec3(300.0, 0.0, 0.0);
+  entity["velocity"] = vec3(0.0, 3.0, 0.0);
   entity["size"] = 0.1;
   entity["mass"] = (0.1 + 0.1 ^^ 2);
   entity["sound"] = "audio/orbitalelevator.ogg";
@@ -39,7 +39,7 @@ Entity createStartupSound()
 Entity createMouseCursor()
 {
   float size = 0.1;
-  auto position = vec2(0.0, 0.0);
+  auto position = vec3(0.0, 0.0, 0.0);
   auto mouseCursor = new Entity();
   mouseCursor["position"] = position;
   mouseCursor["angle"] = 0.0;
@@ -63,10 +63,10 @@ void addDebugEntities(SystemSet systemSet)
 {
   foreach (index, entityHandler; systemSet.entityHandlers)
   {
-    auto position = vec2(-3.0, index*0.7 - 4);
+    auto position = vec3(-3.0, index*0.7 - 4, 0.0);
     
     auto text = new Entity();
-    text["position"] = vec2(position.x + 0.35, position.y);
+    text["position"] = vec3(position.x + 0.35, position.y, 0.0);
     text["text"] = entityHandler.className;
     text["color"] = vec4(1.0, 1.0, 1.0, 1.0);
     text["size"] = 0.1;

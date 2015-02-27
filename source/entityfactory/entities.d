@@ -35,7 +35,7 @@ Entity createEntityFromFile(string file)
   return new Entity(values);
 }
 
-Entity createEntity(vec2 position, vec2 velocity, double size)
+Entity createEntity(vec3 position, vec3 velocity, double size)
 {
   auto entity = new Entity();
 
@@ -62,7 +62,7 @@ Entity[] createNpcs(uint elements)
   return entities;
 }
 
-Entity createBullet(vec2 position, float angle, vec2 velocity, 
+Entity createBullet(vec3 position, float angle, vec3 velocity, 
                     double lifeTime, const long spawnerId)
 {
   auto entity = createEntity(position, velocity, 0.1);

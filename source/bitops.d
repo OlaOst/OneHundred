@@ -33,8 +33,8 @@ uint powerOf2(uint n)
   return level;
 }
 
-// hash a position into an int
-uint index(vec2 position)
+// hash x and y of a position into an uint
+uint index(vec3 position)
 {
   // TODO: make sure values are clamped not wrapped
   return interleave(cast(uint)position.x + 2^^15, cast(uint)position.y + 2^^15);
