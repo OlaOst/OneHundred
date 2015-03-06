@@ -14,7 +14,7 @@
     "derelict-ft": ">=1.0.0",
     "gl3n": ">=1.0.0",
     "glamour": { "version": ">=1.0.1", "path": "../glamour" },
-    "vibe-d": ">=0.7.22",
+    
   },
   "importPaths" : ["../glamour"],
 

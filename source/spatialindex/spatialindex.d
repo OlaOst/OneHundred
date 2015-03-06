@@ -45,7 +45,7 @@ class SpatialIndex(Element)
     foreach (index; indices)
       overlappingElements ~= elementsInIndex[minLevel][index];
     
-    return overlappingElements.sort.uniq.array;
+    return sort(overlappingElements).uniq.array;
   }
   
   Element[] find(vec3 position, double radius)
@@ -63,7 +63,7 @@ class SpatialIndex(Element)
       foreach (index; indices.filter!(index => index in elementsInIndex[level]))
         elements ~= elementsInIndex[level][index];
     
-    return elements.sort.uniq.array;
+    return sort(elements).uniq.array;
   }
   
   void insert(Element element)

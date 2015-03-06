@@ -1,5 +1,6 @@
 module systems.textgraphics;
 
+import std.algorithm;
 import std.datetime;
 import std.range;
 import std.stdio;
@@ -57,7 +58,7 @@ class TextGraphics : Graphics!Text
     colors = null;
     
     size_t texCoordIndex, verticesIndex, colorIndex;
-    foreach (component; components)
+    foreach (component; components.sort!((left, right) => left.position.z > right.position.z))
     {
       auto texCoords = textRenderer.getTexCoordsForText(component);
       auto vertices = textRenderer.getVerticesForText(component, camera);
@@ -70,6 +71,8 @@ class TextGraphics : Graphics!Text
     texCoords["text"] = texCoordBuffer[0 .. texCoordIndex];
     vertices["text"] = verticesBuffer[0 .. verticesIndex];
     colors["text"] = colorBuffer[0 .. colorIndex];
+    //import std.stdio;
+    //writeln("colors: ", colors["text"]);
   }
   
   override void updateEntities() 

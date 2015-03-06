@@ -68,8 +68,8 @@ in
 body
 {
   // from http://graphics.stanford.edu/~seander/bithack.html#InterleaveBMN
-  static immutable uint B[] = [0x55555555, 0x33333333, 0x0F0F0F0F, 0x00FF00FF];
-  static immutable uint S[] = [1, 2, 4, 8];
+  static immutable uint[] B = [0x55555555, 0x33333333, 0x0F0F0F0F, 0x00FF00FF];
+  static immutable uint[] S = [1, 2, 4, 8];
 
   // Interleave lower 16 bits of x and y, so the bits of x
   // are in the even positions and bits from y in the odd;

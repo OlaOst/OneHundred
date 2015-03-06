@@ -66,12 +66,12 @@ void addDebugEntities(SystemSet systemSet)
     auto position = vec3(-3.0, index*0.7 - 4, 0.0);
     
     auto text = new Entity();
-    text["position"] = vec3(position.x + 0.35, position.y, 0.0);
+    text["position"] = vec3(position.x + 0.35, position.y, -text.id*0.001);
     text["text"] = entityHandler.className;
-    text["color"] = vec4(1.0, 1.0, 1.0, 1.0);
+    text["color"] = vec4(1.0, 1.0, 0.5, 1.0);
     text["size"] = 0.1;
     systemSet.addEntity(text);
-    systemSet.addEntity(text.createTextCover(systemSet.textGraphics.getComponent(text).aabb));
+    //systemSet.addEntity(text.createTextCover(systemSet.textGraphics.getComponent(text).aabb));
     
     auto debugEntity = new Entity();
     debugEntity["position"] = position;

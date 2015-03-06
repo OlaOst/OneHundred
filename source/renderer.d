@@ -5,6 +5,7 @@ import std.array;
 import std.file;
 import std.range;
 import std.string;
+import std.typecons;
 
 import derelict.opengl3.gl3;
 import derelict.sdl2.sdl;
