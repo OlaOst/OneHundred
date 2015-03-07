@@ -56,12 +56,12 @@ class PolygonGraphics : Graphics!Polygon
       auto transform = (vec3 vertex) => (vertex * mat3.zrotation(-component.angle) +
                                          component.position - camera.position) *
                                          camera.zoom;
-      // map with delegate in a variable and then array crashes with release build in dmd 2.066
-      vertices["polygon"] ~= component.vertices.map!transform.array;
-      //vec3[] transformedVertices;
-      //foreach (vertex; component.vertices)
-        //transformedVertices ~= transform(vertex);
-      //vertices["polygon"] ~= transformedVertices;
+      // map with delegate in a variable and then array crashes with release build in dmd 2.067 b3
+      //vertices["polygon"] ~= component.vertices.map!transform.array;
+      vec3[] transformedVertices;
+      foreach (vertex; component.vertices)
+        transformedVertices ~= transform(vertex);
+      vertices["polygon"] ~= transformedVertices;
       colors["polygon"] ~= component.colors;
     }
     debugText = format("polygongraphics timings: %s", debugTimer.peek.usecs*0.001);
