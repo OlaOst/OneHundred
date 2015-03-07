@@ -56,7 +56,7 @@ class Physics : System!State
     }
   }
   
-  override void updateValues() //@nogc
+  override void updateValues() @nogc
   {
     //StopWatch debugTimer;
     

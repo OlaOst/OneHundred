@@ -15,7 +15,6 @@ import converters;
 import entity;
 import entityfactory.texts;
 import systems.collisionhandler;
-import timer;
 
 
 Entity[] bulletCollisionResponse(Collision collision, CollisionHandler collisionHandler)

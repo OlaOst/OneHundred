@@ -7,7 +7,6 @@ import converters;
 import entity;
 import entityfactory.entities;
 import systemset;
-import timer;
 
 
 void handlePlayerFireAction(Entity player, SystemSet systemSet, ref Entity[] npcs)

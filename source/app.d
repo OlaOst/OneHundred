@@ -25,7 +25,6 @@ import playereventhandler;
 import renderer;
 import systemset;
 import systems.graphics;
-import timer;
 
 
 void main(string[] args)
