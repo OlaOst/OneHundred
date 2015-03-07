@@ -9,7 +9,7 @@ auto immutable vec4Types = ["color"];
 auto immutable doubleTypes = ["size", "angle", "rotation", "torque", "mass", "lifeTime"];
 auto immutable fileTypes = ["sprite", "sound"];
 
-static ValueType DefaultValue(ValueType)()
+static ValueType DefaultValue(ValueType)() @nogc
 {
   static if (is(ValueType == double))
     return 0.0;

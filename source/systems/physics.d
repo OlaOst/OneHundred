@@ -39,7 +39,7 @@ class Physics : System!State
     return State(entity, &calculateForce, &calculateTorque);
   }
   
-  override void updateFromEntities()
+  override void updateFromEntities() //@nogc
   {
     // TODO: we have two separate places that handle forces and torques
     // 1. entity values
@@ -78,7 +78,7 @@ class Physics : System!State
     //                   debugTimer.peek.usecs*0.001);
   }
   
-  override void updateEntities() @nogc
+  override void updateEntities() //@nogc
   {
     foreach (size_t index, Entity entity; entityForIndex)
     {
