@@ -20,6 +20,6 @@ void handleEditableText(Input textInput, Entity editableText)
         editableText["text"] = editableText.get!string("text") ~ "\n";
     
     if (editableText.has("editText"))
-      editableText["text"] = editableText["text"] ~ editableText["editText"];
+      editableText["text"] = editableText.get!string("text") ~ editableText.get!string("editText");
   }
 }
