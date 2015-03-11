@@ -64,8 +64,8 @@ Entity[] bulletCollisionResponse(Collision collision, CollisionHandler collision
       particle["position"] = position;
       auto angle = uniform(-PI, PI);
       
-      auto velocityMagnitude = uniform(momentum.magnitude * 3.0, momentum.magnitude * 6.0 + 0.001;
-      particle["velocity"] = momentum + vec3(vec2FromAngle(angle), 0.0) * velocityMagnitude);
+      auto velocityMagnitude = uniform(momentum.magnitude * 3.0, momentum.magnitude * 6.0 + 0.001);
+      particle["velocity"] = momentum + vec3(vec2FromAngle(angle), 0.0) * velocityMagnitude;
       particle["angle"] = angle;
       particle["rotation"] = (angle * 10.0);
       particle["lifeTime"] = uniform(0.5, 1.5);
