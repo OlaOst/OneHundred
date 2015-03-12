@@ -29,9 +29,9 @@ vec3[] getVerticesForText(TextRenderer textRenderer, Text text, Camera camera) @
       
       foreach (vertex; text.vertices)
       {
-        buffer[index] = (vertex * mat3.zrotation(-text.angle) + 
-                         text.position - camera.position) * 
-                        camera.zoom + vec3((glyph.offset * text.size + cursor), /*index*0.01*/0.0) * camera.zoom;
+        buffer[index] = (vertex * mat3.zrotation(-text.angle) + text.position - camera.position) * 
+                        camera.zoom + 
+                        vec3((glyph.offset * text.size + cursor), /*index*0.01*/0.0) * camera.zoom;
         index++;
       }
       
