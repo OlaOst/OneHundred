@@ -71,8 +71,6 @@ class TextGraphics : Graphics!Text
     texCoords["text"] = texCoordBuffer[0 .. texCoordIndex];
     vertices["text"] = verticesBuffer[0 .. verticesIndex];
     colors["text"] = colorBuffer[0 .. colorIndex];
-    //import std.stdio;
-    //writeln("colors: ", colors["text"]);
   }
   
   override void updateEntities() 
