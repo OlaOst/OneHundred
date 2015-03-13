@@ -58,7 +58,7 @@ class TextGraphics : Graphics!Text
     colors = null;
     
     size_t texCoordIndex, verticesIndex, colorIndex;
-    foreach (component; components.sort!((left, right) => left.position.z > right.position.z))
+    foreach (component; components)//.sort!((left, right) => left.position.z > right.position.z))
     {
       auto texCoords = textRenderer.getTexCoordsForText(component);
       auto vertices = textRenderer.getVerticesForText(component, camera);

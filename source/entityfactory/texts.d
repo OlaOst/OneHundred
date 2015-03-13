@@ -34,7 +34,7 @@ Entity createTextCover(Entity textEntity, AABB textAABB)
   //position.z -= 1.0;
   textCover["position"] = position;
   textCover["angle"] = 0.0.to!string;
-
+  
   textCover.polygon = new Polygon([vec3(textAABB.min.x, textAABB.min.y, 0.0), 
                                    vec3(textAABB.min.x, textAABB.max.y, 0.0), 
                                    vec3(textAABB.max.x, textAABB.min.y, 0.0), 
@@ -44,6 +44,8 @@ Entity createTextCover(Entity textEntity, AABB textAABB)
                                    vec4(0.0, 0.5, 0.5, 0.5).repeat.take(6).array);
   
   textCover["relation.types"] = ["RelativeValues", "SameShape", "DieTogether"];
+  import std.stdio;
+  writeln("creating textcover for ", textEntity.id, " with text ", textEntity.get!string("text"));
   textCover["relation.targetId"] = textEntity.id;
   textCover["relation.value.position"] = vec3(0.0, 0.0, 0.0);
   
