@@ -55,7 +55,7 @@ Entity[] bulletCollisionResponse(Collision collision, CollisionHandler collision
   {
     int particleCount = uniform(10, 50);
     auto position = (first.contactPoint + other.contactPoint) * 0.5;
-    auto momentum = first.velocity*first.mass - other.velocity*other.mass;
+    auto momentum = first.velocity*first.mass + other.velocity*other.mass;
     foreach (double index; iota(0, particleCount))
     {
       double size = uniform(0.02, 0.05);
