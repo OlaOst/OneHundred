@@ -62,6 +62,7 @@ class SystemSet
   {
     textGraphics.textRenderer.close();
     soundSystem.silence();
+    networkHandler.connection.close();
   }
   
   void addEntity(Entity entity)

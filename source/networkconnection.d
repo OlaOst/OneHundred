@@ -14,15 +14,15 @@ class NetworkConnection
        void function(string, NetworkHandler) parseMessage, 
        NetworkHandler networkHandler)
   {
-    //setLogLevel(LogLevel.trace);
+    /*setLogLevel(LogLevel.trace);
     
-    /+auto listenTask = task(
+    auto listenTask = task(
     { 
       runTask(
       {
         connection = listenUDP(listenPort);
-    
-        while (true)
+        
+        while (!exiting)
         {
           auto pack = connection.recv();
           // TODO: for now assume one pack contains a complete message.
@@ -30,9 +30,17 @@ class NetworkConnection
         }
       }); 
       
-      runEventLoop(); 
+      runEventLoop();
     });
-    listenTask.executeInNewThread();+/
+    
+    listenTask.executeInNewThread();*/
+  }
+  
+  void close()
+  {
+    //listenTask.terminate();
+    //exitEventLoop(false);
+    exiting = true;
   }
   
   void startSendingData(ushort targetPort)
@@ -52,7 +60,11 @@ class NetworkConnection
     //connection.send(cast(ubyte[])message);
   }
   
+  //std.parallelism.Task!(run, void delegate()) listenTask;
+  //Task listenTask;
+  
   ubyte[] data;
   //UDPConnection connection;
   bool sendingData = false;
+  bool exiting = false;
 }

@@ -21,6 +21,11 @@ class NetworkHandler : System!(NetworkInfo)
     connection = new NetworkConnection(listenPort, &parseMessage, this);
   }
   
+  /*void close()
+  {
+    connection.close();
+  }*/
+  
   override bool canAddEntity(Entity entity)
   {
     return entity.has("networked") || entity.has("remoteEntityId");

@@ -44,8 +44,6 @@ Entity createTextCover(Entity textEntity, AABB textAABB)
                                    vec4(0.0, 0.5, 0.5, 0.5).repeat.take(6).array);
   
   textCover["relation.types"] = ["RelativeValues", "SameShape", "DieTogether"];
-  import std.stdio;
-  writeln("creating textcover for ", textEntity.id, " with text ", textEntity.get!string("text"));
   textCover["relation.targetId"] = textEntity.id;
   textCover["relation.value.position"] = vec3(0.0, 0.0, 0.0);
   
