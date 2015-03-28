@@ -60,7 +60,7 @@ class SystemSet
 
   void close()
   {
-    textGraphics.textRenderer.close();
+    textGraphics.close();
     spriteGraphics.close();
     soundSystem.silence();
     networkHandler.connection.close();

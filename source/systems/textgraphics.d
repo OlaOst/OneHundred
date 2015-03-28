@@ -26,10 +26,12 @@ class TextGraphics : Graphics!Text
     textureSet["text"] = textRenderer.atlas;
   }
 
-  ~this()
+  void close()
   {
     foreach (name, texture; textureSet)
       texture.remove();
+
+    textRenderer.close();
   }
 
   override bool canAddEntity(Entity entity)
