@@ -20,22 +20,22 @@ class NetworkHandler : System!(NetworkInfo)
   {
     connection = new NetworkConnection(listenPort, &parseMessage, this);
   }
-  
-  /*void close()
+
+  void close()
   {
     connection.close();
-  }*/
-  
+  }
+
   override bool canAddEntity(Entity entity)
   {
     return entity.has("networked") || entity.has("remoteEntityId");
   }
-  
+
   override NetworkInfo makeComponent(Entity entity)
   {
     NetworkInfo component = new NetworkInfo();
     component.localEntityId = entity.id;
-    
+
     if (entity.has("remoteEntityId"))
     {
       entityForRemoteId[entity.get!long("remoteEntityId")] = entity;
@@ -47,14 +47,14 @@ class NetworkHandler : System!(NetworkInfo)
     }
     return component;
   }
-  
+
   override void updateFromEntities()
   {
     foreach (index, component; components)
       foreach (key; component.valuesToWrite.byKey)
         component.valuesToWrite[key] = entityForIndex[index][key];
   }
-  
+
   override void updateValues()
   {
     if (connection.sendingData && requestedChangedValues)
@@ -63,12 +63,12 @@ class NetworkHandler : System!(NetworkInfo)
       while (timer.accumulator >= timer.timeStep)
       {
         timer.accumulator -= timer.timeStep;
-      
+
         string message = "";
         foreach (component; components)
         {
           foreach (key; component.valuesToWrite.byKey.
-                        filter!(key => component.lastSentValues.get(key, null) != 
+                        filter!(key => component.lastSentValues.get(key, null) !=
                                        component.valuesToWrite[key]))
           {
             auto sendKey = component.localEntityId.to!string ~ "." ~ key;
@@ -80,22 +80,22 @@ class NetworkHandler : System!(NetworkInfo)
       }
     }
   }
-  
+
   override void updateEntities() {}
-  
+
   void startSendingData(ushort targetPort)
   {
     if (connection.sendingData)
       return;
-    
+
     timer = new AccumulatorTimer(double.max, 1.0/30.0);
     connection.startSendingData(targetPort);
-    //connection.sendMessage("connection.port = " ~ 
-                           //connection.connection.localAddress.port.to!string ~ "\r\n");
+    connection.sendMessage("connection.port = " ~
+                           connection.connection.localAddress.port.to!string ~ "\r\n");
   }
 
   AccumulatorTimer timer;
-  NetworkConnection connection;  
+  NetworkConnection connection;
   string[string] formerOutgoingData;
   Entity[long] entityForRemoteId;
   Entity[] entitiesToBeAdded;
