@@ -14,6 +14,7 @@ import components.relations.sameshape;
 import converters;
 import entity;
 import system;
+import valuetypes;
 
 
 class RelationHandler : System!(Relation[])
@@ -22,7 +23,7 @@ class RelationHandler : System!(Relation[])
   {
     // keep track of all entities as they might be targets for relation components
     entityIdMapping[entity.id] = entity;
-    return ("relation.types" in entity.values) !is null;
+    return entity.has("relation.types");
   }
   
   override Relation[] makeComponent(Entity entity)
@@ -38,12 +39,12 @@ class RelationHandler : System!(Relation[])
       {
         auto relationValueName = relationValueKey.chompPrefix("relation.value.");
         
-        //auto immutable vec2Types = ["position", "velocity", "force"];
-        //auto immutable doubleTypes = ["size", "angle", "rotation", "torque"];
-        
         if (vec2Types.canFind(relationValueName))
           relationComponents ~= new RelativeValue!vec2(entity, relationValueName, 
                                                        entity.get!vec2("relationValueKey"));
+        if (vec3Types.canFind(relationValueName))
+          relationComponents ~= new RelativeValue!vec3(entity, relationValueName, 
+                                                       entity.get!vec3("relationValueKey"));
         if (doubleTypes.canFind(relationValueName))
           relationComponents ~= new RelativeValue!double(entity, relationValueName, 
                                                          entity.get!double("relationValueKey"));

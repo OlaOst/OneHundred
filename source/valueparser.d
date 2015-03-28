@@ -12,13 +12,8 @@ import gl3n.linalg;
 
 import converters;
 import entity;
+import valuetypes;
 
-
-// TODO: common place for these, typemapping.d or something
-// or get them by reflecting components
-//auto immutable vec2Types = ["position", "velocity", "force"];
-//auto immutable doubleTypes = ["size", "angle", "rotation", "torque"];
-//auto immutable fileTypes = ["sprite", "sound"];
 
 string parseValue(string value, string key)
 {
@@ -31,14 +26,23 @@ string parseValue(string value, string key)
       auto from = result.split("to")[0].strip.to!string.myTo!vec2;
       auto to = result.split("to")[1].strip.to!string.myTo!vec2;
       
-      result = vec2(uniform(from.x, to.x), uniform(from.y, to.y)).to!string;
+      result = vec2(uniform!"[]"(from.x, to.x), uniform!"[]"(from.y, to.y)).to!string;
+    }
+    if (vec3Types.canFind(key))
+    {
+      auto from = result.split("to")[0].strip.to!string.myTo!vec3;
+      auto to = result.split("to")[1].strip.to!string.myTo!vec3;
+      
+      result = vec3(uniform!"[]"(from.x, to.x), 
+                    uniform!"[]"(from.y, to.y), 
+                    uniform!"[]"(from.z, to.z)).to!string;
     }
     if (doubleTypes.canFind(key))
     {
       auto from = result.split("to")[0].strip.to!string.to!double;
       auto to = result.split("to")[1].strip.to!string.to!double;
       
-      result = uniform(from, to).to!string;
+      result = uniform!"[]"(from, to).to!string;
     }
   }
   

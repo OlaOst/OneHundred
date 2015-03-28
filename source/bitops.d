@@ -33,8 +33,8 @@ uint powerOf2(uint n)
   return level;
 }
 
-// hash a position into an int
-uint index(vec2 position)
+// hash x and y of a position into an uint
+uint index(vec3 position)
 {
   // TODO: make sure values are clamped not wrapped
   return interleave(cast(uint)position.x + 2^^15, cast(uint)position.y + 2^^15);
@@ -68,8 +68,8 @@ in
 body
 {
   // from http://graphics.stanford.edu/~seander/bithack.html#InterleaveBMN
-  static immutable uint B[] = [0x55555555, 0x33333333, 0x0F0F0F0F, 0x00FF00FF];
-  static immutable uint S[] = [1, 2, 4, 8];
+  static immutable uint[] B = [0x55555555, 0x33333333, 0x0F0F0F0F, 0x00FF00FF];
+  static immutable uint[] S = [1, 2, 4, 8];
 
   // Interleave lower 16 bits of x and y, so the bits of x
   // are in the even positions and bits from y in the odd;

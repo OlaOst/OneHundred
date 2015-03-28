@@ -14,38 +14,38 @@ import components.drawables.sprite;
 import converters;
 import entity;
 import system;
+import systems.graphics;
 
 
-class SpriteGraphics : System!Sprite
+class SpriteGraphics : Graphics!Sprite
 {
   this(int xres, int yres, Camera camera)
   {
-    this.xres = xres; this.yres = yres;
-    this.camera = camera;
+    super(xres, yres, camera);
   }
 
-  ~this()
+  void close()
   {
     foreach (name, texture; textureSet)
-    {
       texture.remove();
-    }
   }
 
   override bool canAddEntity(Entity entity)
   {
-    return "position" in entity.values && Sprite.canMakeComponent(entity.values);
+    return entity.has("position") && entity.has("size") && entity.has("sprite");
   }
 
   override Sprite makeComponent(Entity entity)
   {
     assert(canAddEntity(entity));
 
-    auto component = new Sprite(entity.get!double("size"), entity.get!string("sprite"));
+    auto fileName = entity.get!string("sprite");
+    if (fileName !in textureSet)
+      textureSet[fileName] = Texture2D.from_image(fileName);
 
-    textureSet[entity.get!string("sprite")] = component.texture;
+    auto component = new Sprite(entity.get!double("size"), fileName, textureSet[fileName]);
 
-    component.position = entity.get!vec2("position");
+    component.position = entity.get!vec3("position");
     component.angle = entity.get!double("angle");
 
     return component;
@@ -55,12 +55,13 @@ class SpriteGraphics : System!Sprite
   {
     StopWatch debugTimer;
     debugTimer.start;
-    vertices = texCoords = null;
+    vertices = null;
+    texCoords = null;
     colors = null;
 
     foreach (component; components)
     {
-      auto transform = (vec2 vertex) => ((vec3(vertex, 0.0)*mat3.zrotation(-component.angle)).xy +
+      auto transform = (vec3 vertex) => (vertex * mat3.zrotation(-component.angle) +
                                          component.position - camera.position) *
                                          camera.zoom;
 
@@ -81,15 +82,13 @@ class SpriteGraphics : System!Sprite
   {
     foreach (index, entity; entityForIndex)
     {
-      components[index].position = entity.get!vec2("position");
+      components[index].position = entity.get!vec3("position");
       components[index].angle = entity.get!double("angle");
     }
   }
 
-
-  immutable int xres, yres;
-  Camera camera;
-  vec2[][string] vertices, texCoords;
+  vec3[][string] vertices;
+  vec2[][string] texCoords;
   vec4[][string] colors;
   Texture2D[string] textureSet;
 }

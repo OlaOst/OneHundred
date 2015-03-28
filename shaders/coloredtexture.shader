@@ -1,7 +1,7 @@
 #version 330 core
 
 vertex:
-  in vec2 position;
+  in vec3 position;
   in vec2 texCoords;
   in vec4 color;
   
@@ -12,7 +12,7 @@ vertex:
   {
     coords = texCoords;
     inColor = color;
-    gl_Position = vec4(position, 0, 1);
+    gl_Position = vec4(position, 1);
   }
   
 fragment:

@@ -23,19 +23,20 @@ class CollisionHandler : System!Collider
 
   override bool canAddEntity(Entity entity)
   {
-    return ("collider" in entity.values) !is null && ("position" in entity.values) !is null;
+    return entity.has("collider") && entity.has("position");
   }
 
   override Collider makeComponent(Entity entity)
   {
-    vec2[] verts = [vec2(0.0, 0.0)];
-    if (("collider.vertices" in entity.values) !is null)
-      verts = entity.get!(vec2[])("collider.vertices");
+    vec3[] verts = [vec3(0.0, 0.0, 0.0)];
+    if (entity.has("collider.vertices"))
+      verts = entity.get!(vec3[])("collider.vertices");
 
     auto component = new Collider(verts, entity.get!ColliderType("collider"), entity.id);
-    if (auto spawn = ("spawner" in entity.values))
+    if (entity.has("spawner"))
     {
-      auto search = entityForIndex.values.find!(check => check.id == (*spawn).to!long);
+      auto spawn = entity.get!long("spawner");
+      auto search = entityForIndex.values.find!(check => check.id == spawn);
       assert(!search.empty);
       component.spawner = search.front;
     }

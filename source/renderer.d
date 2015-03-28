@@ -5,6 +5,7 @@ import std.array;
 import std.file;
 import std.range;
 import std.string;
+import std.typecons;
 
 import derelict.opengl3.gl3;
 import derelict.sdl2.sdl;
@@ -22,13 +23,13 @@ class Renderer
   public this(int xres, int yres)
   {
     window = getWindow(xres, yres);
-    vao = new VAO();
-    vao.bind();
     shaderSet = dirEntries("shaders", "*.shader", SpanMode.breadth).
                 map!(dirEntry => tuple(dirEntry.name.chompPrefix("shaders\\")
                                                     .chompPrefix("shaders/")
                                                     .chomp(".shader"),
                                        new Shader(dirEntry.name))).assocArray;
+    vao = new VAO();
+    vao.bind();
   }
 
   public void close()
@@ -41,16 +42,18 @@ class Renderer
       vao.remove();
   }
 
-  public void render(vec2[][string] vertices, vec4[][string] colors,
+  public void render(vec3[][string] vertices, vec4[][string] colors,
                      vec2[][string] texCoords, Texture2D[string] textureSet)
   {
     if ("polygon" in vertices && "polygon" in colors)
       drawPolygons(vertices["polygon"], colors["polygon"]);
     foreach (name; texCoords.byKey)
     {
+      assert(name in textureSet, "could not find " ~ name ~ " in textureSet " ~ textureSet.keys.to!string ~ ", from texCoords " ~ texCoords.keys.to!string);
       textureSet[name].bind();
       auto colorsForTexture = colors.get(name, vec4(1.0).repeat(vertices[name].length).array);
       drawColoredTexture(vertices[name], texCoords[name], colorsForTexture);
+      textureSet[name].unbind();
     }
     toScreen();
   }
@@ -58,40 +61,44 @@ class Renderer
   public void toScreen()
   {
     SDL_GL_SwapWindow(window);
-    glClearColor(0.0, 0.0, 0.33, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    checkgl!glClearColor(0.0, 0.0, 0.33, 1.0);
+    checkgl!glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
 
-  public void drawPolygons(vec2[] vertices, vec4[] colors)
+  public void drawPolygons(vec3[] vertices, vec4[] colors)
   {
+    vao.bind();
     assert(vertices.length == colors.length);
     vboSet["vertices"] = new Buffer(vertices);
     vboSet["colors"] = new Buffer(colors);
     shaderSet["default"].bind();
-    vboSet["vertices"].bind(shaderSet["default"], "position", GL_FLOAT, 2, 0, 0);
+    vboSet["vertices"].bind(shaderSet["default"], "position", GL_FLOAT, 3, 0, 0);
     vboSet["colors"].bind(shaderSet["default"], "color", GL_FLOAT, 4, 0, 0);
-    glDrawArrays(GL_TRIANGLES, 0, cast(int)(vertices.length));
+    checkgl!glDrawArrays(GL_TRIANGLES, 0, cast(int)(vertices.length));
     vboSet["vertices"].remove();
     vboSet["colors"].remove();
   }
 
-  public void drawColoredTexture(vec2[] vertices, vec2[] texCoords, vec4[] colors)
+  public void drawColoredTexture(vec3[] vertices, vec2[] texCoords, vec4[] colors)
   {
+    vao.bind();
     assert(vertices.length == texCoords.length);
     assert(vertices.length == colors.length);
     vboSet["vertices"] = new Buffer(vertices);
     vboSet["texture"] = new Buffer(texCoords);
     vboSet["colors"] = new Buffer(colors);
     shaderSet["coloredtexture"].bind();
-    vboSet["vertices"].bind(shaderSet["coloredtexture"], "position", GL_FLOAT, 2, 0, 0);
+    vboSet["vertices"].bind(shaderSet["coloredtexture"], "position", GL_FLOAT, 3, 0, 0);
     vboSet["texture"].bind(shaderSet["coloredtexture"], "texCoords", GL_FLOAT, 2, 0, 0);
     vboSet["colors"].bind(shaderSet["coloredtexture"], "color", GL_FLOAT, 4, 0, 0);
-    glDrawArrays(GL_TRIANGLES, 0, cast(int)(vertices.length));
-    vboSet["vertices"].remove();
+    checkgl!glDrawArrays(GL_TRIANGLES, 0, cast(int)(vertices.length));
+    vboSet["vertices"].unbind();
+    //vboSet["vertices"].remove();
+    vboSet["vertices"].buffer = 0;
     vboSet["texture"].remove();
     vboSet["colors"].remove();
   }
-  
+
   private SDL_Window *window;
   private VAO vao;
   private Buffer[string] vboSet;

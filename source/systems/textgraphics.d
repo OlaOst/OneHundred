@@ -1,7 +1,9 @@
 module systems.textgraphics;
 
+import std.algorithm;
 import std.datetime;
 import std.range;
+import std.stdio;
 
 import glamour.texture;
 import gl3n.aabb;
@@ -9,23 +11,21 @@ import gl3n.linalg;
 
 import camera;
 import components.drawables.text;
-import converters;
 import entity;
-import system;
+import systems.graphics;
 import textrenderer.textrenderer;
 import textrenderer.transform;
 
 
-class TextGraphics : System!Text
+class TextGraphics : Graphics!Text
 {
   this(int xres, int yres, Camera camera)
   {
-    this.xres = xres; this.yres = yres;
-    this.camera = camera;
+    super(xres, yres, camera);
     textRenderer = new TextRenderer();
     textureSet["text"] = textRenderer.atlas;
   }
-  
+
   ~this()
   {
     foreach (name, texture; textureSet)
@@ -34,7 +34,8 @@ class TextGraphics : System!Text
 
   override bool canAddEntity(Entity entity)
   {
-    return "position" in entity.values && Text.canMakeComponent(entity.values);
+    return entity.has("position") && entity.has("text") &&
+           entity.has("size") && entity.has("color");
   }
 
   override Text makeComponent(Entity entity)
@@ -42,40 +43,43 @@ class TextGraphics : System!Text
     Text component = new Text(entity.get!double("size"),
                               entity.get!string("text"),
                               entity.get!vec4("color"));
-    component.position = entity.get!vec2("position");
+    component.position = entity.get!vec3("position");
     component.angle = entity.get!double("angle");
-    auto textVertices = textRenderer.getVerticesForText(component, 1.0, (vec2 vertex) => vertex);
-    component.aabb = AABB.from_points(textVertices.map!(vertex => vec3(vertex, 0.0)).array);
-    entity.values["aabb"] = [component.aabb.min.xy, 
-                             component.aabb.max.xy].to!string;
+    auto textVertices = textRenderer.getVerticesForText(component, camera);
+    component.aabb = AABB.from_points(textVertices);
+    entity["aabb"] = [component.aabb.min, component.aabb.max];
     return component;
   }
 
-  override void updateValues()
+  override void updateValues() //@nogc
   {
-    vertices = texCoords = null;
+    vertices = null;
+    texCoords = null;
     colors = null;
 
-    foreach (component; components)
+    size_t texCoordIndex, verticesIndex, colorIndex;
+    foreach (component; components)//.sort!((left, right) => left.position.z > right.position.z))
     {
-      auto transform = (vec2 vertex) => ((vec3(vertex, 0.0)*mat3.zrotation(-component.angle)).xy +
-                                         component.position - camera.position) *
-                                         camera.zoom;
-      texCoords["text"] ~= textRenderer.getTexCoordsForText(component);
-      vertices["text"] ~= textRenderer.getVerticesForText(component, camera.zoom, transform);
-      component.aabb = AABB.from_points(textRenderer.getVerticesForText(component, 1.0, 
-                        (vec2 vertex) => vertex).map!(vertex => vec3(vertex, 0.0)).array);
-      colors["text"] ~= component.color.repeat.take
-                          (textRenderer.getTexCoordsForText(component).length).array;
+      auto texCoords = textRenderer.getTexCoordsForText(component);
+      auto vertices = textRenderer.getVerticesForText(component, camera);
+      texCoordBuffer.fillBuffer(texCoords, texCoordIndex);
+      verticesBuffer.fillBuffer(vertices, verticesIndex);
+      colorBuffer[colorIndex .. colorIndex + texCoords.length] = component.color;
+      colorIndex += texCoords.length;
+      component.aabb = AABB.from_points(vertices);
     }
+    texCoords["text"] = texCoordBuffer[0 .. texCoordIndex];
+    vertices["text"] = verticesBuffer[0 .. verticesIndex];
+    colors["text"] = colorBuffer[0 .. colorIndex];
   }
 
-  override void updateEntities() 
+  override void updateEntities()
   {
     foreach (index, entity; entityForIndex)
     {
-      entity.values["aabb"] = [components[index].aabb.min.xy,
-                               components[index].aabb.max.xy].to!string;
+      auto relativePosition = camera.position - components[index].position;
+      entity["aabb"] = [components[index].aabb.min * (1.0/camera.zoom) + relativePosition,
+                        components[index].aabb.max * (1.0/camera.zoom) + relativePosition];
     }
   }
 
@@ -83,17 +87,20 @@ class TextGraphics : System!Text
   {
     foreach (index, entity; entityForIndex)
     {
-      components[index].position = entity.get!vec2("position");
+      components[index].position = entity.get!vec3("position");
       components[index].angle = entity.get!double("angle");
       if (components[index].text !is null)
         components[index].text = entity.get!string("text");
     }
   }
 
-  immutable int xres, yres;
+  vec3[65536] verticesBuffer;
+  vec2[65536] texCoordBuffer;
+  vec4[65536] colorBuffer;
+
   TextRenderer textRenderer;
-  Camera camera;
-  vec2[][string] vertices, texCoords;
+  vec3[][string] vertices;
+  vec2[][string] texCoords;
   vec4[][string] colors;
   Texture2D[string] textureSet;
 }

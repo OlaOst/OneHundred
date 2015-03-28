@@ -1,7 +1,7 @@
 #version 330 core
 
 vertex:
-  in vec2 position;
+  in vec3 position;
   in vec4 color;
   
   out vec4 fragmentColor;
@@ -9,7 +9,7 @@ vertex:
   void main(void)
   {
     fragmentColor = color;  
-    gl_Position = vec4(position, 0, 1);
+    gl_Position = vec4(position, 1);
   }
 
 fragment:

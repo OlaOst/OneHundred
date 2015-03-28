@@ -18,7 +18,7 @@ final class TimeHandler : System!double
   
   override bool canAddEntity(Entity entity)
   {
-    return ("lifeTime" in entity.values) !is null;
+    return entity.has("lifeTime");
   }
   
   override double makeComponent(Entity entity)
@@ -35,7 +35,7 @@ final class TimeHandler : System!double
       lifeTime -= timer.frameTime;
       
       if (lifeTime <= 0.0)
-        entityForIndex[index].values["ToBeRemoved"] = true.to!string;
+        entityForIndex[index]["ToBeRemoved"] = true;
     }
   }
   
@@ -43,7 +43,7 @@ final class TimeHandler : System!double
   {
     foreach (int index, double lifeTime; components)
     {
-      entityForIndex[index].values["lifeTime"] = lifeTime.to!string;
+      entityForIndex[index]["lifeTime"] = lifeTime;
     }
   }
   

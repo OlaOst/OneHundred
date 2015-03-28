@@ -25,8 +25,8 @@ void addNetworkEntities(SystemSet systemSet)
 {
   foreach (entity; systemSet.networkHandler.entitiesToBeAdded)
   {
-    import std.stdio;
-    writeln("adding remoteentity from networkhandler with values ", entity.values);
+    //import std.stdio;
+    //writeln("adding remoteentity from networkhandler with values ", entity.values);
     systemSet.addEntity(entity);
   }
   systemSet.networkHandler.entitiesToBeAdded.length = 0;
@@ -41,15 +41,15 @@ void addBullets(ref Entity[] npcs, SystemSet systemSet)
   {
     if (uniform(1, 180) == 1)
     {
-      assert("position" in npc.values);
-      assert("velocity" in npc.values);
-      assert("angle" in npc.values);
+      assert(npc.has("position"));
+      assert(npc.has("velocity"));
+      assert(npc.has("angle"));
       
-      auto angle = npc.values["angle"].to!double;
+      auto angle = npc.get!double("angle");
       
-      auto bullet = createBullet(npc.values["position"].myTo!vec2,
+      auto bullet = createBullet(npc.get!vec3("position"),
                                  angle,
-                                 npc.values["velocity"].myTo!vec2 + vec2FromAngle(angle) * 5.0, 
+                                 npc.get!vec3("velocity") + vec3(vec2FromAngle(angle), 0.0) * 5.0, 
                                  5.0,
                                  npc.id);
       assert(bullet !is null);

@@ -10,7 +10,6 @@ import components.collider;
 import components.sound;
 import entity;
 import systems.collisionhandler;
-import timer;
 
 
 //Entity[] shipCollisionResponse(Collision collision, SystemSet systemSet)
@@ -43,7 +42,8 @@ Entity[] shipCollisionResponse(Collision collision, CollisionHandler collisionHa
   assert(first.contactPoint.isFinite);
   assert(other.contactPoint.isFinite);
 
-  if ("velocity" !in firstColliderEntity.values || "velocity" !in otherColliderEntity.values)
+  //if ("velocity" !in firstColliderEntity || "velocity" !in otherColliderEntity)
+  if (!firstColliderEntity.has("velocity") || !otherColliderEntity.has("velocity"))
     assert(false);
   
   //auto firstMass = systemSet.physics.getComponent(firstColliderEntity).mass;
@@ -68,32 +68,21 @@ Entity[] shipCollisionResponse(Collision collision, CollisionHandler collisionHa
   if (((other.position+other.velocity*0.01) - (first.position+first.velocity*0.01)).magnitude <
       (other.position-first.position).magnitude)
   {
-    firstColliderEntity.values["velocity"] = firstVelocity.to!string;
-    otherColliderEntity.values["velocity"] = otherVelocity.to!string;
+    firstColliderEntity["velocity"] = firstVelocity;
+    otherColliderEntity["velocity"] = otherVelocity;
   }
-
-  // TODO: is it right to integrate by timeStep here?
-  /*first.force = (firstVelocity * firstMass - first.velocity * firstMass) * 
-                (1.0 / Timer.timeStep) * 1.0;
-  other.force = (otherVelocity * otherMass - other.velocity * otherMass) * 
-                (1.0 / Timer.timeStep) * 1.0;*/
-  // TODO: need timeStep from Physics timer for (1.0/60.0) term
-  first.force = (firstVelocity * firstMass - first.velocity * firstMass) * 
-                (1.0 / (1.0/60.0)) * 1.0;
-  other.force = (otherVelocity * otherMass - other.velocity * otherMass) * 
-                (1.0 / (1.0/60.0)) * 1.0;
   
   // TODO: change positions to ensure colliders does not overlap
-  auto firstPos = firstColliderEntity.get!vec2("position");
-  auto otherPos = otherColliderEntity.get!vec2("position");
+  auto firstPos = firstColliderEntity.get!vec3("position");
+  auto otherPos = otherColliderEntity.get!vec3("position");
 
   Entity[] hitEffectParticles;
   if ((firstVelocity - otherVelocity).magnitude > 1.0)
   {
     auto position = (first.contactPoint + other.contactPoint) * 0.5;
     Entity hitSound = new Entity();
-    hitSound.values["position"] = position.to!string;
-    hitSound.values["sound"] = "audio/bounce.wav";
+    hitSound["position"] = position;
+    hitSound["sound"] = "audio/bounce.wav";
     hitEffectParticles ~= hitSound;
   }
   return hitEffectParticles;

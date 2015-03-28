@@ -9,7 +9,7 @@ import integrator.state;
 void integrateStates(ref State[] currentStates, 
                      ref State[] previousStates, 
                      double time, 
-                     double timestep)
+                     double timestep) @nogc
 {
   previousStates = currentStates;
 
@@ -21,10 +21,15 @@ void integrateStates(ref State[] currentStates,
 
 void interpolateStates(ref State[] currentStates, 
                        ref State[] previousStates, 
-                       double alpha)
+                       double alpha) @nogc
 {
-  foreach (ref stateTuple; zip(currentStates, previousStates))
+  assert(currentStates.length == previousStates.length);
+  
+  for (size_t index = 0; index < currentStates.length; index++)
+    currentStates[index].interpolate(previousStates[index], alpha);
+    
+  /*foreach (ref stateTuple; zip(currentStates, previousStates))
   {
     stateTuple[0].interpolate(stateTuple[1], alpha);
-  }
+  }*/
 }

@@ -35,19 +35,19 @@ Entity createEntityFromFile(string file)
   return new Entity(values);
 }
 
-Entity createEntity(vec2 position, vec2 velocity, double size)
+Entity createEntity(vec3 position, vec3 velocity, double size)
 {
   auto entity = new Entity();
 
   auto drawable = new Polygon(size, uniform(4, 4+1), 
                               vec4(uniformDistribution!float(3).vec3, 0.5));
   
-  entity.values["position"] = position.to!string;
-  entity.values["velocity"] = velocity.to!string;
-  entity.values["angle"] = uniform(-PI, PI).to!string;
-  entity.values["size"] = size.to!string;
-  entity.values["mass"] = (0.1 + size ^^ 2).to!string;
-  entity.values["collider"] = ColliderType.Npc.to!string;
+  entity["position"] = position;
+  entity["velocity"] = velocity;
+  entity["angle"] = uniform(-PI, PI);
+  entity["size"] = size;
+  entity["mass"] = (0.1 + size ^^ 2);
+  entity["collider"] = ColliderType.Npc;
 
   return entity;
 }
@@ -62,24 +62,27 @@ Entity[] createNpcs(uint elements)
   return entities;
 }
 
-Entity createBullet(vec2 position, float angle, vec2 velocity, 
+Entity createBullet(vec3 position, float angle, vec3 velocity, 
                     double lifeTime, const long spawnerId)
 {
   auto entity = createEntity(position, velocity, 0.1);
   
   auto color = vec4(uniformDistribution!float(3).vec3, 0.5);
   
-  entity.values["angle"] = angle.to!string;
-  entity.values["lifeTime"] = lifeTime.to!string;
+  entity["angle"] = angle;
+  entity["lifeTime"] = lifeTime;
   
   auto polygon = new Polygon(0.1, uniform(3, 4), 
                              vec4(uniformDistribution!float(3).vec3, 0.5));
   
-  entity.values["polygon.vertices"] = polygon.vertices.to!string;
-  entity.values["polygon.colors"] = polygon.colors.to!string;
-  entity.values["collider"] = ColliderType.Bullet.to!string;
+  //entity["polygon.vertices"] = polygon.vertices;
+  //entity["polygon.colors"] = polygon.colors;
+  entity.polygon = polygon;
+  entity["collider"] = ColliderType.Bullet;
 
-  entity.values["spawner"] = spawnerId.to!string;
+  entity["spawner"] = spawnerId;
+  
+  entity["networked"] = true;
   
   return entity;
 }

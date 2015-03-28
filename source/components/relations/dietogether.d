@@ -17,6 +17,6 @@ class DieTogether : Relation
   
   void updateValues(Entity target)
   {
-    source.values["ToBeRemoved"] = target.get!bool("ToBeRemoved").to!string;
+    source["ToBeRemoved"] = target.get!bool("ToBeRemoved");
   }
 }

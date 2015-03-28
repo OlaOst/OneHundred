@@ -7,14 +7,14 @@
   "version": "0.0.1",
   "mainSourceFile": "source/app.d",
   "dependencies": {
-    "derelict-sdl2": { "version": ">=1.9.0", "path": "../DerelictSDL2" },
-    "derelict-gl3": ">=1.0.10",
+    "derelict-sdl2": { "version": ">=1.9.4", "path": "../DerelictSDL2" },
+    "derelict-gl3": ">=1.0.12",
     "derelict-al": ">=1.0.0",
     "derelict-vorbis": ">=1.0.1",
-    "derelict-ft": ">=1.0.0",
-    "gl3n": ">=1.0.0",
-    "glamour": { "version": ">=1.0.1", "path": "../glamour" },
-    "vibe-d": ">=0.7.22",
+    "derelict-ft": ">=1.0.2",
+    "gl3n": ">=1.0.1",
+    "glamour": { "version": ">=1.0.2", "path": "../glamour" },
+    
   },
   "importPaths" : ["../glamour"],
 

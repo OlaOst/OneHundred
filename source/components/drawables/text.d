@@ -20,7 +20,7 @@ final class Text : Drawable
   
   alias text this;
   
-  vec2[] vertices;
+  vec3[] vertices;
   vec4 color;
   
   AABB aabb;
@@ -32,10 +32,5 @@ final class Text : Drawable
     this.color = color;
     
     vertices = baseSquare.dup.map!(vertex => vertex * size).array;
-  }
-  
-  static bool canMakeComponent(string[string] values)
-  {
-    return "text" in values && "size" in values && "color" in values;
   }
 }

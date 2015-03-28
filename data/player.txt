@@ -1,4 +1,4 @@
-position = [0.0, 0.0]
+position = [0.0, 0.0, 0.0]
 mass = 0.2
 size = 0.3
 sprite = images/playerShip1_blue.png

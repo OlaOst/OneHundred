@@ -17,37 +17,28 @@ import components.drawables.text;
 import converters;
 import entity;
 import system;
+import systems.graphics;
 
 
-class PolygonGraphics : System!Polygon
+class PolygonGraphics : Graphics!Polygon
 {
   this(int xres, int yres, Camera camera)
   {
-    this.xres = xres; this.yres = yres;
-    this.camera = camera;
+    super(xres, yres, camera);
   }
 
   override bool canAddEntity(Entity entity)
   {
-    return "position" in entity.values && Polygon.canMakeComponent(entity.values);
+    return entity.has("position") && (entity.polygon !is null);
   }
 
   override Polygon makeComponent(Entity entity)
   {
     Polygon component;
 
-    // TODO: maybe split into separate systems for drawing polygons/texts/sprites?
-    if ("polygon.vertices" in entity.values)
-    {
-      if ("polygon.colors" in entity.values)
-        component = new Polygon(entity.get!(vec2[])("polygon.vertices"),
-                                entity.get!(vec4[])("polygon.colors"));
-      else if ("color" in entity.values)
-        component = new Polygon(entity.get!(vec2[])("polygon.vertices"),
-                                entity.get!vec4("color"));
-    }
+    component = entity.polygon;
 
-    component.position = entity.get!vec2("position");
+    component.position = entity.get!vec3("position");
     component.angle = entity.get!double("angle");
 
     return component;
@@ -59,15 +50,15 @@ class PolygonGraphics : System!Polygon
     debugTimer.start;
     vertices = null;
     colors = null;
-
+    
     foreach (component; components)
     {
-      auto transform = (vec2 vertex) => ((vec3(vertex, 0.0)*mat3.zrotation(-component.angle)).xy +
+      auto transform = (vec3 vertex) => (vertex * mat3.zrotation(-component.angle) +
                                          component.position - camera.position) *
                                          camera.zoom;
-      // map with delegate in a variable and then array crashes with release build in dmd 2.066
+      // map with delegate in a variable and then array crashes with release build in dmd 2.067 b3
       //vertices["polygon"] ~= component.vertices.map!transform.array;
-      vec2[] transformedVertices;
+      vec3[] transformedVertices;
       foreach (vertex; component.vertices)
         transformedVertices ~= transform(vertex);
       vertices["polygon"] ~= transformedVertices;
@@ -76,7 +67,7 @@ class PolygonGraphics : System!Polygon
     debugText = format("polygongraphics timings: %s", debugTimer.peek.usecs*0.001);
   }
 
-  override void updateEntities()
+  override void updateEntities() 
   {
   }
 
@@ -84,16 +75,14 @@ class PolygonGraphics : System!Polygon
   {
     foreach (index, entity; entityForIndex)
     {
-      components[index].position = entity.get!vec2("position");
+      assert(entity.polygon !is null);
+      components[index].position = entity.get!vec3("position");
       components[index].angle = entity.get!double("angle");
-
-      components[index].vertices = entity.get!(vec2[])("polygon.vertices");
-      components[index].colors = entity.get!(vec4[])("polygon.colors");
+      components[index].vertices = entity.polygon.vertices;
+      components[index].colors = entity.polygon.colors;
     }
   }
 
-  immutable int xres, yres;
-  Camera camera;
-  vec2[][string] vertices;
+  vec3[][string] vertices;
   vec4[][string] colors;
 }

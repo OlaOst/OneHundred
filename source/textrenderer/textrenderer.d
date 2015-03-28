@@ -20,34 +20,34 @@ class TextRenderer
   this()
   {
     DerelictFT.load();
-    
+
     FT_Library library;
-    
+
     enforce(!FT_Init_FreeType(&library), "Error initializing FreeType");
-    
+
     //auto defaultFont = "fonts/freesansbold.ttf";
     //auto defaultFont = "fonts/telegrama_render.otf";
     //auto defaultFont = "fonts/Inconsolata.otf";
     //auto defaultFont = "fonts/OxygenMono-Regular.otf";
     auto defaultFont = "fonts/Orbitron Black.otf";
-    
+
     FT_Face face;
     auto fontError = FT_New_Face(library, ("./" ~ defaultFont).toStringz(), 0, &face);
-    
-    enforce(fontError != FT_Err_Unknown_File_Format, 
+
+    enforce(fontError != FT_Err_Unknown_File_Format,
             "Unrecognized font format when loading " ~ defaultFont);
-    enforce(!fontError, 
+    enforce(!fontError,
             "Error loading " ~ defaultFont ~ ": " ~ fontError.to!string);
-    
+
     static enum glyphSize = 32;
-    
+
     FT_Set_Pixel_Sizes(face, glyphSize, glyphSize);
-    
-    foreach (index; iota(0, 256))
+
+    foreach (size_t index; iota(0, 256))
     {
-      glyphSet[index.to!char] = face.loadGlyph(index.to!char, glyphSize);
+      glyphSet[index/*.to!char*/] = face.loadGlyph(index.to!char, glyphSize);
     }
-    
+
     atlas = glyphSet.createFontAtlas(defaultFont, glyphSize);
   }
 
@@ -62,30 +62,30 @@ class TextRenderer
     atlas.bind_and_activate();
   }
 
-  vec2[] getTexCoordsForLetter(dchar letter) 
+  vec2[6] getTexCoordsForLetter(dchar letter) @nogc
   {
     int rows = cast(int)sqrt(cast(float)glyphSet.length);
     int cols = cast(int)sqrt(cast(float)glyphSet.length);
-  
+
     int row = letter / rows;
     int col = letter % cols;
-    
+
     float x1 = col / cast(float)rows;
     float y1 = row / cast(float)cols;
-    
+
     float x2 = x1 + 1.0/cast(float)rows;
     float y2 = y1 + 1.0/cast(float)cols;
-        
-    return [vec2(x1, y1), vec2(x2, y1), vec2(x2, y2), 
+
+    return [vec2(x1, y1), vec2(x2, y1), vec2(x2, y2),
             vec2(x2, y2), vec2(x1, y2), vec2(x1, y1)];
   }
 
-  public Glyph getGlyphForLetter(char letter)
+  public Glyph getGlyphForLetter(char letter) @nogc
   {
     return glyphSet[letter];
   }
-  
+
   private static uint colorComponents = 4;
-  private Glyph[char] glyphSet;
+  private Glyph[256] glyphSet;
   public Texture2D atlas;
 }

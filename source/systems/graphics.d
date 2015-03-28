@@ -15,44 +15,28 @@ import entity;
 import system;
 
 
-class Graphics : System!bool
+abstract class Graphics(ComponentType) : System!ComponentType
 {
-  this(int xres, int yres)
+  this(int xres, int yres, Camera camera)
   {
     this.xres = xres; this.yres = yres;
-
-    camera = new Camera();
-  }
-
-  override bool canAddEntity(Entity entity)
-  {
-    return false;
-  }
-
-  override bool makeComponent(Entity entity)
-  {
-    return false;
-  }
-
-  override void updateValues()
-  {
-    //debugText = format("graphics timings: %s", debugTimer.peek.usecs*0.001);
-  }
-
-  override void updateEntities()
-  {
-  }
-
-  override void updateFromEntities()
-  {
-  }
-
-  vec2 getWorldPositionFromScreenCoordinates(vec2 screenCoordinates)
-  {
-    return vec2(screenCoordinates.x / cast(float)xres - 0.5,
-                0.5 - screenCoordinates.y / cast(float)yres) * (1.0 / camera.zoom) * 2.0;
+    this.camera = camera;
   }
 
   immutable int xres, yres;
   Camera camera;
+}
+
+void fillBuffer(Type)(Type[] buffer, Type[] source, ref size_t index) @nogc
+{
+  buffer[index .. index + source.length] = source;
+  index += source.length;
+}
+
+vec3 getWorldPositionFromScreenCoordinates(Camera camera, vec2 screenCoordinates, 
+                                           int xres, int yres)
+{
+  return camera.transform(vec3(screenCoordinates.x / cast(float)xres - 0.5,
+                               0.5 - screenCoordinates.y / cast(float)yres,
+                               0.0));
 }

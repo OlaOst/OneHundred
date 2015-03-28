@@ -31,10 +31,14 @@ class RelativeValue(ValueType) : Relation
   void updateValues(Entity target)
   {
     static if (is(ValueType == vec2))
-      auto newValue = target.values[valueName].myTo!vec2 + relativeValue;
+      auto newValue = target.get!vec2(valueName) + relativeValue;
+    else static if (is(ValueType == vec3))
+      auto newValue = target.get!vec3(valueName) + relativeValue;
+    else static if(is(ValueType == double))
+      auto newValue = target.get!double(valueName) + relativeValue;
     else
-      auto newValue = target.values[valueName].to!ValueType + relativeValue;
-    
-    source.values[valueName] = newValue.to!string;
+      assert(0);
+      
+    source[valueName] = newValue;
   }
 }

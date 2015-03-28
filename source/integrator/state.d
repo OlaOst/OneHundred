@@ -11,36 +11,36 @@ import entity;
 struct State
 {
   // primaries
-  vec2 position = vec2(0.0, 0.0);
-  vec2 momentum = vec2(0.0, 0.0);
+  vec3 position = vec3(0.0, 0.0, 0.0);
+  vec3 momentum = vec3(0.0, 0.0, 0.0);
   double angle = 0.0;
   //double rotationalMomentum;
   
   // secondaries
-  vec2 velocity = vec2(0.0, 0.0);
+  vec3 velocity = vec3(0.0, 0.0, 0.0);
   double rotation = 0.0;
   
   //constants
   double mass;
   
   // 'constants' for forceCalculator
-  vec2 force = vec2(0.0, 0.0);
+  vec3 force = vec3(0.0, 0.0, 0.0);
   double torque = 0.0;
   
-  vec2 function(State, double time) pure nothrow @nogc forceCalculator;
+  vec3 function(State, double time) pure nothrow @nogc forceCalculator;
   double function(State, double time) pure nothrow @nogc torqueCalculator;
   Entity entity;
   
   this() @disable;
   
   this(Entity entity, 
-       vec2 function(State, double time) pure nothrow @nogc forceCalculator, 
+       vec3 function(State, double time) pure nothrow @nogc forceCalculator, 
        double function(State, double time) pure nothrow @nogc torqueCalculator)
   {
     this.entity = entity;
 
-    position = entity.get!vec2("position");
-    velocity = entity.get!vec2("velocity");
+    position = entity.get!vec3("position");
+    velocity = entity.get!vec3("velocity");
     angle = entity.get!double("angle");
     rotation = entity.get!double("rotation");
     mass = entity.get!double("mass");
@@ -71,7 +71,7 @@ struct State
     assert(!rotation.isNaN);
     assert(!torque.isNaN);
     //assert(!rotationalMomentum.isNaN);
-    assert(mass > 0.0, "Must have positive nonzero mass");    
+    assert(mass > 0.0, "Must have positive nonzero mass, was " ~ mass.to!string);
     assert(forceCalculator !is null);
     assert(torqueCalculator !is null);
     assert(entity !is null);

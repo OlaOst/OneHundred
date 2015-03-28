@@ -25,16 +25,16 @@ class Collider
   bool isColliding;
   // TODO: what about a collisionresponse delegate here?
   
-  vec2 position;
-  vec2 velocity;
-  vec2 contactPoint;
-  vec2 force = vec2(0.0, 0.0);
+  vec3 position;
+  vec3 velocity;
+  vec3 contactPoint;
+  vec3 force = vec3(0.0, 0.0, 0.0);
   double radius;
   double mass;
   
   ColliderType type;
   
-  vec2[] vertices;
+  vec3[] vertices;
   
   // what entity did this collider spawn from? 
   // need to know since we do not want ships firing bullets to get hit by their own bullets
@@ -43,7 +43,7 @@ class Collider
   
   long id;
   
-  this(vec2[] vertices, ColliderType type, long id)
+  this(vec3[] vertices, ColliderType type, long id)
   {
     // TODO: ensure verts are in order and defines a convex polygon
     this.vertices = vertices;
@@ -81,8 +81,8 @@ class Collider
   
   void updateFromEntity(const Entity entity)
   {
-    position = entity.get!vec2("position");
-    velocity = entity.get!vec2("velocity");
+    position = entity.get!vec3("position");
+    velocity = entity.get!vec3("velocity");
     radius = entity.get!double("radius", entity.get!double("size"));
     mass = entity.get!double("mass");
   }

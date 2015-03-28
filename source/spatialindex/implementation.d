@@ -7,7 +7,7 @@ import bitops;
 
 
 uint[][levels] findCoveringIndices(uint levels, uint maxIndicesPerLevel, uint minLevel)
-                                  (vec2 position, float radius, bool checkSubQuads)
+                                  (vec3 position, float radius, bool checkSubQuads)
 {
   uint[][levels] indices;
   
@@ -32,7 +32,7 @@ void populateCoveringIndices(uint levels, uint maxIndicesPerLevel, uint minLevel
       intersectsEquals(object, quadrant) && 
       coveringIndices[level].length < maxIndicesPerLevel)
   {
-    auto index = quadrant.min.xy.index >> level*2;
+    auto index = quadrant.min.index >> level*2;
     coveringIndices[level] ~= index;
   }
   
@@ -41,7 +41,7 @@ void populateCoveringIndices(uint levels, uint maxIndicesPerLevel, uint minLevel
     auto fullyCovered = object.contains(quadrant);
     if (fullyCovered || (checkSubQuads && intersectsEquals(object, quadrant)))
     {
-      auto index = quadrant.min.xy.index >> level*2;
+      auto index = quadrant.min.index >> level*2;
       coveringIndices[level] ~= index;
     }
     

@@ -34,7 +34,7 @@ body
   {
     if (collider.isColliding)
     {
-      auto position = state.entity.get!vec2("position");
+      auto position = state.entity.get!vec3("position");
       auto relative = collider.contactPoint - position;
       
       //writeln("calc cross from collider force ", collider.force, " and rel pos ", relative);
@@ -52,7 +52,7 @@ body
   return torque;
 }
 
-vec2 calculateForce(State state, double time) pure nothrow @nogc
+vec3 calculateForce(State state, double time) pure nothrow @nogc
 out (result)
 {
   assert(result.isFinite);
@@ -68,12 +68,12 @@ body
   force += state.velocity * -0.05; // damping force
   
   // twisty clockwise force close to center
-  auto normalPos = vec2(state.position.y, -state.position.x);
+  auto normalPos = vec3(state.position.y, -state.position.x, 0.0);
   if (normalPos.magnitude() > 0.0)
     force += normalPos.normalized() * ((1.0 / (normalPos.magnitude() + 0.1)) ^^2) * 0.05;
 
   // twisty counterclockwise force further out
-  force += vec2(-state.position.y, state.position.x) * 0.015;
+  force += vec3(-state.position.y, state.position.x, 0.0) * 0.015;
 
   //if (state.entity.input)
     //state.entity.input.handlePlayerAccelerateActions(force, state.angle);

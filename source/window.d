@@ -10,8 +10,8 @@ import derelict.sdl2.sdl;
 
 SDL_Window* getWindow(int screenWidth, int screenHeight)
 {
-  DerelictSDL2.load(/*SharedLibVersion(2, 0, 3)*/);
-  DerelictSDL2Image.load(/*SharedLibVersion(2, 0, 0)*/);
+  DerelictSDL2.load();//SharedLibVersion(2, 0, 3));
+  DerelictSDL2Image.load();//SharedLibVersion(2, 0, 0));
   DerelictGL3.load();
 
   enforce(SDL_Init(SDL_INIT_VIDEO) == 0, "Failed to initialize SDL: " ~ SDL_GetError().to!string);
@@ -40,11 +40,14 @@ SDL_Window* getWindow(int screenWidth, int screenHeight)
 
   // setup gl viewport and etc
   glViewport(0, 0, screenWidth, screenHeight);
-
+  
+  //glEnable(GL_DEPTH_TEST);
   glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+  //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   DerelictGL3.reload();
-
+  
+  glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+  glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+  
   return window;
 }
