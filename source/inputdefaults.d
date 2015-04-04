@@ -20,6 +20,7 @@ static this()
   gameControls.key[SDLK_PAGEUP] = "zoomIn";
   gameControls.key[SDLK_PAGEDOWN] = "zoomOut";
   gameControls.key[SDLK_ESCAPE] = "quit";
+  gameControls.key[SDL_QUIT] = "quit";
   gameControls.key[SDLK_INSERT] = "addEntity";
   gameControls.key[SDLK_DELETE] = "removeEntity";
   gameControls.key[SDL_SCANCODE_TAB] = "addEntity";
