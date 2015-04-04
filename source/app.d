@@ -83,7 +83,6 @@ void main(string[] args)
     camera.position = player.get!vec3("position");
     mouseCursor["position"] = getWorldPositionFromScreenCoordinates(camera,
                                 systemSet.inputHandler.mouseScreenPosition, xres, yres);
-    // TODO: remember to update position of mousecursor components in systems
 
     addParticles(particles, systemSet);
     addBullets(npcs, systemSet);
