@@ -26,7 +26,6 @@ class SystemSet
   EntityHandler[] entityHandlers;
   EntityHandler[] graphicsHandlers;
   string graphicsTimingText;
-  //Graphics graphics;
   PolygonGraphics polygonGraphics;
   SpriteGraphics spriteGraphics;
   TextGraphics textGraphics;
@@ -40,7 +39,6 @@ class SystemSet
 
   this(int xres, int yres, Camera camera, ushort listenPort)
   {
-    //graphics = new Graphics(xres, yres);
     polygonGraphics = new PolygonGraphics(xres, yres, camera);
     spriteGraphics = new SpriteGraphics(xres, yres, camera);
     textGraphics = new TextGraphics(xres, yres, camera);
