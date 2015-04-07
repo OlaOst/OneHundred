@@ -22,7 +22,7 @@ import eventhandlers.game;
 import eventhandlers.toggleinputwindow;
 import graphicscollector;
 import playereventhandler;
-import renderer;
+import renderer.renderer;
 import systemset;
 import systems.graphics;
 

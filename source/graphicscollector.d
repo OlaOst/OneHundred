@@ -3,7 +3,7 @@ module graphicscollector;
 import gl3n.linalg;
 import glamour.texture;
 
-import renderer;
+import renderer.renderer;
 import systemset;
 import systems.polygongraphics;
 import systems.spritegraphics;
