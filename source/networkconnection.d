@@ -33,13 +33,13 @@ class NetworkConnection
       runEventLoop();
     });
 
-    listenTask.executeInNewThread();
+    //listenTask.executeInNewThread();
   }
 
   void close()
   {
     //listenTask.terminate();
-    exitEventLoop(false);
+    //exitEventLoop(false);
     exiting = true;
   }
 
