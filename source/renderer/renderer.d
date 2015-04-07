@@ -59,7 +59,10 @@ class Renderer
       auto colorsForTexture = colors.get(name, vec4(1.0).repeat(vertices[name].length).array);
       
       assert("coloredtexture" in shaderSet);
-      drawColoredTexture(shaderSet["coloredtexture"], vertices[name], texCoords[name], colorsForTexture);
+      drawColoredTexture(shaderSet["coloredtexture"], 
+                         vertices[name], 
+                         texCoords[name], 
+                         colorsForTexture);
       
       textureSet[name].unbind();
     }
