@@ -21,11 +21,6 @@ class NetworkHandler : System!(NetworkInfo)
     connection = new NetworkConnection(listenPort, &parseMessage, this);
   }
 
-  void close()
-  {
-    connection.close();
-  }
-
   override bool canAddEntity(Entity entity)
   {
     return entity.has("networked") || entity.has("remoteEntityId");
@@ -85,8 +80,7 @@ class NetworkHandler : System!(NetworkInfo)
 
   void startSendingData(ushort targetPort)
   {
-    if (connection.sendingData)
-      return;
+    if (connection.sendingData) return;
 
     timer = new AccumulatorTimer(double.max, 1.0/30.0);
     connection.startSendingData(targetPort);
@@ -96,7 +90,6 @@ class NetworkHandler : System!(NetworkInfo)
 
   AccumulatorTimer timer;
   NetworkConnection connection;
-  string[string] formerOutgoingData;
   Entity[long] entityForRemoteId;
   Entity[] entitiesToBeAdded;
   bool requestedChangedValues = false;
