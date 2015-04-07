@@ -23,28 +23,23 @@ class TextGraphics : Graphics!Text
   {
     super(xres, yres, camera);
     textRenderer = new TextRenderer();
-    textureSet["text"] = textRenderer.atlas;
   }
 
   void close()
   {
-    foreach (name, texture; textureSet)
-      texture.remove();
-
     textRenderer.close();
   }
 
   override bool canAddEntity(Entity entity)
   {
-    return entity.has("position") && entity.has("text") &&
-           entity.has("size") && entity.has("color");
+    return entity.has("position") && entity.has("text");
   }
 
   override Text makeComponent(Entity entity)
   {
-    Text component = new Text(entity.get!double("size"),
+    Text component = new Text(entity.get!double("size", 1.0),
                               entity.get!string("text"),
-                              entity.get!vec4("color"));
+                              entity.get!vec4("color", vec4(1.0, 1.0, 1.0, 1.0)));
     component.position = entity.get!vec3("position");
     component.angle = entity.get!double("angle");
     auto textVertices = textRenderer.getVerticesForText(component, camera);
@@ -58,16 +53,14 @@ class TextGraphics : Graphics!Text
     vertices = null;
     texCoords = null;
     colors = null;
-
     size_t texCoordIndex, verticesIndex, colorIndex;
-    foreach (component; components)//.sort!((left, right) => left.position.z > right.position.z))
+    foreach (component; components)
     {
       auto texCoords = textRenderer.getTexCoordsForText(component);
       auto vertices = textRenderer.getVerticesForText(component, camera);
       texCoordBuffer.fillBuffer(texCoords, texCoordIndex);
       verticesBuffer.fillBuffer(vertices, verticesIndex);
-      colorBuffer[colorIndex .. colorIndex + texCoords.length] = component.color;
-      colorIndex += texCoords.length;
+      colorBuffer.fillBuffer(component.color.repeat.take(texCoords.length).array, colorIndex);
       component.aabb = AABB.from_points(vertices);
     }
     texCoords["text"] = texCoordBuffer[0 .. texCoordIndex];
@@ -96,13 +89,11 @@ class TextGraphics : Graphics!Text
     }
   }
 
+  TextRenderer textRenderer;
   vec3[65536] verticesBuffer;
   vec2[65536] texCoordBuffer;
   vec4[65536] colorBuffer;
-
-  TextRenderer textRenderer;
   vec3[][string] vertices;
   vec2[][string] texCoords;
   vec4[][string] colors;
-  Texture2D[string] textureSet;
 }

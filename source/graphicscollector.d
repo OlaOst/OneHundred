@@ -38,8 +38,9 @@ void collectFromGraphicsAndRender(SystemSet systemSet, Renderer renderer)
   
   foreach (key, value; systemSet.spriteGraphics.textureSet)
     textureSet[key] = value;
-  foreach (key, value; systemSet.textGraphics.textureSet)
-    textureSet[key] = value;
+  //foreach (key, value; systemSet.textGraphics.textureSet)
+    //textureSet[key] = value;
+  textureSet["text"] = systemSet.textGraphics.textRenderer.atlas;
     
   renderer.render(vertices, colors, texCoords, textureSet);
 }
