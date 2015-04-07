@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "onehundred",
   "description": "An example project skeleton",
   "homepage": "http://example.org",
@@ -7,7 +7,7 @@
   "version": "0.0.1",
   "mainSourceFile": "source/app.d",
   "dependencies": {
-    "derelict-sdl2": { "version": ">=1.9.4", "path": "../DerelictSDL2" },
+    "derelict-sdl2": ">=1.9.4",
     "derelict-gl3": ">=1.0.12",
     "derelict-al": ">=1.0.0",
     "derelict-vorbis": ">=1.0.1",
