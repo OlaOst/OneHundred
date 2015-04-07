@@ -3,7 +3,6 @@ module valuetypes;
 import gl3n.linalg;
 
 
-auto immutable vec2Types = [""]; //string[string].init;
 auto immutable vec3Types = ["position", "velocity", "force"];
 auto immutable vec4Types = ["color"];
 auto immutable doubleTypes = ["size", "angle", "rotation", "torque", "mass", "lifeTime"];

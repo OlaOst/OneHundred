@@ -21,13 +21,6 @@ string parseValue(string value, string key)
   
   if (result.canFind("to"))
   {
-    if (vec2Types.canFind(key))
-    {
-      auto from = result.split("to")[0].strip.to!string.myTo!vec2;
-      auto to = result.split("to")[1].strip.to!string.myTo!vec2;
-      
-      result = vec2(uniform!"[]"(from.x, to.x), uniform!"[]"(from.y, to.y)).to!string;
-    }
     if (vec3Types.canFind(key))
     {
       auto from = result.split("to")[0].strip.to!string.myTo!vec3;

@@ -14,9 +14,7 @@ class Entity
   ValueType get(ValueType)(string valueName, 
                            lazy ValueType defaultValue = DefaultValue!ValueType) const
   {
-    static if (is(ValueType == vec2))
-      return vec2Values.get(valueName, defaultValue);
-    else static if (is(ValueType == vec3))
+    static if (is(ValueType == vec3))
       return vec3Values.get(valueName, defaultValue);
     else static if (is(ValueType == vec4))
       return vec4Values.get(valueName, defaultValue);
@@ -33,9 +31,7 @@ class Entity
   
   void set(ValueType)(string valueName, ValueType value)
   {
-    static if (is(ValueType == vec2))
-      vec2Values[valueName] = value;
-    else static if (is(ValueType == vec3))
+    static if (is(ValueType == vec3))
       vec3Values[valueName] = value;
     else static if (is(ValueType == vec4))
       vec4Values[valueName] = value;
@@ -75,8 +71,6 @@ class Entity
     this.values = values;
     foreach (key, value; values)
     {
-      if (vec2Types.canFind(key))
-        vec2Values[key] = value.myTo!vec2;
       if (vec3Types.canFind(key))
         vec3Values[key] = value.myTo!vec3;
       if (vec4Types.canFind(key))
@@ -96,7 +90,6 @@ class Entity
   
   // polygon data should be in values, but we need a 'denormalization' here for performance reasons
   Polygon polygon;
-  vec2[string] vec2Values;
   vec3[string] vec3Values;
   vec4[string] vec4Values;
   double[string] doubleValues;
