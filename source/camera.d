@@ -12,4 +12,9 @@ class Camera
   {
     return vector * (1.0 / zoom) * 2.0 + position;
   }
+  
+  mat4 transform()
+  {
+    return mat4.identity.translation(-position.x, -position.y, -position.z).scale(zoom, zoom, zoom);
+  }
 }

@@ -5,7 +5,6 @@ import std.array;
 import std.datetime;
 import std.string;
 
-import camera;
 import entity;
 import entityhandler;
 import systems.collisionhandler;
@@ -37,11 +36,11 @@ class SystemSet
   RelationHandler relationHandler;
   NetworkHandler networkHandler;
 
-  this(int xres, int yres, Camera camera, ushort listenPort)
+  this(int xres, int yres, ushort listenPort)
   {
-    polygonGraphics = new PolygonGraphics(xres, yres, camera);
-    spriteGraphics = new SpriteGraphics(xres, yres, camera);
-    textGraphics = new TextGraphics(xres, yres, camera);
+    polygonGraphics = new PolygonGraphics(xres, yres);
+    spriteGraphics = new SpriteGraphics(xres, yres);
+    textGraphics = new TextGraphics(xres, yres);
     physics = new Physics();
     inputHandler = new InputHandler();
     collisionHandler = new CollisionHandler();

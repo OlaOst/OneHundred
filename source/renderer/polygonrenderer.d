@@ -5,7 +5,7 @@ import glamour.vbo;
 import gl3n.linalg;
 
 
-public void drawPolygons(Shader shader, vec3[] vertices, vec4[] colors)
+public void drawPolygons(Shader shader, mat4 transform, vec3[] vertices, vec4[] colors)
 {
   assert(vertices.length == colors.length);
   
@@ -13,6 +13,8 @@ public void drawPolygons(Shader shader, vec3[] vertices, vec4[] colors)
   auto colorsBuffer = new Buffer(colors);
   
   shader.bind();
+  
+  shader.uniform("transform", transform);
   
   verticesBuffer.bind(shader, "position", GL_FLOAT, 3, 0, 0);
   colorsBuffer.bind(shader, "color", GL_FLOAT, 4, 0, 0);

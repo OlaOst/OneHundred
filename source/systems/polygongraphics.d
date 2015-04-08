@@ -8,7 +8,6 @@ import std.stdio;
 import glamour.texture;
 import gl3n.linalg;
 
-import camera;
 import components.collider;
 import components.drawable;
 import components.drawables.polygon;
@@ -22,9 +21,9 @@ import systems.graphics;
 
 class PolygonGraphics : Graphics!Polygon
 {
-  this(int xres, int yres, Camera camera)
+  this(int xres, int yres)
   {
-    super(xres, yres, camera);
+    super(xres, yres);
   }
 
   override bool canAddEntity(Entity entity)
@@ -54,8 +53,7 @@ class PolygonGraphics : Graphics!Polygon
     foreach (component; components)
     {
       auto transform = (vec3 vertex) => (vertex * mat3.zrotation(-component.angle) +
-                                         component.position - camera.position) *
-                                         camera.zoom;
+                                         component.position);
       // map with delegate in a variable and then array crashes with release build in dmd 2.067 b3
       //vertices["polygon"] ~= component.vertices.map!transform.array;
       vec3[] transformedVertices;

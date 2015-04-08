@@ -6,15 +6,12 @@ import std.string;
 
 import gl3n.linalg;
 
-import camera;
 import components.drawables.text;
 import textrenderer.textrenderer;
 
 
-vec3[] getVerticesForText(TextRenderer textRenderer, Text text, Camera camera) @nogc
+vec3[] getVerticesForText(TextRenderer textRenderer, Text text) @nogc
 {
-  assert(camera !is null);
-  
   static vec3[65536] buffer;
   size_t index = 0;
   
@@ -29,9 +26,8 @@ vec3[] getVerticesForText(TextRenderer textRenderer, Text text, Camera camera) @
       
       foreach (vertex; text.vertices)
       {
-        buffer[index] = (vertex * mat3.zrotation(-text.angle) + text.position - camera.position) * 
-                        camera.zoom + 
-                        vec3((glyph.offset * text.size + cursor), 0.0) * camera.zoom;
+        buffer[index] = (vertex * mat3.zrotation(-text.angle) + text.position) + 
+                         vec3((glyph.offset * text.size + cursor), 0.0);
         index++;
       }
       

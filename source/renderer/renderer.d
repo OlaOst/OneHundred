@@ -42,24 +42,26 @@ class Renderer
       vao.remove();
   }
 
-  public void render(vec3[][string] vertices, vec4[][string] colors,
+  public void render(mat4 transform,
+                     vec3[][string] vertices, vec4[][string] colors,
                      vec2[][string] texCoords, Texture2D[string] textureSet)
   {
     if ("polygon" in vertices && "polygon" in colors)
-      drawPolygons(shaderSet["default"], vertices["polygon"], colors["polygon"]);
+      drawPolygons(shaderSet["default"], transform, vertices["polygon"], colors["polygon"]);
     
     foreach (name; texCoords.byKey)
     {
       assert(name in textureSet, "could not find " ~ name ~ 
                                  " in textureSet " ~ textureSet.keys.to!string ~ 
                                  ", from texCoords " ~ texCoords.keys.to!string);
-                                 
+
       textureSet[name].bind();
       
       auto colorsForTexture = colors.get(name, vec4(1.0).repeat(vertices[name].length).array);
       
       assert("coloredtexture" in shaderSet);
       drawColoredTexture(shaderSet["coloredtexture"], 
+                         transform,
                          vertices[name], 
                          texCoords[name], 
                          colorsForTexture);

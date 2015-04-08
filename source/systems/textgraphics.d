@@ -9,7 +9,6 @@ import glamour.texture;
 import gl3n.aabb;
 import gl3n.linalg;
 
-import camera;
 import components.drawables.text;
 import entity;
 import systems.graphics;
@@ -19,9 +18,9 @@ import textrenderer.transform;
 
 class TextGraphics : Graphics!Text
 {
-  this(int xres, int yres, Camera camera)
+  this(int xres, int yres)
   {
-    super(xres, yres, camera);
+    super(xres, yres);
     textRenderer = new TextRenderer();
   }
 
@@ -42,7 +41,7 @@ class TextGraphics : Graphics!Text
                               entity.get!vec4("color", vec4(1.0, 1.0, 1.0, 1.0)));
     component.position = entity.get!vec3("position");
     component.angle = entity.get!double("angle");
-    auto textVertices = textRenderer.getVerticesForText(component, camera);
+    auto textVertices = textRenderer.getVerticesForText(component);
     component.aabb = AABB.from_points(textVertices);
     entity["aabb"] = [component.aabb.min, component.aabb.max];
     return component;
@@ -57,7 +56,7 @@ class TextGraphics : Graphics!Text
     foreach (component; components)
     {
       auto texCoords = textRenderer.getTexCoordsForText(component);
-      auto vertices = textRenderer.getVerticesForText(component, camera);
+      auto vertices = textRenderer.getVerticesForText(component);
       texCoordBuffer.fillBuffer(texCoords, texCoordIndex);
       verticesBuffer.fillBuffer(vertices, verticesIndex);
       colorBuffer.fillBuffer(component.color.repeat.take(texCoords.length).array, colorIndex);
@@ -72,9 +71,9 @@ class TextGraphics : Graphics!Text
   {
     foreach (index, entity; entityForIndex)
     {
-      auto relativePosition = camera.position - components[index].position;
-      entity["aabb"] = [components[index].aabb.min * (1.0/camera.zoom) + relativePosition,
-                        components[index].aabb.max * (1.0/camera.zoom) + relativePosition];
+      auto relativePosition = -components[index].position;
+      entity["aabb"] = [components[index].aabb.min + relativePosition,
+                        components[index].aabb.max + relativePosition];
     }
   }
 

@@ -6,7 +6,7 @@ import glamour.vbo;
 import gl3n.linalg;
 
 
-public void drawColoredTexture(Shader shader, vec3[] vertices, vec2[] texCoords, vec4[] colors)
+public void drawColoredTexture(Shader shader, mat4 transform, vec3[] vertices, vec2[] texCoords, vec4[] colors)
 {
   assert(vertices.length == texCoords.length);
   assert(vertices.length == colors.length);
@@ -16,6 +16,8 @@ public void drawColoredTexture(Shader shader, vec3[] vertices, vec2[] texCoords,
   auto colorsBuffer = new Buffer(colors);
   
   shader.bind();
+  
+  shader.uniform("transform", transform);
   
   verticesBuffer.bind(shader, "position", GL_FLOAT, 3, 0, 0);
   textureBuffer.bind(shader, "texCoords", GL_FLOAT, 2, 0, 0);

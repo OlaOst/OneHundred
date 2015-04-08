@@ -1,6 +1,8 @@
 #version 330 core
 
 vertex:
+  uniform mat4 transform;
+
   in vec3 position;
   in vec4 color;
   
@@ -9,7 +11,7 @@ vertex:
   void main(void)
   {
     fragmentColor = color;  
-    gl_Position = vec4(position, 1);
+    gl_Position = transform * vec4(position, 1);
   }
 
 fragment:

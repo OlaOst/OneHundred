@@ -35,7 +35,7 @@ void main(string[] args)
 
   auto renderer = new Renderer(xres, yres);
   auto camera = new Camera();
-  auto systemSet = new SystemSet(xres, yres, camera, listenPort);
+  auto systemSet = new SystemSet(xres, yres, listenPort);
 
   scope(exit)
   {
@@ -92,6 +92,6 @@ void main(string[] args)
     systemSet.removeEntitiesToBeRemoved();
 
     systemSet.updateDebugEntities();
-    systemSet.collectFromGraphicsAndRender(renderer);
+    systemSet.collectFromGraphicsAndRender(renderer, camera);
   }
 }

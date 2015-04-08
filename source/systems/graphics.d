@@ -17,14 +17,12 @@ import system;
 
 abstract class Graphics(ComponentType) : System!ComponentType
 {
-  this(int xres, int yres, Camera camera)
+  this(int xres, int yres)
   {
     this.xres = xres; this.yres = yres;
-    this.camera = camera;
   }
 
   immutable int xres, yres;
-  Camera camera;
 }
 
 void fillBuffer(Type)(Type[] buffer, Type[] source, ref size_t index) @nogc

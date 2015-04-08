@@ -8,7 +8,6 @@ import std.stdio;
 import glamour.texture;
 import gl3n.linalg;
 
-import camera;
 import components.collider;
 import components.drawables.sprite;
 import converters;
@@ -19,9 +18,9 @@ import systems.graphics;
 
 class SpriteGraphics : Graphics!Sprite
 {
-  this(int xres, int yres, Camera camera)
+  this(int xres, int yres)
   {
-    super(xres, yres, camera);
+    super(xres, yres);
   }
 
   void close()
@@ -62,8 +61,7 @@ class SpriteGraphics : Graphics!Sprite
     foreach (component; components)
     {
       auto transform = (vec3 vertex) => (vertex * mat3.zrotation(-component.angle) +
-                                         component.position - camera.position) *
-                                         camera.zoom;
+                                         component.position);
 
       // map with delegate in a variable and then array crashes with release build in dmd 2.066
       //vertices[component.fileName] ~= component.vertices.map!transform.array;

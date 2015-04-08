@@ -3,6 +3,7 @@ module graphicscollector;
 import gl3n.linalg;
 import glamour.texture;
 
+import camera;
 import renderer.renderer;
 import systemset;
 import systems.polygongraphics;
@@ -10,7 +11,7 @@ import systems.spritegraphics;
 import systems.textgraphics;
 
 
-void collectFromGraphicsAndRender(SystemSet systemSet, Renderer renderer)
+void collectFromGraphicsAndRender(SystemSet systemSet, Renderer renderer, Camera camera)
 {
   vec3[][string] vertices;
   vec4[][string] colors;
@@ -41,6 +42,6 @@ void collectFromGraphicsAndRender(SystemSet systemSet, Renderer renderer)
   //foreach (key, value; systemSet.textGraphics.textureSet)
     //textureSet[key] = value;
   textureSet["text"] = systemSet.textGraphics.textRenderer.atlas;
-    
-  renderer.render(vertices, colors, texCoords, textureSet);
+
+  renderer.render(camera.transform, vertices, colors, texCoords, textureSet);
 }
