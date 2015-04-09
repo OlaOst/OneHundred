@@ -15,6 +15,7 @@ class Camera
   
   mat4 transform()
   {
-    return mat4.identity.translation(-position.x, -position.y, -position.z).scale(zoom, zoom, zoom);
+    return mat4.identity.translation(-position.x, -position.y, -position.z)
+                        .scale(zoom, zoom, zoom);
   }
 }
