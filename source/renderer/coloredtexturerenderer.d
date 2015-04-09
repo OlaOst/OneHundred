@@ -6,7 +6,8 @@ import glamour.vbo;
 import gl3n.linalg;
 
 
-public void drawColoredTexture(Shader shader, mat4 transform, vec3[] vertices, vec2[] texCoords, vec4[] colors)
+public void drawColoredTexture(Shader shader, mat4 transform, 
+                               vec3[] vertices, vec2[] texCoords, vec4[] colors)
 {
   assert(vertices.length == texCoords.length);
   assert(vertices.length == colors.length);
