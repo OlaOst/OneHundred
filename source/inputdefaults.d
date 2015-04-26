@@ -6,6 +6,8 @@ import components.input;
 
 
 static Input.InputForAction playerInput;
+static Input.InputForAction playerEngine;
+static Input.InputForAction playerGun;
 static Input.InputForAction gameControls;
 static Input.InputForAction textInput;
 
@@ -17,6 +19,13 @@ static this()
   playerInput.key[SDLK_RIGHT] = "rotateClockwise";
   playerInput.key[SDLK_SPACE] = "fire";
 
+  playerEngine.key[SDLK_UP] = "accelerate";
+  playerEngine.key[SDLK_DOWN] = "decelerate";
+  playerEngine.key[SDLK_LEFT] = "rotateCounterClockwise";
+  playerEngine.key[SDLK_RIGHT] = "rotateClockwise";
+  
+  playerGun.key[SDLK_SPACE] = "fire";
+  
   gameControls.key[SDLK_PAGEUP] = "zoomIn";
   gameControls.key[SDLK_PAGEDOWN] = "zoomOut";
   gameControls.key[SDLK_ESCAPE] = "quit";

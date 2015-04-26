@@ -69,6 +69,11 @@ class SystemSet
       entityHandler.addEntity(entity);
     entities ~= entity;
   }
+  
+  void addEntityCollection(Entity[string] entityCollection)
+  {
+    entityCollection.byValue.each!(entity => addEntity(entity));
+  }
 
   void update()
   {

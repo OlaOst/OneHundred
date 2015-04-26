@@ -23,6 +23,10 @@ class RelationHandler : System!(Relation[])
   {
     // keep track of all entities as they might be targets for relation components
     entityIdMapping[entity.id] = entity;
+    
+    if (entity.has("fullName"))
+      entityNameMapping[entity.get!string("fullName")] = entity;
+    
     return entity.has("relation.types");
   }
   
@@ -61,8 +65,21 @@ class RelationHandler : System!(Relation[])
     }
     
     foreach (relationComponent; relationComponents)
-      targetIdMapping[relationComponent] = entity.get!long("relation.targetId");
-
+    {
+      if (entity.has("relation.targetId"))
+      {
+        targetIdMapping[relationComponent] = entity.get!long("relation.targetId");
+      }
+      else
+      {
+        auto targetName = entity.get!string("relation.targetName");
+        
+        assert(targetName in entityNameMapping, "Could not find " ~ targetName ~ " in " ~ entityNameMapping.to!string ~ " for " ~ entity.values.to!string);
+        
+        targetIdMapping[relationComponent] = entityNameMapping[targetName].id;
+      }
+    }
+    
     return relationComponents;
   }
   
@@ -90,6 +107,7 @@ class RelationHandler : System!(Relation[])
     // entity values should have been updated by the relation components
   }
   
+  Entity[string] entityNameMapping;
   Entity[long] entityIdMapping;
   long[Relation] targetIdMapping;
 }

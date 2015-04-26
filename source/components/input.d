@@ -33,6 +33,10 @@ class Input
   {
     if (inputType == "playerInput")
       inputForAction = inputdefaults.playerInput;
+    else if (inputType == "playerEngine")
+      inputForAction = inputdefaults.playerEngine;
+    else if (inputType == "playerGun")
+      inputForAction = inputdefaults.playerGun;
     else if (inputType == "gameControls")
       inputForAction = inputdefaults.gameControls;
     else if (inputType == "textInput")

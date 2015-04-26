@@ -16,7 +16,8 @@ import spatialindex.implementation;
 
 class SpatialIndex(Element)
   if (__traits(compiles, function double (Element element) { return element.radius; }) &&
-      __traits(compiles, function vec3 (Element element) { return element.position; }))
+      __traits(compiles, function vec3 (Element element) { return element.position; })/* &&
+      __traits(compiles, element.opCmp())*/)
 {
   enum uint levels = 17;
   enum uint maxIndicesPerLevel = 2^^12;
@@ -45,7 +46,7 @@ class SpatialIndex(Element)
     foreach (index; indices)
       overlappingElements ~= elementsInIndex[minLevel][index];
     
-    return sort(overlappingElements).uniq.array;
+    return overlappingElements.sort().uniq.array;
   }
   
   Element[] find(vec3 position, double radius)

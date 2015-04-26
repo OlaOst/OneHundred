@@ -84,8 +84,8 @@ class NetworkHandler : System!(NetworkInfo)
 
     timer = new AccumulatorTimer(double.max, 1.0/30.0);
     connection.startSendingData(targetPort);
-    connection.sendMessage("connection.port = " ~
-                           connection.connection.localAddress.port.to!string ~ "\r\n");
+    //connection.sendMessage("connection.port = " ~
+                           //connection.connection.localAddress.port.to!string ~ "\r\n");
   }
 
   AccumulatorTimer timer;

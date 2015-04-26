@@ -13,7 +13,7 @@ unittest
     double radius;
   }
   
-  auto index = new SpatialIndex!Element();
+  /+auto index = new SpatialIndex!Element();
   
   assert(index.find(vec3(0.0, 0.0, 0.0), 2.0) == []);
   
@@ -27,5 +27,5 @@ unittest
   assert(index.find(vec3(123.0, 2000.0, 0.0), 500.0) == []);
   assert(index.find(vec3(123.0, 1012.3, 0.0), 0.1) == [secondElement]);
   
-  assert(index.find(vec3(0.0, 0.0, 0.0), 1050.0) == [firstElement, secondElement]);
+  assert(index.find(vec3(0.0, 0.0, 0.0), 1050.0) == [firstElement, secondElement]);+/
 }

@@ -2,7 +2,7 @@ module networkconnection;
 
 import std.parallelism;
 
-import vibe.d;
+//import vibe.d;
 
 import systems.networkhandler;
 
@@ -14,9 +14,9 @@ class NetworkConnection
        void function(string, NetworkHandler) parseMessage,
        NetworkHandler networkHandler)
   {
-    setLogLevel(LogLevel.trace);
+    //setLogLevel(LogLevel.trace);
 
-    auto listenTask = task(
+    /*auto listenTask = task(
     {
       runTask(
       {
@@ -31,7 +31,7 @@ class NetworkConnection
       });
 
       runEventLoop();
-    });
+    });*/
 
     //listenTask.executeInNewThread();
   }
@@ -47,7 +47,7 @@ class NetworkConnection
   {
     if (!sendingData)
     {
-      connection.connect("127.0.0.1", targetPort);
+      //connection.connect("127.0.0.1", targetPort);
 
       //timer = new AccumulatorTimer(double.max, 1.0/20.0);
 
@@ -57,14 +57,14 @@ class NetworkConnection
 
   void sendMessage(string message)
   {
-    connection.send(cast(ubyte[])message);
+    //connection.send(cast(ubyte[])message);
   }
 
   //std.parallelism.Task!(run, void delegate()) listenTask;
   //Task listenTask;
 
   ubyte[] data;
-  UDPConnection connection;
+  //UDPConnection connection;
   bool sendingData = false;
   bool exiting = false;
 }
