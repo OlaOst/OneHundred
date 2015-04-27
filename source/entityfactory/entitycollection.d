@@ -65,6 +65,6 @@ Entity[string] createEntityCollection(string[] lines)
     keyValues["fullName"] = fullName;
     result[fullName] = new Entity(keyValues);
   }
-    
+  
   return result;
 }

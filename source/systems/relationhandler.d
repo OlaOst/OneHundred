@@ -7,6 +7,7 @@ import gl3n.aabb;
 import gl3n.linalg;
 
 import components.relation;
+import components.relations.accumulatevalue;
 import components.relations.dietogether;
 import components.relations.inspectvalues;
 import components.relations.relativevalue;
@@ -45,10 +46,23 @@ class RelationHandler : System!(Relation[])
         
         if (vec3Types.canFind(relationValueName))
           relationComponents ~= new RelativeValue!vec3(entity, relationValueName, 
-                                                       entity.get!vec3("relationValueKey"));
+                                                       entity.get!vec3(relationValueKey));
         if (doubleTypes.canFind(relationValueName))
           relationComponents ~= new RelativeValue!double(entity, relationValueName, 
-                                                         entity.get!double("relationValueKey"));
+                                                         entity.get!double(relationValueKey));
+      }
+    }
+    if (relationTypes.canFind("AccumulateValues"))
+    {
+      auto valuesToAccumulateNames = entity.values["relation.valuestoaccumulate"].to!(string[]);
+      
+      foreach (valueToAccumulateName; valuesToAccumulateNames)
+      {
+        if (vec3Types.canFind(valueToAccumulateName))
+          relationComponents ~= new AccumulateValue!vec3(entity, valueToAccumulateName);
+        
+        if (doubleTypes.canFind(valueToAccumulateName))
+          relationComponents ~= new AccumulateValue!double(entity, valueToAccumulateName);
       }
     }
     if (relationTypes.canFind("DieTogether"))
@@ -69,14 +83,16 @@ class RelationHandler : System!(Relation[])
       if (entity.has("relation.targetId"))
       {
         targetIdMapping[relationComponent] = entity.get!long("relation.targetId");
+        sourceIdsMapping[targetIdMapping[relationComponent]] ~= entity.id;
       }
-      else
+      else if (entity.has("relation.targetName"))
       {
         auto targetName = entity.get!string("relation.targetName");
         
         assert(targetName in entityNameMapping, "Could not find " ~ targetName ~ " in " ~ entityNameMapping.to!string ~ " for " ~ entity.values.to!string);
         
         targetIdMapping[relationComponent] = entityNameMapping[targetName].id;
+        sourceIdsMapping[targetIdMapping[relationComponent]] ~= entity.id;
       }
     }
     
@@ -95,9 +111,40 @@ class RelationHandler : System!(Relation[])
     {
       foreach (relationComponent; relationComponents)
       {
-        long targetId = targetIdMapping[relationComponent];
-        Entity targetEntity = entityIdMapping[targetId];
-        relationComponent.updateValues(targetEntity);
+        if (auto accumulateValueComponent = cast(AccumulateValue!vec3)relationComponent)
+        {
+          accumulateValueComponent.preUpdateValues();
+          
+          // two-way, accumulate values of all components having this as relation
+          foreach (sourceRelationId; sourceIdsMapping[accumulateValueComponent.source.id])
+          {
+            //long sourceId = targetIdMapping[sourceRelation];
+            Entity sourceEntity = entityIdMapping[sourceRelationId];
+            relationComponent.updateValues(sourceEntity);
+          }
+          
+          accumulateValueComponent.postUpdateValues();
+        }
+        else if (auto accumulateValueComponent = cast(AccumulateValue!double)relationComponent)
+        {
+          accumulateValueComponent.preUpdateValues();
+        
+          // two-way, accumulate values of all components having this as relation
+          foreach (sourceRelationId; sourceIdsMapping[accumulateValueComponent.source.id])
+          {
+            //long sourceId = targetIdMapping[sourceRelation];
+            Entity sourceEntity = entityIdMapping[sourceRelationId];
+            relationComponent.updateValues(sourceEntity);
+          }
+          
+          accumulateValueComponent.postUpdateValues();
+        }
+        else
+        {
+          long targetId = targetIdMapping[relationComponent];
+          Entity targetEntity = entityIdMapping[targetId];
+          relationComponent.updateValues(targetEntity);
+        }
       }
     }
   }
@@ -110,4 +157,5 @@ class RelationHandler : System!(Relation[])
   Entity[string] entityNameMapping;
   Entity[long] entityIdMapping;
   long[Relation] targetIdMapping;
+  long[][long] sourceIdsMapping;
 }

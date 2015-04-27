@@ -71,11 +71,14 @@ class Entity
     this.values = values;
     foreach (key, value; values)
     {
-      if (vec3Types.canFind(key))
+      auto fixKey = key;
+      fixKey.findSkip("relation.value.");
+      
+      if (vec3Types.canFind(fixKey))
         vec3Values[key] = value.myTo!vec3;
-      if (vec4Types.canFind(key))
+      if (vec4Types.canFind(fixKey))
         vec4Values[key] = value.myTo!vec4;
-      if (doubleTypes.canFind(key))
+      if (doubleTypes.canFind(fixKey))
         doubleValues[key] = value.to!double;
     }
   }

@@ -14,13 +14,6 @@ class RelativeValue(ValueType) : Relation
   const string valueName;
   const ValueType relativeValue;
   
-  this(Entity source, string valueName)
-  {
-    this.source = source;
-    this.valueName = valueName;
-    this.relativeValue = ValueType.init;
-  }
-  
   this(Entity source, string valueName, ValueType relativeValue)
   {
     this.source = source;
