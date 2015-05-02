@@ -26,7 +26,10 @@ class RelativeValue(ValueType) : Relation
     static if (is(ValueType == vec2))
       auto newValue = target.get!vec2(valueName) + relativeValue;
     else static if (is(ValueType == vec3))
-      auto newValue = target.get!vec3(valueName) + relativeValue;
+    {
+      auto newValue = (valueName == "position" && target.has("angle")) ? (target.get!vec3(valueName) + mat3.zrotation(target.get!double("angle")) * relativeValue) 
+                                                : target.get!vec3(valueName) + relativeValue;
+    }
     else static if(is(ValueType == double))
       auto newValue = target.get!double(valueName) + relativeValue;
     else
