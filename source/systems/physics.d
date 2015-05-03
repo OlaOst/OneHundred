@@ -53,6 +53,7 @@ class Physics : System!State
       components[index].angle = entity.get!double("angle");
       components[index].rotation = entity.get!double("rotation");
       components[index].torque = entity.get!double("torque");
+      components[index].mass = entity.get!double("mass");
     }
   }
   

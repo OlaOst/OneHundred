@@ -3,7 +3,6 @@ playership.angle = 0.0
 playership.mass = 0.01
 playership.relation.types = ["AccumulateValues"]
 playership.relation.valuestoaccumulate = ["mass", "force", "torque"]
-#playership.relation.valuestoaccumulate = ["torque"]
 
 playership.hull.position = [0.0, 0.0, 0.0]
 playership.hull.mass = 4.0
