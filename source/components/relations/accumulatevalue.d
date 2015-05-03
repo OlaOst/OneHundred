@@ -1,5 +1,7 @@
 module components.relations.accumulatevalue;
 
+import std.algorithm;
+
 import gl3n.aabb;
 import gl3n.linalg;
 
@@ -11,7 +13,7 @@ import valuetypes;
 
 class AccumulateValue(ValueType) : Relation
 {
-  Entity source;
+  Entity accumulatorTarget;
   const string valueName;
   ValueType accumulator;
   
@@ -24,9 +26,9 @@ class AccumulateValue(ValueType) : Relation
       assert(!accumulator.isNaN);
   }
   
-  this(Entity source, string valueName)
+  this(Entity accumulatorTarget, string valueName)
   {
-    this.source = source;
+    this.accumulatorTarget = accumulatorTarget;
     this.valueName = valueName;
     this.accumulator = DefaultValue!ValueType;
   }
@@ -36,28 +38,22 @@ class AccumulateValue(ValueType) : Relation
     accumulator = DefaultValue!ValueType;
   }
   
-  void updateValues(Entity target)
+  void updateValues(Entity accumulatorSource)
   {
     static if (is(ValueType == vec2))
-      accumulator += target.get!vec2(valueName);
+      accumulator += accumulatorSource.get!vec2(valueName);
     else static if (is(ValueType == vec3))
-      accumulator += target.get!vec3(valueName);
+      accumulator += accumulatorSource.get!vec3(valueName);
     else static if(is(ValueType == double))
-    {
-      //import std.stdio;
-      //writeln("accumulatevalue updatevalues adding ", target.get!double(valueName), " to ", valueName, " from ", target.get!string("fullName"), ", accumulator is " , accumulator);
-      accumulator += target.get!double(valueName);
-    }
+      accumulator += accumulatorSource.get!double(valueName);
     else
       assert(0);
-    
-    //target[valueName] = newValue;
+      
+    accumulatorTarget[valueName] = accumulator;
   }
   
   void postUpdateValues()
   {
-    //import std.stdio;
-    //writeln("accumulatevalue postupdatevalues setting value ", valueName, " on ", source.get!string("fullName"), " to ", accumulator, ", position is ", source.get!vec3("position"), ", velocity is ", source.get!vec3("velocity"));
-    source[valueName] = accumulator;
+    accumulatorTarget[valueName] = accumulator;
   }
 }

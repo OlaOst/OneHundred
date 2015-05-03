@@ -80,10 +80,12 @@ class RelationHandler : System!(Relation[])
     
     foreach (relationComponent; relationComponents)
     {
+      sourceEntityMapping[relationComponent] = entity;
+      
       if (entity.has("relation.targetId"))
       {
-        targetIdMapping[relationComponent] = entity.get!long("relation.targetId");
-        sourceIdsMapping[targetIdMapping[relationComponent]] ~= entity.id;
+        targetIdForComponentMapping[relationComponent] = entity.get!long("relation.targetId");
+        accumulatorSourceIdsMapping[entity.get!long("relation.targetId")] ~= entity.id;
       }
       else if (entity.has("relation.targetName"))
       {
@@ -91,9 +93,13 @@ class RelationHandler : System!(Relation[])
         
         assert(targetName in entityNameMapping, "Could not find " ~ targetName ~ " in " ~ entityNameMapping.to!string ~ " for " ~ entity.values.to!string);
         
-        targetIdMapping[relationComponent] = entityNameMapping[targetName].id;
-        sourceIdsMapping[targetIdMapping[relationComponent]] ~= entity.id;
+        auto targetId = entityNameMapping[targetName].id;
+        targetIdForComponentMapping[relationComponent] = targetId;
+        
+        accumulatorSourceIdsMapping[targetId] ~= entity.id;
       }
+      else if (entity.has("relation.valuestoaccumulate"))
+        targetIdForComponentMapping[relationComponent] = entity.id; // just set target to self for accumulatorrelations, but should not be needed, TODO FIXME some other time maybe
     }
     
     return relationComponents;
@@ -116,11 +122,10 @@ class RelationHandler : System!(Relation[])
           accumulateValueComponent.preUpdateValues();
           
           // two-way, accumulate values of all components having this as relation
-          foreach (sourceRelationId; sourceIdsMapping[accumulateValueComponent.source.id])
+          foreach (accumulatorSourceRelationId; accumulatorSourceIdsMapping[accumulateValueComponent.accumulatorTarget.id].sort().uniq)
           {
-            //long sourceId = targetIdMapping[sourceRelation];
-            Entity sourceEntity = entityIdMapping[sourceRelationId];
-            relationComponent.updateValues(sourceEntity);
+            auto accumulatorSourceEntity = entityIdMapping[accumulatorSourceRelationId];
+            accumulateValueComponent.updateValues(accumulatorSourceEntity);
           }
           
           accumulateValueComponent.postUpdateValues();
@@ -128,20 +133,19 @@ class RelationHandler : System!(Relation[])
         else if (auto accumulateValueComponent = cast(AccumulateValue!double)relationComponent)
         {
           accumulateValueComponent.preUpdateValues();
-        
+
           // two-way, accumulate values of all components having this as relation
-          foreach (sourceRelationId; sourceIdsMapping[accumulateValueComponent.source.id])
+          foreach (accumulatorSourceRelationId; accumulatorSourceIdsMapping[accumulateValueComponent.accumulatorTarget.id].sort().uniq)
           {
-            //long sourceId = targetIdMapping[sourceRelation];
-            Entity sourceEntity = entityIdMapping[sourceRelationId];
-            relationComponent.updateValues(sourceEntity);
+            auto accumulatorSourceEntity = entityIdMapping[accumulatorSourceRelationId];
+            accumulateValueComponent.updateValues(accumulatorSourceEntity);
           }
           
           accumulateValueComponent.postUpdateValues();
         }
         else
         {
-          long targetId = targetIdMapping[relationComponent];
+          long targetId = targetIdForComponentMapping[relationComponent];
           Entity targetEntity = entityIdMapping[targetId];
           relationComponent.updateValues(targetEntity);
         }
@@ -156,6 +160,7 @@ class RelationHandler : System!(Relation[])
   
   Entity[string] entityNameMapping;
   Entity[long] entityIdMapping;
-  long[Relation] targetIdMapping;
-  long[][long] sourceIdsMapping;
+  long[Relation] targetIdForComponentMapping;
+  Entity[Relation] sourceEntityMapping;
+  long[][long] accumulatorSourceIdsMapping;
 }
