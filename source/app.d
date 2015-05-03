@@ -49,11 +49,9 @@ void main(string[] args)
   foreach (npc; npcs)
     systemSet.addEntity(npc);
 
-  //auto player = "data/player.txt".createEntityFromFile;
   auto playerSet = "data/playership.txt".createEntityCollectionFromFile;
   
   if (listenPort == 5578)
-    //player["sprite"] = "images/playerShip1_red.png";
     playerSet["playership.hull"]["sprite"] = "images/playerShip1_red.png";
   systemSet.addEntityCollection(playerSet);
 
@@ -83,9 +81,7 @@ void main(string[] args)
     gameControllerInput.handleToggleInputWindow(systemSet, inputWindow, mouseCursor);
     gameControllerInput.handleNetworking(systemSet, listenPort);
     systemSet.inputHandler.getComponent(editController).handleEditableText(inputWindow);
-    //player.handlePlayerFireAction(systemSet, npcs);
     playerSet["playership.gun"].handlePlayerFireAction(systemSet, npcs);
-    //camera.position = player.get!vec3("position");
     camera.position = playerSet["playership"].get!vec3("position");
     mouseCursor["position"] = getWorldPositionFromScreenCoordinates(camera,
                                 systemSet.inputHandler.mouseScreenPosition, xres, yres);
