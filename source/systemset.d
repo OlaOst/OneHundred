@@ -7,6 +7,7 @@ import std.string;
 
 import entity;
 import entityhandler;
+import systems.accumulatorhandler;
 import systems.collisionhandler;
 import systems.inputhandler;
 import systems.networkhandler;
@@ -34,6 +35,7 @@ class SystemSet
   SoundSystem soundSystem;
   TimeHandler timeHandler;
   RelationHandler relationHandler;
+  AccumulatorHandler accumulatorHandler;
   NetworkHandler networkHandler;
 
   this(int xres, int yres, ushort listenPort)
@@ -47,11 +49,12 @@ class SystemSet
     soundSystem = new SoundSystem();
     timeHandler = new TimeHandler();
     relationHandler = new RelationHandler();
+    accumulatorHandler = new AccumulatorHandler();
     networkHandler = new NetworkHandler(listenPort);
     entityHandlers = cast(EntityHandler[])[/*graphics,*/ physics, soundSystem,
                                            polygonGraphics, spriteGraphics, textGraphics,
-                                           inputHandler, collisionHandler,
-                                           timeHandler, relationHandler, networkHandler];
+                                           inputHandler, collisionHandler, timeHandler, 
+                                           relationHandler, accumulatorHandler, networkHandler];
     graphicsHandlers = cast(EntityHandler[])[polygonGraphics, spriteGraphics, textGraphics];
   }
 
@@ -80,12 +83,10 @@ class SystemSet
     StopWatch graphicsTimer;
     graphicsTimer.start;
     graphicsHandlers.each!(handler => handler.update());
-    auto graphicsComponentCount = polygonGraphics.components.length +
-                                  spriteGraphics.components.length +
-                                  textGraphics.components.length;
+    auto graphicsComponentCount = [polygonGraphics, spriteGraphics, textGraphics].map!
+                                    (graphics => graphics.componentCount).sum;
     graphicsTimingText = format("graphics components: %s\ngraphics timings: %s",
-                                graphicsComponentCount,
-                                graphicsTimer.peek.usecs*0.001);
+                                graphicsComponentCount, graphicsTimer.peek.usecs*0.001);
   }
 
   Entity[] removeEntitiesToBeRemoved()
