@@ -48,4 +48,3 @@ playership.gun.widget.relation.types = ["RelativeValues"]
 playership.gun.widget.relation.targetName = playership.gun
 playership.gun.widget.relation.value.position = [0.0, 0.25, 0.0]
 playership.gun.widget.relation.value.angle = 1.0
-#playership.gun.widget.inputType = playerGun

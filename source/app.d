@@ -82,7 +82,6 @@ void main(string[] args)
     gameControllerInput.handleNetworking(systemSet, listenPort);
     systemSet.inputHandler.getComponent(editController).handleEditableText(inputWindow);
     playerSet["playership.gun"].handlePlayerFireAction(systemSet, npcs);
-    playerSet["playership.gun.widget"].handlePlayerFireAction(systemSet, npcs);
     camera.position = playerSet["playership"].get!vec3("position");
     mouseCursor["position"] = getWorldPositionFromScreenCoordinates(camera,
                                 systemSet.inputHandler.mouseScreenPosition, xres, yres);
