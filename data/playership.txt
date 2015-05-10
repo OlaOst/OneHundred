@@ -38,3 +38,14 @@ playership.gun.relation.types = ["RelativeValues"]
 playership.gun.relation.targetName = playership
 playership.gun.relation.value.position = [0.85, 0.0, 0.0]
 playership.gun.relation.value.angle = 0.0
+
+playership.gun.widget.position = [0.0, 0.0, 0.0]
+playership.gun.widget.mass = 0.1
+playership.gun.widget.size = 0.1
+playership.gun.widget.sprite = images/engine1.png
+playership.gun.widget.collider = Player
+playership.gun.widget.relation.types = ["RelativeValues"]
+playership.gun.widget.relation.targetName = playership.gun
+playership.gun.widget.relation.value.position = [0.0, 0.25, 0.0]
+playership.gun.widget.relation.value.angle = 1.0
+#playership.gun.widget.inputType = playerGun

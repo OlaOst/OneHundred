@@ -21,7 +21,6 @@ struct Collision
   }*/
 }
 
-//Entity[] handleCollisions(Collision[] collisions, SystemSet systemSet)
 Entity[] handleCollisions(Collision[] collisions, CollisionHandler collisionHandler)
 {
   Entity[] collisionEffectParticles;
@@ -53,13 +52,10 @@ Entity[] handleCollisions(Collision[] collisions, CollisionHandler collisionHand
     auto otherEntity = collisionHandler.getEntity(other);
     
     if (typePair[0] != ColliderType.Player && 
-        (first.type == ColliderType.Bullet || 
-         other.type == ColliderType.Bullet) && 
+        (first.type == ColliderType.Bullet || other.type == ColliderType.Bullet) && 
         first.spawner !is otherEntity && other.spawner !is firstEntity)
-      //collisionEffectParticles ~= collision.bulletCollisionResponse(systemSet);
       collisionEffectParticles ~= collision.bulletCollisionResponse(collisionHandler);
     else if (first.spawner !is otherEntity && other.spawner !is firstEntity)
-      //collisionEffectParticles ~= collision.shipCollisionResponse(systemSet);
       collisionEffectParticles ~= collision.shipCollisionResponse(collisionHandler);
   }
   

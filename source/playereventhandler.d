@@ -11,6 +11,9 @@ import systemset;
 
 void handlePlayerFireAction(Entity player, SystemSet systemSet, ref Entity[] npcs)
 {
+  if (!systemSet.inputHandler.hasComponent(player))
+    return;
+    
   fire = systemSet.inputHandler.getComponent(player).isActionSet("fire");
   
   static float reloadTimeLeft = 0.0;

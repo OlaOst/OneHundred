@@ -28,6 +28,11 @@ abstract class System(ComponentType) : SystemDebug
     }
   }
   
+  bool hasComponent(Entity entity)
+  {
+    return (entity in indexForEntity) != null;
+  }
+  
   ComponentType getComponent(Entity entity)
   {
     assert(entity in indexForEntity);
