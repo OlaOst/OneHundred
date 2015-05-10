@@ -16,17 +16,17 @@ final class TimeHandler : System!double
     timer = new AccumulatorTimer(0.25, 1.0/60.0);
   }
   
-  override bool canAddEntity(Entity entity)
+  bool canAddEntity(Entity entity)
   {
     return entity.has("lifeTime");
   }
   
-  override double makeComponent(Entity entity)
+  double makeComponent(Entity entity)
   {
     return entity.get!double("lifeTime");
   }
   
-  override void updateValues()
+  void updateValues()
   {
     timer.incrementAccumulator();
     
@@ -39,7 +39,7 @@ final class TimeHandler : System!double
     }
   }
   
-  override void updateEntities()
+  void updateEntities()
   {
     foreach (int index, double lifeTime; components)
     {
@@ -47,7 +47,5 @@ final class TimeHandler : System!double
     }
   }
   
-  override void updateFromEntities()
-  {
-  }
+  void updateFromEntities() {}
 }

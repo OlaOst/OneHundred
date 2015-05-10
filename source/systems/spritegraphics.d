@@ -29,12 +29,12 @@ class SpriteGraphics : Graphics!Sprite
       texture.remove();
   }
 
-  override bool canAddEntity(Entity entity)
+  bool canAddEntity(Entity entity)
   {
     return entity.has("position") && entity.has("size") && entity.has("sprite");
   }
 
-  override Sprite makeComponent(Entity entity)
+  Sprite makeComponent(Entity entity)
   {
     assert(canAddEntity(entity));
 
@@ -50,7 +50,7 @@ class SpriteGraphics : Graphics!Sprite
     return component;
   }
 
-  override void updateValues()
+  void updateValues()
   {
     StopWatch debugTimer;
     debugTimer.start;
@@ -72,11 +72,9 @@ class SpriteGraphics : Graphics!Sprite
     debugText = format("spritegraphics timings: %s", debugTimer.peek.usecs*0.001);
   }
 
-  override void updateEntities()
-  {
-  }
+  void updateEntities() {}
 
-  override void updateFromEntities()
+  void updateFromEntities()
   {
     foreach (index, entity; entityForIndex)
     {

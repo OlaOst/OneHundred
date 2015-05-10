@@ -20,7 +20,7 @@ import valuetypes;
 
 class RelationHandler : System!(Relation[])
 {
-  override bool canAddEntity(Entity entity)
+  bool canAddEntity(Entity entity)
   {
     // keep track of all entities as they might be targets for relation components
     entityIdMapping[entity.id] = entity;
@@ -31,7 +31,7 @@ class RelationHandler : System!(Relation[])
     return entity.has("relation.types");
   }
   
-  override Relation[] makeComponent(Entity entity)
+  Relation[] makeComponent(Entity entity)
   {
     Relation[] relationComponents;
     
@@ -105,13 +105,13 @@ class RelationHandler : System!(Relation[])
     return relationComponents;
   }
   
-  override void updateFromEntities()
+  void updateFromEntities()
   {
     // TODO: ensure relativeValue/etc of components get updated if entity values are updated
     // ie mouse drag to change relativePosition of an entity
   }
   
-  override void updateValues()
+  void updateValues()
   {
     foreach (relationComponents; components)
     {
@@ -153,7 +153,7 @@ class RelationHandler : System!(Relation[])
     }
   }
   
-  override void updateEntities()
+  void updateEntities()
   {
     // entity values should have been updated by the relation components
   }

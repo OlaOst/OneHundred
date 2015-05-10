@@ -26,12 +26,12 @@ class PolygonGraphics : Graphics!Polygon
     super(xres, yres);
   }
 
-  override bool canAddEntity(Entity entity)
+  bool canAddEntity(Entity entity)
   {
     return entity.has("position") && (entity.polygon !is null);
   }
 
-  override Polygon makeComponent(Entity entity)
+  Polygon makeComponent(Entity entity)
   {
     Polygon component;
 
@@ -43,7 +43,7 @@ class PolygonGraphics : Graphics!Polygon
     return component;
   }
 
-  override void updateValues()
+  void updateValues()
   {
     StopWatch debugTimer;
     debugTimer.start;
@@ -65,11 +65,9 @@ class PolygonGraphics : Graphics!Polygon
     debugText = format("polygongraphics timings: %s", debugTimer.peek.usecs*0.001);
   }
 
-  override void updateEntities() 
-  {
-  }
+  void updateEntities() {}
 
-  override void updateFromEntities()
+  void updateFromEntities()
   {
     foreach (index, entity; entityForIndex)
     {

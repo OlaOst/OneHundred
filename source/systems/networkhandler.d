@@ -21,12 +21,12 @@ class NetworkHandler : System!(NetworkInfo)
     connection = new NetworkConnection(listenPort, &parseMessage, this);
   }
 
-  override bool canAddEntity(Entity entity)
+  bool canAddEntity(Entity entity)
   {
     return entity.has("networked") || entity.has("remoteEntityId");
   }
 
-  override NetworkInfo makeComponent(Entity entity)
+  NetworkInfo makeComponent(Entity entity)
   {
     NetworkInfo component = new NetworkInfo();
     component.localEntityId = entity.id;
@@ -43,14 +43,14 @@ class NetworkHandler : System!(NetworkInfo)
     return component;
   }
 
-  override void updateFromEntities()
+  void updateFromEntities()
   {
     foreach (index, component; components)
       foreach (key; component.valuesToWrite.byKey)
         component.valuesToWrite[key] = entityForIndex[index].get!string(key);
   }
 
-  override void updateValues()
+  void updateValues()
   {
     if (connection.sendingData && requestedChangedValues)
     {
@@ -76,7 +76,7 @@ class NetworkHandler : System!(NetworkInfo)
     }
   }
 
-  override void updateEntities() {}
+  void updateEntities() {}
 
   void startSendingData(ushort targetPort)
   {

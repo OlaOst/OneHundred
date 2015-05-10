@@ -16,17 +16,17 @@ import system;
 
 class InputHandler : System!Input
 {
-  public override bool canAddEntity(Entity entity)
+  bool canAddEntity(Entity entity)
   {
     return entity.has("inputType") && !entity.has("remoteEntityId");
   }
 
-  public override Input makeComponent(Entity entity)
+  Input makeComponent(Entity entity)
   {
     return new Input(entity.get!string("inputType"));
   }
 
-  public override void updateValues()
+  void updateValues()
   {
     textInput = "";
     eventsSinceLastUpdate.length = 0;
@@ -49,7 +49,7 @@ class InputHandler : System!Input
       process(entity, eventsSinceLastUpdate);
   }
 
-  public override void updateEntities()
+  void updateEntities()
   {
     foreach (index, entity; entityForIndex)
     {
@@ -57,11 +57,9 @@ class InputHandler : System!Input
     }
   }
 
-  public override void updateFromEntities()
-  {
-  }
+  void updateFromEntities() {}
 
-  public void process(Entity entity, SDL_Event[] events)
+  void process(Entity entity, SDL_Event[] events)
   {
     auto input = getComponent(entity);
 

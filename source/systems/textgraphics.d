@@ -29,12 +29,12 @@ class TextGraphics : Graphics!Text
     textRenderer.close();
   }
 
-  override bool canAddEntity(Entity entity)
+  bool canAddEntity(Entity entity)
   {
     return entity.has("position") && entity.has("text");
   }
 
-  override Text makeComponent(Entity entity)
+  Text makeComponent(Entity entity)
   {
     Text component = new Text(entity.get!double("size", 1.0),
                               entity.get!string("text"),
@@ -47,7 +47,7 @@ class TextGraphics : Graphics!Text
     return component;
   }
 
-  override void updateValues() //@nogc
+  void updateValues() //@nogc
   {
     vertices = null;
     texCoords = null;
@@ -67,7 +67,7 @@ class TextGraphics : Graphics!Text
     colors["text"] = colorBuffer[0 .. colorIndex];
   }
 
-  override void updateEntities()
+  void updateEntities()
   {
     foreach (index, entity; entityForIndex)
     {
@@ -77,7 +77,7 @@ class TextGraphics : Graphics!Text
     }
   }
 
-  override void updateFromEntities()
+  void updateFromEntities()
   {
     foreach (index, entity; entityForIndex)
     {

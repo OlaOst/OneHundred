@@ -38,17 +38,17 @@ final class SoundSystem : System!Sound
     alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
   }
   
-  override bool canAddEntity(Entity entity)
+  bool canAddEntity(Entity entity)
   {
     return entity.has("sound");
   }
   
-  override Sound makeComponent(Entity entity)
+  Sound makeComponent(Entity entity)
   {
     return new Sound(entity.get!string("sound"));
   }
   
-  override void updateValues()
+  void updateValues()
   {
     foreach (sound; components)
     {
@@ -59,11 +59,9 @@ final class SoundSystem : System!Sound
     }
   }
   
-  override void updateEntities()
-  {
-  }
+  void updateEntities() {}
   
-  override void updateFromEntities()
+  void updateFromEntities()
   {
   }
   

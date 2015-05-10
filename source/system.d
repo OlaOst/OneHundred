@@ -7,11 +7,12 @@ import std.datetime;
 import std.range;
 import std.string;
 
+import componenthandler;
 import entity;
 import systemdebug;
 
 
-abstract class System(ComponentType) : SystemDebug
+abstract class System(ComponentType) : SystemDebug, ComponentHandler!ComponentType
 {
   invariant()
   {
@@ -73,12 +74,6 @@ abstract class System(ComponentType) : SystemDebug
     indexForEntity.remove(entity);
   }
 
-  protected abstract bool canAddEntity(Entity entity);
-  protected abstract ComponentType makeComponent(Entity entity);
-  protected abstract void updateFromEntities();
-  protected abstract void updateValues();
-  protected abstract void updateEntities();
-  
   size_t componentCount() @property { return components.length; }
   
   string className() @property

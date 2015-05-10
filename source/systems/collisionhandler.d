@@ -21,12 +21,12 @@ class CollisionHandler : System!Collider
   SpatialIndex!Collider index = new SpatialIndex!Collider();
   Entity[] collisionEffectParticles;
 
-  override bool canAddEntity(Entity entity)
+  bool canAddEntity(Entity entity)
   {
     return entity.has("collider") && entity.has("position");
   }
 
-  override Collider makeComponent(Entity entity)
+  Collider makeComponent(Entity entity)
   {
     vec3[] verts = [vec3(0.0, 0.0, 0.0)];
     if (entity.has("collider.vertices"))
@@ -44,7 +44,7 @@ class CollisionHandler : System!Collider
     return component;
   }
 
-  override void updateValues()
+  void updateValues()
   {
     int broadPhaseCount, narrowPhaseCount;
     StopWatch broadPhaseTimer, narrowPhaseTimer;
@@ -87,9 +87,9 @@ class CollisionHandler : System!Collider
   }
 
   // collision responders deal with updating entity values
-  override void updateEntities() {}
+  void updateEntities() {}
 
-  override void updateFromEntities()
+  void updateFromEntities()
   {
     foreach (index, entity; entityForIndex)
     {
