@@ -47,7 +47,7 @@ class NetworkHandler : System!(NetworkInfo)
   {
     foreach (index, component; components)
       foreach (key; component.valuesToWrite.byKey)
-        component.valuesToWrite[key] = entityForIndex[index][key];
+        component.valuesToWrite[key] = entityForIndex[index].get!string(key);
   }
 
   override void updateValues()

@@ -50,11 +50,6 @@ class Entity
     return get(valueName);
   }
   
-  string opIndex(string)(string valueName)
-  {
-    return get!string(valueName);
-  }
-  
   void opIndexAssign(ValueType)(ValueType value, string valueName)
   {
     set(valueName, value);
