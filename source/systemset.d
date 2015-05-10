@@ -65,8 +65,7 @@ class SystemSet
 
   void addEntity(Entity entity)
   {
-    foreach (entityHandler; entityHandlers)
-      entityHandler.addEntity(entity);
+    entityHandlers.each!(handler => handler.addEntity(entity));
     entities ~= entity;
   }
   
@@ -77,12 +76,10 @@ class SystemSet
 
   void update()
   {
-    foreach (entityHandler; entityHandlers.filter!(handler => !graphicsHandlers.canFind(handler)))
-      entityHandler.update();
+    entityHandlers.filter!(handler => !graphicsHandlers.canFind(handler)).each!(e => e.update());
     StopWatch graphicsTimer;
     graphicsTimer.start;
-    foreach (graphicsHandler; graphicsHandlers)
-      graphicsHandler.update();
+    graphicsHandlers.each!(handler => handler.update());
     auto graphicsComponentCount = polygonGraphics.components.length +
                                   spriteGraphics.components.length +
                                   textGraphics.components.length;
@@ -94,9 +91,7 @@ class SystemSet
   Entity[] removeEntitiesToBeRemoved()
   {
     auto removedEntities = entities.filter!(entity => entity.get!bool("ToBeRemoved"));
-    foreach (removedEntity; removedEntities)
-      foreach (entityHandler; entityHandlers)
-        entityHandler.removeEntity(removedEntity);
+    cartesianProduct(entityHandlers, removedEntities).each!(tup => tup[0].removeEntity(tup[1]));
     entities = entities.filter!(entity => !entity.get!bool("ToBeRemoved")).array;
     return removedEntities.array;
   }
