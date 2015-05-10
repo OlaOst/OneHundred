@@ -37,7 +37,7 @@ class CollisionHandler : System!Collider
     {
       auto spawn = entity.get!long("spawner");
       auto search = entityForIndex.values.find!(check => check.id == spawn);
-      assert(!search.empty, "entity id " ~ entity.id.to!string ~ " with values " ~ entity.values.to!string ~ " could not find spawner " ~ spawn.to!string ~ " in entityForIndex " ~ entityForIndex.to!string);
+      assert(!search.empty);
       component.spawner = search.front;
     }
     component.updateFromEntity(entity);
