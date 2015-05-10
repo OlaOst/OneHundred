@@ -59,9 +59,6 @@ class Physics : System!State
   
   void updateValues() @nogc
   {
-    //StopWatch debugTimer;
-    
-    //debugTimer.start;
     timer.incrementAccumulator();
     
     previousStates = currentStates;
@@ -73,10 +70,6 @@ class Physics : System!State
       time += timer.timeStep;
     }
     interpolateStates(currentStates, previousStates, timer.accumulator / timer.timeStep);
-    
-    //debugText = format("physics components: %s\nphysics timings: %s", 
-    //                   components.length, 
-    //                   debugTimer.peek.usecs*0.001);
   }
   
   void updateEntities() //@nogc
