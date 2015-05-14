@@ -50,10 +50,12 @@ class Physics : System!State
       components[index].position = entity.get!vec3("position");
       components[index].velocity = entity.get!vec3("velocity");
       components[index].force = entity.get!vec3("force");
-      components[index].angle = entity.get!double("angle");
+      components[index].angle = entity.get!double("angle").normalizedAngle;
       components[index].rotation = entity.get!double("rotation");
       components[index].torque = entity.get!double("torque");
       components[index].mass = entity.get!double("mass");
+      
+      assert(&components[index]);
     }
   }
   
