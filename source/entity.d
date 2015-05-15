@@ -63,12 +63,14 @@ class Entity
   this(string[string] values)
   {
     this();
-    this.values = values;
     foreach (key, value; values)
     {
       auto fixKey = key;
       fixKey.findSkip("relation.value.");
       
+      if (fixKey !in values)
+        values[fixKey] = value;
+        
       if (vec3Types.canFind(fixKey))
         vec3Values[key] = value.myTo!vec3;
       if (vec4Types.canFind(fixKey))
@@ -76,13 +78,13 @@ class Entity
       if (doubleTypes.canFind(fixKey))
         doubleValues[key] = value.to!double;
     }
+    this.values = values;
   }
   
   string debugInfo()
   {
     string info = "id: " ~ id.to!string;
-    foreach (key, value; values)
-      info ~= "\n" ~ key ~ ": " ~ value;
+    values.each!((key, value) => info ~= "\n" ~ key ~ ": " ~ value);
     return info;
   }
   

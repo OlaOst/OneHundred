@@ -4,7 +4,6 @@ playership.mass = 0.01
 playership.collider = Player
 playership.valuestoaccumulate = ["mass", "force", "torque"]
 
-playership.hull.position = [0.0, 0.0, 0.0]
 playership.hull.mass = 4.0
 playership.hull.size = 1.0
 playership.hull.sprite = images/playerShip1_blue.png
@@ -14,7 +13,6 @@ playership.hull.relation.targetName = playership
 playership.hull.relation.value.position = [0.0, 0.0, 0.0]
 playership.hull.relation.value.angle = 0.0
 
-playership.engine.position = [0.0, 0.0, 0.0]
 playership.engine.mass = 1.0
 playership.engine.size = 0.25
 playership.engine.sprite = images/engine1.png
@@ -27,7 +25,6 @@ playership.engine.relation.targetName = playership
 playership.engine.relation.value.position = [-0.85, 0.0, 0.0]
 playership.engine.relation.value.angle = 0.0
 
-playership.gun.position = [0.0, 0.0, 0.0]
 playership.gun.mass = 0.5
 playership.gun.size = 0.25
 playership.gun.sprite = images/gun00.png
@@ -38,7 +35,6 @@ playership.gun.relation.targetName = playership
 playership.gun.relation.value.position = [0.85, 0.0, 0.0]
 playership.gun.relation.value.angle = 0.0
 
-playership.gun.widget.position = [0.0, 0.0, 0.0]
 playership.gun.widget.mass = 0.1
 playership.gun.widget.size = 0.1
 playership.gun.widget.sprite = images/engine1.png
