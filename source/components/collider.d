@@ -2,6 +2,7 @@ module components.collider;
 
 import std.algorithm;
 import std.array;
+import std.regex;
 
 import gl3n.linalg;
 
@@ -40,6 +41,8 @@ class Collider
   // need to know since we do not want ships firing bullets to get hit by their own bullets
   Entity spawner;
   Collider[] overlappingColliders;
+  
+  Regex!char collisionFilter;
   
   long id;
   

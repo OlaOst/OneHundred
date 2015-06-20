@@ -80,6 +80,8 @@ Entity createBullet(vec3 position, double angle, vec3 velocity,
   entity.polygon = polygon;
   entity["collider"] = ColliderType.Bullet;
 
+  entity["collisionfilter"] = "playership.*";
+  
   entity["spawner"] = spawnerId;
   
   entity["networked"] = true;

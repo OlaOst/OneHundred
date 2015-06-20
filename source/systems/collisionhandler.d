@@ -4,6 +4,7 @@ import std.algorithm;
 import std.conv;
 import std.datetime;
 import std.range;
+import std.regex;
 import std.stdio;
 
 import gl3n.linalg;
@@ -40,6 +41,12 @@ class CollisionHandler : System!Collider
       assert(!search.empty);
       component.spawner = search.front;
     }
+    
+    if (entity.has("collisionfilter"))
+    {
+      component.collisionFilter = regex(entity.get!string("collisionfilter"));
+    }
+    
     component.updateFromEntity(entity);
     return component;
   }
@@ -58,8 +65,7 @@ class CollisionHandler : System!Collider
 
     narrowPhaseTimer.start();
     auto collisions = cartesianProduct(candidates, candidates)
-                      .filter!(candidatePair => candidatePair[0].id < candidatePair[1].id)
-                      .filter!(candidatePair => candidatePair[0].isOverlapping(candidatePair[1]))
+                      .filter!(candidatePair => filterCandidates(candidatePair[0], candidatePair[1]))
                       .map!(collisionPair => Collision(collisionPair[0], collisionPair[1])).array;
     narrowPhaseTimer.stop();
     narrowPhaseCount += collisions.length;
@@ -86,6 +92,16 @@ class CollisionHandler : System!Collider
     index = new SpatialIndex!Collider();
   }
 
+  bool filterCandidates(Collider left, Collider right)
+  {
+    return left.id < right.id && 
+           (left.collisionFilter.empty || 
+            !getEntity(right).get!string("fullName").matchFirst(left.collisionFilter)) &&
+           (right.collisionFilter.empty || 
+            !getEntity(left).get!string("fullName").matchFirst(right.collisionFilter)) &&
+           left.isOverlapping(right);
+  }
+  
   // collision responders deal with updating entity values
   void updateEntities() {}
 
