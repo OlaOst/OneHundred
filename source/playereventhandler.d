@@ -1,5 +1,7 @@
 module playereventhandler;
 
+import std.algorithm;
+
 import gl3n.linalg;
 
 import components.input;
@@ -28,7 +30,7 @@ void handlePlayerFireAction(Entity player, SystemSet systemSet, ref Entity[] npc
                                player.id);
     systemSet.addEntity(bullet);
     
-    assert(systemSet.collisionHandler.getComponent(bullet).spawner == player);
+    assert(systemSet.collisionHandler.getComponent(bullet).colliderIdsToIgnore.canFind(player.id));
     
     npcs ~= bullet;
     reloadTimeLeft = 0.1;

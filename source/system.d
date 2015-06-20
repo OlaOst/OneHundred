@@ -83,14 +83,16 @@ abstract class System(ComponentType) : SystemDebug, ComponentHandler!ComponentTy
 
   void update()
   {
+    debugTextInternal = "";
     StopWatch debugTimer;
     debugTimer.start;
     updateFromEntities();
     updateValues();
     updateEntities();
     debugTimingInternal = debugTimer.peek.usecs*0.001;
-    debugTextInternal = format("%s components: %s\n%s timings: %s", 
-                               className, components.length, className, debugTimingInternal);
+    if (debugTextInternal.length == 0) // systems may want to write their own debugtext in updateValues
+      debugTextInternal = format("%s components: %s\n%s timings: %s", 
+                                 className, components.length, className, debugTimingInternal);
   }
   
   size_t[const Entity] indexForEntity;

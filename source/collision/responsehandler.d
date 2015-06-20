@@ -51,11 +51,9 @@ Entity[] handleCollisions(Collision[] collisions, CollisionHandler collisionHand
     auto firstEntity = collisionHandler.getEntity(first);
     auto otherEntity = collisionHandler.getEntity(other);
     
-    if (typePair[0] != ColliderType.Player && 
-        (first.type == ColliderType.Bullet || other.type == ColliderType.Bullet) && 
-        first.spawner !is otherEntity && other.spawner !is firstEntity)
+    if (first.type == ColliderType.Bullet || other.type == ColliderType.Bullet)
       collisionEffectParticles ~= collision.bulletCollisionResponse(collisionHandler);
-    else if (first.spawner !is otherEntity && other.spawner !is firstEntity)
+    else
       collisionEffectParticles ~= collision.shipCollisionResponse(collisionHandler);
   }
   

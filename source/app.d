@@ -70,6 +70,8 @@ void main(string[] args)
 
   systemSet.addDebugEntities();
 
+  Entity debugText;
+  
   while (!quit)
   {
     systemSet.update();
@@ -80,6 +82,7 @@ void main(string[] args)
     gameControllerInput.handleAddRemoveEntity(systemSet, npcs);
     gameControllerInput.handleToggleInputWindow(systemSet, inputWindow, mouseCursor);
     gameControllerInput.handleNetworking(systemSet, listenPort);
+    gameControllerInput.handleToggleDebugInfo(systemSet, debugText);
     systemSet.inputHandler.getComponent(editController).handleEditableText(inputWindow);
     playerSet["playership.gun"].handlePlayerFireAction(systemSet, npcs);
     camera.position = playerSet["playership"].get!vec3("position");

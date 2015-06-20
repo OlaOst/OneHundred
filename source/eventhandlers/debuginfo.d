@@ -15,7 +15,7 @@ void handleToggleDebugInfo(Input gameInput, SystemSet systemSet, ref Entity debu
   {
     if (debugText is null)
     {
-      debugText = createText("??", vec3(-3.0, -2.0, 0.0));
+      debugText = createText("??", vec3(-1.0, -2.0, 0.0));
       systemSet.addEntity(debugText);
     }
     index = (index + 1) % systemSet.entityHandlers.length;
@@ -35,7 +35,9 @@ void handleToggleDebugInfo(Input gameInput, SystemSet systemSet, ref Entity debu
       break;
   }*/
   
-  debugText["text"] = systemSet.entityHandlers[index].debugText;
-  
-  assert(debugText.get!string("text") !is null);
+  if (debugText !is null)
+  {
+    debugText["text"] = systemSet.entityHandlers[index].debugText;
+    assert(debugText.get!string("text") !is null);
+  }
 }

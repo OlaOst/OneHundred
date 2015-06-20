@@ -34,17 +34,12 @@ class CollisionHandler : System!Collider
       verts = entity.get!(vec3[])("collider.vertices");
 
     auto component = new Collider(verts, entity.get!ColliderType("collider"), entity.id);
-    if (entity.has("spawner"))
-    {
-      auto spawn = entity.get!long("spawner");
-      auto search = entityForIndex.values.find!(check => check.id == spawn);
-      assert(!search.empty);
-      component.spawner = search.front;
-    }
     
     if (entity.has("collisionfilter"))
     {
-      component.collisionFilter = regex(entity.get!string("collisionfilter"));
+      auto collisionFilter = regex(entity.get!string("collisionfilter"));
+      component.colliderIdsToIgnore = entityForIndex.values.filter!(entity => entity.get!string("fullName").matchFirst(collisionFilter))
+                                                           .map!(entity => entity.id).array.dup;
     }
     
     component.updateFromEntity(entity);
@@ -57,16 +52,15 @@ class CollisionHandler : System!Collider
     StopWatch broadPhaseTimer, narrowPhaseTimer;
 
     broadPhaseTimer.start();
-    foreach (collisionEntity; components)
-      index.insert(collisionEntity);
+    components.each!(collisionEntity => index.insert(collisionEntity));
     auto candidates = index.overlappingElements();
     broadPhaseTimer.stop();
     broadPhaseCount += candidates.length;
 
     narrowPhaseTimer.start();
     auto collisions = cartesianProduct(candidates, candidates)
-                      .filter!(candidatePair => filterCandidates(candidatePair[0], candidatePair[1]))
-                      .map!(collisionPair => Collision(collisionPair[0], collisionPair[1])).array;
+                .filter!(candidatePair => filterCandidates(candidatePair[0], candidatePair[1]))
+                .map!(collisionPair => Collision(collisionPair[0], collisionPair[1])).array;
     narrowPhaseTimer.stop();
     narrowPhaseCount += collisions.length;
 
@@ -77,7 +71,6 @@ class CollisionHandler : System!Collider
     {
       collision.first.isColliding = true;
       collision.other.isColliding = true;
-
       collision.first.overlappingColliders ~= collision.other;
       collision.other.overlappingColliders ~= collision.first;
     }
@@ -95,10 +88,8 @@ class CollisionHandler : System!Collider
   bool filterCandidates(Collider left, Collider right)
   {
     return left.id < right.id && 
-           (left.collisionFilter.empty || 
-            !getEntity(right).get!string("fullName").matchFirst(left.collisionFilter)) &&
-           (right.collisionFilter.empty || 
-            !getEntity(left).get!string("fullName").matchFirst(right.collisionFilter)) &&
+           !left.colliderIdsToIgnore.canFind(right.id) &&
+           !right.colliderIdsToIgnore.canFind(left.id) &&
            left.isOverlapping(right);
   }
   
@@ -108,8 +99,6 @@ class CollisionHandler : System!Collider
   void updateFromEntities()
   {
     foreach (index, entity; entityForIndex)
-    {
       components[index].updateFromEntity(entity);
-    }
   }
 }
