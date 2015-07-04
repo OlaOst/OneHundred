@@ -2,7 +2,6 @@
 *.deps
 *.obj
 *.exe
-*.dll
 *.lib
 /.dub
 /Frame*
