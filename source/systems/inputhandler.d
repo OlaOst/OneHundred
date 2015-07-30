@@ -51,9 +51,10 @@ class InputHandler : System!Input
 
   void updateEntities()
   {
+    spawnEntities.length = 0;
     foreach (index, entity; entityForIndex)
     {
-      entity.updateValues(components[index]);
+      spawnEntities ~= entity.updateValuesAndGetSpawns(components[index]);
     }
   }
 
@@ -89,7 +90,9 @@ class InputHandler : System!Input
       }
     }
   }
-
+  
+  Entity[] spawnEntities;
+  
   private SDL_Event[] eventsSinceLastUpdate;
   private string textInput;
   public vec2 mouseScreenPosition = vec2(0.0, 0.0);

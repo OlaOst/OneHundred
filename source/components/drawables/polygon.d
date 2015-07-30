@@ -44,7 +44,7 @@ final class Polygon : Drawable
                    vec3(vec2FromAngle(angle) * size, 0.0), 
                    vec3(vec2FromAngle(nextangle) * size, 0.0)];
                    
-      colors ~= [vec4(1.0, 1.0, 1.0, 1.0), color, color];
+      colors ~= [vec4(1.0, 1.0, 1.0, color.a), color, color];
     }
   }
 }

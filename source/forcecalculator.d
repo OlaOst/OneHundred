@@ -66,7 +66,7 @@ body
   
   force += state.position * -0.025; // spring force to center
   force += state.velocity * -0.05; // damping force
-  
+/*
   // twisty clockwise force close to center
   auto normalPos = vec3(state.position.y, -state.position.x, 0.0);
   if (normalPos.magnitude() > 0.0)
@@ -74,7 +74,7 @@ body
 
   // twisty counterclockwise force further out
   force += vec3(-state.position.y, state.position.x, 0.0) * 0.015;
-
+*/
   //if (state.entity.input)
     //state.entity.input.handlePlayerAccelerateActions(force, state.angle);
 

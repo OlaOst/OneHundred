@@ -17,7 +17,7 @@ abstract class System(ComponentType) : SystemDebug, ComponentHandler!ComponentTy
   invariant()
   {
     assert(indexForEntity.length == entityForIndex.length,
-           "indexForEntity/entityForIndex length mismatch");
+           "indexForEntity/entityForIndex length mismatch in " ~ this.classinfo.name);
     assert(indexForEntity.length == components.length,
            "indexForEntity/components length mismatch");
     // ensure there is a one-to-one mapping between indices and entities
@@ -51,8 +51,13 @@ abstract class System(ComponentType) : SystemDebug, ComponentHandler!ComponentTy
     if (canAddEntity(entity))
     {
       auto component = makeComponent(entity);
+      
+      assert(entity !in indexForEntity);
       indexForEntity[entity] = components.length;
+      
+      assert(components.length !in entityForIndex);
       entityForIndex[components.length] = entity;
+      
       components ~= component;
     }
   }
@@ -76,7 +81,7 @@ abstract class System(ComponentType) : SystemDebug, ComponentHandler!ComponentTy
 
   size_t componentCount() @property { return components.length; }
   
-  string className() @property
+  string className() pure const @property
   {
     return this.classinfo.name.retro.until(".").to!string.retro.to!string;
   }

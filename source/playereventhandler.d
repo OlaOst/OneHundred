@@ -11,26 +11,26 @@ import entityfactory.entities;
 import systemset;
 
 
-void handlePlayerFireAction(Entity player, SystemSet systemSet, ref Entity[] npcs)
+void handlePlayerFireAction(Entity playerGun, SystemSet systemSet, ref Entity[] npcs)
 {
-  if (!systemSet.inputHandler.hasComponent(player))
+  if (!systemSet.inputHandler.hasComponent(playerGun))
     return;
     
-  fire = systemSet.inputHandler.getComponent(player).isActionSet("fire");
+  fire = systemSet.inputHandler.getComponent(playerGun).isActionSet("fire");
   
   static float reloadTimeLeft = 0.0;
   if (fire && reloadTimeLeft <= 0.0)
   {
-    auto angle = player.get!double("angle");
+    auto angle = playerGun.get!double("angle");
     
-    auto bullet = createBullet(player.get!vec3("position"), 
+    auto bullet = createBullet(playerGun.get!vec3("position"), 
                                angle, 
-                               player.get!vec3("velocity") + vec3(vec2FromAngle(angle), 0.0) * 5.0,
+                               playerGun.get!vec3("velocity") + vec3(vec2FromAngle(angle), 0.0) * 5.0,
                                5.0,
-                               player.id);
+                               playerGun.id);
     systemSet.addEntity(bullet);
     
-    assert(systemSet.collisionHandler.getComponent(bullet).colliderIdsToIgnore.canFind(player.id));
+    assert(systemSet.collisionHandler.getComponent(bullet).colliderIdsToIgnore.canFind(playerGun.id));
     
     npcs ~= bullet;
     reloadTimeLeft = 0.1;

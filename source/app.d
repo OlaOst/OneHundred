@@ -31,8 +31,8 @@ import systems.graphics;
 void main(string[] args)
 {
   ushort listenPort = args.length > 1 ? args[1].to!ushort : 5577;
-  int xres = 1024;
-  int yres = 768;
+  int xres = 800;
+  int yres = 600;
 
   auto renderer = new Renderer(xres, yres);
   auto camera = new Camera();
@@ -74,6 +74,8 @@ void main(string[] args)
   
   while (!quit)
   {
+    systemSet.inputHandler.spawnEntities.each!(spawn => systemSet.addEntity(spawn));
+  
     systemSet.update();
 
     auto gameControllerInput = systemSet.inputHandler.getComponent(gameController);
@@ -92,6 +94,7 @@ void main(string[] args)
     addParticles(particles, systemSet);
     addBullets(npcs, systemSet);
     addNetworkEntities(systemSet);
+    
     npcs = npcs.filter!(entity => !entity.get!bool("ToBeRemoved")).array;
     particles = particles.filter!(entity => !entity.get!bool("ToBeRemoved")).array;
     systemSet.removeEntitiesToBeRemoved();
