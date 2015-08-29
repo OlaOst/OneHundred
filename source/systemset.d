@@ -74,7 +74,11 @@ class SystemSet
   
   void addEntityCollection(Entity[string] entityCollection)
   {
-    entityCollection.byValue.each!(entity => addEntity(entity));
+    // add entities in correct order, entities depending on other should be added later
+    // dependent entities always have a longer key since the dependency is part of the key
+    entityCollection.byKey.array.sort!((left, right) => left.length < right.length)
+                                .map!(key => entityCollection[key])
+                                .each!(entity => addEntity(entity));
   }
 
   void update()

@@ -12,7 +12,7 @@
     "derelict-al": ">=1.0.0",
     "derelict-vorbis": ">=1.0.1",
     "derelict-ft": ">=1.0.2",
-    "gl3n": ">=1.0.1",
+    "gl3n": ">=1.2.0",
     "glamour": ">=1.0.1",
   },
   "importPaths" : ["../glamour"],
