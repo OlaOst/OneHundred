@@ -24,7 +24,7 @@ class TextGraphics : Graphics!Text
     textRenderer = new TextRenderer();
   }
 
-  void close()
+  override void close()
   {
     textRenderer.close();
   }

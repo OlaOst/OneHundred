@@ -20,6 +20,11 @@ class NetworkHandler : System!(NetworkInfo)
   {
     connection = new NetworkConnection(listenPort, &parseMessage, this);
   }
+  
+  override void close()
+  {
+    connection.close();
+  }
 
   bool canAddEntity(Entity entity)
   {
@@ -84,8 +89,6 @@ class NetworkHandler : System!(NetworkInfo)
 
     timer = new AccumulatorTimer(double.max, 1.0/30.0);
     connection.startSendingData(targetPort);
-    //connection.sendMessage("connection.port = " ~
-                           //connection.connection.localAddress.port.to!string ~ "\r\n");
   }
 
   AccumulatorTimer timer;

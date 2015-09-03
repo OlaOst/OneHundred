@@ -23,7 +23,7 @@ class SpriteGraphics : Graphics!Sprite
     super(xres, yres);
   }
 
-  void close()
+  override void close()
   {
     foreach (name, texture; textureSet)
       texture.remove();

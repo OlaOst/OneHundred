@@ -24,6 +24,10 @@ abstract class SystemDebug : EntityHandler
     debugTextInternal = debugTextParameter;
   }
   
+  void close()
+  {
+  }
+  
   /*void update()
   {
     debugTimingInternal = debugTimer.peek.usecs*0.001;

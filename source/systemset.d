@@ -60,10 +60,7 @@ class SystemSet
 
   void close()
   {
-    textGraphics.close();
-    spriteGraphics.close();
-    soundSystem.silence();
-    networkHandler.connection.close();
+    entityHandlers.each!(entity => entity.close());
   }
 
   void addEntity(Entity entity)
@@ -84,8 +81,7 @@ class SystemSet
   void update()
   {
     entityHandlers.filter!(handler => !graphicsHandlers.canFind(handler)).each!(e => e.update());
-    StopWatch graphicsTimer;
-    graphicsTimer.start;
+    auto graphicsTimer = StopWatch(AutoStart.yes);
     graphicsHandlers.each!(handler => handler.update());
     auto graphicsComponentCount = [polygonGraphics, spriteGraphics, textGraphics].map!
                                     (graphics => graphics.componentCount).sum;
