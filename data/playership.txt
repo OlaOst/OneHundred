@@ -14,12 +14,8 @@ playership.hull.relation.targetName = playership
 playership.hull.relation.value.position = [0.0, 0.0, 0.0]
 playership.hull.relation.value.angle = 0.0
 
-playership.engine.mass = 1.0
-playership.engine.size = 0.25
-playership.engine.sprite = images/engine1.png
+playership.engine.source = data/engine.txt
 playership.engine.inputType = playerEngine
-playership.engine.engineForce = 15.0
-playership.engine.engineTorque = 10.0
 playership.engine.collider = Player
 playership.engine.collisionfilter = playership.*
 playership.engine.relation.types = ["RelativeValues"]

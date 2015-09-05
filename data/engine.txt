@@ -1,0 +1,5 @@
+mass = 1.0
+size = 0.25
+sprite = images/engine1.png
+engineForce = 15.0
+engineTorque = 10.0

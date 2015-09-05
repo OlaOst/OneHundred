@@ -3,6 +3,7 @@ module entityfactory.entitycollection;
 import std.algorithm;
 import std.array;
 import std.conv;
+import std.exception;
 import std.range;
 import std.stdio;
 import std.string;
@@ -13,11 +14,18 @@ import valueparser;
 
 Entity[string] createEntityCollectionFromFile(string fileName)
 {
+  return createKeyValueCollectionFromFile(fileName).createEntityCollection;
+}
+
+string[string][string] createKeyValueCollectionFromFile(string fileName, string[] previouslyLoadedFiles = [])
+{
+  enforce(!previouslyLoadedFiles.canFind(fileName), "Circular reference detected, tried to load " ~ fileName ~ " with previously loaded files " ~ previouslyLoadedFiles.to!string);
+  
   string[] lines;
   foreach (string line; fileName.File.lines)
     lines ~= line;
 
-  return lines.createEntityCollection;
+  return lines.createKeyValueCollection(previouslyLoadedFiles ~ fileName);
 }
 
 auto getKeyValues(string[] lines)
@@ -28,7 +36,7 @@ auto getKeyValues(string[] lines)
               .map!(line => line.split("="));
 }
 
-Entity[string] createEntityCollection(string[] lines)
+string[string][string] createKeyValueCollection(string[] lines, string[] previouslyLoadedFiles)
 {
   string[string][string] keyValuesByFullName;
   
@@ -58,6 +66,38 @@ Entity[string] createEntityCollection(string[] lines)
     keyValuesByFullName[fullName][key] = value;
   }
   
+  string[string][string] allSourceKeyValuesByFullName;
+  // expand values
+  foreach (fullName, keyValues; keyValuesByFullName)
+  { 
+    if ("source" in keyValues)
+    {
+      auto source = keyValues["source"];
+      
+      auto sourceKeyValuesByFullName = source.createKeyValueCollectionFromFile(previouslyLoadedFiles);
+      
+      foreach (sourceFullName, sourceKeyValues; sourceKeyValuesByFullName)
+      {
+        auto expandedFullName = (sourceFullName.length > 0) ? join([fullName, sourceFullName], ".") : fullName;
+        allSourceKeyValuesByFullName[expandedFullName] = sourceKeyValues;
+      }
+    }
+  }
+  
+  foreach (sourceFullName, sourceKeyValues; allSourceKeyValuesByFullName)
+  {
+    foreach (key, value; sourceKeyValues)
+    {
+      if (key !in keyValuesByFullName[sourceFullName])
+        keyValuesByFullName[sourceFullName][key] = value;
+    }
+  }
+  
+  return keyValuesByFullName;
+}
+
+Entity[string] createEntityCollection(string[string][string] keyValuesByFullName)
+{
   Entity[string] result;
   
   foreach (fullName, keyValues; keyValuesByFullName)
