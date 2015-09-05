@@ -13,9 +13,6 @@ import systemset;
 
 void handlePlayerFireAction(Entity playerGun, SystemSet systemSet, ref Entity[] npcs)
 {
-  if (!systemSet.inputHandler.hasComponent(playerGun))
-    return;
-    
   fire = systemSet.inputHandler.getComponent(playerGun).isActionSet("fire");
   
   static float reloadTimeLeft = 0.0;

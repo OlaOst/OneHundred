@@ -29,11 +29,6 @@ abstract class System(ComponentType) : SystemDebug, ComponentHandler!ComponentTy
     }
   }
   
-  bool hasComponent(Entity entity)
-  {
-    return (entity in indexForEntity) != null;
-  }
-  
   ComponentType getComponent(Entity entity)
   {
     assert(entity in indexForEntity);
@@ -51,13 +46,10 @@ abstract class System(ComponentType) : SystemDebug, ComponentHandler!ComponentTy
     if (canAddEntity(entity))
     {
       auto component = makeComponent(entity);
-      
       assert(entity !in indexForEntity);
       indexForEntity[entity] = components.length;
-      
       assert(components.length !in entityForIndex);
       entityForIndex[components.length] = entity;
-      
       components ~= component;
     }
   }
@@ -89,13 +81,13 @@ abstract class System(ComponentType) : SystemDebug, ComponentHandler!ComponentTy
   void update()
   {
     debugTextInternal = "";
-    StopWatch debugTimer;
-    debugTimer.start;
+    auto debugTimer = StopWatch(AutoStart.yes);
     updateFromEntities();
     updateValues();
     updateEntities();
     debugTimingInternal = debugTimer.peek.usecs*0.001;
-    if (debugTextInternal.length == 0) // systems may want to write their own debugtext in updateValues
+    // systems may want to write their own debugtext in updateValues
+    if (debugTextInternal.length == 0)
       debugTextInternal = format("%s components: %s\n%s timings: %s", 
                                  className, components.length, className, debugTimingInternal);
   }
