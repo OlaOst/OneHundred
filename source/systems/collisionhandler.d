@@ -29,18 +29,19 @@ class CollisionHandler : System!Collider
 
   Collider makeComponent(Entity entity)
   {
-    vec3[] verts = [vec3(0.0, 0.0, 0.0)];
-    if (entity.has("collider.vertices"))
-      verts = entity.get!(vec3[])("collider.vertices");
-
+    vec3[] verts = entity.get!(vec3[])("collider.vertices", [vec3(0.0, 0.0, 0.0)]);
     auto component = new Collider(verts, entity.get!ColliderType("collider"), entity.id);
     
     if (entity.has("collisionfilter"))
     {
       auto collisionFilter = regex(entity.get!string("collisionfilter"));
-      component.colliderIdsToIgnore = entityForIndex.values.filter!(entity => entity.get!string("fullName").matchFirst(collisionFilter))
-                                                           .map!(entity => entity.id).array.dup;
+      component.colliderIdsToIgnore = entityForIndex.byValue.filter!(checkEntity => checkEntity.get!string("fullName").matchFirst(collisionFilter))
+                                                            .map!(checkEntity => checkEntity.id).array.dup;
     }
+    
+    entityForIndex.byValue.filter!(checkEntity => checkEntity.has("collisionfilter"))
+                          .filter!(checkEntity => entity.get!string("fullName").matchFirst(checkEntity.get!string("collisionfilter")))
+                          .each!(checkEntity => getComponent(checkEntity).colliderIdsToIgnore ~= entity.id);
     
     component.updateFromEntity(entity);
     return component;
@@ -49,23 +50,21 @@ class CollisionHandler : System!Collider
   void updateValues()
   {
     int broadPhaseCount, narrowPhaseCount;
-    StopWatch broadPhaseTimer, narrowPhaseTimer;
-
-    broadPhaseTimer.start();
+    
+    auto broadPhaseTimer = StopWatch(AutoStart.yes);
     components.each!(collisionEntity => index.insert(collisionEntity));
     auto candidates = index.overlappingElements();
     broadPhaseTimer.stop();
     broadPhaseCount += candidates.length;
 
-    narrowPhaseTimer.start();
+    auto narrowPhaseTimer = StopWatch(AutoStart.yes);
     auto collisions = cartesianProduct(candidates, candidates)
                 .filter!(candidatePair => filterCandidates(candidatePair[0], candidatePair[1]))
                 .map!(collisionPair => Collision(collisionPair[0], collisionPair[1])).array;
     narrowPhaseTimer.stop();
     narrowPhaseCount += collisions.length;
 
-    foreach (component; components)
-      component.overlappingColliders.length = 0;
+    components.each!(component => component.overlappingColliders.length = 0);
 
     foreach (collision; collisions)
     {
