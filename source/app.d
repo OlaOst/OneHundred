@@ -1,14 +1,12 @@
 module app;
 
 import std.algorithm;
-import std.random;
 import std.range;
 import std.stdio;
 
 import gl3n.linalg;
 
 import camera;
-import components.input;
 import debugentities;
 import entity;
 import entityfactory.controllers;
@@ -44,10 +42,8 @@ void main(string[] args)
     renderer.close();
   }
 
-  Entity[] particles;
   Entity[] npcs = createNpcs(0);
-  foreach (npc; npcs)
-    systemSet.addEntity(npc);
+  npcs.each!(npc => systemSet.addEntity(npc));
 
   auto playerSet = "data/playership.txt".createEntityCollectionFromFile;
   
@@ -59,8 +55,7 @@ void main(string[] args)
   auto mouseCursor = createMouseCursor();
   systemSet.addEntity(mouseCursor);
 
-  auto music = createMusic();
-  //systemSet.addEntity(music);
+  //systemSet.addEntity(createMusic());
 
   auto gameController = createGameController();
   systemSet.addEntity(gameController);
@@ -91,12 +86,11 @@ void main(string[] args)
     mouseCursor["position"] = getWorldPositionFromScreenCoordinates(camera,
                                 systemSet.inputHandler.mouseScreenPosition, xres, yres);
 
-    addParticles(particles, systemSet);
+    addParticles(systemSet);
     addBullets(npcs, systemSet);
     addNetworkEntities(systemSet);
     
     npcs = npcs.filter!(entity => !entity.get!bool("ToBeRemoved")).array;
-    particles = particles.filter!(entity => !entity.get!bool("ToBeRemoved")).array;
     systemSet.removeEntitiesToBeRemoved();
 
     systemSet.updateDebugEntities();

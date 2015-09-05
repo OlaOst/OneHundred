@@ -12,10 +12,11 @@ import entityfactory.entities;
 import systemset;
 
 
-void addParticles(ref Entity[] particles, SystemSet systemSet)
+void addParticles(SystemSet systemSet)
 {
-  // particle effects
-  particles ~= systemSet.collisionHandler.collisionEffectParticles;
+  // TODO: get particle effects from all relevant systems, not just collisionhandler
+  // TODO: should be generalized created entities from systems, 
+  // TODO: some will be particles, some will be different things
   foreach (collisionEffectParticle; systemSet.collisionHandler.collisionEffectParticles)
     systemSet.addEntity(collisionEffectParticle);
   systemSet.collisionHandler.collisionEffectParticles.length = 0;
