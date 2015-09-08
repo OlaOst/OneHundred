@@ -23,9 +23,7 @@ playership.engine.relation.targetName = playership
 playership.engine.relation.value.position = [-0.85, 0.0, 0.0]
 playership.engine.relation.value.angle = 0.0
 
-playership.gun.mass = 0.5
-playership.gun.size = 0.25
-playership.gun.sprite = images/gun00.png
+playership.gun.source = data/gun.txt
 playership.gun.inputType = playerGun
 playership.gun.collider = Player
 playership.gun.collisionfilter = playership.*
