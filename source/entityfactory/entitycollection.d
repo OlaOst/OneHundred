@@ -14,18 +14,21 @@ import valueparser;
 
 Entity[string] createEntityCollectionFromFile(string fileName)
 {
-  return createKeyValueCollectionFromFile(fileName).createEntityCollection;
+  return createKeyValuesCollectionFromFile(fileName).createEntityCollection;
 }
 
-string[string][string] createKeyValueCollectionFromFile(string fileName, string[] previouslyLoadedFiles = [])
+string[string][string] createKeyValuesCollectionFromFile(string fileName, 
+                                                         string[] previouslyLoadedFiles = [])
 {
-  enforce(!previouslyLoadedFiles.canFind(fileName), "Circular reference detected, tried to load " ~ fileName ~ " with previously loaded files " ~ previouslyLoadedFiles.to!string);
+  enforce(!previouslyLoadedFiles.canFind(fileName), "Circular reference detected, tried to load " 
+                                                    ~ fileName ~ " with previously loaded files " 
+                                                    ~ previouslyLoadedFiles.to!string);
   
   string[] lines;
   foreach (string line; fileName.File.lines)
     lines ~= line;
 
-  return lines.createKeyValueCollection(previouslyLoadedFiles ~ fileName);
+  return lines.createKeyValuesCollection(previouslyLoadedFiles ~ fileName);
 }
 
 auto getKeyValues(string[] lines)
@@ -36,7 +39,7 @@ auto getKeyValues(string[] lines)
               .map!(line => line.split("="));
 }
 
-string[string][string] createKeyValueCollection(string[] lines, string[] previouslyLoadedFiles)
+string[string][string] createKeyValuesCollection(string[] lines, string[] previouslyLoadedFiles)
 {
   string[string][string] keyValuesByFullName;
   
@@ -44,53 +47,40 @@ string[string][string] createKeyValueCollection(string[] lines, string[] previou
   {
     auto fullKey = keyValue[0].strip.to!string;
     auto keyParts = fullKey.split(".");
-    
-    string fullName;
-    string key;
+    auto fullName = keyParts.array()[0..$-1].join('.');
+    auto key = keyParts.array()[$-1..$].join('.');
     
     if (keyParts.canFind("relation"))
     {
       auto parts = keyParts.findSplitBefore(["relation"]);
-      
       fullName = parts[0].join('.');
       key = parts[1].join('.');
     }
-    else
-    {
-      fullName = keyParts.array()[0..$-1].join('.');
-      key = keyParts.array()[$-1..$].join('.');
-    }
     
-    auto value = keyValue[1].strip.to!string.parseValue(key);
-
-    keyValuesByFullName[fullName][key] = value;
+    keyValuesByFullName[fullName][key] = keyValue[1].strip.to!string.parseValue(key);
   }
   
   string[string][string] allSourceKeyValuesByFullName;
   // expand values
-  foreach (fullName, keyValues; keyValuesByFullName)
+  foreach (fullName; keyValuesByFullName.byKey.filter!(fullName => 
+                                                        "source" in keyValuesByFullName[fullName]))
   { 
-    if ("source" in keyValues)
+    auto keyValues = keyValuesByFullName[fullName];
+    auto sourceKeyValuesByFullName = 
+      keyValues["source"].createKeyValuesCollectionFromFile(previouslyLoadedFiles);
+    
+    foreach (sourceFullName, sourceKeyValues; sourceKeyValuesByFullName)
     {
-      auto source = keyValues["source"];
-      
-      auto sourceKeyValuesByFullName = source.createKeyValueCollectionFromFile(previouslyLoadedFiles);
-      
-      foreach (sourceFullName, sourceKeyValues; sourceKeyValuesByFullName)
-      {
-        auto expandedFullName = (sourceFullName.length > 0) ? join([fullName, sourceFullName], ".") : fullName;
-        allSourceKeyValuesByFullName[expandedFullName] = sourceKeyValues;
-      }
+      auto expandedFullName = (sourceFullName.length > 0) ? join([fullName, sourceFullName], ".")
+                                                          : fullName;
+      allSourceKeyValuesByFullName[expandedFullName] = sourceKeyValues;
     }
   }
   
-  foreach (sourceFullName, sourceKeyValues; allSourceKeyValuesByFullName)
+  foreach (sourceName, sourceKeyValues; allSourceKeyValuesByFullName)
   {
-    foreach (key, value; sourceKeyValues)
-    {
-      if (key !in keyValuesByFullName[sourceFullName])
-        keyValuesByFullName[sourceFullName][key] = value;
-    }
+    sourceKeyValues.byKey.filter!(key => key !in keyValuesByFullName[sourceName])
+                         .each!(key => keyValuesByFullName[sourceName][key]=sourceKeyValues[key]);
   }
   
   return keyValuesByFullName;
@@ -105,6 +95,5 @@ Entity[string] createEntityCollection(string[string][string] keyValuesByFullName
     keyValues["fullName"] = fullName;
     result[fullName] = new Entity(keyValues);
   }
-  
   return result;
 }

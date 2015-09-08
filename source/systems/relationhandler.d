@@ -36,7 +36,7 @@ class RelationHandler : System!(Relation[])
     
     if (relationTypes.canFind("RelativeValues"))
     {
-      foreach (relationValueKey; entity.values.keys.filter!
+      foreach (relationValueKey; entity.values.byKey.filter!
                                  (key => key.startsWith("relation.value.")))
       {
         auto relationValueName = relationValueKey.chompPrefix("relation.value.");
