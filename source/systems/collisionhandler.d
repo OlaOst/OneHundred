@@ -30,7 +30,8 @@ class CollisionHandler : System!Collider
     
     if (entity.has("collisionfilter"))
     {
-      auto collisionFilter = regex(entity.get!string("collisionfilter"));
+      auto collisionFilter = entity.get!string("collisionfilter");
+      
       component.colliderIdsToIgnore = 
         entityForIndex.byValue.filter!(checkEntity => checkEntity.get!string("fullName")
                                                                  .matchFirst(collisionFilter))

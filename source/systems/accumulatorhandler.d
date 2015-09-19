@@ -18,8 +18,11 @@ class AccumulatorHandler : System!(ValueAccumulator[])
     if (entity.has("relation.targetId"))
       entitiesWithTargetIdMapping[entity.get!long("relation.targetId")] ~= entity;
     if (entity.has("relation.targetName"))
-      entitiesWithTargetNameMapping[entity.get!string("relation.targetName")] ~= entity;
-      
+    {
+      auto targetName = entity.get!string("relation.targetName");
+      entitiesWithTargetNameMapping[targetName] ~= entity;
+    }
+    
     return entity.has("valuestoaccumulate");
   }
   
@@ -60,8 +63,14 @@ class AccumulatorHandler : System!(ValueAccumulator[])
         accumulatorSources ~= entitiesWithTargetIdMapping[entity.id];
         
       if (entity.has("fullName"))
+      {
+        auto fullName = entity.get!string("fullName");
+ 
+        assert(fullName in entitiesWithTargetNameMapping, "Could not find " ~ fullName ~ " in mapping " ~ entitiesWithTargetNameMapping.to!string);
+      
         accumulatorSources ~= entitiesWithTargetNameMapping[entity.get!string("fullName")];
-        
+      }
+      
       accumulatorToResolve.accumulatorSources = accumulatorSources;
         
       resolvedAccumulators ~= accumulatorToResolve;

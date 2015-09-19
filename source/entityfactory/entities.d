@@ -73,7 +73,7 @@ Entity[] createBulletEntityGroup(vec3 position, double angle, vec3 velocity,
     bulletEntity["position"] = position;
     bulletEntity["angle"] = angle;
     bulletEntity["velocity"] = velocity;
-    bulletEntity["collisionfilter"] = "playership.*";
+    bulletEntity["collisionfilter"] = "player.ship.*";
     bulletEntity["spawner"] = spawnerId;
     bulletEntity["networked"] = true;
     

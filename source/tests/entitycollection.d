@@ -50,7 +50,7 @@ unittest
 {
   auto entities = "data/playership.txt".createEntityCollectionFromFile();
 
-  assert("playership" in entities);
-  assert("playership.hull" in entities);
-  assert(entities["playership.hull"].get!double("mass") == 4.0);
+  assert("player.ship" in entities);
+  assert("player.ship.hull" in entities);
+  assert(entities["player.ship.hull"].get!double("mass") == 4.0);
 }

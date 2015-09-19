@@ -67,6 +67,24 @@ class Entity
   this(string[string] values)
   {
     this();
+    
+    auto parseValueNames = ["relation.targetName", "collisionfilter"];
+    
+    import std.regex : matchAll;
+    import std.array : split, join, replace;
+    foreach (parseValueName; parseValueNames.filter!(parseValueName => parseValueName in values))
+    {
+      auto valueToParse = values[parseValueName];
+      
+      foreach (match; valueToParse.matchAll("(\\{.*?\\})"))
+      {
+        if (match.hit == "{parent.fullName}")
+          valueToParse = valueToParse.replace(match.hit, values["fullName"].split(".")[0..$-1].join("."));
+      }
+      
+      values[parseValueName] = valueToParse;
+    }
+    
     foreach (key, value; values)
     {
       auto fixKey = key;
