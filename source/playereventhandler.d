@@ -20,19 +20,20 @@ void handlePlayerFireAction(Entity playerGun, SystemSet systemSet, ref Entity[] 
   {
     auto angle = playerGun.get!double("angle");
     
-    auto bullet = createBullet(playerGun.get!vec3("position"), 
-                               angle, 
-                               playerGun.get!vec3("velocity") + 
-                                  vec3(vec2FromAngle(angle), 0.0) * 5.0,
-                               5.0,
-                               playerGun.id);
-    systemSet.addEntity(bullet);
+    auto bulletEntityGroup = createBulletEntityGroup(playerGun.get!vec3("position"), 
+                                                     angle, 
+                                                     playerGun.get!vec3("velocity") + 
+                                                        vec3(vec2FromAngle(angle), 0.0) * 5.0,
+                                                     5.0,
+                                                     playerGun.id);
     
-    assert(systemSet.collisionHandler.getComponent(bullet)
-      .colliderIdsToIgnore.canFind(playerGun.id));
+    foreach (bulletEntity; bulletEntityGroup)
+      systemSet.addEntity(bulletEntity);
     
-    npcs ~= bullet;
-    reloadTimeLeft = 0.1;
+    assert(bulletEntityGroup.all!(bulletEntity => systemSet.collisionHandler.getComponent(bulletEntity).colliderIdsToIgnore.canFind(playerGun.id)));
+    
+    npcs ~= bulletEntityGroup;
+    reloadTimeLeft = playerGun.get!double("reloadTime");
   }
   else if (reloadTimeLeft > 0.0)
   {

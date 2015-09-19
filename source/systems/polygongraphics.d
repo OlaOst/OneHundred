@@ -3,6 +3,7 @@ module systems.polygongraphics;
 import std.algorithm;
 import std.array;
 import std.datetime;
+import std.range;
 import std.stdio;
 
 import glamour.texture;
@@ -28,15 +29,21 @@ class PolygonGraphics : Graphics!Polygon
 
   bool canAddEntity(Entity entity)
   {
-    return entity.has("position") && (entity.polygon !is null);
+    return entity.has("position") && ((entity.polygon !is null) || entity.has("polygon.vertices"));
   }
 
   Polygon makeComponent(Entity entity)
   {
     Polygon component;
 
-    component = entity.polygon;
-
+    if (entity.polygon !is null)
+      component = entity.polygon;
+    else
+      entity.polygon = component = parsePolygonFromEntity(entity);
+    
+    assert(entity.polygon !is null);
+    assert(component !is null);
+    
     component.position = entity.get!vec3("position");
     component.angle = entity.get!double("angle");
 
@@ -81,4 +88,21 @@ class PolygonGraphics : Graphics!Polygon
 
   vec3[][string] vertices;
   vec4[][string] colors;
+}
+
+Polygon parsePolygonFromEntity(Entity entity)
+{
+  assert(entity.has("polygon.vertices"));
+  assert(entity.has("polygon.colors") || entity.has("color"));
+ 
+  auto vertices = entity.get!(vec3[])("polygon.vertices");
+  
+  vec4[] colors;
+  if (entity.has("polygon.colors"))
+    colors = entity.get!(vec4[])("polygon.colors");
+  else
+    colors = entity.get!vec4("color").repeat(colors.length).array;
+    
+  assert(vertices.length == colors.length);
+  return new Polygon(vertices, colors);
 }

@@ -17,6 +17,7 @@ import components.input;
 import components.sound;
 import converters;
 import entity;
+import entityfactory.entitycollection;
 import valueparser;
 
 
@@ -62,29 +63,23 @@ Entity[] createNpcs(uint elements)
   return entities;
 }
 
-Entity createBullet(vec3 position, double angle, vec3 velocity, 
-                    double lifeTime, const long spawnerId)
+Entity[] createBulletEntityGroup(vec3 position, double angle, vec3 velocity, 
+                               double lifeTime, const long spawnerId)
 {
-  auto entity = createEntity(position, velocity, 0.1);
-  
-  auto color = vec4(uniformDistribution!float(3).vec3, 0.5);
-  
-  entity["angle"] = angle;
-  entity["lifeTime"] = lifeTime;
-  
-  auto polygon = new Polygon(0.1, uniform(3, 4), 
-                             vec4(uniformDistribution!float(3).vec3, 0.5));
-  
-  //entity["polygon.vertices"] = polygon.vertices;
-  //entity["polygon.colors"] = polygon.colors;
-  entity.polygon = polygon;
-  entity["collider"] = ColliderType.Bullet;
+  auto bulletEntityGroup = "data/bullet.txt".createEntityCollectionFromFile;
 
-  entity["collisionfilter"] = "playership.*";
+  foreach (bulletEntity; bulletEntityGroup)
+  {
+    bulletEntity["position"] = position;
+    bulletEntity["angle"] = angle;
+    bulletEntity["velocity"] = velocity;
+    bulletEntity["collisionfilter"] = "playership.*";
+    bulletEntity["spawner"] = spawnerId;
+    bulletEntity["networked"] = true;
+    
+    import systems.polygongraphics;
+    bulletEntity.polygon = parsePolygonFromEntity(bulletEntity);
+  }
   
-  entity["spawner"] = spawnerId;
-  
-  entity["networked"] = true;
-  
-  return entity;
+  return bulletEntityGroup.values;
 }

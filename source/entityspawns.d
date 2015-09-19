@@ -36,7 +36,7 @@ void addNetworkEntities(SystemSet systemSet)
 void addBullets(ref Entity[] npcs, SystemSet systemSet)
 {
   // npcs firing randomly
-  Entity[] npcBullets;
+  Entity[] npcBulletEntities;
   foreach (npc; npcs.filter!(npc => systemSet.collisionHandler.getComponent(npc).type == 
                                     ColliderType.Npc))
   {
@@ -48,19 +48,19 @@ void addBullets(ref Entity[] npcs, SystemSet systemSet)
       
       auto angle = npc.get!double("angle");
       
-      auto bullet = createBullet(npc.get!vec3("position"),
-                                 angle,
-                                 npc.get!vec3("velocity") + vec3(vec2FromAngle(angle), 0.0) * 5.0, 
-                                 5.0,
-                                 npc.id);
-      assert(bullet !is null);
-      npcBullets ~= bullet;
+      auto bulletEntityGroup = createBulletEntityGroup(npc.get!vec3("position"),
+                                                       angle,
+                                                       npc.get!vec3("velocity") + vec3(vec2FromAngle(angle), 0.0) * 5.0, 
+                                                       5.0,
+                                                       npc.id);
+      assert(bulletEntityGroup !is null && bulletEntityGroup.length > 0);
+      npcBulletEntities ~= bulletEntityGroup;
     }
   }
-  foreach (bullet; npcBullets)
+  foreach (bulletEntity; npcBulletEntities)
   {
-    systemSet.addEntity(bullet);
+    systemSet.addEntity(bulletEntity);
     //npcs ~= bullet;
   }
-  npcBullets.length = 0;
+  npcBulletEntities.length = 0;
 }

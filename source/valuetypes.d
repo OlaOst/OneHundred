@@ -6,7 +6,7 @@ import gl3n.linalg;
 auto immutable vec3Types = ["position", "velocity", "force"];
 auto immutable vec4Types = ["color"];
 auto immutable doubleTypes = ["size", "angle", "rotation", "torque", "mass", 
-                              "lifeTime", "engineForce", "engineTorque"];
+                              "lifeTime", "engineForce", "engineTorque", "reloadTime"];
 auto immutable fileTypes = ["sprite", "sound"];
 
 static ValueType DefaultValue(ValueType)() @nogc

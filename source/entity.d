@@ -45,9 +45,13 @@ class Entity
     return (valueName in values) !is null;
   }
   
-  ValueType opIndex(ValueType)(string valueName)
+  /*ValueType opIndex(ValueType)(string valueName)
   {
     return get(valueName);
+  }*/
+  string opIndex(string valueName)
+  {
+    return values[valueName];
   }
   
   void opIndexAssign(ValueType)(ValueType value, string valueName)
