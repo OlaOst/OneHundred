@@ -65,7 +65,8 @@ class RelationHandler : System!(Relation[])
       else if (entity.has("relation.targetName"))
       {
         auto targetName = entity.get!string("relation.targetName");
-        assert(targetName in entityNameMapping, "Could not find " ~ targetName ~ " in " ~ entityNameMapping.to!string);
+        assert(targetName in entityNameMapping, 
+               "Could not find " ~ targetName ~ " in " ~ entityNameMapping.to!string);
         targetIdForComponentMapping[relationComponent] = entityNameMapping[targetName].id;
       }
     }
