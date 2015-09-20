@@ -50,25 +50,11 @@ string[string][string] createKeyValuesCollection(string[] lines, string[] previo
     auto fullName = keyParts.array()[0..$-1].join('.');
     auto key = keyParts.array()[$-1..$].join('.');
     
-    if (keyParts.canFind("relation"))
+    auto specialKeyMatch = keyParts.findAmong(["relation", "polygon", "spawn"]);
+    if (!specialKeyMatch.empty)
     {
-      auto parts = keyParts.findSplitBefore(["relation"]);
-      fullName = parts[0].join('.');
-      key = parts[1].join('.');
-    }
-    
-    if (keyParts.canFind("polygon"))
-    {
-      auto parts = keyParts.findSplitBefore(["polygon"]);
-      fullName = parts[0].join('.');
-      key = parts[1].join('.');
-    }
-    
-    if (keyParts.canFind("spawn"))
-    {
-      auto parts = keyParts.findSplitBefore(["spawn"]);
-      fullName = parts[0].join('.');
-      key = parts[1].join('.');
+      fullName = keyParts.until(specialKeyMatch).join('.');
+      key = specialKeyMatch.join('.');
     }
     
     keyValuesByFullName[fullName][key] = keyValue[1].strip.to!string.parseValue(key);
