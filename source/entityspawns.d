@@ -50,7 +50,8 @@ void addBullets(ref Entity[] npcs, SystemSet systemSet)
       
       auto bulletEntityGroup = createBulletEntityGroup(npc.get!vec3("position"),
                                                        angle,
-                                                       npc.get!vec3("velocity") + vec3(vec2FromAngle(angle), 0.0) * 5.0, 
+                                                       npc.get!vec3("velocity") + 
+                                                        vec3(vec2FromAngle(angle), 0.0) * 5.0, 
                                                        5.0,
                                                        npc.id);
       assert(bulletEntityGroup !is null && bulletEntityGroup.length > 0);
