@@ -6,14 +6,10 @@ import std.datetime;
 import std.range;
 import std.stdio;
 
-import glamour.texture;
 import gl3n.linalg;
 
 import components.collider;
-import components.drawable;
 import components.drawables.polygon;
-import components.drawables.sprite;
-import components.drawables.text;
 import converters;
 import entity;
 import system;
@@ -34,15 +30,9 @@ class PolygonGraphics : Graphics!Polygon
 
   Polygon makeComponent(Entity entity)
   {
-    Polygon component;
-
-    if (entity.polygon !is null)
-      component = entity.polygon;
-    else
-      entity.polygon = component = parsePolygonFromEntity(entity);
-    
+    Polygon component = entity.polygon ? entity.polygon : parsePolygonFromEntity(entity);
+    entity.polygon = component;
     assert(entity.polygon !is null);
-    assert(component !is null);
     
     component.position = entity.get!vec3("position");
     component.angle = entity.get!double("angle");
