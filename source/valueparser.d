@@ -1,13 +1,15 @@
 module valueparser;
 
 import std.algorithm;
+import std.array : split, join, replace;
 import std.conv;
 import std.file;
 import std.math;
 import std.random;
 import std.range;
+import std.regex : matchAll;
 import std.string;
-
+  
 import gl3n.linalg;
 
 import converters;
@@ -53,4 +55,25 @@ string parseValue(string value, string key)
   }
   
   return result;
+}
+
+string[string] parseValues(string[string] values)
+{
+  auto parseValueNames = ["relation.targetName", "collisionfilter"];
+
+  foreach (parseValueName; parseValueNames.filter!(parseValueName => parseValueName in values))
+  {
+    auto valueToParse = values[parseValueName];
+    
+    foreach (match; valueToParse.matchAll("(\\{.*?\\})"))
+    {
+      if (match.hit == "{parent.fullName}")
+        valueToParse = valueToParse.replace(match.hit, values["fullName"].split(".")[0..$-1]
+                                                                         .join("."));
+    }
+    
+    values[parseValueName] = valueToParse;
+  }
+  
+  return values;
 }

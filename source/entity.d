@@ -6,6 +6,7 @@ import gl3n.linalg;
 
 import components.drawables.polygon;
 import converters;
+import valueparser;
 import valuetypes;
 
 
@@ -45,10 +46,6 @@ class Entity
     return (valueName in values) !is null;
   }
   
-  /*ValueType opIndex(ValueType)(string valueName)
-  {
-    return get(valueName);
-  }*/
   string opIndex(string valueName)
   {
     return values[valueName];
@@ -59,40 +56,20 @@ class Entity
     set(valueName, value);
   }
   
-  this()
-  {
-    id = idCounter++;
-  }
+  this() { id = idCounter++; }
   
   this(string[string] values)
   {
     this();
-    
-    auto parseValueNames = ["relation.targetName", "collisionfilter"];
-    
-    import std.regex : matchAll;
-    import std.array : split, join, replace;
-    foreach (parseValueName; parseValueNames.filter!(parseValueName => parseValueName in values))
-    {
-      auto valueToParse = values[parseValueName];
-      
-      foreach (match; valueToParse.matchAll("(\\{.*?\\})"))
-      {
-        if (match.hit == "{parent.fullName}")
-          valueToParse = valueToParse.replace(match.hit, values["fullName"].split(".")[0..$-1].join("."));
-      }
-      
-      values[parseValueName] = valueToParse;
-    }
+    this.values = values.parseValues;
     
     foreach (key, value; values)
     {
       auto fixKey = key;
       fixKey.findSkip("relation.value.");
-      
+    
       if (fixKey !in values)
         values[fixKey] = value;
-        
       if (vec3Types.canFind(fixKey))
         vec3Values[key] = value.myTo!vec3;
       if (vec4Types.canFind(fixKey))
@@ -100,7 +77,6 @@ class Entity
       if (doubleTypes.canFind(fixKey))
         doubleValues[key] = value.to!double;
     }
-    this.values = values;
   }
   
   string debugInfo()
