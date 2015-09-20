@@ -30,7 +30,10 @@ void handlePlayerFireAction(Entity playerGun, SystemSet systemSet, ref Entity[] 
     foreach (bulletEntity; bulletEntityGroup)
       systemSet.addEntity(bulletEntity);
     
-    assert(bulletEntityGroup.all!(bulletEntity => systemSet.collisionHandler.getComponent(bulletEntity).colliderIdsToIgnore.canFind(playerGun.id)));
+    assert(bulletEntityGroup.all!(bulletEntity => systemSet.collisionHandler
+                                                           .getComponent(bulletEntity)
+                                                           .colliderIdsToIgnore
+                                                           .canFind(playerGun.id)));
     
     npcs ~= bulletEntityGroup;
     reloadTimeLeft = playerGun.get!double("reloadTime");
