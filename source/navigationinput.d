@@ -28,13 +28,13 @@ Entity[] updateValuesAndGetSpawns(Entity entity, Input component)
   {
     force += vec3(vec2FromAngle(angle), 0.0) * engineForce;
     
-    spawnEntities ~= createExhausts(entity, 10);
+    spawnEntities ~= createExhausts(entity, false, 10);
   }
   if (component.isActionSet("decelerate"))
   {
     force -= vec3(vec2FromAngle(angle), 0.0) * engineForce;
     
-    spawnEntities ~= createExhausts(entity, 5);
+    spawnEntities ~= createExhausts(entity, true, 5);
   }
   if (component.isActionSet("rotateCounterClockwise"))
     torque += engineTorque;
@@ -47,22 +47,29 @@ Entity[] updateValuesAndGetSpawns(Entity entity, Input component)
   return spawnEntities;
 }
 
-Entity[] createExhausts(Entity engine, uint count)
+Entity[] createExhausts(Entity engine, bool reverse, uint count)
 {
   Entity[] exhausts;
   
   for (uint index = 0; index < count; index++)
-    exhausts ~= createExhaust(engine);
+    exhausts ~= createExhaust(engine, reverse);
   
   return exhausts;
 }
 
-Entity createExhaust(Entity engine)
+Entity createExhaust(Entity engine, bool reverse)
 {
   auto exhaust = new Entity();
   exhaust["position"] = engine.get!vec3("position");
-  exhaust["velocity"] = -vec3(vec2FromAngle(engine.get!double("angle") + uniform(-0.1, 0.1)), 0.0)
-                        * uniform(5.0, 10.0);
+  
+  if (reverse)
+    exhaust["velocity"] = vec3(vec2FromAngle(engine.get!double("angle")
+                               + ([-1,1].randomSample(1).front * PI/3) + uniform(-0.1, 0.1)), 0.0)
+                          * uniform(3.0, 7.0);
+  else
+    exhaust["velocity"] = -vec3(vec2FromAngle(engine.get!double("angle")
+                                + uniform(-0.1, 0.1)), 0.0)
+                          * uniform(5.0, 10.0);
   exhaust["angle"] = engine.get!double("angle");
   exhaust["mass"] = uniform(0.05, 0.25);
   exhaust["rotation"] = uniform(-10.0, 10.0);
