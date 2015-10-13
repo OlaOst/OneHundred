@@ -1,5 +1,6 @@
 module integrator.state;
 
+import std.math;
 import std.stdio;
 
 import gl3n.linalg;
@@ -41,7 +42,7 @@ struct State
 
     position = entity.get!vec3("position");
     velocity = entity.get!vec3("velocity");
-    angle = entity.get!double("angle");
+    angle = entity.get!double("angle").normalizedAngle;
     rotation = entity.get!double("rotation");
     mass = entity.get!double("mass");
     momentum = velocity * mass;
@@ -76,4 +77,16 @@ struct State
     assert(torqueCalculator !is null);
     assert(entity !is null);
   }
+}
+
+static double normalizedAngle(double angle) pure nothrow @nogc
+{
+  // TODO: idiot case in case the integrator flips out and gives gigantic angles. make better
+  if (angle.abs > 1_000_000_000)
+      angle = 0.0;
+      
+  if (angle.abs > PI)
+    angle -= (angle/(PI*2.0)).rndtol * PI*2.0;
+    
+  return angle;
 }

@@ -36,35 +36,17 @@ Entity createEntityFromFile(string file)
   return new Entity(values);
 }
 
-Entity createEntity(vec3 position, vec3 velocity, double size)
+/*Entity[] createNpcEntityGroup()
 {
-  auto entity = new Entity();
-
-  auto drawable = new Polygon(size, uniform(4, 4+1), 
-                              vec4(uniformDistribution!float(3).vec3, 0.5));
-  
-  entity["position"] = position;
-  entity["velocity"] = velocity;
-  entity["angle"] = uniform(-PI, PI);
-  entity["size"] = size;
-  entity["mass"] = (0.1 + size ^^ 2);
-  entity["collider"] = ColliderType.Npc;
-
-  return entity;
-}
-
-Entity[] createNpcs(uint elements)
-{
-  Entity[] entities;
-  
-  foreach (index; iota(0, elements))
-    entities ~= "data/npc.txt".createEntityFromFile;
+  auto npcEntityGroup = "data/npcship.txt".createEntityCollectionFromFile;
     
-  return entities;
-}
+  npcEntityGroup.values.each!(entity => entity.get!string("fullName").writeln);
+    
+  return npcEntityGroup.values;
+}*/
 
-Entity[] createBulletEntityGroup(vec3 position, double angle, vec3 velocity, 
-                               double lifeTime, const long spawnerId)
+Entity[string] createBulletEntityGroup(vec3 position, double angle, vec3 velocity, 
+                                 double lifeTime, const long spawnerId)
 {
   auto bulletEntityGroup = "data/bullet.txt".createEntityCollectionFromFile;
 
@@ -73,7 +55,6 @@ Entity[] createBulletEntityGroup(vec3 position, double angle, vec3 velocity,
     bulletEntity["position"] = position;
     bulletEntity["angle"] = angle;
     bulletEntity["velocity"] = velocity;
-    bulletEntity["collisionfilter"] = "player.ship.*";
     bulletEntity["spawner"] = spawnerId;
     bulletEntity["networked"] = true;
     
@@ -81,5 +62,5 @@ Entity[] createBulletEntityGroup(vec3 position, double angle, vec3 velocity,
     bulletEntity.polygon = parsePolygonFromEntity(bulletEntity);
   }
   
-  return bulletEntityGroup.values;
+  return bulletEntityGroup;
 }

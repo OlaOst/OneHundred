@@ -7,23 +7,31 @@ import std.conv;
 import components.input;
 import entity;
 import entityfactory.entities;
+import entityfactory.entitycollection;
 import systemset;
 
 
-void handleAddRemoveEntity(Input gameInput, SystemSet systemSet, ref Entity[] npcs)
+void handleAddRemoveEntity(Input gameInput, SystemSet systemSet, ref Entity[string][] npcEntityGroups)
 {
   bool addEntity = gameInput.isActionSet("addEntity");
   bool removeEntity = gameInput.isActionSet("removeEntity");
   if (addEntity)
   {
-    auto entity = createNpcs(1)[0];
-    systemSet.addEntity(entity);
-    npcs ~= entity;
+    //auto npcEntityGroup = createNpcEntityGroup();
+    auto npcEntityGroup = "data/npcship.txt".createEntityCollectionFromFile;
+    
+    //foreach (npcEntity; npcEntityGroup)
+      //systemSet.addEntity(npcEntity);
+      
+    systemSet.addEntityCollection(npcEntityGroup);
+      
+    npcEntityGroups ~= npcEntityGroup;
   }
   
-  if (removeEntity && npcs.length > 0)
+  if (removeEntity && npcEntityGroups.length > 0)
   {
-    auto entity = npcs[$-1];
-    entity["ToBeRemoved"] = true;
+    auto entityGroup = npcEntityGroups[$-1];
+    
+    entityGroup.each!(entity => entity["ToBeRemoved"] = true);
   }
 }

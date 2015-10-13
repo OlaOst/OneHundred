@@ -9,18 +9,6 @@ import integrator.derivative;
 import integrator.state;
 
 
-static double normalizedAngle(double angle) pure nothrow @nogc
-{
-  // TODO: idiot case in case the integrator flips out and gives gigantic angles. make better
-  if (angle.abs > 1_000_000_000)
-      angle = 0.0;
-      
-  if (angle.abs > PI)
-    angle -= (angle/(PI*2.0)).rndtol * PI*2.0;
-    
-  return angle;
-}
-
 Derivative evaluate(State initial, double time, double timestep, const Derivative derivative) 
 pure nothrow @nogc
 in

@@ -41,6 +41,8 @@ class Input
       inputForAction = inputdefaults.gameControls;
     else if (inputType == "textInput")
       inputForAction = textInput;
+    else if (inputType == "npcGun" || inputType == "npcEngine")
+      inputForAction = InputForAction.init;
     else
       assert(false, "Found unhandled input type: " ~ inputType);
 

@@ -11,7 +11,7 @@ import entityfactory.entities;
 import systemset;
 
 
-void handlePlayerFireAction(Entity playerGun, SystemSet systemSet, ref Entity[] npcs)
+void handlePlayerFireAction(Entity playerGun, SystemSet systemSet) //, ref Entity[] npcs)
 {
   fire = systemSet.inputHandler.getComponent(playerGun).isActionSet("fire");
   
@@ -28,14 +28,17 @@ void handlePlayerFireAction(Entity playerGun, SystemSet systemSet, ref Entity[] 
                                                      playerGun.id);
     
     foreach (bulletEntity; bulletEntityGroup)
+    {
+      bulletEntity["collisionfilter"] = "player.ship.*";
       systemSet.addEntity(bulletEntity);
+    }
     
-    assert(bulletEntityGroup.all!(bulletEntity => systemSet.collisionHandler
-                                                           .getComponent(bulletEntity)
-                                                           .colliderIdsToIgnore
-                                                           .canFind(playerGun.id)));
+    assert(bulletEntityGroup.values.all!(bulletEntity => systemSet.collisionHandler
+                                                                  .getComponent(bulletEntity)
+                                                                  .colliderIdsToIgnore
+                                                                  .canFind(playerGun.id)));
     
-    npcs ~= bulletEntityGroup;
+    //npcs ~= bulletEntityGroup;
     reloadTimeLeft = playerGun.get!double("reloadTime");
   }
   else if (reloadTimeLeft > 0.0)

@@ -42,8 +42,9 @@ void main(string[] args)
     renderer.close();
   }
 
-  Entity[] npcs = createNpcs(0);
-  npcs.each!(npc => systemSet.addEntity(npc));
+  auto npcEntityGroups = ["data/npcship.txt".createEntityCollectionFromFile];
+  npcEntityGroups.length = 0;
+  npcEntityGroups.each!(npcEntityGroup => systemSet.addEntityCollection(npcEntityGroup));
 
   auto playerSet = "data/playership.txt".createEntityCollectionFromFile;
   
@@ -76,21 +77,21 @@ void main(string[] args)
     auto gameControllerInput = systemSet.inputHandler.getComponent(gameController);
     gameControllerInput.handleQuit();
     gameControllerInput.handleZoom(camera);
-    gameControllerInput.handleAddRemoveEntity(systemSet, npcs);
+    gameControllerInput.handleAddRemoveEntity(systemSet, npcEntityGroups);
     gameControllerInput.handleToggleInputWindow(systemSet, inputWindow, mouseCursor);
     gameControllerInput.handleNetworking(systemSet, listenPort);
     gameControllerInput.handleToggleDebugInfo(systemSet, debugText);
     systemSet.inputHandler.getComponent(editController).handleEditableText(inputWindow);
-    playerSet["player.ship.gun"].handlePlayerFireAction(systemSet, npcs);
+    playerSet["player.ship.gun"].handlePlayerFireAction(systemSet); //, npcEntityGroups);
     camera.position = playerSet["player.ship"].get!vec3("position");
     mouseCursor["position"] = getWorldPositionFromScreenCoordinates(camera,
                                 systemSet.inputHandler.mouseScreenPosition, xres, yres);
 
     addParticles(systemSet);
-    addBullets(npcs, systemSet);
+    addBullets(npcEntityGroups, systemSet);
     addNetworkEntities(systemSet);
     
-    npcs = npcs.filter!(entity => !entity.get!bool("ToBeRemoved")).array;
+    npcEntityGroups = npcEntityGroups.filter!(npcEntityGroup => !npcEntityGroup.values.all!(npcEntity => npcEntity.get!bool("ToBeRemoved"))).array;
     systemSet.removeEntitiesToBeRemoved();
 
     systemSet.updateDebugEntities();

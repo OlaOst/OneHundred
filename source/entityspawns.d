@@ -33,35 +33,34 @@ void addNetworkEntities(SystemSet systemSet)
   systemSet.networkHandler.entitiesToBeAdded.length = 0;
 }
 
-void addBullets(ref Entity[] npcs, SystemSet systemSet)
+void addBullets(ref Entity[string][] npcEntityGroups, SystemSet systemSet)
 {
   // npcs firing randomly
-  Entity[] npcBulletEntities;
-  foreach (npc; npcs.filter!(npc => systemSet.collisionHandler.getComponent(npc).type == 
-                                    ColliderType.Npc))
+  foreach (npcEntityGroup; npcEntityGroups)
   {
-    if (uniform(1, 180) == 1)
+    foreach (npcGunEntity; npcEntityGroup.values.filter!(npcEntity => npcEntity.get!string("fullName") == "npc.ship.gun"))
     {
-      assert(npc.has("position"));
-      assert(npc.has("velocity"));
-      assert(npc.has("angle"));
-      
-      auto angle = npc.get!double("angle");
-      
-      auto bulletEntityGroup = createBulletEntityGroup(npc.get!vec3("position"),
-                                                       angle,
-                                                       npc.get!vec3("velocity") + 
-                                                        vec3(vec2FromAngle(angle), 0.0) * 5.0, 
-                                                       5.0,
-                                                       npc.id);
-      assert(bulletEntityGroup !is null && bulletEntityGroup.length > 0);
-      npcBulletEntities ~= bulletEntityGroup;
+      if (uniform(1, 180) == 1)
+      {
+        assert(npcGunEntity.has("position"), npcGunEntity.values.to!string);
+        assert(npcGunEntity.has("velocity"), npcGunEntity.values.to!string);
+        assert(npcGunEntity.has("angle"), npcGunEntity.values.to!string);
+        
+        auto angle = npcGunEntity.get!double("angle");
+        
+        auto bulletEntityGroup = createBulletEntityGroup(npcGunEntity.get!vec3("position"),
+                                                         angle,
+                                                         npcGunEntity.get!vec3("velocity") + 
+                                                         vec3(vec2FromAngle(angle), 0.0) * 5.0, 
+                                                         5.0,
+                                                         npcGunEntity.id);
+        
+        assert(bulletEntityGroup !is null && bulletEntityGroup.length > 0);
+        
+        bulletEntityGroup.each!(bulletEntity => bulletEntity["collisionfilter"] = "npc.ship.*");
+        
+        systemSet.addEntityCollection(bulletEntityGroup);
+      }
     }
   }
-  foreach (bulletEntity; npcBulletEntities)
-  {
-    systemSet.addEntity(bulletEntity);
-    //npcs ~= bullet;
-  }
-  npcBulletEntities.length = 0;
 }
