@@ -60,12 +60,9 @@ void main(string[] args)
 
   auto gameController = createGameController();
   systemSet.addEntity(gameController);
-
   auto editController = createEditController();
   systemSet.addEntity(editController);
-
   systemSet.addDebugEntities();
-
   Entity debugText;
   
   while (!quit)
@@ -82,7 +79,7 @@ void main(string[] args)
     gameControllerInput.handleNetworking(systemSet, listenPort);
     gameControllerInput.handleToggleDebugInfo(systemSet, debugText);
     systemSet.inputHandler.getComponent(editController).handleEditableText(inputWindow);
-    playerSet["player.ship.gun"].handlePlayerFireAction(systemSet); //, npcEntityGroups);
+    playerSet["player.ship.gun"].handlePlayerFireAction(systemSet);
     camera.position = playerSet["player.ship"].get!vec3("position");
     mouseCursor["position"] = getWorldPositionFromScreenCoordinates(camera,
                                 systemSet.inputHandler.mouseScreenPosition, xres, yres);
@@ -91,7 +88,8 @@ void main(string[] args)
     addBullets(npcEntityGroups, systemSet);
     addNetworkEntities(systemSet);
     
-    npcEntityGroups = npcEntityGroups.filter!(npcEntityGroup => !npcEntityGroup.values.all!(npcEntity => npcEntity.get!bool("ToBeRemoved"))).array;
+    npcEntityGroups = npcEntityGroups.filter!(npcEntityGroup => !npcEntityGroup.values
+      .all!(npcEntity => npcEntity.get!bool("ToBeRemoved"))).array;
     systemSet.removeEntitiesToBeRemoved();
 
     systemSet.updateDebugEntities();
