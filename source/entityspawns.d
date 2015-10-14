@@ -38,7 +38,8 @@ void addBullets(ref Entity[string][] npcEntityGroups, SystemSet systemSet)
   // npcs firing randomly
   foreach (npcEntityGroup; npcEntityGroups)
   {
-    foreach (npcGunEntity; npcEntityGroup.values.filter!(npcEntity => npcEntity.get!string("fullName") == "npc.ship.gun"))
+    foreach (npcGunEntity; npcEntityGroup.values.filter!(npcEntity => 
+                           npcEntity.get!string("fullName") == "npc.ship.gun"))
     {
       if (uniform(1, 180) == 1)
       {
