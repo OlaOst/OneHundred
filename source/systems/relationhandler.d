@@ -31,7 +31,6 @@ class RelationHandler : System!(Relation[])
   Relation[] makeComponent(Entity entity)
   {
     Relation[] relationComponents;
-    
     auto relationTypes = entity.get!(string[])("relation.types");
     
     if (relationTypes.canFind("RelativeValues"))
@@ -66,7 +65,8 @@ class RelationHandler : System!(Relation[])
       {
         auto targetName = entity.get!string("relation.targetName");
         assert(targetName in entityNameMapping, 
-               "Could not find " ~ targetName ~ " in " ~ entityNameMapping.keys.to!string ~ " with values " ~ entityNameMapping.values.map!(e => e.values).to!string);
+               "Could not find " ~ targetName ~ " in " ~ entityNameMapping.keys.to!string ~ 
+               " with values " ~ entityNameMapping.values.map!(e => e.values).to!string);
         targetIdForComponentMapping[relationComponent] = entityNameMapping[targetName].id;
       }
     }
