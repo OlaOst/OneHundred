@@ -11,7 +11,9 @@ import entityfactory.entitycollection;
 import systemset;
 
 
-void handleAddRemoveEntity(Input gameInput, SystemSet systemSet, ref Entity[string][] npcEntityGroups)
+void handleAddRemoveEntity(Input gameInput, 
+                           SystemSet systemSet, 
+                           ref Entity[string][] npcEntityGroups)
 {
   bool addEntity = gameInput.isActionSet("addEntity");
   bool removeEntity = gameInput.isActionSet("removeEntity");
