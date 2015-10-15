@@ -19,12 +19,8 @@ void handleAddRemoveEntity(Input gameInput,
   bool removeEntity = gameInput.isActionSet("removeEntity");
   if (addEntity)
   {
-    //auto npcEntityGroup = createNpcEntityGroup();
     auto npcEntityGroup = "data/npcship.txt".createEntityCollectionFromFile;
     
-    //foreach (npcEntity; npcEntityGroup)
-      //systemSet.addEntity(npcEntity);
-      
     systemSet.addEntityCollection(npcEntityGroup);
       
     npcEntityGroups ~= npcEntityGroup;
