@@ -1,7 +1,6 @@
 module system;
 
 import std.algorithm;
-import std.array;
 import std.conv;
 import std.datetime;
 import std.range;
@@ -41,6 +40,8 @@ abstract class System(ComponentType) : SystemDebug, ComponentHandler!ComponentTy
     return (index < 0) ? null : entityForIndex[index];
   }
 
+  void tweakEntity(ref Entity entity) {}
+  
   void addEntity(Entity entity)
   {
     if (canAddEntity(entity))

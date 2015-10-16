@@ -2,6 +2,7 @@ module systems.physics;
 
 import std.algorithm;
 import std.datetime;
+import std.exception;
 import std.range;
     
 import gl3n.linalg;
@@ -35,7 +36,9 @@ class Physics : System!State
   
   State makeComponent(Entity entity)
   {
-    assert(entity.get!double("mass") > 0.0, entity.values.to!string);
+    enforce(entity.get!double("mass") > 0.0, 
+      "Physics entities need a positive nonzero mass, tried to register entity with mass " 
+      ~ entity.get!double("mass").to!string);
     return State(entity, &calculateForce, &calculateTorque);
   }
   

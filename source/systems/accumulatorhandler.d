@@ -19,28 +19,44 @@ class AccumulatorHandler : System!(ValueAccumulator[])
       entitiesWithTargetIdMapping[entity.get!long("relation.targetId")] ~= entity;
     if (entity.has("relation.targetName"))
       entitiesWithTargetNameMapping[entity.get!string("relation.targetName")] ~= entity;
-    
     return entity.has("valuestoaccumulate");
+  }
+  
+  override void tweakEntity(ref Entity entity)
+  {
+    if ("valuestoaccumulate" in entity.values)
+    {
+      foreach (valueToAccumulate; entity.values["valuestoaccumulate"].to!(string[]))
+      {
+        if (valueToAccumulate !in entity.values)
+        {
+          if (vec3Types.canFind(valueToAccumulate))
+            entity[valueToAccumulate] = DefaultValue!vec3;
+          if (vec4Types.canFind(valueToAccumulate))
+            entity[valueToAccumulate] = DefaultValue!vec4;
+          if (doubleTypes.canFind(valueToAccumulate))
+            entity[valueToAccumulate] = DefaultValue!double;
+          
+          if (valueToAccumulate == "mass")
+            entity["mass"] = 0.001;
+        }
+      }
+    }
   }
   
   ValueAccumulator[] makeComponent(Entity entity)
   {
     ValueAccumulator[] valueAccumulators;
-    
     auto valuesToAccumulateNames = entity.get!(string[])("valuestoaccumulate");
-    
     foreach (valueToAccumulateName; valuesToAccumulateNames)
     {
       if (vec3Types.canFind(valueToAccumulateName))
         valueAccumulators ~= new ValueAccumulatorForType!vec3(entity, valueToAccumulateName);
-        
       if (doubleTypes.canFind(valueToAccumulateName))
         valueAccumulators ~= new ValueAccumulatorForType!double(entity, valueToAccumulateName);
     }
-    
     valueAccumulators.each!(accumulator => entityForAccumulator[accumulator] = entity);
     unresolvedAccumulators ~= valueAccumulators;
-    
     return valueAccumulators;
   }
   
@@ -48,47 +64,32 @@ class AccumulatorHandler : System!(ValueAccumulator[])
   {
     assert(resolvedAccumulators.all!(accumulator => accumulator.accumulatorSources.length > 0));
     assert(unresolvedAccumulators.all!(accumulator => accumulator.accumulatorSources.length == 0));
-    
     foreach (accumulatorToResolve; unresolvedAccumulators)
     {
       Entity[] accumulatorSources;
-      
       auto entity = entityForAccumulator[accumulatorToResolve];
-      
       if (entity.id in entitiesWithTargetIdMapping)
         accumulatorSources ~= entitiesWithTargetIdMapping[entity.id];
-        
       if (entity.has("fullName"))
       {
-        auto fullName = entity.get!string("fullName");
- 
-        assert(fullName in entitiesWithTargetNameMapping, 
-               "Could not find " ~ fullName ~ 
+        assert(entity.get!string("fullName") in entitiesWithTargetNameMapping, 
+               "Could not find " ~ entity.get!string("fullName") ~ 
                " in mapping " ~ entitiesWithTargetNameMapping.to!string);
-      
         accumulatorSources ~= entitiesWithTargetNameMapping[entity.get!string("fullName")];
       }
-      
       accumulatorToResolve.accumulatorSources = accumulatorSources;
-        
       resolvedAccumulators ~= accumulatorToResolve;
     }
-    
     unresolvedAccumulators = null;
   }
   
   void updateValues()
   {
-    foreach (resolvedAccumulator; resolvedAccumulators)
-    {
-      resolvedAccumulator.updateValues();
-    }
+    resolvedAccumulators.each!(resolvedAccumulator => resolvedAccumulator.updateValues());
   }
   
-  void updateEntities()
-  {
-    // entity values should have been updated by the relation components
-  }
+  // entity values should have been updated by the relation components
+  void updateEntities() {}
   
   ValueAccumulator[] unresolvedAccumulators;
   ValueAccumulator[] resolvedAccumulators;

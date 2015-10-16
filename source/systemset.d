@@ -65,6 +65,7 @@ class SystemSet
 
   void addEntity(Entity entity)
   {
+    entityHandlers.each!(handler => handler.tweakEntity(entity));
     entityHandlers.each!(handler => handler.addEntity(entity));
     entities ~= entity;
   }
@@ -83,8 +84,7 @@ class SystemSet
     entityHandlers.filter!(handler => !graphicsHandlers.canFind(handler)).each!(e => e.update());
     auto graphicsTimer = StopWatch(AutoStart.yes);
     graphicsHandlers.each!(handler => handler.update());
-    auto graphicsComponentCount = [polygonGraphics, spriteGraphics, textGraphics].map!
-                                    (graphics => graphics.componentCount).sum;
+    auto graphicsComponentCount = graphicsHandlers.map!(graphics => graphics.componentCount).sum;
     graphicsTimingText = format("graphics components: %s\ngraphics timings: %s",
                                 graphicsComponentCount, graphicsTimer.peek.usecs*0.001);
   }

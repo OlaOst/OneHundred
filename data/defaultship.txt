@@ -1,4 +1,3 @@
-ship.mass = 0.01
 ship.valuestoaccumulate = ["mass", "force", "torque"]
 
 ship.hull.mass = 4.0
