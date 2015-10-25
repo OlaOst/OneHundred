@@ -18,5 +18,5 @@ npc.ship.gun.size = 0.125
 npc.ship.gun.relation.value.position = [0.425, 0.0, 0.0]
 
 npc.ship.gun.widget.collider = Npc
-ship.gun.widget.size = 0.05
-ship.gun.widget.relation.value.position = [0.0, 0.125, 0.0]
+npc.ship.gun.widget.size = 0.05
+npc.ship.gun.widget.relation.value.position = [0.0, 0.125, 0.0]
