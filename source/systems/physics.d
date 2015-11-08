@@ -42,7 +42,7 @@ class Physics : System!State
     return State(entity, &calculateForce, &calculateTorque);
   }
   
-  void updateFromEntities() //@nogc
+  void updateFromEntities()
   {
     // TODO: we have two separate places that handle forces and torques
     // 1. entity values

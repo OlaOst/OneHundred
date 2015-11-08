@@ -3,6 +3,7 @@ module components.collider;
 import std.algorithm;
 import std.array;
 
+import gl3n.aabb;
 import gl3n.linalg;
 
 import collision.check;
@@ -35,6 +36,14 @@ class Collider
   ColliderType type;
   
   vec3[] vertices;
+  
+  @property AABB aabb()
+  {
+    if (vertices.length == 0)
+      return AABB(position - vec3(radius, radius, 0.0), position + vec3(radius, radius, 0.0));
+    else
+      return AABB.from_points(vertices.map!(v => v + position).array);
+  }
   
   // what entity did this collider spawn from? 
   // need to know since we do not want ships firing bullets to get hit by their own bullets

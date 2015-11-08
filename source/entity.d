@@ -32,6 +32,10 @@ class Entity
   
   void set(ValueType)(string valueName, ValueType value)
   {
+    import std.stdio;
+    if (valueName == "AABB")
+      writeln("entity ", id, " setting aabb to ", value);
+    
     static if (is(ValueType == vec3))
       vec3Values[valueName] = value;
     else static if (is(ValueType == vec4))
@@ -62,7 +66,7 @@ class Entity
   {
     this();
     this.values = values.parseValues;
-    
+
     foreach (key, value; values)
     {
       auto fixKey = key;

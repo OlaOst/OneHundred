@@ -10,7 +10,7 @@ unittest
                     "parentname.childname.childkey = childvalue",
                     "parentname.childname.otherchildkey = otherchildvalue"];
                     
-  auto entities = lines.createEntityCollection;
+  auto entities = lines.createKeyValuesCollection(null).createEntityCollection;
   
   assert("parentname" in entities);
   assert("parentname.childname" in entities);
@@ -38,7 +38,7 @@ unittest
                     "parent.child.relation.target = parent",
                     "parent.child.relation.value.position = [0, 1, 0]"];
                     
-  auto entities = lines.createEntityCollection;
+  auto entities = lines.createKeyValuesCollection(null).createEntityCollection;
   
   assert("parent" in entities);
   assert("parent.child" in entities);

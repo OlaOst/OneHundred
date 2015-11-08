@@ -94,5 +94,28 @@ void main(string[] args)
 
     systemSet.updateDebugEntities();
     systemSet.collectFromGraphicsAndRender(renderer, camera);
+    
+    // debug hackery
+    foreach (level, boxes; systemSet.collisionHandler.boxes)
+    {
+      auto levelColor = vec4(0.5, 1.0 / (cast(double)level).sqrt, 1.0 / cast(double)level, 0.1);
+      foreach (box; boxes)
+      {
+        auto entity = new Entity();
+        entity["position"] = vec3(0.0, 0.0, 0.0);
+        entity["ToBeRemoved"] = true;
+        
+        import components.drawables.polygon;
+        entity.polygon = new Polygon([vec3(box.min.x, box.min.y, -1.0), 
+                                      vec3(box.min.x, box.max.y, -1.0), 
+                                      vec3(box.max.x, box.min.y, -1.0), 
+                                      vec3(box.min.x, box.max.y, -1.0), 
+                                      vec3(box.max.x, box.max.y, -1.0), 
+                                      vec3(box.max.x, box.min.y, -1.0)],
+                                      levelColor.repeat.take(6).array);
+        
+        systemSet.addEntity(entity);
+      }
+    }
   }
 }

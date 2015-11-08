@@ -1,22 +1,28 @@
-module spatialindex.implementation;
+module spatialindex.hilberthashimplementation;
 
 import gl3n.aabb;
 import gl3n.linalg;
 
 import bitops;
+import spatialindex.hilbertindex;
 
 
 uint[][levels] findCoveringIndices(uint levels, uint maxIndicesPerLevel, uint minLevel)
-                                  (vec3 position, float radius, bool checkSubQuads)
+                                  //(vec3 position, float radius, bool checkSubQuads)
+                                  (AABB aabb, bool checkSubQuads)
 {
   uint[][levels] indices;
   
-  auto object = AABB(vec3(position.x-radius, position.y-radius, -1.0), 
-                     vec3(position.x+radius, position.y+radius, 1.0));
+  foreach (indicesForLevel; indices)
+    indicesForLevel.length = maxIndicesPerLevel;
+  
+  //auto object = AABB(vec3(position.x-radius, position.y-radius, -1.0), 
+                     //vec3(position.x+radius, position.y+radius, 1.0));
   auto quadrant = AABB(vec3(-2^^15, -2^^15, -1.0), vec3(2^^15, 2^^15, 1.0));
   
   populateCoveringIndices!(levels, maxIndicesPerLevel, minLevel)
-                          (object, quadrant, indices, checkSubQuads);
+                          //(object, quadrant, indices, checkSubQuads);
+                          (aabb, quadrant, indices, checkSubQuads);
   
   return indices;
 } 
@@ -32,7 +38,8 @@ void populateCoveringIndices(uint levels, uint maxIndicesPerLevel, uint minLevel
       intersectsEquals(object, quadrant) && 
       coveringIndices[level].length < maxIndicesPerLevel)
   {
-    auto index = quadrant.min.index >> level*2;
+    //auto index = quadrant.min.index >> level*2;
+    auto index = quadrant.min.hilbertIndex >> level*2;
     coveringIndices[level] ~= index;
   }
   
@@ -41,7 +48,8 @@ void populateCoveringIndices(uint levels, uint maxIndicesPerLevel, uint minLevel
     auto fullyCovered = object.contains(quadrant);
     if (fullyCovered || (checkSubQuads && intersectsEquals(object, quadrant)))
     {
-      auto index = quadrant.min.index >> level*2;
+      //auto index = quadrant.min.index >> level*2;
+      auto index = quadrant.min.hilbertIndex >> level*2;
       coveringIndices[level] ~= index;
     }
     

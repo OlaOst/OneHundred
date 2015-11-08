@@ -6,14 +6,7 @@ import gl3n.aabb;
 import gl3n.linalg;
 
 
-bool intersectsEquals(AABB first, AABB box) 
-{
-  return (first.min.x <= box.max.x && first.max.x >= box.min.x) &&
-         (first.min.y <= box.max.y && first.max.y >= box.min.y) &&
-         (first.min.z <= box.max.z && first.max.z >= box.min.z);
-}
-
-bool contains(AABB container, AABB content)
+bool contains(AABB container, AABB content) pure nothrow @nogc
 {
    return (container.min.x < content.min.x && 
            container.max.x > content.max.x &&
@@ -21,7 +14,7 @@ bool contains(AABB container, AABB content)
            container.max.y > content.max.y);
 }
 
-uint powerOf2(uint n)
+uint powerOf2(uint n) pure nothrow @nogc
 {
   uint level = 0;
   
@@ -34,18 +27,19 @@ uint powerOf2(uint n)
 }
 
 // hash x and y of a position into an uint
-uint index(vec3 position)
+uint index(vec3 position) pure nothrow @nogc
 {
   // TODO: make sure values are clamped not wrapped
   return interleave(cast(uint)position.x + 2^^15, cast(uint)position.y + 2^^15);
 }
 
 // will extract even bits
-int deinterleave(int z)
+int deinterleave(int z) pure nothrow @nogc
 in
 {
-  assert(z >= -2^^31 && z < 2^^31-1, 
-         "Tried to call deinterleave with z out of bounds: " ~ to!string(z));
+  assert(z >= -2^^31 && z < 2^^31-1);
+  //assert(z >= -2^^31 && z < 2^^31-1, 
+         //"Tried to call deinterleave with z out of bounds: " ~ to!string(z));
 }
 body
 {
@@ -59,11 +53,13 @@ body
   return z;
 }
 
-uint interleave(uint x, uint y)
+uint interleave(uint x, uint y) pure nothrow @nogc
 in
 {
-  assert(x >= 0 && x < 2^^16, "Tried to call interleave with x out of bounds: " ~ x.to!string);
-  assert(y >= 0 && y < 2^^16, "Tried to call interleave with y out of bounds: " ~ y.to!string);
+  assert(x >= 0 && x < 2^^16);
+  assert(y >= 0 && y < 2^^16);
+  //assert(x >= 0 && x < 2^^16, "Tried to call interleave with x out of bounds: " ~ x.to!string);
+  //assert(y >= 0 && y < 2^^16, "Tried to call interleave with y out of bounds: " ~ y.to!string);
 }
 body
 {

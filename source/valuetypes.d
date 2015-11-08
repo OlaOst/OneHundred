@@ -9,7 +9,7 @@ auto immutable doubleTypes = ["size", "angle", "rotation", "torque", "mass",
                               "lifeTime", "engineForce", "engineTorque", "reloadTime"];
 auto immutable fileTypes = ["sprite", "sound"];
 
-static ValueType DefaultValue(ValueType)() @nogc
+static ValueType DefaultValue(ValueType)() pure @nogc nothrow
 {
   static if (is(ValueType == double))
     return 0.0;
