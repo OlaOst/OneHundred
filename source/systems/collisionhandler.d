@@ -11,8 +11,6 @@ import gl3n.linalg;
 import collision.responsehandler;
 import components.collider;
 import entity;
-import spatialindex.hilberthash;
-import spatialindex.quadtree;
 import spatialindex.rtree;
 import system;
 
@@ -56,8 +54,6 @@ class CollisionHandler : System!Collider
   void updateValues()
   {
     auto index = new RTree!Collider;
-    //auto index = new QuadTree!Collider;
-    //auto index = new HilbertHash!Collider;
 
     auto broadPhaseTimer = StopWatch(AutoStart.yes);
     components.each!(component => index.insert(component));

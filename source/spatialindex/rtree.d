@@ -106,14 +106,10 @@ class Node(Element) : SpatialIndex!Element
     if (childNodes.length > 0)
       candidates ~= childNodes.map!(childNode => childNode.overlappingElements).join.array;
     
-    //writeln("found ", candidates.length, " overlapping element pairs, now checking ", elements.length, " elements");
-    
     if (elements.length > 0)
       for (int a = 0; a < elements.length - 1; a++)
         for (int b = a + 1; b < elements.length; b++)
           candidates ~= [elements[a], elements[b]];
-    
-    //writeln("added ", candidates.length, " element pairs");
     
     return candidates;
   }
