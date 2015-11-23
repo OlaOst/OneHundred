@@ -96,7 +96,7 @@ class Node(Element) : SpatialIndex!Element
     import std.stdio;
     //writeln("searchBox ", aabb, " intersecting node with depth ", depth, " and nodebox ", this.aabb, ": ", aabb.intersects(this.aabb));
     
-    return (aabb.intersectsEquals(this.aabb)) ? elements ~ childNodes.map!(childNode => childNode.find(aabb)).join.array : null;
+    return (aabb.intersectsEquals(this.aabb)) ? elements.filter!(element => element.aabb.intersects(aabb)).array ~ childNodes.map!(childNode => childNode.find(aabb)).join.array : null;
   }
   
   Element[2][] overlappingElements()
