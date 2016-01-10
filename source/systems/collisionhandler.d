@@ -58,7 +58,7 @@ class CollisionHandler : System!Collider
     auto broadPhaseTimer = StopWatch(AutoStart.yes);
     components.each!(component => index.insert(component));
     auto candidates = index.overlappingElements();
-
+    
     boxes = null;
     index.populateLeveledBoxes(boxes);
     
