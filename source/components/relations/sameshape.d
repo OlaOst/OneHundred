@@ -25,7 +25,10 @@ class SameShape : Relation
            "Could not find AABB in target values");//: " ~ target.values.to!string);
     
     //import std.stdio;
-    //writeln("sameshape setting source ", source.id, " shape from target ", target.get!string("text"), " with aabb min x ", target.get!AABB("aabb").min.x, " and position ", target.get!vec3("position").x);
+    /+writeln("sameshape setting source ", source.id, 
+              " shape from target ", target.get!string("text"), 
+              " with aabb min x ", target.get!AABB("aabb").min.x, 
+              " and position ", target.get!vec3("position").x);+/
     
     //auto aabb = target.values["aabb"].myTo!AABB;
     auto aabb = target.get!AABB("aabb");
