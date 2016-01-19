@@ -5,6 +5,7 @@ import std.conv;
 import std.math;
 import std.range;
 
+import gl3n.aabb;
 import gl3n.linalg;
 
 import components.drawables.polygon;
@@ -46,4 +47,33 @@ void updateDebugEntities(SystemSet systemSet)
       debugEntity.polygon = polygon;
     }
   }
+}
+
+Entity[] makeSpatialTreeBoxes(AABB[][int] boxSet)
+{
+  Entity[] entities;
+  
+  foreach (level, boxes; boxSet)
+  {
+    auto levelColor = vec4(0.5, 1.0 / (cast(double)level).sqrt, 1.0 / cast(double)level, 0.1);
+    foreach (box; boxes)
+    {
+      auto entity = new Entity();
+      entity["position"] = vec3(0.0, 0.0, 0.0);
+      entity["ToBeRemoved"] = true;
+      
+      import components.drawables.polygon;
+      entity.polygon = new Polygon([vec3(box.min.x, box.min.y, -1.0), 
+                                    vec3(box.min.x, box.max.y, -1.0), 
+                                    vec3(box.max.x, box.min.y, -1.0), 
+                                    vec3(box.min.x, box.max.y, -1.0), 
+                                    vec3(box.max.x, box.max.y, -1.0), 
+                                    vec3(box.max.x, box.min.y, -1.0)],
+                                    levelColor.repeat.take(6).array);
+      
+      entities ~= entity;
+    }
+  }
+  
+  return entities;
 }
