@@ -13,6 +13,7 @@ import components.collider;
 import components.drawables.polygon;
 import converters;
 import entity;
+import entityfactory.entities;
 import system;
 import systems.graphics;
 
@@ -59,7 +60,7 @@ class PolygonGraphics : Graphics!Polygon
     {
       auto transform = (vec3 vertex) => (vertex * mat3.zrotation(-component.angle) +
                                          component.position);
-      // map with delegate in a variable and then array crashes with release build in dmd 2.067 b3
+      // map with delegate in a variable and then array crashes with release build in dmd 2.069
       //vertices["polygon"] ~= component.vertices.map!transform.array;
       vec3[] transformedVertices;
       foreach (vertex; component.vertices)
@@ -87,21 +88,4 @@ class PolygonGraphics : Graphics!Polygon
   vec3[][string] vertices;
   vec4[][string] colors;
   Texture2D dummyTexture;
-}
-
-Polygon parsePolygonFromEntity(Entity entity)
-{
-  assert(entity.has("polygon.vertices"));
-  assert(entity.has("polygon.colors") || entity.has("color"));
- 
-  auto vertices = entity.get!(vec3[])("polygon.vertices");
-  
-  vec4[] colors;
-  if (entity.has("polygon.colors"))
-    colors = entity.get!(vec4[])("polygon.colors");
-  else
-    colors = entity.get!vec4("color").repeat(colors.length).array;
-    
-  assert(vertices.length == colors.length);
-  return new Polygon(vertices, colors);
 }

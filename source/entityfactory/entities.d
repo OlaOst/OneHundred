@@ -64,3 +64,20 @@ Entity[string] createBulletEntityGroup(vec3 position, double angle, vec3 velocit
   
   return bulletEntityGroup;
 }
+
+Polygon parsePolygonFromEntity(Entity entity)
+{
+  assert(entity.has("polygon.vertices"));
+  assert(entity.has("polygon.colors") || entity.has("color"));
+ 
+  auto vertices = entity.get!(vec3[])("polygon.vertices");
+  
+  vec4[] colors;
+  if (entity.has("polygon.colors"))
+    colors = entity.get!(vec4[])("polygon.colors");
+  else
+    colors = entity.get!vec4("color").repeat(colors.length).array;
+    
+  assert(vertices.length == colors.length);
+  return new Polygon(vertices, colors);
+}
