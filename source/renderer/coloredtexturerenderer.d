@@ -7,7 +7,8 @@ import gl3n.linalg;
 
 
 public void drawColoredTexture(Shader shader, mat4 transform,
-                               vec3[] vertices, vec2[] texCoords, vec4[] colors, bool ignoreTexture)
+                               vec3[] vertices, vec2[] texCoords, vec4[] colors, 
+                               bool ignoreTexture)
 {
   assert(vertices.length == texCoords.length);
   assert(vertices.length == colors.length);
