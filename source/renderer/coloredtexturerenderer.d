@@ -7,7 +7,7 @@ import gl3n.linalg;
 
 
 public void drawColoredTexture(Shader shader, mat4 transform,
-                               vec3[] vertices, vec2[] texCoords, vec4[] colors)
+                               vec3[] vertices, vec2[] texCoords, vec4[] colors, bool ignoreTexture)
 {
   assert(vertices.length == texCoords.length);
   assert(vertices.length == colors.length);
@@ -19,6 +19,7 @@ public void drawColoredTexture(Shader shader, mat4 transform,
   shader.bind();
 
   shader.uniform("transform", transform);
+  shader.uniform1i("ignoreTexture", ignoreTexture);
 
   verticesBuffer.bind(shader, "position", GL_FLOAT, 3, 0, 0);
   textureBuffer.bind(shader, "texCoords", GL_FLOAT, 2, 0, 0);

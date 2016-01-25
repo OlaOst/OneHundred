@@ -21,7 +21,7 @@ Entity createText(string text, vec3 position)
   textEntity["angle"] = 0.0;
   textEntity["size"] = 0.1;
   textEntity["text"] = text;
-  textEntity["color"] = vec4(1.0, 1.0, 0.0, 0.5);
+  textEntity["color"] = vec4(1.0, 1.0, 1.0, 0.0);
   textEntity["collider"] = ColliderType.GuiElement;
   
   return textEntity;

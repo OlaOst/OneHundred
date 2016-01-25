@@ -15,7 +15,6 @@ import glamour.texture;
 import glamour.vao;
 import glamour.vbo;
 
-import renderer.polygonrenderer;
 import renderer.coloredtexturerenderer;
 import window;
 
@@ -46,10 +45,7 @@ class Renderer
                      vec3[][string] vertices, vec4[][string] colors,
                      vec2[][string] texCoords, Texture2D[string] textureSet)
   {
-    if ("polygon" in vertices && "polygon" in colors)
-      drawPolygons(shaderSet["default"], transform, vertices["polygon"], colors["polygon"]);
-    
-    foreach (name; texCoords.byKey)
+    foreach (name; textureSet.byKey)
     {
       assert(name in textureSet, "could not find " ~ name ~ 
                                  " in textureSet " ~ textureSet.keys.to!string ~ 
@@ -57,14 +53,15 @@ class Renderer
 
       textureSet[name].bind();
       
-      auto colorsForTexture = colors.get(name, vec4(1.0).repeat(vertices[name].length).array);
+      auto colorsForTexture = colors.get(name, vec4(0.0).repeat(vertices[name].length).array);
       
       assert("coloredtexture" in shaderSet);
       drawColoredTexture(shaderSet["coloredtexture"], 
                          transform,
                          vertices[name], 
                          texCoords[name], 
-                         colorsForTexture);
+                         colorsForTexture,
+                         name == "polygon");
       
       textureSet[name].unbind();
     }

@@ -7,6 +7,7 @@ import std.range;
 import std.stdio;
 
 import gl3n.linalg;
+import glamour.texture;
 
 import components.collider;
 import components.drawables.polygon;
@@ -21,8 +22,15 @@ class PolygonGraphics : Graphics!Polygon
   this(int xres, int yres)
   {
     super(xres, yres);
+    dummyTexture = new Texture2D();
+    dummyTexture.set_data([0, 0, 0, 0], GL_RGBA, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE);
   }
 
+  override void close()
+  {
+    dummyTexture.remove();
+  }
+  
   bool canAddEntity(Entity entity)
   {
     return entity.has("position") && ((entity.polygon !is null) || entity.has("polygon.vertices"));
@@ -78,6 +86,7 @@ class PolygonGraphics : Graphics!Polygon
 
   vec3[][string] vertices;
   vec4[][string] colors;
+  Texture2D dummyTexture;
 }
 
 Polygon parsePolygonFromEntity(Entity entity)

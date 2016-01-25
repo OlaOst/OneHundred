@@ -19,11 +19,19 @@ vertex:
   
 fragment:
   uniform sampler2D textureMap;
+  uniform bool ignoreTexture;
   in vec2 coords;
   in vec4 inColor;
   out vec4 color;
 
   void main(void)
   { 
-    color = texture(textureMap, coords) * inColor;
+    vec4 textureColor = texture(textureMap, coords);
+    
+    float alpha = inColor.a * textureColor.a;
+    
+    if (ignoreTexture)
+      color = inColor;
+    else
+      color = vec4(alpha * inColor.rgb + (1-alpha) * textureColor.rgb, textureColor.a);
   }

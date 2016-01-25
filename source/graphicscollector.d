@@ -1,5 +1,7 @@
 module graphicscollector;
 
+import std.range;
+
 import gl3n.linalg;
 import glamour.texture;
 
@@ -42,6 +44,9 @@ void collectFromGraphicsAndRender(SystemSet systemSet, Renderer renderer, Camera
   //foreach (key, value; systemSet.textGraphics.textureSet)
     //textureSet[key] = value;
   textureSet["text"] = systemSet.textGraphics.textRenderer.atlas;
-
+  
+  textureSet["polygon"] = systemSet.polygonGraphics.dummyTexture;
+  texCoords["polygon"] = vec2(0.0, 0.0).repeat.take(vertices["polygon"].length).array;
+  
   renderer.render(camera.transform, vertices, colors, texCoords, textureSet);
 }
