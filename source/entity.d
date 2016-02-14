@@ -20,7 +20,7 @@ class Entity
     else static if (is(ValueType == vec4))
       return vec4Values.get(valueName, defaultValue);
     else static if (is(ValueType == double))
-      return doubleValues.get(valueName, defaultValue);    
+      return doubleValues.get(valueName, defaultValue);
     else if (auto value = valueName in values)
       static if (__traits(compiles, (*value).to!ValueType))
         return (*value).to!ValueType;
@@ -87,7 +87,7 @@ class Entity
   }
   
   // polygon data should be in values, but we need a 'denormalization' here for performance reasons
-  Polygon polygon;
+  //Polygon polygon;
   vec3[string] vec3Values;
   vec4[string] vec4Values;
   double[string] doubleValues;

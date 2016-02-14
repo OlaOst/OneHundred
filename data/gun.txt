@@ -1,4 +1,4 @@
 mass = 0.5
 size = 0.25
-sprite = images/gun00.png
+graphicsource = images/gun00.png
 reloadTime = 0.1

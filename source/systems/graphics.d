@@ -5,24 +5,54 @@ import std.array;
 import std.datetime;
 import std.stdio;
 
-import glamour.texture;
 import gl3n.linalg;
+import glamour.shader;
+import glamour.texture;
 
 import camera;
-import components.collider;
 import converters;
+import entityhandler;
 import entity;
 import system;
 
 
-abstract class Graphics(ComponentType) : System!ComponentType
+interface GraphicsHandler : EntityHandler
+{
+  vec3[][string] getVertices();
+  vec2[][string] getTexCoords();
+  vec4[][string] getColors();
+  Texture2D[string] getTextureSet();
+}
+
+abstract class Graphics(ComponentType) : System!ComponentType, GraphicsHandler
 {
   this(int xres, int yres)
   {
-    this.xres = xres; this.yres = yres;
+    this.xres = xres; 
+    this.yres = yres;
   }
 
+  override void close()
+  {
+    foreach (name, texture; textureSet)
+      texture.remove();
+  }
+  
   immutable int xres, yres;
+  
+  vec3[][string] vertices;
+  vec2[][string] texCoords;
+  vec4[][string] colors;
+  Texture2D[string] textureSet;
+  
+  vec3[][string] getVertices() { return vertices; }
+  vec2[][string] getTexCoords() { return texCoords; }
+  vec4[][string] getColors() { return colors; }
+  Texture2D[string] getTextureSet() { return textureSet; }
+  
+  vec3[65536] verticesBuffer;
+  vec2[65536] texCoordBuffer;
+  vec4[65536] colorBuffer;
 }
 
 void fillBuffer(Type)(Type[] buffer, Type[] source, ref size_t index) @nogc

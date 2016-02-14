@@ -26,6 +26,7 @@ class TextGraphics : Graphics!Text
 
   override void close()
   {
+    super.close();
     textRenderer.close();
   }
 
@@ -41,8 +42,8 @@ class TextGraphics : Graphics!Text
                               entity.get!vec4("color", vec4(1.0, 1.0, 1.0, 1.0)));
     component.position = entity.get!vec3("position");
     component.angle = entity.get!double("angle");
-    auto textVertices = textRenderer.getVerticesForText(component);
-    component.aabb = AABB.from_points(textVertices);
+    //auto textVertices = textRenderer.getVerticesForText(component);
+    //component.aabb = AABB.from_points(textVertices);
     entity["aabb"] = [component.aabb.min, component.aabb.max];
     return component;
   }
@@ -55,12 +56,12 @@ class TextGraphics : Graphics!Text
     size_t texCoordIndex, verticesIndex, colorIndex;
     foreach (component; components)
     {
-      auto texCoords = textRenderer.getTexCoordsForText(component);
-      auto vertices = textRenderer.getVerticesForText(component);
-      texCoordBuffer.fillBuffer(texCoords, texCoordIndex);
-      verticesBuffer.fillBuffer(vertices, verticesIndex);
-      colorBuffer.fillBuffer(component.color.repeat.take(texCoords.length).array, colorIndex);
-      component.aabb = AABB.from_points(vertices);
+      //auto texCoords = textRenderer.getTexCoordsForText(component);
+      //auto vertices = textRenderer.getVerticesForText(component);
+      //texCoordBuffer.fillBuffer(texCoords, texCoordIndex);
+      //verticesBuffer.fillBuffer(vertices, verticesIndex);
+      //colorBuffer.fillBuffer(component.color.repeat.take(texCoords.length).array, colorIndex);
+      //component.aabb = AABB.from_points(vertices);
     }
     texCoords["text"] = texCoordBuffer[0 .. texCoordIndex];
     vertices["text"] = verticesBuffer[0 .. verticesIndex];
@@ -89,10 +90,4 @@ class TextGraphics : Graphics!Text
   }
 
   TextRenderer textRenderer;
-  vec3[65536] verticesBuffer;
-  vec2[65536] texCoordBuffer;
-  vec4[65536] colorBuffer;
-  vec3[][string] vertices;
-  vec2[][string] texCoords;
-  vec4[][string] colors;
 }

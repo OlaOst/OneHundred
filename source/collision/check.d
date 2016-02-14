@@ -27,7 +27,7 @@ bool isOverlapping(vec3[] firstVertices, vec3[] otherVertices,
     if (firstMin < otherMax && firstMax > otherMin)
     {
       // TODO: also take angular velocity into account
-      float velocityProjection = perpendicular.dot(otherVelocity.xy - firstVelocity.xy);
+      double velocityProjection = perpendicular.dot(otherVelocity.xy - firstVelocity.xy);
       if (velocityProjection < 0)
         firstMin += velocityProjection;
       else

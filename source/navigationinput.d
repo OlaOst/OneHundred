@@ -76,8 +76,12 @@ Entity createExhaust(Entity engine, bool reverse)
   exhaust["lifeTime"] = uniform(1.0, 2.0);
   auto size = uniform(0.25, 0.33);
   
+  exhaust["graphicsource"] = "polygon";
   auto polygon = new Polygon(size, 5, vec4(uniformDistribution!float(3).vec3, 0.05));
-  exhaust.polygon = polygon;
+  exhaust["polygon.vertices"] = polygon.vertices;
+  exhaust["polygon.colors"] = polygon.colors;
+  exhaust["size"] = size;
+  //exhaust.polygon = polygon;
   
   return exhaust;
 }

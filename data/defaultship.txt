@@ -2,7 +2,7 @@ ship.valuestoaccumulate = ["mass", "force", "torque"]
 
 ship.hull.mass = 4.0
 ship.hull.size = 1.0
-ship.hull.sprite = images/playership1_blue.png
+ship.hull.graphicsource = images/playership1_blue.png
 ship.hull.collisionfilter = {parent.fullName}.*
 ship.hull.relation.types = ["RelativeValues"]
 ship.hull.relation.targetName = {parent.fullName}
@@ -25,7 +25,7 @@ ship.gun.relation.value.angle = 0.0
 
 ship.gun.widget.mass = 0.1
 ship.gun.widget.size = 0.1
-ship.gun.widget.sprite = images/engine1.png
+ship.gun.widget.graphicsource = images/engine1.png
 ship.gun.widget.collisionfilter = {parent.fullName}.*
 ship.gun.widget.relation.types = ["RelativeValues"]
 ship.gun.widget.relation.targetName = {parent.fullName}

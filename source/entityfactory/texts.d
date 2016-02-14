@@ -20,6 +20,7 @@ Entity createText(string text, vec3 position)
   //textEntity["mass"] = 1000.1;
   textEntity["angle"] = 0.0;
   textEntity["size"] = 0.1;
+  textEntity["graphicsource"] = "text";
   textEntity["text"] = text;
   textEntity["color"] = vec4(1.0, 1.0, 1.0, 0.0);
   textEntity["collider"] = ColliderType.GuiElement;
@@ -34,14 +35,18 @@ Entity createTextCover(Entity textEntity, AABB textAABB)
   //position.z -= 1.0;
   textCover["position"] = position;
   textCover["angle"] = 0.0.to!string;
+  textCover["size"] = textAABB.extent.magnitude;
   
-  textCover.polygon = new Polygon([vec3(textAABB.min.x, textAABB.min.y, 0.0), 
-                                   vec3(textAABB.min.x, textAABB.max.y, 0.0), 
-                                   vec3(textAABB.max.x, textAABB.min.y, 0.0), 
-                                   vec3(textAABB.min.x, textAABB.max.y, 0.0), 
-                                   vec3(textAABB.max.x, textAABB.max.y, 0.0), 
-                                   vec3(textAABB.max.x, textAABB.min.y, 0.0)],
-                                   vec4(0.0, 0.5, 0.5, 0.5).repeat.take(6).array);
+  textCover["graphicsource"] = "polygon";  
+  auto polygon = new Polygon([vec3(textAABB.min.x, textAABB.min.y, 0.0), 
+                              vec3(textAABB.min.x, textAABB.max.y, 0.0), 
+                              vec3(textAABB.max.x, textAABB.min.y, 0.0), 
+                              vec3(textAABB.min.x, textAABB.max.y, 0.0), 
+                              vec3(textAABB.max.x, textAABB.max.y, 0.0), 
+                              vec3(textAABB.max.x, textAABB.min.y, 0.0)],
+                              vec4(0.0, 0.5, 0.5, 0.5).repeat.take(6).array);
+  textCover["polygon.vertices"] = polygon.vertices;
+  textCover["polygon.colors"] = polygon.colors;
   
   textCover["relation.types"] = ["RelativeValues", "SameShape", "DieTogether"];
   textCover["relation.targetId"] = textEntity.id;

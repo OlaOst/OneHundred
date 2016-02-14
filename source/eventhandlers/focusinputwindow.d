@@ -33,16 +33,16 @@ void handleFocusInputWindow(Input gameInput,
       if (!overlappingTexts.empty)
       {
         if (inputWindow !is null)
-          systemSet.textGraphics.getComponent(inputWindow).color = vec4(0.5, 0.5, 0.0, 1.0);
+          systemSet.graphics.getComponent(inputWindow).color = vec4(0.5, 0.5, 0.0, 1.0);
         inputWindow = systemSet.collisionHandler.getEntity(overlappingTexts.front);
-        systemSet.textGraphics.getComponent(inputWindow).color = vec4(1.0, 1.0, 1.0, 1.0);
+        systemSet.graphics.getComponent(inputWindow).color = vec4(1.0, 1.0, 1.0, 1.0);
       }
     }
     
     // defocus current window
     if (overlappingTexts.empty && inputWindow !is null)
     {
-      systemSet.textGraphics.getComponent(inputWindow).color = vec4(0.5, 0.5, 0.0, 1.0);
+      systemSet.graphics.getComponent(inputWindow).color = vec4(0.5, 0.5, 0.0, 1.0);
       inputWindow = null;
     }
   }

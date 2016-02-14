@@ -23,12 +23,6 @@ class SpriteGraphics : Graphics!Sprite
     super(xres, yres);
   }
 
-  override void close()
-  {
-    foreach (name, texture; textureSet)
-      texture.remove();
-  }
-
   bool canAddEntity(Entity entity)
   {
     return entity.has("position") && entity.has("size") && entity.has("sprite");
@@ -42,6 +36,7 @@ class SpriteGraphics : Graphics!Sprite
     if (fileName !in textureSet)
       textureSet[fileName] = Texture2D.from_image(fileName);
 
+    assert(fileName in textureSet, "Could not find " ~ fileName ~ " in " ~ textureSet.byKey.to!string);
     auto component = new Sprite(entity.get!double("size"), fileName, textureSet[fileName]);
 
     component.position = entity.get!vec3("position");
@@ -83,8 +78,8 @@ class SpriteGraphics : Graphics!Sprite
     }
   }
 
-  vec3[][string] vertices;
-  vec2[][string] texCoords;
-  vec4[][string] colors;
-  Texture2D[string] textureSet;
+  //vec3[][string] vertices;
+  //vec2[][string] texCoords;
+  //vec4[][string] colors;
+  //Texture2D[string] textureSet;
 }

@@ -40,11 +40,12 @@ void updateDebugEntities(SystemSet systemSet)
       assert(debugEntity.has("name"));
       assert(debugEntity.has("size"));
       
+      debugEntity["graphicsource"] = "polygon";
       auto polygon = new Polygon(size, 16, vec4(timePerComponent, 0.67, 0.33, 1.0));
       debugEntity["size"] = size;
-      //debugEntity["polygon.vertices"] = polygon.vertices;
-      //debugEntity["polygon.colors"] = polygon.colors;
-      debugEntity.polygon = polygon;
+      debugEntity["polygon.vertices"] = polygon.vertices;
+      debugEntity["polygon.colors"] = polygon.colors;
+      //debugEntity.polygon = polygon;
     }
   }
 }
@@ -55,21 +56,29 @@ Entity[] makeSpatialTreeBoxes(AABB[][int] boxSet)
   
   foreach (level, boxes; boxSet)
   {
-    auto levelColor = vec4(0.5, 1.0 / (cast(double)level).sqrt, 1.0 / cast(double)level, 0.1);
+    auto fixLevel = max(1, level);
+    auto levelColor = vec4(0.5, 1.0 / (cast(double)fixLevel).sqrt, 1.0 / cast(double)fixLevel, 0.1);
+    assert(levelColor.isFinite);
+    
     foreach (box; boxes)
     {
       auto entity = new Entity();
-      entity["position"] = vec3(0.0, 0.0, 0.0);
+      entity["position"] = box.center; //vec3(0.0, 0.0, 0.0);
       entity["ToBeRemoved"] = true;
       
       import components.drawables.polygon;
-      entity.polygon = new Polygon([vec3(box.min.x, box.min.y, -1.0), 
-                                    vec3(box.min.x, box.max.y, -1.0), 
-                                    vec3(box.max.x, box.min.y, -1.0), 
-                                    vec3(box.min.x, box.max.y, -1.0), 
-                                    vec3(box.max.x, box.max.y, -1.0), 
-                                    vec3(box.max.x, box.min.y, -1.0)],
-                                    levelColor.repeat.take(6).array);
+      entity["graphicsource"] = "polygon";
+      auto polygon = new Polygon([vec3(box.min.x, box.min.y, -1.0), 
+                                  vec3(box.min.x, box.max.y, -1.0), 
+                                  vec3(box.max.x, box.min.y, -1.0), 
+                                  vec3(box.min.x, box.max.y, -1.0), 
+                                  vec3(box.max.x, box.max.y, -1.0), 
+                                  vec3(box.max.x, box.min.y, -1.0)],
+                                  levelColor.repeat.take(6).array);
+      
+      entity["polygon.vertices"] = polygon.vertices;
+      entity["polygon.colors"] = polygon.colors;
+      entity["size"] = box.extent.magnitude;
       
       entities ~= entity;
     }

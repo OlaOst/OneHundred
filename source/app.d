@@ -24,6 +24,7 @@ import playereventhandler;
 import renderer.renderer;
 import systemset;
 import systems.graphics;
+import textrenderer.textrenderer;
 
 
 void main(string[] args)
@@ -33,8 +34,9 @@ void main(string[] args)
   int yres = 600;
 
   auto renderer = new Renderer(xres, yres);
+  auto textRenderer = new TextRenderer();
   auto camera = new Camera();
-  auto systemSet = new SystemSet(xres, yres, listenPort);
+  auto systemSet = new SystemSet(renderer, textRenderer, camera, listenPort);
 
   scope(exit)
   {
@@ -49,7 +51,7 @@ void main(string[] args)
   auto playerSet = "data/playership.txt".createEntityCollectionFromFile;
   
   if (listenPort == 5578)
-    playerSet["player.ship.hull"]["sprite"] = "images/playerShip1_red.png";
+    playerSet["player.ship.hull"]["graphicsource"] = "images/playerShip1_red.png";
   systemSet.addEntityCollection(playerSet);
 
   Entity inputWindow = null;
@@ -92,7 +94,7 @@ void main(string[] args)
     systemSet.removeEntitiesToBeRemoved();
 
     systemSet.updateDebugEntities();
-    systemSet.collectFromGraphicsAndRender(renderer, camera);
+    //systemSet.collectFromGraphicsAndRender(renderer, camera);
     
     makeSpatialTreeBoxes(systemSet.collisionHandler.boxes).each!(box => systemSet.addEntity(box));
   }

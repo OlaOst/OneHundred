@@ -59,7 +59,10 @@ Entity[string] createBulletEntityGroup(vec3 position, double angle, vec3 velocit
     bulletEntity["networked"] = true;
     
     import systems.polygongraphics;
-    bulletEntity.polygon = parsePolygonFromEntity(bulletEntity);
+    //bulletEntity.polygon = parsePolygonFromEntity(bulletEntity);
+    auto polygon = parsePolygonFromEntity(bulletEntity);
+    bulletEntity["polygon.vertices"] = polygon.vertices;
+    bulletEntity["polygon.colors"] = polygon.colors;
   }
   
   return bulletEntityGroup;

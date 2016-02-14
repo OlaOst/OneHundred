@@ -21,8 +21,14 @@ import window;
 
 class Renderer
 {
+  int xres;
+  int yres;
+  
   public this(int xres, int yres)
   {
+    this.xres = xres;
+    this.yres = yres;
+    
     window = getWindow(xres, yres);
     shaderSet = dirEntries("shaders", "*.shader", SpanMode.breadth).
                 map!(dirEntry => tuple(dirEntry.name.chompPrefix("shaders\\")
@@ -52,6 +58,8 @@ class Renderer
                                  ", from texCoords " ~ texCoords.keys.to!string);
 
       textureSet[name].bind();
+      
+      assert(name in vertices, "Could not find " ~ name ~ " in " ~ vertices.byKey.to!string);
       
       auto colorsForTexture = colors.get(name, vec4(0.0).repeat(vertices[name].length).array);
       

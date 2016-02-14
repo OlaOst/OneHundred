@@ -59,7 +59,7 @@ void handleToggleInputWindow(Input gameInput,
       inputWindow["relation.targetId"] = overlappingEntity.id;
       systemSet.addEntity(inputWindow);
       
-      auto inputWindowAABB = systemSet.textGraphics.getComponent(inputWindow).aabb;
+      auto inputWindowAABB = systemSet.graphics.getComponent(inputWindow).aabb;
       auto inputWindowCover = createTextCover(inputWindow, inputWindowAABB);
       systemSet.addEntity(inputWindowCover);
     }
@@ -72,7 +72,7 @@ void handleToggleInputWindow(Input gameInput,
       inputWindow["inputType"] = "textInput";
       systemSet.addEntity(inputWindow);
       
-      auto inputWindowAABB = systemSet.textGraphics.getComponent(inputWindow).aabb;
+      auto inputWindowAABB = systemSet.graphics.getComponent(inputWindow).aabb;
       auto inputWindowCover = createTextCover(inputWindow, inputWindowAABB);
       systemSet.addEntity(inputWindowCover);
     }

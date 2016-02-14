@@ -13,7 +13,7 @@ import systems.spritegraphics;
 import systems.textgraphics;
 
 
-void collectFromGraphicsAndRender(SystemSet systemSet, Renderer renderer, Camera camera)
+/+void collectFromGraphicsAndRender(SystemSet systemSet, Renderer renderer, Camera camera)
 {
   vec3[][string] vertices;
   vec4[][string] colors;
@@ -41,12 +41,14 @@ void collectFromGraphicsAndRender(SystemSet systemSet, Renderer renderer, Camera
   
   foreach (key, value; systemSet.spriteGraphics.textureSet)
     textureSet[key] = value;
+  foreach (key, value; systemSet.polygonGraphics.textureSet)
+    textureSet[key] = value;
   //foreach (key, value; systemSet.textGraphics.textureSet)
     //textureSet[key] = value;
   textureSet["text"] = systemSet.textGraphics.textRenderer.atlas;
   
-  textureSet["polygon"] = systemSet.polygonGraphics.dummyTexture;
+  //textureSet["polygon"] = systemSet.polygonGraphics.dummyTexture;
   texCoords["polygon"] = vec2(0.0, 0.0).repeat.take(vertices["polygon"].length).array;
   
   renderer.render(camera.transform, vertices, colors, texCoords, textureSet);
-}
+}+/

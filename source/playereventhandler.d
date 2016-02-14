@@ -15,7 +15,7 @@ void handlePlayerFireAction(Entity playerGun, SystemSet systemSet) //, ref Entit
 {
   fire = systemSet.inputHandler.getComponent(playerGun).isActionSet("fire");
   
-  static float reloadTimeLeft = 0.0;
+  static double reloadTimeLeft = 0.0;
   if (fire && reloadTimeLeft <= 0.0)
   {
     auto angle = playerGun.get!double("angle");

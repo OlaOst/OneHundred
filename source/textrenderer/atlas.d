@@ -48,6 +48,11 @@ Texture2D createFontAtlas(Glyph[256] glyphSet, string font, uint glyphSize)
                 row*glyphSize*cols*glyphSize + x + y*glyphSize*rows)*colorComponents +
                colorIndex] = glyph.data[(y * glyphSize + x)*colorComponents + colorIndex];
         }
+        /*data[colorComponents +
+             (colorComponents*cols*glyphSize) +
+             (col*glyphSize +
+              row*glyphSize*cols*glyphSize + x + y*glyphSize*rows)*colorComponents +
+              3] += 128;*/
       }
     }
   }

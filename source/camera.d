@@ -6,7 +6,7 @@ import gl3n.linalg;
 class Camera
 {
   vec3 position = vec3(0.0, 0.0, 0.0);
-  float zoom = 0.3;
+  double zoom = 0.3;
   
   vec3 transform(vec3 vector)
   {
