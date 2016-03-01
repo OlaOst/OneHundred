@@ -123,9 +123,8 @@ class UnifiedGraphics : System!GraphicSource
       auto size = entity.get!double("size");
       auto color = entity.get!vec4("color");
       
-      // TODO: every letter will have its vertices normalized but we only use one size which should be different for every letter
+      vertices = textRenderer.getVerticesForText(text).dup;
       
-      vertices = textRenderer.getVerticesForText(text, position, angle, size).dup;
       texCoords = textRenderer.getTexCoordsForText(text).dup;
       colors = color.repeat(vertices.length).array;
     }
@@ -179,18 +178,9 @@ class UnifiedGraphics : System!GraphicSource
       auto angle = entity.get!double("angle");
       auto size = entity.get!double("size");
       
-      //components[index].transform = mat3.zrotation(-angle) + mat3.translation(position);
       components[index].position = position;
       components[index].angle = angle;
-      
-      if (components[index].size != size)
-      {
-        components[index].size = size;
-        
-        //auto vertices = components[index].vertices;
-        //auto furthestVertex = vertices.minCount!((a, b) => a.magnitude > b.magnitude)[0];
-        //components[index].vertices = vertices.map!(vertex => vertex * (1.0 / furthestVertex.magnitude) * size).array;
-      }
+      components[index].size = size;
       
       // TODO: should it be possible to change vertices, colors or texCoords here?
       //if (entity.has("polygon.vertices"))

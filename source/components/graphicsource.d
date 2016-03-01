@@ -45,10 +45,7 @@ class GraphicSource
     }
     else
     {
-      //this.vertices = vertices;
-      // only normalize for first letter, which should have 6 vertices for 2 triangles making a quad
-      auto furthestVertex = vertices[0..6].minCount!((a, b) => a.magnitude > b.magnitude)[0];
-      this.vertices = vertices.map!(vertex => vertex / furthestVertex.magnitude).array;
+      this.vertices = vertices;
     }
     
     this.texCoords = texCoords;
