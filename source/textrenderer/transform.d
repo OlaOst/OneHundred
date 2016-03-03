@@ -6,8 +6,7 @@ import std.string;
 
 import gl3n.linalg;
 
-import components.drawable;
-import components.drawables.text;
+import renderer.baseshapes;
 import textrenderer.textrenderer;
 
 
@@ -18,7 +17,7 @@ vec3[] getVerticesForText(TextRenderer textRenderer, string text) //@nogc
   
   auto cursor = vec2(0.0, 0.0);
   
-  auto vertices = baseSquare.dup.map!(vertex => (vertex + vec3(1,0,0)) * 0.5).array;
+  auto vertices = textSquare.dup;
 
   auto lines = text.splitter("\n");
   foreach (line; lines)

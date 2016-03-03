@@ -20,20 +20,6 @@ void handleToggleDebugInfo(Input gameInput, SystemSet systemSet, ref Entity debu
     }
     index = (index + 1) % systemSet.entityHandlers.length;
   }
-
-  // TODO: ensure entity values get reflected to the relevant components
-  /*final switch (index % 3)
-  {
-    case 0:
-      debugText.values["text"] = systemSet.collisionHandler.debugText;
-      break;
-    case 1:
-      debugText.values["text"] = systemSet.physics.debugText;
-      break;
-    case 2:
-      debugText.values["text"] = systemSet.graphicsTimingText;
-      break;
-  }*/
   
   if (debugText !is null)
   {

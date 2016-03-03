@@ -10,14 +10,12 @@ import std.string;
 import gl3n.linalg;
 
 import components.collider;
-import components.drawables.polygon;
-import components.drawables.sprite;
-import components.drawables.text;
 import components.input;
 import components.sound;
 import converters;
 import entity;
 import entityfactory.entitycollection;
+import renderer.polygon;
 import valueparser;
 
 
@@ -58,8 +56,6 @@ Entity[string] createBulletEntityGroup(vec3 position, double angle, vec3 velocit
     bulletEntity["spawner"] = spawnerId;
     bulletEntity["networked"] = true;
     
-    import systems.polygongraphics;
-    //bulletEntity.polygon = parsePolygonFromEntity(bulletEntity);
     auto polygon = parsePolygonFromEntity(bulletEntity);
     bulletEntity["polygon.vertices"] = polygon.vertices;
     bulletEntity["polygon.colors"] = polygon.colors;

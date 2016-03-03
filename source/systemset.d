@@ -11,17 +11,13 @@ import entityhandler;
 import renderer.renderer;
 import systems.accumulatorhandler;
 import systems.collisionhandler;
-import systems.graphics;
 import systems.inputhandler;
 import systems.networkhandler;
 import systems.physics;
-import systems.polygongraphics;
 import systems.relationhandler;
 import systems.soundsystem;
-import systems.spritegraphics;
-import systems.textgraphics;
 import systems.timehandler;
-import systems.unifiedgraphics;
+import systems.graphics;
 import textrenderer.textrenderer;
 
 
@@ -29,12 +25,7 @@ class SystemSet
 {
   Entity[] entities;
   EntityHandler[] entityHandlers;
-  //GraphicsHandler[] graphicsHandlers;
-  string graphicsTimingText;
-  UnifiedGraphics graphics;
-  //PolygonGraphics polygonGraphics;
-  //SpriteGraphics spriteGraphics;
-  //TextGraphics textGraphics;
+  Graphics graphics;
   Physics physics;
   InputHandler inputHandler;
   CollisionHandler collisionHandler;
@@ -54,10 +45,7 @@ class SystemSet
     
     textures["text"] = textRenderer.atlas;
     
-    graphics = new UnifiedGraphics(renderer, textRenderer, camera, textures);
-    //polygonGraphics = new PolygonGraphics(xres, yres);
-    //spriteGraphics = new SpriteGraphics(xres, yres);
-    //textGraphics = new TextGraphics(xres, yres);
+    graphics = new Graphics(renderer, textRenderer, camera, textures);
     physics = new Physics();
     inputHandler = new InputHandler();
     collisionHandler = new CollisionHandler();
@@ -67,11 +55,8 @@ class SystemSet
     accumulatorHandler = new AccumulatorHandler();
     networkHandler = new NetworkHandler(listenPort);
     entityHandlers = cast(EntityHandler[])[graphics, physics, soundSystem,
-                                           //polygonGraphics, spriteGraphics, textGraphics,
                                            inputHandler, collisionHandler, timeHandler, 
                                            relationHandler, accumulatorHandler, networkHandler];
-    //graphicsHandlers = cast(GraphicsHandler[])[polygonGraphics, spriteGraphics, textGraphics];
-    //graphicsHandlers = cast(GraphicsHandler[])[graphics];
   }
 
   void close()
@@ -97,14 +82,7 @@ class SystemSet
 
   void update()
   {
-    //entityHandlers.filter!(handler => !graphicsHandlers.canFind(handler)).each!(e => e.update());
     entityHandlers.each!(e => e.update());
-    /+auto graphicsTimer = StopWatch(AutoStart.yes);
-    //graphicsHandlers.each!(handler => handler.update());
-    graphics.update();
-    auto graphicsComponentCount = graphicsHandlers.map!(graphics => graphics.componentCount).sum;
-    graphicsTimingText = format("graphics components: %s\ngraphics timings: %s",
-                                graphicsComponentCount, graphicsTimer.peek.usecs*0.001);+/
   }
 
   Entity[] removeEntitiesToBeRemoved()

@@ -7,8 +7,8 @@ import gl3n.aabb;
 import gl3n.linalg;
 
 import components.collider;
-import components.drawables.polygon;
 import entity;
+import renderer.polygon;
 
 
 Entity createText(string text, vec3 position)

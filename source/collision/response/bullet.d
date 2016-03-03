@@ -9,11 +9,11 @@ import gl3n.linalg;
 
 import collision.responsehandler;
 import components.collider;
-import components.drawables.polygon;
 import components.sound;
 import converters;
 import entity;
 import entityfactory.texts;
+import renderer.polygon;
 import systems.collisionhandler;
 
 

@@ -8,8 +8,8 @@ import std.range;
 import gl3n.aabb;
 import gl3n.linalg;
 
-import components.drawables.polygon;
 import entity;
+import renderer.polygon;
 import systemset;
 
 
@@ -66,7 +66,6 @@ Entity[] makeSpatialTreeBoxes(AABB[][int] boxSet)
       entity["position"] = box.center; //vec3(0.0, 0.0, 0.0);
       entity["ToBeRemoved"] = true;
       
-      import components.drawables.polygon;
       entity["graphicsource"] = "polygon";
       auto polygon = new Polygon([vec3(box.min.x, box.min.y, -1.0), 
                                   vec3(box.min.x, box.max.y, -1.0), 

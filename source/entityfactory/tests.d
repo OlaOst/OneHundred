@@ -8,11 +8,10 @@ import std.stdio;
 import gl3n.linalg;
 
 import components.collider;
-import components.drawables.polygon;
-import components.drawables.text;
 import components.sound;
 import entity;
 import entityfactory.texts;
+import renderer.polygon;
 import systemset;
 
 

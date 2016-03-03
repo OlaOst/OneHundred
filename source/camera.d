@@ -18,4 +18,11 @@ class Camera
     return mat4.identity.translation(-position.x, -position.y, -position.z)
                         .scale(zoom, zoom, zoom);
   }
+  
+  vec3 getWorldPositionFromScreenCoordinates(vec2 screenCoordinates, int xres, int yres)
+  {
+    return transform(vec3(screenCoordinates.x / cast(float)xres - 0.5,
+                          0.5 - screenCoordinates.y / cast(float)yres,
+                          0.0));
+  }
 }

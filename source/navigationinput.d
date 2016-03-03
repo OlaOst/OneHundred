@@ -7,10 +7,10 @@ import std.range;
 
 import gl3n.linalg;
 
-import components.drawables.polygon;
 import components.input;
 import converters;
 import entity;
+import renderer.polygon;
 
 
 Entity[] updateValuesAndGetSpawns(Entity entity, Input component)

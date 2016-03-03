@@ -4,8 +4,8 @@ import std.algorithm;
 
 import gl3n.linalg;
 
-import components.drawables.polygon;
 import converters;
+import renderer.polygon;
 import valueparser;
 import valuetypes;
 

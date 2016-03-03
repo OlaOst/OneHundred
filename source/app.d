@@ -19,11 +19,9 @@ import eventhandlers.debuginfo;
 import eventhandlers.editabletext;
 import eventhandlers.game;
 import eventhandlers.toggleinputwindow;
-import graphicscollector;
 import playereventhandler;
 import renderer.renderer;
 import systemset;
-import systems.graphics;
 import textrenderer.textrenderer;
 
 
@@ -82,8 +80,8 @@ void main(string[] args)
     systemSet.inputHandler.getComponent(editController).handleEditableText(inputWindow);
     playerSet["player.ship.gun"].handlePlayerFireAction(systemSet);
     camera.position = playerSet["player.ship"].get!vec3("position");
-    mouseCursor["position"] = getWorldPositionFromScreenCoordinates(camera,
-                                systemSet.inputHandler.mouseScreenPosition, xres, yres);
+    mouseCursor["position"] = camera.getWorldPositionFromScreenCoordinates(
+      systemSet.inputHandler.mouseScreenPosition, xres, yres);
 
     addParticles(systemSet);
     addBullets(npcEntityGroups, systemSet);
@@ -94,7 +92,6 @@ void main(string[] args)
     systemSet.removeEntitiesToBeRemoved();
 
     systemSet.updateDebugEntities();
-    //systemSet.collectFromGraphicsAndRender(renderer, camera);
     
     makeSpatialTreeBoxes(systemSet.collisionHandler.boxes).each!(box => systemSet.addEntity(box));
   }
