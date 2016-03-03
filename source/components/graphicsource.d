@@ -25,7 +25,8 @@ class GraphicSource
     assert(size >= 0.0);
   }
   
-  this(string sourceName, vec3 position, double angle, double size, const vec3[] vertices, vec2[] texCoords, vec4[] colors)
+  this(string sourceName, vec3 position, double angle, double size, 
+       const vec3[] vertices, vec2[] texCoords, vec4[] colors)
   out(result)
   {
     assert(this);
