@@ -1,5 +1,6 @@
 module entityfactory.texts;
 
+import std.algorithm;
 import std.conv;
 import std.range;
 
@@ -45,7 +46,8 @@ Entity createTextCover(Entity textEntity, AABB textAABB)
                               vec3(textAABB.max.x, textAABB.max.y, 0.0), 
                               vec3(textAABB.max.x, textAABB.min.y, 0.0)],
                               vec4(0.0, 0.5, 0.5, 0.5).repeat.take(6).array);
-  textCover["polygon.vertices"] = polygon.vertices;
+  
+  textCover["polygon.vertices"] = polygon.vertices.map!(vertex => vertex - position);
   textCover["polygon.colors"] = polygon.colors;
   
   textCover["relation.types"] = ["RelativeValues", "SameShape", "DieTogether"];

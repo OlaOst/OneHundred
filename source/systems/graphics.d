@@ -1,37 +1,27 @@
 module systems.graphics;
 
 import std.algorithm;
-import std.array;
-import std.datetime;
 import std.range;
-import std.stdio;
 
-import gl3n.aabb;
 import gl3n.linalg;
 import glamour.shader;
 import glamour.texture;
 
 import camera;
 import components.graphicsource;
-import converters;
-import entityhandler;
 import entity;
-import renderer.coloredtexturerenderer;
 import renderer.baseshapes;
 import renderer.graphicsblob;
 import renderer.renderer;
-import system;
 import textrenderer.textrenderer;
 import textrenderer.transform;
+import system;
 
 
 class Graphics : System!GraphicSource
 {
   this(Renderer renderer, TextRenderer textRenderer, Camera camera, Texture2D[string] textures)
   {
-    this.xres = renderer.xres; 
-    this.yres = renderer.yres;
-    
     shader = new Shader("shaders/coloredtexture.shader");
     
     this.textures = textures;
@@ -56,15 +46,18 @@ class Graphics : System!GraphicSource
     
     if (source !in textures)
     {
-      // these sources should have been preloaded in the constructor
+      // these sources should have been preloaded in the textures from the constructor
       assert(source != "polygon");
       assert(source != "text");
-      
       textures[source] = Texture2D.from_image(source);
     }
-    
     if (source !in blobs)
       blobs[source] = new GraphicsBlob(textures[source]);
+    
+    auto position = entity.get!vec3("position");
+    auto angle = entity.get!double("angle", entity.get!float("angle"));
+    assert(entity.has("size"));
+    auto size = entity.get!double("size", entity.get!float("size")); // TODO: should only be double
     
     vec3[] vertices;
     vec4[] colors;
@@ -72,39 +65,24 @@ class Graphics : System!GraphicSource
     if (source == "polygon")
     {
       vertices = entity.get!(vec3[])("polygon.vertices");
+      texCoords = vec2(0.0, 0.0).repeat(vertices.length).array;
       if (entity.has("polygon.colors"))
         colors = entity.get!(vec4[])("polygon.colors");
       else
         colors = entity.get!vec4("color").repeat(vertices.length).array;
-        
-      texCoords = vec2(0.0, 0.0).repeat(vertices.length).array;
     }
     else if (source == "text")
     {
-      auto text = entity.get!string("text");
-      auto position = entity.get!vec3("position");
-      auto angle = entity.get!double("angle");
-      auto size = entity.get!double("size");
-      auto color = entity.get!vec4("color");
-      
-      vertices = textRenderer.getVerticesForText(text).dup;
-      
-      texCoords = textRenderer.getTexCoordsForText(text).dup;
-      colors = color.repeat(vertices.length).array;
+      vertices = textRenderer.getVerticesForText(entity.get!string("text")).dup;
+      texCoords = textRenderer.getTexCoordsForText(entity.get!string("text")).dup;
+      colors = entity.get!vec4("color").repeat(vertices.length).array;
     }
     else
     {
-      auto size = entity.get!double("size");
-    
       vertices = baseSquare.dup.map!(vertex => vertex * mat3.zrotation(PI/2)).array;
       texCoords = baseTexCoordsSquare.dup;
       colors = vec4(0.0).repeat(vertices.length).array;
     }
-    
-    auto position = entity.get!vec3("position");
-    auto angle = entity.get!double("angle");
-    assert(entity.has("size"));
-    auto size = entity.get!double("size", entity.get!float("size")); // TODO: should only be double
     
     assert(position.isFinite);
     assert(!angle.isNaN);
@@ -138,19 +116,11 @@ class Graphics : System!GraphicSource
   {
     foreach (index, entity; entityForIndex)
     {
-      auto position = entity.get!vec3("position");
-      auto angle = entity.get!double("angle");
-      auto size = entity.get!double("size");
+      components[index].position = entity.get!vec3("position");
+      components[index].angle = entity.get!double("angle", entity.get!float("angle"));
+      components[index].size = entity.get!double("size", entity.get!float("size"));
       
-      components[index].position = position;
-      components[index].angle = angle;
-      components[index].size = size;
-      
-      // TODO: should it be possible to change vertices, colors or texCoords here?
-      //if (entity.has("polygon.vertices"))
-        //components[index].vertices = entity.get!(vec3[])("polygon.vertices");
-      //if (entity.has("polygon.colors"))
-        //components[index].colors = entity.get!(vec4[])("polygon.colors");
+      // TODO: should it be possible to change vertices, colors or texCoords?
     }
   }
   
@@ -168,6 +138,4 @@ class Graphics : System!GraphicSource
   Renderer renderer;
   TextRenderer textRenderer;
   Camera camera;
-  
-  immutable int xres, yres;
 }

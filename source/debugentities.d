@@ -75,9 +75,9 @@ Entity[] makeSpatialTreeBoxes(AABB[][int] boxSet)
                                   vec3(box.max.x, box.min.y, -1.0)],
                                   levelColor.repeat.take(6).array);
       
-      entity["polygon.vertices"] = polygon.vertices;
+      entity["polygon.vertices"] = polygon.vertices.map!(vertex => vertex - box.center);
       entity["polygon.colors"] = polygon.colors;
-      entity["size"] = box.extent.magnitude;
+      entity["size"] = box.extent.magnitude * 0.5;
       
       entities ~= entity;
     }

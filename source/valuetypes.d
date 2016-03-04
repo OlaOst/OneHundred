@@ -14,6 +14,8 @@ static ValueType DefaultValue(ValueType)() pure @nogc nothrow
 {
   static if (is(ValueType == double))
     return 0.0;
+  else static if (is(ValueType == float))
+    return 0.0;
   else static if (is(ValueType == vec2))
     return vec2(0.0, 0.0);
   else static if (is(ValueType == vec3))
