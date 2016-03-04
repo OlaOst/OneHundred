@@ -120,7 +120,13 @@ class Graphics : System!GraphicSource
       components[index].angle = entity.get!double("angle", entity.get!float("angle"));
       components[index].size = entity.get!double("size", entity.get!float("size"));
       
-      // TODO: should it be possible to change vertices, colors or texCoords?
+      // TODO: should it be possible to change vertices, colors or texCoords for all kinds of components?
+      if (components[index].sourceName == "text")
+      {
+        components[index].vertices = textRenderer.getVerticesForText(entity.get!string("text")).dup;
+        components[index].texCoords = textRenderer.getTexCoordsForText(entity.get!string("text")).dup;
+        components[index].colors = entity.get!vec4("color").repeat(components[index].vertices.length).array;
+      }
     }
   }
   

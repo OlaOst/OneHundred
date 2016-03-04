@@ -26,7 +26,7 @@ class GraphicSource
   }
   
   this(string sourceName, vec3 position, double angle, double size, 
-       const vec3[] vertices, vec2[] texCoords, vec4[] colors)
+       /*const*/ vec3[] vertices, vec2[] texCoords, vec4[] colors)
   out(result)
   {
     assert(this);
@@ -67,8 +67,6 @@ class GraphicSource
     return vertices.map!(vertex => vertex * mat3.zrotation(-angle) * size + position).array;
   }
   
-  string sourceName;
-  
   @property aabb()
   in
   {
@@ -83,12 +81,15 @@ class GraphicSource
     return AABB.from_points(transformedVertices);
   }
   
+  string sourceName;
+  
   vec3 position;
   double angle;
   
   double size = 1.0;
   
-  private const vec3[] vertices;
+  //private const vec3[] vertices;
+  vec3[] vertices;
   vec4 color;
   vec4[] colors;
   vec2[] texCoords;
