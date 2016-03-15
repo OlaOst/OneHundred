@@ -26,7 +26,7 @@ class GraphicSource
   }
   
   this(string sourceName, vec3 position, double angle, double size, 
-       /*const*/ vec3[] vertices, vec2[] texCoords, vec4[] colors)
+       vec3[] vertices, vec2[] texCoords, vec4[] colors)
   out(result)
   {
     assert(this);
@@ -88,9 +88,7 @@ class GraphicSource
   
   double size = 1.0;
   
-  //private const vec3[] vertices;
   vec3[] vertices;
-  vec4 color;
   vec4[] colors;
   vec2[] texCoords;
 }

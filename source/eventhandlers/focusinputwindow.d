@@ -1,6 +1,7 @@
 module eventhandlers.focusinputwindow;
 
 import std.algorithm;
+import std.range;
 
 import gl3n.linalg;
 
@@ -26,23 +27,27 @@ void handleFocusInputWindow(Input gameInput,
   // left click - focus clicked input window to make it editable
   if (gameInput.isActionToggled("focusInputWindow"))
   {
+    auto component = systemSet.graphics.getComponent(inputWindow);
+  
     if (!overlappingTexts.empty)
     {
       if (inputWindow == overlappingTexts.front)
         overlappingTexts.popFront();
+        
       if (!overlappingTexts.empty)
       {
         if (inputWindow !is null)
-          systemSet.graphics.getComponent(inputWindow).color = vec4(0.5, 0.5, 0.0, 1.0);
+          component.colors = vec4(0.5, 0.5, 0.0, 1.0).repeat(component.vertices.length).array;
+          
         inputWindow = systemSet.collisionHandler.getEntity(overlappingTexts.front);
-        systemSet.graphics.getComponent(inputWindow).color = vec4(1.0, 1.0, 1.0, 1.0);
+        component.colors = vec4(1.0, 1.0, 1.0, 1.0).repeat(component.vertices.length).array;
       }
     }
     
     // defocus current window
     if (overlappingTexts.empty && inputWindow !is null)
     {
-      systemSet.graphics.getComponent(inputWindow).color = vec4(0.5, 0.5, 0.0, 1.0);
+      component.colors = vec4(0.5, 0.5, 0.0, 1.0).repeat(component.vertices.length).array;
       inputWindow = null;
     }
   }
