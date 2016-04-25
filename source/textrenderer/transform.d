@@ -2,13 +2,27 @@ module textrenderer.transform;
 
 import std.algorithm;
 import std.array;
+import std.range;
 import std.string;
 
 import gl3n.linalg;
+import glamour.texture;
 
 import renderer.baseshapes;
+import renderer.graphicsdata;
 import textrenderer.textrenderer;
 
+
+GraphicsData getGraphicsData(TextRenderer textRenderer, string text, vec4 color)
+{
+  auto data = new GraphicsData();
+  
+  data.vertices = textRenderer.getVerticesForText(text).dup;
+  data.texCoords = textRenderer.getTexCoordsForText(text).dup;
+  data.colors = color.repeat(data.vertices.length).array;
+  
+  return data;
+}
 
 vec3[] getVerticesForText(TextRenderer textRenderer, string text) //@nogc
 {

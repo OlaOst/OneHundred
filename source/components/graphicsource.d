@@ -6,6 +6,8 @@ import std.array;
 import gl3n.aabb;
 import gl3n.linalg;
 
+import renderer.graphicsdata;
+
 
 class GraphicSource
 {
@@ -14,19 +16,22 @@ class GraphicSource
     import std.stdio;
     scope(failure) writeln(sourceName);
     
-    assert(vertices.length == colors.length);
-    assert(colors.length == texCoords.length);
+    assert(data);
+    //assert(vertices.length == colors.length);
+    //assert(colors.length == texCoords.length);
     
-    assert(vertices.all!(vertex => vertex.isFinite));
-    assert(texCoords.all!(texCoord => texCoord.isFinite));
-    assert(colors.all!(color => color.isFinite));
+    //assert(vertices.all!(vertex => vertex.isFinite));
+    //assert(texCoords.all!(texCoord => texCoord.isFinite));
+    //assert(colors.all!(color => color.isFinite));
     assert(position.isFinite);
     assert(!angle.isNaN);
     assert(size >= 0.0);
   }
   
+  //this(string sourceName, vec3 position, double angle, double size, 
+       //vec3[] vertices, vec2[] texCoords, vec4[] colors)
   this(string sourceName, vec3 position, double angle, double size, 
-       vec3[] vertices, vec2[] texCoords, vec4[] colors)
+       GraphicsData data)
   out(result)
   {
     assert(this);
@@ -38,19 +43,19 @@ class GraphicSource
     this.angle = angle;
     this.size = size;
     
+    this.data = data;
+    
     if (sourceName != "text")
     {
       // ensure normalized vertices
-      auto furthestVertex = vertices.minCount!((a, b) => a.magnitude > b.magnitude)[0];
-      this.vertices = vertices.map!(vertex => vertex / furthestVertex.magnitude).array;
+      auto furthestVertex = data.vertices.minCount!((a, b) => a.magnitude > b.magnitude)[0];
+      this.data.vertices = data.vertices.map!(vertex => vertex / furthestVertex.magnitude).array;
     }
-    else
-    {
-      this.vertices = vertices;
-    }
-    
-    this.texCoords = texCoords;
-    this.colors = colors;
+  }
+  
+  @property transformedData()
+  {
+    return new GraphicsData(transformedVertices, data.texCoords, data.colors);
   }
   
   @property transformedVertices()
@@ -64,7 +69,7 @@ class GraphicSource
   }
   body
   {
-    return vertices.map!(vertex => vertex * mat3.zrotation(-angle) * size + position).array;
+    return data.vertices.map!(vertex => vertex * mat3.zrotation(-angle) * size + position).array;
   }
   
   @property aabb()
@@ -82,13 +87,8 @@ class GraphicSource
   }
   
   string sourceName;
-  
   vec3 position;
   double angle;
-  
   double size = 1.0;
-  
-  vec3[] vertices;
-  vec4[] colors;
-  vec2[] texCoords;
+  GraphicsData data;
 }

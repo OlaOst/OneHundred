@@ -37,17 +37,17 @@ void handleFocusInputWindow(Input gameInput,
       if (!overlappingTexts.empty)
       {
         if (inputWindow !is null)
-          component.colors = vec4(0.5, 0.5, 0.0, 1.0).repeat(component.vertices.length).array;
+          component.data.setColor(vec4(0.5, 0.5, 0.0, 1.0));
           
         inputWindow = systemSet.collisionHandler.getEntity(overlappingTexts.front);
-        component.colors = vec4(1.0, 1.0, 1.0, 1.0).repeat(component.vertices.length).array;
+        component.data.setColor(vec4(1.0, 1.0, 1.0, 1.0));
       }
     }
     
     // defocus current window
     if (overlappingTexts.empty && inputWindow !is null)
     {
-      component.colors = vec4(0.5, 0.5, 0.0, 1.0).repeat(component.vertices.length).array;
+      component.data.setColor(vec4(0.5, 0.5, 0.0, 1.0));
       inputWindow = null;
     }
   }

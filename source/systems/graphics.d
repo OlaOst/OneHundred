@@ -12,6 +12,7 @@ import components.graphicsource;
 import entity;
 import renderer.baseshapes;
 import renderer.graphicsblob;
+import renderer.graphicsdata;
 import renderer.renderer;
 import textrenderer.textrenderer;
 import textrenderer.transform;
@@ -47,68 +48,47 @@ class Graphics : System!GraphicSource
     if (source !in textures)
     {
       // these sources should have been preloaded in the textures from the constructor
-      assert(source != "polygon");
-      assert(source != "text");
+      assert(source != "polygon" && source != "text");
       textures[source] = Texture2D.from_image(source);
     }
     if (source !in blobs)
       blobs[source] = new GraphicsBlob(textures[source]);
+    
+    GraphicsData data;
+    if (source == "polygon")
+    {
+      if (entity.has("polygon.colors"))
+        data = new GraphicsData(entity.get!(vec3[])("polygon.vertices"), entity.get!(vec4[])("polygon.colors"));
+      else
+        data = new GraphicsData(entity.get!(vec3[])("polygon.vertices"), entity.get!vec4("color"));
+    }
+    else if (source == "text")
+      data = textRenderer.getGraphicsData(entity.get!string("text"), entity.get!vec4("color"));
+    else
+      data = new GraphicsData(baseSquare.dup.map!(vertex => vertex * mat3.zrotation(PI/2)).array, baseTexCoordsSquare.dup);
     
     auto position = entity.get!vec3("position");
     auto angle = entity.get!double("angle", entity.get!float("angle"));
     assert(entity.has("size"));
     auto size = entity.get!double("size", entity.get!float("size")); // TODO: should only be double
     
-    vec3[] vertices;
-    vec4[] colors;
-    vec2[] texCoords;
-    if (source == "polygon")
-    {
-      vertices = entity.get!(vec3[])("polygon.vertices");
-      texCoords = vec2(0.0, 0.0).repeat(vertices.length).array;
-      if (entity.has("polygon.colors"))
-        colors = entity.get!(vec4[])("polygon.colors");
-      else
-        colors = entity.get!vec4("color").repeat(vertices.length).array;
-    }
-    else if (source == "text")
-    {
-      vertices = textRenderer.getVerticesForText(entity.get!string("text")).dup;
-      texCoords = textRenderer.getTexCoordsForText(entity.get!string("text")).dup;
-      colors = entity.get!vec4("color").repeat(vertices.length).array;
-    }
-    else
-    {
-      vertices = baseSquare.dup.map!(vertex => vertex * mat3.zrotation(PI/2)).array;
-      texCoords = baseTexCoordsSquare.dup;
-      colors = vec4(0.0).repeat(vertices.length).array;
-    }
-    
     assert(position.isFinite);
     assert(!angle.isNaN);
-    assert(size > 0.0, size.to!string);
+    assert(size > 0, size.to!string);
     
-    return new GraphicSource(source, position, angle, size, vertices, texCoords, colors);
+    return new GraphicSource(source, position, angle, size, data);
   }
   
   void updateValues()
   {
-    // reset blobs
     blobs.byValue.each!(blob => blob.reset());
     
-    // add to blobs
     foreach (component; components)
     {
-      // transform component
       assert(component.sourceName in blobs);
-      
-      blobs[component.sourceName].vertices ~= component.transformedVertices;
-      blobs[component.sourceName].colors ~= component.colors;
-      blobs[component.sourceName].texCoords ~= component.texCoords;
+      blobs[component.sourceName].addData(component.transformedData);
     }
-    
     blobs.each!((name, blob) => blob.render(shader, name == "polygon", camera.transform));
-    
     renderer.toScreen();
   }
   
@@ -122,11 +102,7 @@ class Graphics : System!GraphicSource
       
       // TODO: should it be possible to change vertices, colors or texCoords for all kinds of components?
       if (components[index].sourceName == "text")
-      {
-        components[index].vertices = textRenderer.getVerticesForText(entity.get!string("text")).dup;
-        components[index].texCoords = textRenderer.getTexCoordsForText(entity.get!string("text")).dup;
-        components[index].colors = entity.get!vec4("color").repeat(components[index].vertices.length).array;
-      }
+        components[index].data = textRenderer.getGraphicsData(entity.get!string("text"), entity.get!vec4("color"));
     }
   }
   

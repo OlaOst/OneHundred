@@ -6,6 +6,7 @@ import glamour.shader;
 import glamour.texture;
 
 import renderer.coloredtexturerenderer;
+import renderer.graphicsdata;
 
 
 class GraphicsBlob
@@ -13,34 +14,39 @@ class GraphicsBlob
   this(Texture2D texture)
   {
     this.texture = texture;
+    data = new GraphicsData();
   }
   
   void reset()
   {
-    vertices.length = 0;
-    colors.length = 0;
-    texCoords.length = 0;
+    data.vertices.length = 0;
+    data.colors.length = 0;
+    data.texCoords.length = 0;
+  }
+  
+  void addData(GraphicsData data)
+  {
+    this.data.vertices ~= data.vertices;
+    this.data.texCoords ~= data.texCoords;
+    this.data.colors ~= data.colors;
   }
   
   void render(Shader shader, bool ignoreTexture, mat4 cameraTransform)
   {
-    assert(vertices.length == colors.length, vertices.length.to!string ~ " vertices vs " ~ colors.length.to!string ~ " colors");
-    assert(vertices.length == texCoords.length);
+    assert(data);
     
     texture.bind();
     
     drawColoredTexture(shader, 
                        cameraTransform,
-                       vertices, 
-                       texCoords, 
-                       colors,
+                       data.vertices, 
+                       data.texCoords, 
+                       data.colors,
                        ignoreTexture);
                        
     texture.unbind();
   }
   
   Texture2D texture;
-  vec3[] vertices;
-  vec4[] colors;
-  vec2[] texCoords;
+  GraphicsData data;
 }
