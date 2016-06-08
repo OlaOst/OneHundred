@@ -1,10 +1,11 @@
 module systems.physics;
 
 import std.algorithm;
+import std.conv;
 import std.datetime;
 import std.exception;
 import std.range;
-    
+
 import gl3n.linalg;
 
 import accumulatortimer;
@@ -28,20 +29,20 @@ class Physics : System!State
   {
     timer = new AccumulatorTimer(0.25, 1.0/60.0);
   }
-  
+
   bool canAddEntity(Entity entity)
   {
     return entity.has("position") && entity.has("mass");
   }
-  
+
   State makeComponent(Entity entity)
   {
-    enforce(entity.get!double("mass") > 0.0, 
-      "Physics entities need a positive nonzero mass, tried to register entity with mass " 
+    enforce(entity.get!double("mass") > 0.0,
+      "Physics entities need a positive nonzero mass, tried to register entity with mass "
       ~ entity.get!double("mass").to!string);
     return State(entity, &calculateForce, &calculateTorque);
   }
-  
+
   void updateFromEntities()
   {
     // TODO: we have two separate places that handle forces and torques
@@ -57,15 +58,15 @@ class Physics : System!State
       components[index].rotation = entity.get!double("rotation");
       components[index].torque = entity.get!double("torque");
       components[index].mass = entity.get!double("mass");
-      
+
       assert(&components[index]);
     }
   }
-  
+
   void updateValues() @nogc
   {
     timer.incrementAccumulator();
-    
+
     previousStates = currentStates;
     double time = timer.currentTime;
     while (timer.accumulator >= timer.timeStep)
@@ -76,7 +77,7 @@ class Physics : System!State
     }
     interpolateStates(currentStates, previousStates, timer.accumulator / timer.timeStep);
   }
-  
+
   void updateEntities() //@nogc
   {
     foreach (size_t index, Entity entity; entityForIndex)
@@ -85,11 +86,11 @@ class Physics : System!State
       entity["velocity"] = components[index].velocity;
       entity["angle"] = components[index].angle;
       entity["rotation"] = components[index].rotation;
-        
+
       // reset force and torque for next update
       entity["force"] = vec3(0.0, 0.0, 0.0);
       entity["torque"] = 0.0;
-      
+
       // keep old values, from forceCalculator
       entity["previousForce"] = components[index].force;
       entity["previousTorque"] = components[index].torque;
