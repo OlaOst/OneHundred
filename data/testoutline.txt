@@ -1,0 +1,5 @@
+size = 2.5
+graphicsource = textoutline
+text = N
+color = [1,1,1,1]
+position = [1,1,0]

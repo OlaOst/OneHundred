@@ -39,12 +39,16 @@ class SystemSet
   {
     import glamour.texture;
     Texture2D[string] textures;
-    
+
     textures["polygon"] = new Texture2D();
     textures["polygon"].set_data([0, 0, 0, 0], GL_RGBA, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE);
-    
+
+    textures["textoutline"] = new Texture2D();
+    textures["textoutline"].set_data([0, 0, 0, 0], GL_RGBA, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE);
+
+
     textures["text"] = textRenderer.atlas;
-    
+
     graphics = new Graphics(renderer, textRenderer, camera, textures);
     physics = new Physics();
     inputHandler = new InputHandler();
@@ -55,7 +59,7 @@ class SystemSet
     accumulatorHandler = new AccumulatorHandler();
     networkHandler = new NetworkHandler(listenPort);
     entityHandlers = cast(EntityHandler[])[graphics, physics, soundSystem,
-                                           inputHandler, collisionHandler, timeHandler, 
+                                           inputHandler, collisionHandler, timeHandler,
                                            relationHandler, accumulatorHandler, networkHandler];
   }
 
@@ -70,7 +74,7 @@ class SystemSet
     entityHandlers.each!(handler => handler.addEntity(entity));
     entities ~= entity;
   }
-  
+
   void addEntityCollection(Entity[string] entityCollection)
   {
     // add entities in correct order, entities depending on other should be added later

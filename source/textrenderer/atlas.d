@@ -31,6 +31,7 @@ Texture2D createFontAtlas(Glyph[256] glyphSet, string font, uint glyphSize)
   //foreach (index, letter; glyphSet.keys)
   foreach (index, glyph; glyphSet)
   {
+    scope(failure) writeln("failed on ", index);
     //auto glyph = glyphSet[letter];
 
     auto row = index / rows;
