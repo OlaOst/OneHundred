@@ -2,6 +2,7 @@ module renderer.polygon;
 
 import std.algorithm;
 import std.array;
+import std.math;
 import std.range;
 
 import gl3n.linalg;

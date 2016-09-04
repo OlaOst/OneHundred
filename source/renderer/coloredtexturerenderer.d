@@ -2,6 +2,7 @@ module renderer.coloredtexturerenderer;
 
 import derelict.opengl3.gl3;
 import glamour.shader;
+import glamour.util;
 import glamour.vbo;
 import gl3n.linalg;
 

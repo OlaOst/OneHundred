@@ -1,6 +1,7 @@
 module app;
 
 import std.algorithm;
+import std.conv;
 import std.range;
 import std.stdio;
 
@@ -42,8 +43,7 @@ void main(string[] args)
     renderer.close();
   }
 
-  auto npcEntityGroups = ["data/npcship.txt".createEntityCollectionFromFile];
-  npcEntityGroups.length = 0;
+  auto npcEntityGroups = "data/npcship.txt".createEntityCollectionFromFile.repeat(0).array;
   npcEntityGroups.each!(npcEntityGroup => systemSet.addEntityCollection(npcEntityGroup));
 
   auto playerSet = "data/playership.txt".createEntityCollectionFromFile;
@@ -64,7 +64,7 @@ void main(string[] args)
   systemSet.addEntity(editController);
   systemSet.addDebugEntities();
   Entity debugText;
-  
+
   while (!quit)
   {
     systemSet.inputHandler.spawnEntities.each!(spawn => systemSet.addEntity(spawn));

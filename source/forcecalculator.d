@@ -1,5 +1,6 @@
 module forcecalculator;
 
+import std.math;
 import std.stdio;
 
 import gl3n.linalg;

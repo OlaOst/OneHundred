@@ -1,5 +1,7 @@
 module integrator.derivative;
 
+import std.math;
+
 import gl3n.linalg;
 
 

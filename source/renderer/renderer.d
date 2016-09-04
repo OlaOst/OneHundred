@@ -2,6 +2,7 @@ module renderer.renderer;
 
 import std.algorithm;
 import std.array;
+import std.conv;
 import std.file;
 import std.range;
 import std.string;
@@ -14,6 +15,7 @@ import glamour.shader;
 import glamour.texture;
 import glamour.vao;
 import glamour.vbo;
+import glamour.util;
 
 import renderer.coloredtexturerenderer;
 import window;

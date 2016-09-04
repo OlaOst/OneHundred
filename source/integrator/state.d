@@ -1,5 +1,6 @@
 module integrator.state;
 
+import std.conv;
 import std.math;
 import std.stdio;
 

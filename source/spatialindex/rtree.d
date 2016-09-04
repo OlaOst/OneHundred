@@ -4,6 +4,7 @@ import std.algorithm;
 import std.range;
 
 import gl3n.aabb;
+import gl3n.linalg;
 
 import spatialindex.spatialindex;
 

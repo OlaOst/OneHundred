@@ -17,6 +17,12 @@ class GraphicsBlob
     data = new GraphicsData();
   }
   
+  this(Texture2D texture, GraphicsData data)
+  {
+    this.texture = texture;
+    this.data = data;
+  }
+  
   void reset()
   {
     data.vertices.length = 0;

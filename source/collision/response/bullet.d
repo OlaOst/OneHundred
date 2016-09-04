@@ -1,5 +1,6 @@
 module collision.response.bullet;
 
+import std.algorithm;
 import std.conv;
 import std.math;
 import std.random;

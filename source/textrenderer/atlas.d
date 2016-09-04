@@ -1,6 +1,7 @@
 module textrenderer.atlas;
 
 import std.conv;
+import std.math;
 import std.range;
 import std.stdio;
 

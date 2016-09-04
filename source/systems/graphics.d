@@ -23,8 +23,7 @@ class Graphics : System!GraphicSource
 {
   this(Renderer renderer, TextRenderer textRenderer, Camera camera, Texture2D[string] textures)
   {
-    shader = new Shader("shaders/coloredtexture.shader");
-    
+    this.shader = new Shader("shaders/coloredtexture.shader");
     this.textures = textures;
     this.renderer = renderer;
     this.textRenderer = textRenderer;
@@ -72,22 +71,13 @@ class Graphics : System!GraphicSource
     assert(entity.has("size"));
     auto size = entity.get!double("size", entity.get!float("size")); // TODO: should only be double
     
-    assert(position.isFinite);
-    assert(!angle.isNaN);
-    assert(size > 0, size.to!string);
-    
     return new GraphicSource(source, position, angle, size, data);
   }
   
   void updateValues()
   {
     blobs.byValue.each!(blob => blob.reset());
-    
-    foreach (component; components)
-    {
-      assert(component.sourceName in blobs);
-      blobs[component.sourceName].addData(component.transformedData);
-    }
+    components.each!(component => blobs[component.sourceName].addData(component.transformedData));
     blobs.each!((name, blob) => blob.render(shader, name == "polygon", camera.transform));
     renderer.toScreen();
   }

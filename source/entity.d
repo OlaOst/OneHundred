@@ -1,6 +1,7 @@
 module entity;
 
 import std.algorithm;
+import std.conv;
 
 import gl3n.linalg;
 

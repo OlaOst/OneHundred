@@ -3,6 +3,7 @@ module converters;
 import std.algorithm;
 import std.array;
 import std.conv;
+import std.math;
 
 import gl3n.aabb;
 import gl3n.linalg;

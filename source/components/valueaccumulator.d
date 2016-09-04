@@ -1,6 +1,7 @@
 module components.valueaccumulator;
 
 import std.algorithm;
+import std.math;
 
 import gl3n.aabb;
 import gl3n.linalg;

@@ -15,7 +15,6 @@
     "gl3n": ">=1.2.0",
     "glamour": ">=1.0.1",
   },
-  "importPaths" : ["../glamour"],
 
   "versions": ["Derelict3", "SDLImage", "gl3n", "VibeCustomMain"],
 }

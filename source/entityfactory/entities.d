@@ -1,6 +1,7 @@
 module entityfactory.entities;
 
 import std.algorithm;
+import std.conv;
 import std.file;
 import std.random;
 import std.range;

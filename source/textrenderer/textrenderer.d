@@ -2,6 +2,7 @@ module textrenderer.textrenderer;
 
 import std.conv;
 import std.exception;
+import std.math;
 import std.range;
 import std.stdio;
 import std.string;

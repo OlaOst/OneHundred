@@ -2,6 +2,7 @@ module navigationinput;
 
 import std.algorithm;
 import std.conv;
+import std.math;
 import std.random;
 import std.range;
 
