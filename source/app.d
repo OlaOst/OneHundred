@@ -47,7 +47,7 @@ void main(string[] args)
   npcEntityGroups.each!(npcEntityGroup => systemSet.addEntityCollection(npcEntityGroup));
 
   auto playerSet = "data/playership.txt".createEntityCollectionFromFile;
-  
+
   if (listenPort == 5578)
     playerSet["player.ship.hull"]["graphicsource"] = "images/playerShip1_red.png";
   systemSet.addEntityCollection(playerSet);
@@ -57,12 +57,13 @@ void main(string[] args)
   systemSet.addEntity(mouseCursor);
 
   //systemSet.addEntity(createMusic());
+  systemSet.addEntityCollection("data/testoutline.txt".createEntityCollectionFromFile);
 
   auto gameController = createGameController();
   systemSet.addEntity(gameController);
   auto editController = createEditController();
   systemSet.addEntity(editController);
-  systemSet.addDebugEntities();
+  //systemSet.addDebugEntities();
   Entity debugText;
 
   while (!quit)
@@ -86,13 +87,13 @@ void main(string[] args)
     addParticles(systemSet);
     addBullets(npcEntityGroups, systemSet);
     addNetworkEntities(systemSet);
-    
+
     npcEntityGroups = npcEntityGroups.filter!(npcEntityGroup => !npcEntityGroup.values
       .all!(npcEntity => npcEntity.get!bool("ToBeRemoved"))).array;
     systemSet.removeEntitiesToBeRemoved();
 
     systemSet.updateDebugEntities();
-    
+
     makeSpatialTreeBoxes(systemSet.collisionHandler.boxes).each!(box => systemSet.addEntity(box));
   }
 }

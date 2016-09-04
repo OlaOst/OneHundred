@@ -14,6 +14,7 @@ import gl3n.linalg;
 
 import textrenderer.atlas;
 import textrenderer.glyph;
+import textrenderer.outline;
 
 
 class TextRenderer
@@ -45,11 +46,21 @@ class TextRenderer
     FT_Set_Pixel_Sizes(face, glyphSize, glyphSize);
 
     foreach (size_t index; iota(0, 256))
+    //foreach (size_t index; iota(32, 128))
     {
       glyphSet[index/*.to!char*/] = face.loadGlyph(index.to!char, glyphSize);
     }
 
     atlas = glyphSet.createFontAtlas(defaultFont, glyphSize);
+
+    foreach (size_t index; iota(32, 128))
+    {
+      outlineSet[index] = face.loadOutline(index.to!char);
+    }
+
+    //auto outline = face.loadOutline('e');
+    //outline.writeln;
+    //assert(0);
   }
 
   public void close()
@@ -88,5 +99,6 @@ class TextRenderer
 
   private static uint colorComponents = 4;
   private Glyph[256] glyphSet;
+  public Outline[256] outlineSet;
   public Texture2D atlas;
 }
