@@ -23,7 +23,8 @@ class Graphics : System!GraphicSource
 {
   this(Renderer renderer, TextRenderer textRenderer, Camera camera, Texture2D[string] textures)
   {
-    this.shader = new Shader("shaders/coloredtexture.shader");
+    this.shaders["coloredtexture"] = new Shader("shaders/coloredtexture.shader");
+    this.shaders["textoutline"] = new Shader("shaders/textoutline.shader");
 
     this.textures = textures;
     this.renderer = renderer;
@@ -67,15 +68,58 @@ class Graphics : System!GraphicSource
     else if (source == "textoutline")
     {
       auto text = entity.get!string("text");
-      auto outline = textRenderer.outlineSet[text[0]];
+      //auto outline = textRenderer.outlineSet[text[0]];
+      
+      //auto contours = text.map!(letter => textRenderer.outlineSet[letter].contours).joiner;
+      
+      auto cursor = vec2(0,0);
+      
+      vec3[] vertices;
+      vec4[] colors;
+      
+      auto lines = text.splitter("\n");
+      foreach (line; lines)
+      {
+        foreach (letter; line)
+        {
+          auto outline = textRenderer.outlineSet[letter];
+          auto glyph = textRenderer.getGlyphForLetter(letter);
+          
+          auto letterVertices = outline.contours.map!(contour => contour.curves.map!(curve => [vec3(0,0,0), vec3(curve.start,0), vec3(curve.end,0)]).joiner.array)
+                                                .map!(vertices => vertices ~ [vec3(0,0,0), vertices[$-1], vertices[0]])
+                                                .joiner;
 
-      auto vertices = outline.contours[0].curves.map!(curve => [vec3(0,0,0), vec3(curve.start,0), vec3(curve.end,0)]).joiner.array;
-      float red = 0.0;
-      auto colors = outline.contours[0].curves.map!(curve => [vec4(1-red,1,1,0), vec4(red,0,0.5,1), vec4(red+=1.0/outline.contours[0].curves.length,0,0.5,1)]).joiner.array;
-      //auto vertices = outline.contours[0].curves.map!(curve => curve.start).array;
-      //vertices ~= outline.contours[0].curves[$-1].end;
+          if (letterVertices.empty)
+            continue;
+                                                
+          auto furthestVertex = letterVertices.minCount!((a, b) => a.magnitude > b.magnitude)[0];
+          auto normalizedLetterVertices = letterVertices.map!(vertex => vertex / furthestVertex.magnitude)
+                                                        .map!(vertex => vertex + vec3((glyph.offset * 0.25 + cursor), 0.0))
+                                                        .array;
+          
+          cursor += glyph.advance * 0.5;
+          
+          import std.stdio;
+          debug writeln("drawing ", letter, " at cursor ", cursor, " with glyph offset ", glyph.offset);
+          
+          //auto vertices = outline.contours[0].curves.map!(curve => [vec3(0,0,0), vec3(curve.start,0), vec3(curve.end,0)]).joiner.array;
+          //vertices ~= [vec3(0,0,0), vertices[$-1], vertices[0]];
+          
+          auto letterColors = vec4(1,1,1,1).repeat.take(normalizedLetterVertices.length).array;
+          
+          //float red = 0.0;
+          //auto colors = outline.contours[0].curves.map!(curve => [vec4(1-red,1,1,0), vec4(red,0,0.5,1), vec4(red+=1.0/outline.contours[0].curves.length,0,0.5,1)]).joiner.array;
+          //auto colors = outline.contours[0].curves.map!(curve => [vec4(1,1,1,1), vec4(1,1,1,1), vec4(1,1,1,1)]).joiner.array;
+          //colors ~= [vec4(1,1,1,0), colors[$-1], colors[0]];
+          //auto vertices = outline.contours[0].curves.map!(curve => curve.start).array;
+          //vertices ~= outline.contours[0].curves[$-1].end;
+          
+          vertices ~= normalizedLetterVertices;
+          colors ~= letterColors;
+        }
+        cursor = vec2(0.0, cursor.y - 1.0);
+      }
       data = new GraphicsData(vertices, colors);
-
     }
     else
       data = new GraphicsData(baseSquare.dup.map!(vertex => vertex * mat3.zrotation(PI/2)).array, baseTexCoordsSquare.dup);
@@ -92,7 +136,15 @@ class Graphics : System!GraphicSource
   {
     blobs.byValue.each!(blob => blob.reset());
     components.each!(component => blobs[component.sourceName].addData(component.transformedData));
-    blobs.each!((name, blob) => blob.render(shader, name == "polygon" || name == "textoutline", camera.transform));
+    foreach (name, blob; blobs)
+    {
+      if (name == "textoutline")
+        blob.renderTextOutline(shaders, camera.transform);
+      else
+        blob.render(shaders["coloredtexture"], name == "polygon", camera.transform);
+    }
+    //blobs.each!((name, blob) => blob.render(shaders["coloredtexture"], name == "polygon", camera.transform));
+    //blobs.each!((name, blob) => blob.renderTextOutline(shaders["textoutline"], camera.transform));
     renderer.toScreen();
   }
 
@@ -117,7 +169,7 @@ class Graphics : System!GraphicSource
       entity["aabb"] = [components[index].aabb.min, components[index].aabb.max];
   }
 
-  Shader shader;
+  Shader[string] shaders;
   Texture2D[string] textures;
   GraphicsBlob[string] blobs;
 

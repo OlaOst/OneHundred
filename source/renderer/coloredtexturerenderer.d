@@ -18,6 +18,9 @@ public void drawColoredTexture(Shader shader, mat4 transform,
   auto textureBuffer = new Buffer(texCoords);
   auto colorsBuffer = new Buffer(colors);
 
+  glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+  glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+  
   shader.bind();
 
   shader.uniform("transform", transform);

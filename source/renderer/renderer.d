@@ -49,41 +49,12 @@ class Renderer
       vao.remove();
   }
 
-  public void render(mat4 transform,
-                     vec3[][string] vertices, vec4[][string] colors,
-                     vec2[][string] texCoords, Texture2D[string] textureSet)
-  {
-    foreach (name; textureSet.byKey)
-    {
-      assert(name in textureSet, "could not find " ~ name ~ 
-                                 " in textureSet " ~ textureSet.keys.to!string ~ 
-                                 ", from texCoords " ~ texCoords.keys.to!string);
-
-      textureSet[name].bind();
-      
-      assert(name in vertices, "Could not find " ~ name ~ " in " ~ vertices.byKey.to!string);
-      
-      auto colorsForTexture = colors.get(name, vec4(0.0).repeat(vertices[name].length).array);
-      
-      assert("coloredtexture" in shaderSet);
-      drawColoredTexture(shaderSet["coloredtexture"], 
-                         transform,
-                         vertices[name], 
-                         texCoords[name], 
-                         colorsForTexture,
-                         name == "polygon");
-      
-      textureSet[name].unbind();
-    }
-    toScreen();
-  }
-
   public void toScreen()
   {
     SDL_GL_SwapWindow(window);
     
     checkgl!glClearColor(0.0, 0.0, 0.33, 1.0);
-    checkgl!glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    checkgl!glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
   }
 
   private SDL_Window *window;

@@ -23,6 +23,7 @@ SDL_Window* getWindow(int screenWidth, int screenHeight)
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+  SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
   auto window = SDL_CreateWindow("OneHundred",
                                  SDL_WINDOWPOS_CENTERED,
@@ -44,6 +45,9 @@ SDL_Window* getWindow(int screenWidth, int screenHeight)
   //glEnable(GL_DEPTH_TEST);
   glEnable(GL_BLEND);
   //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  
+  glEnable(GL_STENCIL_TEST);
+  
   DerelictGL3.reload();
   
   glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);

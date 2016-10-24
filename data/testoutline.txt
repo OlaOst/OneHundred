@@ -1,5 +1,5 @@
-size = 2.5
+size = 0.5
 graphicsource = textoutline
-text = N
+text = outline rendered text
 color = [1,1,1,1]
 position = [1,1,0]
