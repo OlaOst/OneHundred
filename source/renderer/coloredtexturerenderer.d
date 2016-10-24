@@ -8,7 +8,7 @@ import gl3n.linalg;
 
 
 public void drawColoredTexture(Shader shader, mat4 transform,
-                               vec3[] vertices, vec2[] texCoords, vec4[] colors, 
+                               vec3[] vertices, vec2[] texCoords, vec4[] colors,
                                bool ignoreTexture)
 {
   assert(vertices.length == texCoords.length);
@@ -32,9 +32,7 @@ public void drawColoredTexture(Shader shader, mat4 transform,
 
   checkgl!glDrawArrays(GL_TRIANGLES, 0, cast(int)(vertices.length));
 
-  version(OSX) {} else
-    verticesBuffer.remove();
-
+  verticesBuffer.remove();
   textureBuffer.remove();
   colorsBuffer.remove();
 }
