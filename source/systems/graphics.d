@@ -99,10 +99,8 @@ class Graphics : System!GraphicSource
 
           if (letterVertices.empty)
             continue;
-                                                
-          auto furthestVertex = letterVertices.minCount!((a, b) => a.magnitude > b.magnitude)[0];
-          auto normalizedLetterVertices = letterVertices.map!(vertex => vertex / furthestVertex.magnitude)
-                                                        .map!(vertex => vertex + vec3((glyph.offset * 0.0 + cursor), 0.0))
+
+          auto normalizedLetterVertices = letterVertices.map!(vertex => vertex + vec3((glyph.offset * 0.0 + cursor), 0.0))
                                                         .array;
           
           cursor += glyph.advance * 0.5;

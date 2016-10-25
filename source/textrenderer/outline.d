@@ -40,6 +40,11 @@ Outline loadOutline(FT_Face face, char letter)
     FT_Outline_Get_CBox(&ftoutline, &box);
     //writeln("control box: ", box);
 
+    // pixelFormatScale from https://www.freetype.org/freetype2/docs/glyphs/glyphs-6.html
+    auto pixelFormatScale = 64.0;
+    auto scaleFactor = vec2(1.0 / (face.size.metrics.x_ppem * pixelFormatScale), 
+                            1.0 / (face.size.metrics.y_ppem * pixelFormatScale));
+    
     FT_Outline_Funcs decompFuncs;
 
     extern(C) FT_Outline_MoveToFunc moveTo = cast(FT_Outline_MoveToFunc)function(const FT_Vector* to, Outline* outline)
@@ -110,5 +115,19 @@ Outline loadOutline(FT_Face face, char letter)
 
     FT_Outline_Decompose(&ftoutline, &decompFuncs, &outline);
 
+    foreach (ref contour; outline.contours)
+    { 
+      contour.pos = vec2(contour.pos.x * scaleFactor.x, contour.pos.y * scaleFactor.y);
+      foreach (ref curve; contour.curves)
+      {
+        curve.start = vec2(curve.start.x * scaleFactor.x, curve.start.y * scaleFactor.y);
+        curve.end = vec2(curve.end.x * scaleFactor.x, curve.end.y * scaleFactor.y);
+        foreach (ref point; curve.controlPoints)
+        { 
+          point = vec2(point.x * scaleFactor.x, point.y * scaleFactor.y);
+        }
+      }
+    }
+    
     return outline;
 }
