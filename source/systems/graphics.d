@@ -42,6 +42,14 @@ class Graphics : System!GraphicSource
     return entity.has("graphicsource");
   }
 
+  override void tweakEntity(ref Entity entity)
+  {
+    if ("text" in entity.values)
+    {
+      entity["text"] = entity["text"].replace("\\n", "\n");
+    }
+  }
+  
   GraphicSource makeComponent(Entity entity)
   {
     auto source = entity.get!string("graphicsource");
@@ -94,7 +102,7 @@ class Graphics : System!GraphicSource
                                                 
           auto furthestVertex = letterVertices.minCount!((a, b) => a.magnitude > b.magnitude)[0];
           auto normalizedLetterVertices = letterVertices.map!(vertex => vertex / furthestVertex.magnitude)
-                                                        .map!(vertex => vertex + vec3((glyph.offset * 0.25 + cursor), 0.0))
+                                                        .map!(vertex => vertex + vec3((glyph.offset * 0.0 + cursor), 0.0))
                                                         .array;
           
           cursor += glyph.advance * 0.5;
