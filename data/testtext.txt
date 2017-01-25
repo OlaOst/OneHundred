@@ -1,0 +1,5 @@
+graphicsource = text
+size = 2.5
+text = e
+color = [1,1,1,1]
+position = [0.5, 1.2, 0]

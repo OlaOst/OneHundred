@@ -25,17 +25,22 @@ fragment:
 
   void main(void)
   { 
+    // Given a point P = P0·s + P1·t + P2·(1-s-t) in the triangle (P0, P1, P2), the pixel in the triangle is only flipped if (s/2 + t)² < t
     // find barycentric coords
     // flip if (s/2 + t)^2 < t
-  
-    color = vec4(inColor.r, 0, 0, 0);
+
+    float s = inBarycentric.z;
+    float t = inBarycentric.x;
     
-    //color = inColor;
-    //color = inColor * 255;
-    //color = vec4(inColor.rgb, 1.0/255.0);
-    //color = vec4(1.0/255.0, 1.0/255.0, 1.0/255.0, 1.0/255.0);
-    /*if (int(color.r * 255.0) % 2 == 0)
-      color = vec4(1,1,1,1);
+    float check = (s/2 + t) * (s/2 + t);
+    
+    //color = vec4(0, 0, 0, 0);
+    
+    //color = vec4(inBarycentric.x, inColor.g, inColor.b, 0);
+    
+    if (check < t)
+      //color = inColor;
+      color = vec4(1+inColor.r*0.1,1,1,1);
     else
-      color = vec4(1,1,0,1);*/
+      color = vec4(0,0,0,0);
   }

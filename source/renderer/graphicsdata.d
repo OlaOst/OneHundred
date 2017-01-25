@@ -36,6 +36,14 @@ class GraphicsData
     this.colors = colors;
   }
   
+  this(vec3[] vertices, vec3[] controlVertices, vec4[] colors)
+  {
+    this.vertices = vertices;
+    this.controlVertices = controlVertices;
+    this.texCoords = vec2(0).repeat(vertices.length).array;
+    this.colors = colors;
+  }
+  
   this(vec3[] vertices, vec4 color)
   {
     this.vertices = vertices;
@@ -50,12 +58,21 @@ class GraphicsData
     this.colors = colors;
   }
   
+  this(vec3[] vertices, vec3[] controlVertices, vec2[] texCoords, vec4[] colors)
+  {
+    this.vertices = vertices;
+    this.controlVertices = controlVertices;
+    this.texCoords = texCoords;
+    this.colors = colors;
+  }
+  
   void setColor(vec4 color)
   {
     colors = color.repeat(vertices.length).array;
   }
   
   vec3[] vertices;
+  vec3[] controlVertices;
   vec4[] colors;
   vec2[] texCoords;
 }

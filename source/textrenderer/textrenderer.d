@@ -41,7 +41,7 @@ class TextRenderer
     enforce(!fontError,
             "Error loading " ~ defaultFont ~ ": " ~ fontError.to!string);
 
-    static enum glyphSize = 32;
+    static enum glyphSize = 64;
 
     FT_Set_Pixel_Sizes(face, glyphSize, glyphSize);
 

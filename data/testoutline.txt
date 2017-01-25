@@ -1,5 +1,7 @@
-size = 0.5
 graphicsource = textoutline
+size = 0.5
 text = outline rendered text\nnew line\nabcefghijklmnopqrstuvwxyz\nABCDEFGHIJKLMNOPQRSTUVWXYZ
+#size = 2.5
+#text = e
 color = [1,1,1,1]
-position = [-3,2.5,0]
+position = [-1.5, 0.0, 0]

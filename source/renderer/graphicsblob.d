@@ -34,6 +34,7 @@ class GraphicsBlob
   void addData(GraphicsData data)
   {
     this.data.vertices ~= data.vertices;
+    this.data.controlVertices ~= data.controlVertices;
     this.data.texCoords ~= data.texCoords;
     this.data.colors ~= data.colors;
   }
@@ -71,9 +72,11 @@ class GraphicsBlob
                     data.texCoords[0 .. (counter / 10)*3 % data.texCoords.length],
                     data.colors[0 .. (counter / 10)*3 % data.colors.length]);
     */
+    
     drawTextOutline(shaderSet, 
                     cameraTransform,
                     data.vertices,
+                    data.controlVertices,
                     data.texCoords,
                     data.colors);
                        

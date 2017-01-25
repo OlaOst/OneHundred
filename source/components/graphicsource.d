@@ -48,7 +48,7 @@ class GraphicSource
   
   @property transformedData()
   {
-    return new GraphicsData(transformedVertices, data.texCoords, data.colors);
+    return new GraphicsData(transformedVertices, transformedControlVertices, data.texCoords, data.colors);
   }
   
   @property transformedVertices()
@@ -63,6 +63,20 @@ class GraphicSource
   body
   {
     return data.vertices.map!(vertex => vertex * mat3.zrotation(-angle) * size + position).array;
+  }
+  
+  @property transformedControlVertices()
+  in
+  {
+    assert(this);
+  }
+  out(result)
+  {
+    assert(result.all!(vertex => vertex.isFinite));
+  }
+  body
+  {
+    return data.controlVertices.map!(vertex => vertex * mat3.zrotation(-angle) * size + position).array;
   }
   
   @property aabb()

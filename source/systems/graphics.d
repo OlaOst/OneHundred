@@ -25,6 +25,7 @@ class Graphics : System!GraphicSource
   {
     this.shaders["coloredtexture"] = new Shader("shaders/coloredtexture.shader");
     this.shaders["textoutline"] = new Shader("shaders/textoutline.shader");
+    this.shaders["textquadratic"] = new Shader("shaders/textquadratic.shader");
 
     this.textures = textures;
     this.renderer = renderer;
@@ -76,14 +77,10 @@ class Graphics : System!GraphicSource
     else if (source == "textoutline")
     {
       auto text = entity.get!string("text");
-      //auto outline = textRenderer.outlineSet[text[0]];
-      
-      //auto contours = text.map!(letter => textRenderer.outlineSet[letter].contours).joiner;
-      
       auto cursor = vec2(0,0);
-      
       vec3[] vertices;
       vec4[] colors;
+      vec3[] controlVertices;
       
       auto lines = text.splitter("\n");
       foreach (line; lines)
@@ -102,12 +99,23 @@ class Graphics : System!GraphicSource
 
           auto normalizedLetterVertices = letterVertices.map!(vertex => vertex + vec3((glyph.offset * 0.0 + cursor), 0.0))
                                                         .array;
-          
+
+          auto letterControlVertices = outline.contours.map!(contour => contour.curves.map!(curve => [vec3(curve.start,0), vec3(curve.end,0), vec3(curve.controlPoints.length > 0 ? curve.controlPoints[0] : (curve.start+curve.end)*0.5,0)]).joiner.array)
+          //auto letterControlVertices = outline.contours.map!(contour => contour.curves.map!(curve => [vec3(curve.start,0), vec3(curve.end,0), vec3(curve.controlPoints.length > 0 ? curve.controlPoints[0] : vec2(0,0) ,0)]).joiner.array)
+          //auto letterControlVertices = outline.contours.map!(contour => contour.curves.map!(curve => [vec3(curve.controlPoints.length > 0 ? curve.controlPoints[0] : vec2(0,0) ,0), vec3(curve.start,0), vec3(curve.end,0)]).joiner.array)
+                                                       //.map!(vertices => vertices ~ [vec3(0,0,0), vertices[$-1], vertices[0]])
+                                                       .joiner;
+          auto normalizedLetterControlVertices = letterControlVertices.map!(vertex => vertex + vec3((glyph.offset * 0.0 + cursor), 0.0))
+                                                                      .array;
+                                                        
           cursor += glyph.advance * 0.5;
           
           import std.stdio;
           debug writeln("drawing ", letter, " at cursor ", cursor, " with glyph offset ", glyph.offset);
-          
+          debug writeln("letter vertices: ");
+          debug std.range.chunks(normalizedLetterVertices, 3).each!writeln;
+          debug writeln("controlvertices: ");
+          debug std.range.chunks(normalizedLetterControlVertices, 3).each!writeln;
           //auto vertices = outline.contours[0].curves.map!(curve => [vec3(0,0,0), vec3(curve.start,0), vec3(curve.end,0)]).joiner.array;
           //vertices ~= [vec3(0,0,0), vertices[$-1], vertices[0]];
           
@@ -121,11 +129,12 @@ class Graphics : System!GraphicSource
           //vertices ~= outline.contours[0].curves[$-1].end;
           
           vertices ~= normalizedLetterVertices;
+          controlVertices ~= normalizedLetterControlVertices;
           colors ~= letterColors;
         }
         cursor = vec2(0.0, cursor.y - 1.0);
       }
-      data = new GraphicsData(vertices, colors);
+      data = new GraphicsData(vertices, controlVertices, colors);
     }
     else
       data = new GraphicsData(baseSquare.dup.map!(vertex => vertex * mat3.zrotation(PI/2)).array, baseTexCoordsSquare.dup);
