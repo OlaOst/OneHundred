@@ -8,7 +8,7 @@ import std.range;
 import std.string;
 import std.typecons;
 
-import derelict.opengl3.gl3;
+import derelict.opengl;
 import derelict.sdl2.sdl;
 import gl3n.linalg;
 import glamour.shader;

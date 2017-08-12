@@ -4,7 +4,7 @@ import std.range;
 import std.stdio;
 
 import derelict.freetype.ft;
-import derelict.opengl3.gl3;
+import derelict.opengl;
 import gl3n.linalg;
 
 

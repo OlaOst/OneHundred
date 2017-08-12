@@ -8,7 +8,7 @@ import std.stdio;
 import std.string;
 
 import derelict.freetype.ft;
-import derelict.opengl3.gl3;
+import derelict.opengl;
 import glamour.texture;
 import gl3n.linalg;
 

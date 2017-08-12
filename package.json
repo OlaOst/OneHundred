@@ -7,14 +7,14 @@
   "version": "0.0.1",
   "mainSourceFile": "source/app.d",
   "dependencies": {
-    "derelict-sdl2": "2.0.0",
-    "derelict-gl3": "1.0.18",
-    "derelict-al": "1.0.1",
-    "derelict-vorbis": "1.0.1",
-    "derelict-ft": "1.0.2",
+    "derelict-sdl2": "3.0.0-beta.3",
+    "derelict-gl3": "2.0.0-beta.3",
+    "derelict-al": "2.0.0-beta.1",
+    "derelict-vorbis": "2.0.0-beta.2",
+    "derelict-ft": "2.0.0-beta.1",
     "gl3n": "1.3.1",
     "glamour": "1.0.1",
   },
 
-  "versions": ["Derelict3", "SDLImage", "gl3n", "VibeCustomMain"],
+  "versions": ["Derelict3", "SDLImage2", "gl3n", "VibeCustomMain"],
 }

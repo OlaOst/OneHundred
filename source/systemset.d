@@ -5,7 +5,7 @@ import std.array;
 import std.datetime;
 import std.string;
 
-import derelict.opengl3.gl3;
+import derelict.opengl;
 
 import camera;
 import entity;

@@ -5,7 +5,7 @@ import std.math;
 import std.range;
 import std.stdio;
 
-import derelict.opengl3.gl3;
+import derelict.opengl;
 import gl3n.linalg;
 import glamour.texture;
 

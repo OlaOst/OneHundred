@@ -3,7 +3,7 @@ module window;
 import std.exception;
 import std.conv;
 
-import derelict.opengl3.gl3;
+import derelict.opengl;
 import derelict.sdl2.image;
 import derelict.sdl2.sdl;
 

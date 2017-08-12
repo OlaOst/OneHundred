@@ -6,8 +6,7 @@ import std.parallelism;
 import std.stdio;
 
 import derelict.ogg.ogg;
-import derelict.vorbis.vorbis;
-import derelict.vorbis.file;
+import derelict.vorbis;
 import derelict.openal.al;
 import gl3n.linalg;
 

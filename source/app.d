@@ -32,10 +32,23 @@ void main(string[] args)
   int xres = 800;
   int yres = 600;
 
+  writeln("creating renderer");
+
   auto renderer = new Renderer(xres, yres);
+
+  writeln("creating textrenderer");
+
   auto textRenderer = new TextRenderer();
+
+  writeln("creating camera");
+
   auto camera = new Camera();
+
+  writeln("creating systemset");
+
   auto systemSet = new SystemSet(renderer, textRenderer, camera, listenPort);
+
+  writeln("created systemset");
 
   scope(exit)
   {

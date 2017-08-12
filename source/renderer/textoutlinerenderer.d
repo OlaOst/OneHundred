@@ -2,7 +2,7 @@ module renderer.textoutlinerenderer;
 
 import std.range;
 
-import derelict.opengl3.gl3;
+import derelict.opengl;
 import glamour.shader;
 import glamour.util;
 import glamour.vbo;

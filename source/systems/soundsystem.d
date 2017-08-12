@@ -7,9 +7,7 @@ import std.stdio;
 
 import derelict.openal.al;
 import derelict.ogg.ogg;
-//import derelict.vorbis.enc;
-import derelict.vorbis.file;
-import derelict.vorbis.vorbis;
+import derelict.vorbis;
 
 import audio.raw;
 import audio.stream;
