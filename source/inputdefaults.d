@@ -29,11 +29,11 @@ static this()
   gameControls.key[SDLK_PAGEUP] = "zoomIn";
   gameControls.key[SDLK_PAGEDOWN] = "zoomOut";
   gameControls.key[SDLK_ESCAPE] = "quit";
-  gameControls.key[SDL_QUIT] = "quit";
+  gameControls.event[SDL_QUIT] = "quit";
   gameControls.key[SDLK_INSERT] = "addEntity";
   gameControls.key[SDLK_DELETE] = "removeEntity";
-  gameControls.key[SDL_SCANCODE_TAB] = "addEntity";
-  gameControls.key[SDL_SCANCODE_MINUS] = "removeEntity";
+  gameControls.scancode[SDL_SCANCODE_TAB] = "addEntity";
+  gameControls.scancode[SDL_SCANCODE_MINUS] = "removeEntity";
 
   gameControls.key[SDLK_F4] = "attemptNetworkConnection";
   gameControls.key[SDLK_F1] = "toggleDebugInfo";
