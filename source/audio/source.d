@@ -82,7 +82,7 @@ template getEnumValues(args...)
     alias getEnumValues = args;
 }
 
-enum auto enumNames = getEnumNames!(__traits(derivedMembers, derelict.openal.al));
+enum auto enumNames = getEnumNames!(__traits(derivedMembers, derelict.openal.types));
 enum auto enumValues = getEnumValues!enumNames;
 static immutable string[ALenum] enumMapping;
 
