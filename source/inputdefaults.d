@@ -1,6 +1,6 @@
 module inputdefaults;
 
-import derelict.sdl2.sdl;
+import bindbc.sdl;
 
 import components.input;
 

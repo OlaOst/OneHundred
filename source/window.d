@@ -4,14 +4,22 @@ import std.exception;
 import std.conv;
 
 import derelict.opengl;
-import derelict.sdl2.image;
-import derelict.sdl2.sdl;
+import bindbc.sdl;
 
 
 SDL_Window* getWindow(int screenWidth, int screenHeight)
-{
-  DerelictSDL2.load();//SharedLibVersion(2, 0, 3));
-  DerelictSDL2Image.load();//SharedLibVersion(2, 0, 0));
+{  
+  SDLSupport loadedSDLSupport = loadSDL();
+  
+  if (loadedSDLSupport != sdlSupport)
+  {
+    enforce(loadedSDLSupport != SDLSupport.noLibrary, "Failed to load SDL library");
+    enforce(loadedSDLSupport != SDLSupport.badLibrary, "Error loading SDL library");
+  }
+  
+  auto loadedSDLImage = loadSDLImage();
+  enforce(loadedSDLImage == sdlImageSupport, "Failed to load SDLImage library");
+  
   DerelictGL3.load();
 
   enforce(SDL_Init(SDL_INIT_VIDEO) == 0, "Failed to initialize SDL: " ~ SDL_GetError().to!string);

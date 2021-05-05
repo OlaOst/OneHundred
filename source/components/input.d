@@ -2,7 +2,7 @@ module components.input;
 
 import std.conv;
 
-import derelict.sdl2.sdl;
+import bindbc.sdl;
 
 import inputdefaults;
 

@@ -4,7 +4,7 @@ import std.algorithm;
 import std.stdio;
 import std.string;
 
-import derelict.sdl2.sdl;
+import bindbc.sdl;
 import gl3n.linalg;
 
 import components.input;

@@ -9,7 +9,7 @@ import std.string;
 import std.typecons;
 
 import derelict.opengl;
-import derelict.sdl2.sdl;
+import bindbc.sdl;
 import gl3n.linalg;
 import glamour.shader;
 import glamour.texture;
