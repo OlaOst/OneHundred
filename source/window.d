@@ -1,24 +1,30 @@
 module window;
 
-import std.exception;
-import std.conv;
+import std;
 
 import derelict.opengl;
 import bindbc.sdl;
+import loader = bindbc.loader.sharedlib;
 
 
 SDL_Window* getWindow(int screenWidth, int screenHeight)
-{  
-  SDLSupport loadedSDLSupport = loadSDL();
-  
-  if (loadedSDLSupport != sdlSupport)
+{
+  version (Windows)
   {
-    enforce(loadedSDLSupport != SDLSupport.noLibrary, "Failed to load SDL library");
-    enforce(loadedSDLSupport != SDLSupport.badLibrary, "Error loading SDL library");
+    scope(failure) 
+      loader.errors.each!(info => writeln(info.error.to!string, ": ", info.message.to!string));
+        
+    auto loadedSDLSupport = loadSDL("SDL2.dll");
+    
+    if (loadedSDLSupport != sdlSupport)
+    {
+      enforce(loadedSDLSupport != SDLSupport.noLibrary, "Failed to load SDL library");
+      enforce(loadedSDLSupport != SDLSupport.badLibrary, "Error loading SDL library");
+    }
+    
+    auto loadedSDLImage = loadSDLImage("SDL2_Image.dll");
+    enforce(loadedSDLImage == sdlImageSupport, "Failed to load SDLImage library");
   }
-  
-  auto loadedSDLImage = loadSDLImage();
-  enforce(loadedSDLImage == sdlImageSupport, "Failed to load SDLImage library");
   
   DerelictGL3.load();
 

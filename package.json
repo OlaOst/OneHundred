@@ -17,5 +17,5 @@
     "glamour": "1.0.1",
   },
 
-  "versions": ["Derelict3", "SDLImage2", "gl3n", "VibeCustomMain", "SDL_Image", "SDL_204"],
+  "versions": ["Derelict3", "SDLImage2", "gl3n", "VibeCustomMain", "SDL_Image", "SDL_214"],
 }
