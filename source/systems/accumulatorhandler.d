@@ -1,6 +1,6 @@
 module systems.accumulatorhandler;
 
-import std.algorithm;
+import std;
 
 import gl3n.linalg;
 

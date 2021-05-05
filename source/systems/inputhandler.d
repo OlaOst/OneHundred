@@ -1,8 +1,6 @@
 module systems.inputhandler;
 
-import std.algorithm;
-import std.stdio;
-import std.string;
+import std;
 
 import bindbc.sdl;
 import gl3n.linalg;

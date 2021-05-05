@@ -1,7 +1,6 @@
 module systems.graphics;
 
-import std.algorithm;
-import std.range;
+import std;
 
 import gl3n.linalg;
 import glamour.shader;
