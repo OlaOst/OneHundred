@@ -1,9 +1,6 @@
 module systems.collisionhandler;
 
-import std.algorithm;
-import std.datetime;
-import std.range;
-import std.regex;
+import std;
 
 import gl3n.aabb;
 import gl3n.linalg;
@@ -56,6 +53,7 @@ class CollisionHandler : System!Collider
   {
     auto index = new RTree!Collider;
 
+    import std.datetime.stopwatch;
     auto broadPhaseTimer = StopWatch(AutoStart.yes);
     components.each!(component => index.insert(component));
     auto candidates = index.overlappingElements();

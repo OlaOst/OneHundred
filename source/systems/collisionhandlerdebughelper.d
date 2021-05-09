@@ -1,7 +1,7 @@
 module systems.collisionhandlerdebughelper;
 
-import std.datetime;
-import std.string;
+import std.datetime.stopwatch;
+import std.format;
 
 
 string getDebugText(StopWatch broadPhaseTimer, StopWatch narrowPhaseTimer,
@@ -11,9 +11,9 @@ string getDebugText(StopWatch broadPhaseTimer, StopWatch narrowPhaseTimer,
   static double dampenedBroadPhaseTimer = 0.0;
   static double dampenedNarrowPhaseTimer = 0.0;
   dampenedBroadPhaseTimer = dampenedBroadPhaseTimer * dampingFactor +
-                            broadPhaseTimer.peek.usecs * (1.0 - dampingFactor);
+                            broadPhaseTimer.peek.total!"usecs" * (1.0 - dampingFactor);
   dampenedNarrowPhaseTimer = dampenedNarrowPhaseTimer * dampingFactor +
-                             narrowPhaseTimer.peek.usecs * (1.0 - dampingFactor);
+                             narrowPhaseTimer.peek.total!"usecs" * (1.0 - dampingFactor);
   return format("collisionhandler checked %s/%s candidates\nbroadphase/narrowphase",
                 candidates, collisions) ~
          format("\ncollisionhandler timings %s/%s milliseconds\nbroadphase/narrowphase",
