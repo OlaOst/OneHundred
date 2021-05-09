@@ -1,6 +1,6 @@
 module systems.timehandler;
 
-import std.conv;
+import std;
 
 import accumulatortimer;
 import entity;
@@ -30,7 +30,7 @@ final class TimeHandler : System!double
   {
     timer.incrementAccumulator();
     
-    foreach (int index, ref double lifeTime; components)
+    foreach (index, ref double lifeTime; components)
     {
       lifeTime -= timer.frameTime;
       
@@ -41,7 +41,7 @@ final class TimeHandler : System!double
   
   void updateEntities()
   {
-    foreach (int index, double lifeTime; components)
+    foreach (index, double lifeTime; components)
     {
       entityForIndex[index]["lifeTime"] = lifeTime;
     }
