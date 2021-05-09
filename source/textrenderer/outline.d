@@ -4,7 +4,7 @@ import std.algorithm;
 import std.array;
 import std.range;
 
-import derelict.freetype.ft;
+import bindbc.freetype;
 import gl3n.linalg;
 
 

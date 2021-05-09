@@ -3,7 +3,7 @@ module textrenderer.glyph;
 import std.range;
 import std.stdio;
 
-import derelict.freetype.ft;
+import bindbc.freetype;
 import derelict.opengl;
 import gl3n.linalg;
 

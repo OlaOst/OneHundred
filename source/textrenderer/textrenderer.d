@@ -1,16 +1,12 @@
 module textrenderer.textrenderer;
 
-import std.conv;
-import std.exception;
-import std.math;
-import std.range;
-import std.stdio;
-import std.string;
+import std;
 
-import derelict.freetype.ft;
-import derelict.opengl;
+import bindbc.freetype;
+//import derelict.opengl;
 import glamour.texture;
 import gl3n.linalg;
+import loader = bindbc.loader.sharedlib;
 
 import textrenderer.atlas;
 import textrenderer.glyph;
@@ -21,7 +17,15 @@ class TextRenderer
 {
   this()
   {
-    DerelictFT.load();
+    scope(failure) 
+      loader.errors.each!(info => writeln(info.error.to!string, ": ", info.message.to!string));
+    
+    FTSupport loadedFreeTypeSupport = loadFreeType();
+    if (loadedFreeTypeSupport != ftSupport)
+    {
+      enforce(loadedFreeTypeSupport != FTSupport.noLibrary, "Failed to load FreeType library");
+      enforce(loadedFreeTypeSupport != FTSupport.badLibrary, "Error loading FreeType library");
+    }
 
     FT_Library library;
 
@@ -41,7 +45,7 @@ class TextRenderer
     enforce(!fontError,
             "Error loading " ~ defaultFont ~ ": " ~ fontError.to!string);
 
-    static enum glyphSize = 64;
+    static enum uint glyphSize = 64;
 
     FT_Set_Pixel_Sizes(face, glyphSize, glyphSize);
 
