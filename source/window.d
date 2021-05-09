@@ -2,18 +2,18 @@ module window;
 
 import std;
 
-import derelict.opengl;
+import bindbc.opengl;
 import bindbc.sdl;
 import loader = bindbc.loader.sharedlib;
 
 
 SDL_Window* getWindow(int screenWidth, int screenHeight)
 {
+  scope(failure) 
+    loader.errors.each!(info => writeln(info.error.to!string, ": ", info.message.to!string));
+      
   version (Windows)
-  {
-    scope(failure) 
-      loader.errors.each!(info => writeln(info.error.to!string, ": ", info.message.to!string));
-        
+  {        
     auto loadedSDLSupport = loadSDL("SDL2.dll");
     
     if (loadedSDLSupport != sdlSupport)
@@ -25,8 +25,6 @@ SDL_Window* getWindow(int screenWidth, int screenHeight)
     auto loadedSDLImage = loadSDLImage("SDL2_Image.dll");
     enforce(loadedSDLImage == sdlImageSupport, "Failed to load SDLImage library");
   }
-  
-  DerelictGL3.load();
 
   enforce(SDL_Init(SDL_INIT_VIDEO) == 0, "Failed to initialize SDL: " ~ SDL_GetError().to!string);
   //enforce(IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) & (IMG_INIT_JPG | IMG_INIT_PNG),
@@ -53,6 +51,14 @@ SDL_Window* getWindow(int screenWidth, int screenHeight)
 
   SDL_GL_SetSwapInterval(1);
 
+  auto loadedGLSupport = loadOpenGL();
+  if (loadedGLSupport != GLSupport.gl41)
+  {
+    enforce(loadedGLSupport != GLSupport.noLibrary, "Failed to load OpenGL library");
+    enforce(loadedGLSupport != GLSupport.badLibrary, "Error loading OpenGL library");
+    enforce(loadedGLSupport != GLSupport.noContext, "Did not get context after loading OpenGL library, forgot to create context first?");
+  }
+
   // setup gl viewport and etc
   glViewport(0, 0, screenWidth, screenHeight);
   
@@ -61,8 +67,6 @@ SDL_Window* getWindow(int screenWidth, int screenHeight)
   //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   
   glEnable(GL_STENCIL_TEST);
-  
-  DerelictGL3.reload();
   
   glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
   glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
