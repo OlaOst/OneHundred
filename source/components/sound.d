@@ -1,8 +1,8 @@
 module components.sound;
 
-import std.algorithm;
+import std;
 
-import derelict.openal.al;
+import bindbc.openal;
 import gl3n.linalg;
 
 import audio.raw;

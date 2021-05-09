@@ -1,11 +1,8 @@
 module audio.source;
 
-import std.algorithm;
-import std.conv;
-import std.exception;
-import std.traits;
+import std;
 
-import derelict.openal.al;
+import bindbc.openal;
 import gl3n.linalg;
 
 
@@ -82,7 +79,7 @@ template getEnumValues(args...)
     alias getEnumValues = args;
 }
 
-enum auto enumNames = getEnumNames!(__traits(derivedMembers, derelict.openal.types));
+enum auto enumNames = getEnumNames!(__traits(derivedMembers, bindbc.openal.types));
 enum auto enumValues = getEnumValues!enumNames;
 static immutable string[ALenum] enumMapping;
 

@@ -1,8 +1,8 @@
 module audio.wavheader;
 
-import std.exception;
+import std;
 
-import derelict.openal.al;
+import bindbc.openal;
 
 
 void parseWavHeader(const ubyte[] headerData, 

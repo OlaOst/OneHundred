@@ -3,7 +3,6 @@ module textrenderer.textrenderer;
 import std;
 
 import bindbc.freetype;
-//import derelict.opengl;
 import glamour.texture;
 import gl3n.linalg;
 import loader = bindbc.loader.sharedlib;
