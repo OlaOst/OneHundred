@@ -1,7 +1,6 @@
 module collision.response.ship;
 
-import std.conv;
-import std.math;
+import std;
 
 import gl3n.linalg;
 
@@ -57,7 +56,7 @@ Entity[] shipCollisionResponse(Collision collision, CollisionHandler collisionHa
   
   auto momentumBefore = first.velocity * firstMass + other.velocity * otherMass;
   auto momentumAfter = firstVelocity * firstMass + otherVelocity * otherMass;
-  assert(approxEqual(momentumBefore.magnitude, momentumAfter.magnitude), 
+  assert(isClose(momentumBefore.magnitude, momentumAfter.magnitude), 
          "Momentum not conserved in collision: went from " ~ 
          momentumBefore.to!string ~ " to " ~ momentumAfter.to!string);    
 

@@ -1,10 +1,6 @@
 module systems.physics;
 
-import std.algorithm;
-import std.conv;
-import std.datetime;
-import std.exception;
-import std.range;
+import std;
 
 import gl3n.linalg;
 

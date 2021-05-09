@@ -2,6 +2,7 @@ module systemdebug;
 
 import entityhandler;
 
+
 abstract class SystemDebug : EntityHandler
 {
   double debugTiming() @property

@@ -83,7 +83,7 @@ enum auto enumNames = getEnumNames!(__traits(derivedMembers, bindbc.openal.types
 enum auto enumValues = getEnumValues!enumNames;
 static immutable string[ALenum] enumMapping;
 
-static this()
+shared static this()
 {
   string[ALenum] temp;
   foreach (index, enumName; enumNames)

@@ -31,7 +31,7 @@ private {
     import std.string : format, splitLines, toStringz, toLower, strip;
     import std.array : join, split;
     import std.algorithm : startsWith, endsWith;
-    import std.exception : enforceEx;
+    import std.exception : enforce;
     import std.typecons : Tuple;
 
     version(gl3n) {
