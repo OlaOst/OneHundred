@@ -1,13 +1,11 @@
 module systems.soundsystem;
 
-import std.conv;
-import std.exception;
-import std.range;
-import std.stdio;
+import std;
 
-import derelict.openal.al;
-import derelict.ogg.ogg;
-import derelict.vorbis;
+import bindbc.openal;
+//import derelict.ogg.ogg;
+//import derelict.vorbis;
+import loader = bindbc.loader.sharedlib;
 
 import audio.raw;
 import audio.stream;
@@ -22,10 +20,19 @@ final class SoundSystem : System!Sound
   
   this()
   {
-    DerelictAL.load();
-    DerelictOgg.load();
-    DerelictVorbis.load();
-    DerelictVorbisFile.load();
+    scope(failure) 
+      loader.errors.each!(info => writeln(info.error.to!string, ": ", info.message.to!string));
+      
+    auto loadedOpenALSupport = loadOpenAL();
+    if (loadedOpenALSupport != ALSupport.al11)
+    {
+      enforce(loadedOpenALSupport != ALSupport.noLibrary, "Failed to load FreeType library");
+      enforce(loadedOpenALSupport != ALSupport.badLibrary, "Error loading FreeType library");
+    }
+    
+    //DerelictOgg.load();
+    //DerelictVorbis.load();
+    //DerelictVorbisFile.load();
     
     auto device = alcOpenDevice(null);
     auto context = alcCreateContext(device, null);
