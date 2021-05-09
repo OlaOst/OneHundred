@@ -1,11 +1,8 @@
 module textrenderer.atlas;
 
-import std.conv;
-import std.math;
-import std.range;
-import std.stdio;
+import std;
 
-import derelict.opengl;
+import bindbc.opengl;
 import gl3n.linalg;
 import glamour.texture;
 

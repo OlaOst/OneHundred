@@ -1,10 +1,9 @@
 module textrenderer.glyph;
 
-import std.range;
-import std.stdio;
+import std;
 
 import bindbc.freetype;
-import derelict.opengl;
+import bindbc.opengl;
 import gl3n.linalg;
 
 
@@ -63,7 +62,7 @@ Glyph loadGlyph(FT_Face face, char letter, uint glyphSize)
 
       if (glyph.data.length <= coord + 3)
       {
-        stderr.writeln("Out of bounds error when creating glyph texture for character ", letter);
+        std.stdio.stderr.writeln("Out of bounds error when creating glyph texture for character ", letter);
         break;
       }
 

@@ -1,11 +1,8 @@
 module systemset;
 
-import std.algorithm;
-import std.array;
-import std.datetime;
-import std.string;
+import std;
 
-import derelict.opengl;
+import bindbc.opengl;
 
 import camera;
 import entity;

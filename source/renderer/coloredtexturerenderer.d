@@ -1,6 +1,6 @@
 module renderer.coloredtexturerenderer;
 
-import derelict.opengl;
+import bindbc.opengl;
 import glamour.shader;
 import glamour.util;
 import glamour.vbo;

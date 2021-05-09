@@ -1,14 +1,8 @@
 module renderer.renderer;
 
-import std.algorithm;
-import std.array;
-import std.conv;
-import std.file;
-import std.range;
-import std.string;
-import std.typecons;
+import std;
 
-import derelict.opengl;
+import bindbc.opengl;
 import bindbc.sdl;
 import gl3n.linalg;
 import glamour.shader;
