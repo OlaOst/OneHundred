@@ -1,10 +1,6 @@
 module system;
 
-import std.algorithm;
-import std.conv;
-import std.datetime;
-import std.range;
-import std.string;
+import std;
 
 import componenthandler;
 import entity;
@@ -81,12 +77,14 @@ abstract class System(ComponentType) : SystemDebug, ComponentHandler!ComponentTy
 
   void update()
   {
+    import std.datetime.stopwatch;
+  
     debugTextInternal = "";
     auto debugTimer = StopWatch(AutoStart.yes);
     updateFromEntities();
     updateValues();
     updateEntities();
-    debugTimingInternal = debugTimer.peek.usecs*0.001;
+    debugTimingInternal = debugTimer.peek.total!"usecs"*0.001;
     // systems may want to write their own debugtext in updateValues
     if (debugTextInternal.length == 0)
       debugTextInternal = format("%s components: %s\n%s timings: %s", 
