@@ -63,7 +63,7 @@ void main(string[] args)
 
   if (listenPort == 5578)
     playerSet["player.ship.hull"]["graphicsource"] = "images/playerShip1_red.png";
-  //systemSet.addEntityCollection(playerSet);
+  systemSet.addEntityCollection(playerSet);
 
   Entity inputWindow = null;
   auto mouseCursor = createMouseCursor();
