@@ -41,10 +41,10 @@ Glyph loadGlyph(FT_Face face, char letter, uint glyphSize)
   glyph.data = new GLubyte[colorComponents * glyphWidth * glyphHeight];
   glyph.bitmap = face.glyph.bitmap;
 
-  glyph.offset = vec2(face.glyph.bitmap_left / cast(float)glyphSize,
-                      (face.glyph.bitmap_top - face.glyph.bitmap.rows) / cast(float)glyphSize);
-  glyph.advance = vec2(face.glyph.advance.x / (64.0 * cast(float)glyphSize),
-                       face.glyph.advance.y / (64.0 * cast(float)glyphSize));
+  glyph.offset = vec2(cast(int)face.glyph.bitmap_left / cast(float)glyphSize,
+                      cast(int)(face.glyph.bitmap_top - face.glyph.bitmap.rows) / cast(float)glyphSize);
+  glyph.advance = vec2(cast(int)face.glyph.advance.x / (64.0 * cast(float)glyphSize),
+                       cast(int)face.glyph.advance.y / (64.0 * cast(float)glyphSize));
 
   glyph.offset *= 2.0;
   glyph.advance *= 2.0;
