@@ -62,17 +62,19 @@ class GraphicsBlob
     
     texture.bind();
     
-    /*
     // uncomment this to see text being rendered triangle by triangle, for debugging purposes
-    static int counter = 0;
+    /*static int counter = 0;
     counter++;
+    
+    auto frame = (counter / 20)*2;
     
     drawTextOutline(shaderSet, 
                     cameraTransform,
-                    data.vertices[0 .. (counter / 10)*3 % data.vertices.length],
-                    data.texCoords[0 .. (counter / 10)*3 % data.texCoords.length],
-                    data.colors[0 .. (counter / 10)*3 % data.colors.length]);
-    */
+                    data.vertices[0 .. frame % data.vertices.length],
+                    data.controlVertices[0 .. frame % data.controlVertices.length],
+                    data.texCoords[0 .. frame % data.texCoords.length],
+                    data.colors[0 .. frame % data.colors.length]);*/
+    // end of triangle rendering debug code
     
     drawTextOutline(shaderSet, 
                     cameraTransform,
@@ -80,7 +82,7 @@ class GraphicsBlob
                     data.controlVertices,
                     data.texCoords,
                     data.colors);
-                       
+                    
     texture.unbind();
   }
   
