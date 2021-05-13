@@ -93,8 +93,8 @@ void main(string[] args)
     gameControllerInput.handleNetworking(systemSet, listenPort);
     gameControllerInput.handleToggleDebugInfo(systemSet, debugText);
     systemSet.inputHandler.getComponent(editController).handleEditableText(inputWindow);
-    //playerSet["player.ship.gun"].handlePlayerFireAction(systemSet);
-    //camera.position = playerSet["player.ship"].get!vec3("position");
+    playerSet["player.ship.gun"].handlePlayerFireAction(systemSet);
+    camera.position = playerSet["player.ship"].get!vec3("position");
     mouseCursor["position"] = camera.getWorldPositionFromScreenCoordinates(
       systemSet.inputHandler.mouseScreenPosition, xres, yres);
 
