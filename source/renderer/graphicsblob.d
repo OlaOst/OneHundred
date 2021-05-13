@@ -27,6 +27,7 @@ class GraphicsBlob
   void reset()
   {
     data.vertices.length = 0;
+    data.controlVertices.length = 0;
     data.colors.length = 0;
     data.texCoords.length = 0;
   }
