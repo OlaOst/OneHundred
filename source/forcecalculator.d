@@ -25,7 +25,7 @@ body
   //auto torque = 0.0;
   double torque = state.torque;
   
-  torque += state.rotation * -0.2; // damping torque
+  //torque += state.rotation * -0.2; // damping torque
   
   //if (state.entity.input)
     //state.entity.input.handlePlayerRotateActions(torque);
