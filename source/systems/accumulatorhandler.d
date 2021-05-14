@@ -85,6 +85,7 @@ class AccumulatorHandler : System!(ValueAccumulator[])
   
   void updateValues()
   {
+    resolvedAccumulators = resolvedAccumulators.filter!(resolvedAccumulator => entityForAccumulator[resolvedAccumulator].get!bool("ToBeRemoved") == false).array;
     resolvedAccumulators.each!(resolvedAccumulator => resolvedAccumulator.updateValues());
   }
   
