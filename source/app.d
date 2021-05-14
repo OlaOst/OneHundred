@@ -95,6 +95,6 @@ void main(string[] args)
 
     systemSet.updateDebugEntities();
 
-    makeSpatialTreeBoxes(systemSet.collisionHandler.boxes).each!(box => systemSet.addEntity(box));
+    debug makeSpatialTreeBoxes(systemSet.collisionHandler.boxes).each!(box => systemSet.addEntity(box));
   }
 }
