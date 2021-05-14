@@ -37,10 +37,19 @@ Entity[] updateValuesAndGetSpawns(Entity entity, Input component)
     
     spawnEntities ~= createExhausts(entity, true, 5);
   }
-  if (component.isActionSet("rotateCounterClockwise"))
-    torque += engineTorque;
-  if (component.isActionSet("rotateClockwise"))
-    torque -= engineTorque;
+  
+  if (entity.get!double("rotation") < 20.0)
+  {
+    if (component.isActionSet("rotateCounterClockwise"))
+      torque += engineTorque;
+    if (component.isActionSet("rotateClockwise"))
+      torque -= engineTorque;
+  }
+
+  // dampen rotation when there is no rotation input
+  if (!component.isActionSet("rotateCounterClockwise") &&
+      !component.isActionSet("rotateClockwise"))
+    torque -= entity.get!double("rotation") * engineTorque;
 
   entity["force"] = force;
   entity["torque"] = torque;
