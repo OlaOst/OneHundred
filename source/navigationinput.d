@@ -79,7 +79,7 @@ Entity createExhaust(Entity engine, bool reverse)
   else
     exhaust["velocity"] = -vec3(vec2FromAngle(engine.get!double("angle")
                                 + uniform(-0.1, 0.1)), 0.0)
-                          * uniform(5.0, 10.0);
+                          * uniform(5.0, 10.0) + engine.get!vec3("velocity");
   exhaust["angle"] = engine.get!double("angle");
   exhaust["mass"] = uniform(0.05, 0.25);
   exhaust["rotation"] = uniform(-10.0, 10.0);
