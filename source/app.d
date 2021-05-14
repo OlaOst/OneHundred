@@ -29,10 +29,8 @@ import textrenderer.textrenderer;
 void main(string[] args)
 {
   ushort listenPort = args.length > 1 ? args[1].to!ushort : 5577;
-  int xres = 800;
-  int yres = 600;
-
-  writeln("creating renderer");
+  int xres = 1280;
+  int yres = 1064;
 
   auto renderer = new Renderer(xres, yres);
 
