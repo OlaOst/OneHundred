@@ -11,6 +11,8 @@
     "bindbc-opengl": "0.16.0",
     "bindbc-freetype": "0.10.0",
     "bindbc-openal": "0.5.0",
+    "derelict-ogg": "2.0.0-beta.1",
+    "derelict-vorbis": "2.0.0-beta.2",
     "gl3n": "1.4.1",
   },
 

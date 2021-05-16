@@ -2,8 +2,8 @@ module audio.stream;
 
 import std;
 
-//import derelict.ogg.ogg;
-//import derelict.vorbis;
+import derelict.ogg.ogg;
+import derelict.vorbis;
 import bindbc.openal;
 import gl3n.linalg;
 

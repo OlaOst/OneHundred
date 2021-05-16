@@ -3,8 +3,8 @@ module systems.soundsystem;
 import std;
 
 import bindbc.openal;
-//import derelict.ogg.ogg;
-//import derelict.vorbis;
+import derelict.ogg.ogg;
+import derelict.vorbis;
 import loader = bindbc.loader.sharedlib;
 
 import audio.raw;
@@ -30,9 +30,9 @@ final class SoundSystem : System!Sound
       enforce(loadedOpenALSupport != ALSupport.badLibrary, "Error loading OpenAL library");
     }
     
-    //DerelictOgg.load();
-    //DerelictVorbis.load();
-    //DerelictVorbisFile.load();
+    DerelictOgg.load();
+    DerelictVorbis.load();
+    DerelictVorbisFile.load();
     
     auto device = alcOpenDevice(null);
     auto context = alcCreateContext(device, null);

@@ -3,8 +3,8 @@ module audio.oggsource;
 import std;
 
 import bindbc.openal;
-//import derelict.ogg.ogg;
-//import derelict.vorbis;
+import derelict.ogg.ogg;
+import derelict.vorbis;
 
 import audio.source;
 
@@ -12,14 +12,13 @@ import audio.source;
 struct OggSource
 {
   File file;
-  //OggVorbis_File oggFile;  
-  //vorbis_comment comment;
-  //vorbis_info info;
+  OggVorbis_File oggFile;  
+  vorbis_comment comment;
+  vorbis_info info;
   ALenum format;
 
   this(string fileName)
   {
-    /+
     file = File(fileName);
     enforce(fileName.endsWith(".ogg"), 
             "Can only stream ogg files, " ~ fileName ~ " is not recognized as an ogg file.");
@@ -31,13 +30,11 @@ struct OggSource
     info = *ov_info(&oggFile, -1);
     comment = *ov_comment(&oggFile, -1);
     format = (info.channels == 1) ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
-    +/
   }
 }
 
 bool stream(ALuint buffer, ref OggSource oggSource)
 {
-  /+
   enum int bufferSize = 32768;
   int size = 0;
   int section;
@@ -63,6 +60,4 @@ bool stream(ALuint buffer, ref OggSource oggSource)
   check();
   
   return true;
-  +/
-  return false;
 }

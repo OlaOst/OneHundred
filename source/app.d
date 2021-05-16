@@ -56,7 +56,8 @@ void main(string[] args)
   auto mouseCursor = createMouseCursor();
   systemSet.addEntity(mouseCursor);
 
-  //systemSet.addEntity(createMusic());
+  systemSet.addEntity(createStartupSound());
+  systemSet.addEntity(createMusic());
   //systemSet.addEntityCollection("data/testoutline.txt".createEntityCollectionFromFile);
   systemSet.addEntityCollection("data/testtext.txt".createEntityCollectionFromFile);
 
