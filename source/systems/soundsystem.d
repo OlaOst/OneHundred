@@ -8,6 +8,7 @@ import derelict.vorbis;
 import loader = bindbc.loader.sharedlib;
 
 import audio.raw;
+import audio.source;
 import audio.stream;
 import components.sound;
 import entity;
@@ -17,6 +18,7 @@ import system;
 final class SoundSystem : System!Sound
 {
   bool stopPlaying = false;
+  Source[string] sourceCache;
   
   this()
   {
@@ -50,7 +52,18 @@ final class SoundSystem : System!Sound
   
   Sound makeComponent(Entity entity)
   {
-    return new Sound(entity.get!string("sound"));
+    auto fileName = entity.get!string("sound");
+    
+    if (fileName !in sourceCache)
+    {
+      if (fileName.endsWith(".wav"))
+        sourceCache[fileName] = new Raw(fileName);
+        
+      if (fileName.endsWith(".ogg"))
+        sourceCache[fileName] = new Stream(fileName);
+    }
+    
+    return new Sound(sourceCache[fileName]);
   }
   
   void updateValues()

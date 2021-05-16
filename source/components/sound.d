@@ -5,31 +5,19 @@ import std;
 import bindbc.openal;
 import gl3n.linalg;
 
-import audio.raw;
 import audio.source;
-import audio.stream;
 
 
 class Sound
 {  
   Source source;
   bool isPlaying = false;
-  static Source[string] sourceCache;
   
   Source getSource() { return source; }
   
-  this(string fileName)
+  this(Source source)
   {
-    if (fileName !in sourceCache)
-    {
-      if (fileName.endsWith(".wav"))
-        sourceCache[fileName] = new Raw(fileName);
-        
-      if (fileName.endsWith(".ogg"))
-        sourceCache[fileName] = new Stream(fileName);
-    }
-    
-    this.source = sourceCache[fileName];
+    this.source = source;
   }
   
   bool stoppedPlaying()
