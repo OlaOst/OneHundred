@@ -99,4 +99,9 @@ final class SoundSystem : System!Sound
     foreach (sound; components)
       sound.stopPlaying();
   }
+  
+  override void close()
+  {
+    silence();
+  }
 }
