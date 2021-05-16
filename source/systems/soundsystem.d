@@ -26,8 +26,8 @@ final class SoundSystem : System!Sound
     auto loadedOpenALSupport = loadOpenAL();
     if (loadedOpenALSupport != ALSupport.al11)
     {
-      enforce(loadedOpenALSupport != ALSupport.noLibrary, "Failed to load FreeType library");
-      enforce(loadedOpenALSupport != ALSupport.badLibrary, "Error loading FreeType library");
+      enforce(loadedOpenALSupport != ALSupport.noLibrary, "Failed to load OpenAL library");
+      enforce(loadedOpenALSupport != ALSupport.badLibrary, "Error loading OpenAL library");
     }
     
     //DerelictOgg.load();
