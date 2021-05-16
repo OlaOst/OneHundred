@@ -28,6 +28,12 @@ bool isPlaying(ALuint source)
   return state == AL_PLAYING;
 }
 
+bool isPending(ALuint source)
+{
+  ALenum state;
+  source.alGetSourcei(AL_SOURCE_STATE, &state);
+  return state == AL_INITIAL;
+}
 
 // the stuff below is for getting error names printed out instead of error codes
 // since the derelict openal enums are anonymous there is no way to get them directly...

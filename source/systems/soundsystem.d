@@ -56,15 +56,14 @@ final class SoundSystem : System!Sound
         alGenSources(1, &source);
         enforce(source.alIsSource);
         check();
+        return source;
       }
       
-      if (!source.isPlaying())
+      if (!source.isPlaying() && !source.isPending())
       {
-        writeln("source.findFreeSource returning source ", source);
         return source;
       }
     }
-    writeln("source.findFreeSource returning 0 source");
     return 0;
   }
   
