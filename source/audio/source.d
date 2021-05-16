@@ -13,26 +13,6 @@ interface Source
   bool isPlaying();
   
   ALuint getAlSource();
-  
-  static ALuint[32] sources;
-  
-  static ALuint findFreeSource()
-  {    
-    // find a source not currently playing
-    foreach (ref source; sources)
-    {
-      if (source <= 0 || !source.alIsSource)
-      {
-        alGenSources(1, &source);
-        enforce(source.alIsSource);
-        check();
-      }
-      
-      if (!source.isPlaying())
-        return source;
-    }
-    return 0;
-  }
 }
 
 void check()

@@ -19,6 +19,7 @@ final class SoundSystem : System!Sound
 {
   bool stopPlaying = false;
   Source[string] sourceCache;
+  ALuint[32] sources;
   
   this()
   {
@@ -45,6 +46,28 @@ final class SoundSystem : System!Sound
     alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
   }
   
+  public ALuint findFreeSource()
+  {    
+    // find a source not currently playing
+    foreach (ref source; sources)
+    {
+      if (source <= 0 || !source.alIsSource)
+      {
+        alGenSources(1, &source);
+        enforce(source.alIsSource);
+        check();
+      }
+      
+      if (!source.isPlaying())
+      {
+        writeln("source.findFreeSource returning source ", source);
+        return source;
+      }
+    }
+    writeln("source.findFreeSource returning 0 source");
+    return 0;
+  }
+  
   bool canAddEntity(Entity entity)
   {
     return entity.has("sound");
@@ -57,13 +80,15 @@ final class SoundSystem : System!Sound
     if (fileName !in sourceCache)
     {
       if (fileName.endsWith(".wav"))
-        sourceCache[fileName] = new Raw(fileName);
+        sourceCache[fileName] = new Raw(fileName, this);
         
       if (fileName.endsWith(".ogg"))
-        sourceCache[fileName] = new Stream(fileName);
+        sourceCache[fileName] = new Stream(fileName, this);
     }
     
-    return new Sound(sourceCache[fileName]);
+    auto sound = new Sound(sourceCache[fileName]);
+        
+    return sound;
   }
   
   void updateValues()
@@ -73,7 +98,7 @@ final class SoundSystem : System!Sound
       if (stopPlaying)
         sound.stopPlaying();
       else if (!sound.isPlaying)
-        sound.startPlaying();        
+        sound.startPlaying();
     }
   }
   

@@ -9,6 +9,7 @@ import gl3n.linalg;
 
 import audio.oggsource;
 import audio.source;
+import systems.soundsystem;
 
 
 class Stream : Source
@@ -16,8 +17,10 @@ class Stream : Source
 invariant() { check(); }
 
 public:
-  this(string fileName)
+  this(string fileName, SoundSystem soundSystem)
   {
+    this.soundSystem = soundSystem;
+    
     oggSource = OggSource(fileName);
 
     alGenBuffers(buffers.length, buffers.ptr);
@@ -26,7 +29,7 @@ public:
   
   void play()
   {
-    source = Source.findFreeSource();
+    source = soundSystem.findFreeSource();
 
     auto playbackTask = task(&this.playbackLoop);
     playbackTask.executeInNewThread();
@@ -91,4 +94,6 @@ private:
   OggSource oggSource;
   ALuint[3] buffers;
   ALuint source;
+  
+  SoundSystem soundSystem;
 }

@@ -10,6 +10,7 @@ import bindbc.openal;
 
 import audio.source;
 import audio.wavheader;
+import systems.soundsystem;
 
 
 class Raw : Source
@@ -17,8 +18,10 @@ class Raw : Source
 invariant() { check(); }
 
 public:
-  this(string fileName)
+  this(string fileName, SoundSystem soundSystem)
   {
+    this.soundSystem = soundSystem;
+    
     enforce(fileName.endsWith(".wav"), 
             "Can only read wav soundfiles, " ~ fileName ~ " is not recognized as a wav file");
   
@@ -58,7 +61,7 @@ public:
   
   void play()
   {
-    source = Source.findFreeSource();
+    source = soundSystem.findFreeSource();
   
     if (source > 0 && source.alIsSource)
     {
@@ -93,4 +96,6 @@ private:
   ALenum format; 
   ALuint buffer;
   ALuint source;
+  
+  SoundSystem soundSystem;
 }
