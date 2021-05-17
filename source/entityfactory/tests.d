@@ -1,9 +1,6 @@
 module entityfactory.tests;
 
-import std.algorithm;
-import std.random;
-import std.range;
-import std.stdio;
+import std;
 
 import gl3n.linalg;
 
@@ -17,18 +14,12 @@ import systemset;
 
 Entity createMusic()
 {
-  auto entity = new Entity();
-  entity["sound"] = "audio/orbitalelevator.ogg";
-  
-  return entity;
+  return new Entity(["sound" : "audio/orbitalelevator.ogg"]);
 }
 
 Entity createStartupSound()
 {
-  auto startupSound = new Entity();
-  startupSound["sound"] = "audio/gasturbinestartup.ogg";
-  
-  return startupSound;
+  return new Entity(["sound" : "audio/gasturbinestartup.ogg"]);
 }
 
 Entity createMouseCursor()
@@ -62,7 +53,6 @@ Entity[] addDebugEntities(SystemSet systemSet)
   
   foreach (index, entityHandler; systemSet.entityHandlers)
   {
-    //auto position = vec3(-3.0, index*0.7 - 4, 0.0);
     auto position = vec3(-3.0, (index - systemSet.entityHandlers.length*0.5) * 0.65, 0.0);
     
     auto text = new Entity();
@@ -81,9 +71,7 @@ Entity[] addDebugEntities(SystemSet systemSet)
     auto polygon = new Polygon(0.25, 16, vec4(0.0, 0.67, 0.33, 1.0));
     debugEntity["polygon.vertices"] = polygon.vertices;
     debugEntity["polygon.colors"] = polygon.colors;
-    //debugEntity.polygon = polygon;
     debugEntity["graphicsource"] = "polygon";
-    
     debugEntity["name"] = entityHandler.className;
     debugEntity["collider"] = ColliderType.GuiElement;
     systemSet.addEntity(debugEntity);
@@ -92,4 +80,19 @@ Entity[] addDebugEntities(SystemSet systemSet)
   }
   
   return entities;
+}
+
+Entity[] debugEntities;
+void toggleDebugEntities(SystemSet systemSet)
+{
+  import entityfactory.tests;
+  if (debugEntities.length == 0)
+  {
+    debugEntities = addDebugEntities(systemSet); 
+  }
+  else
+  {
+    debugEntities.each!(entity => entity["ToBeRemoved"] = true);
+    debugEntities.length = 0;
+  }
 }

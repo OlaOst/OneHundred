@@ -26,8 +26,6 @@ class SystemSet
   AccumulatorHandler accumulatorHandler;
   NetworkHandler networkHandler;
 
-  Entity[] debugEntities;
-
   this(Renderer renderer, TextRenderer textRenderer, Camera camera, ushort listenPort)
   {
     import glamour.texture;
@@ -87,20 +85,5 @@ class SystemSet
     cartesianProduct(entityHandlers, removedEntities).each!(tup => tup[0].removeEntity(tup[1]));
     entities = entities.filter!(entity => !entity.get!bool("ToBeRemoved")).array;
     return removedEntities.array;
-  }
-  
-  void toggleDebugEntities()
-  {
-    import entityfactory.tests;
-    if (debugEntities.length == 0)
-    {
-      debugEntities = addDebugEntities(this); 
-      //debugEntities.each!(entity => addEntity(entity));
-    }
-    else
-    {
-      debugEntities.each!(entity => entity["ToBeRemoved"] = true);
-      debugEntities.length = 0;
-    }
   }
 }
