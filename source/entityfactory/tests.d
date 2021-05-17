@@ -56,7 +56,7 @@ Entity[] addDebugEntities(SystemSet systemSet)
     auto position = vec3(-3.0, (index - systemSet.entityHandlers.length*0.5) * 0.65, 0.0);
     
     auto text = new Entity();
-    text["position"] = vec3(position.x + 0.5, position.y, 0)                                                                                                                                                                   ;
+    text["position"] = vec3(position.x + 0.5, position.y, 0);
     text["graphicsource"] = "text";
     text["text"] = entityHandler.className;
     text["color"] = vec4(1.0, 1.0, 0.5, 1.0);
