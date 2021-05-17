@@ -56,7 +56,8 @@ SDL_Window* getWindow(int screenWidth, int screenHeight)
   {
     enforce(loadedGLSupport != GLSupport.noLibrary, "Failed to load OpenGL library");
     enforce(loadedGLSupport != GLSupport.badLibrary, "Error loading OpenGL library");
-    enforce(loadedGLSupport != GLSupport.noContext, "Did not get context after loading OpenGL library, forgot to create context first?");
+    enforce(loadedGLSupport != GLSupport.noContext, 
+      "Did not get context after loading OpenGL library, forgot to create context first?");
   }
 
   // setup gl viewport and etc
