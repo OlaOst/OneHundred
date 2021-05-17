@@ -1,10 +1,6 @@
 module collision.response.bullet;
 
-import std.algorithm;
-import std.conv;
-import std.math;
-import std.random;
-import std.range;
+import std;
 
 import gl3n.linalg;
 
@@ -74,7 +70,6 @@ Entity[] bulletCollisionResponse(Collision collision, CollisionHandler collision
       
       particle["graphicsource"] = "polygon";
       auto polygon = new Polygon(size, 3, vec4(uniformDistribution!float(3).vec3, 0.5));
-      //particle.polygon = polygon;
       particle["polygon.vertices"] = polygon.vertices;
       particle["polygon.colors"] = polygon.colors;
       particle["size"] = size;
