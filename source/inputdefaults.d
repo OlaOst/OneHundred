@@ -37,6 +37,7 @@ static this()
 
   gameControls.key[SDLK_F4] = "attemptNetworkConnection";
   gameControls.key[SDLK_F1] = "toggleDebugInfo";
+  gameControls.key[SDLK_F2] = "toggleDebugEntities";
   gameControls.button[SDL_BUTTON_LEFT] = "focusInputWindow";
   gameControls.button[SDL_BUTTON_RIGHT] = "toggleInputWindow";
 

@@ -26,4 +26,9 @@ void handleToggleDebugInfo(Input gameInput, SystemSet systemSet, ref Entity debu
     debugText["text"] = systemSet.entityHandlers[index].debugText;
     assert(debugText.get!string("text") !is null);
   }
+  
+  if (gameInput.isActionToggled("toggleDebugEntities"))
+  {
+    systemSet.toggleDebugEntities();
+  }
 }

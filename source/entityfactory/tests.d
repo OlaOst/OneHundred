@@ -56,21 +56,24 @@ Entity createMouseCursor()
   return mouseCursor;
 }
 
-void addDebugEntities(SystemSet systemSet)
+Entity[] addDebugEntities(SystemSet systemSet)
 {
+  Entity[] entities;
+  
   foreach (index, entityHandler; systemSet.entityHandlers)
   {
     //auto position = vec3(-3.0, index*0.7 - 4, 0.0);
     auto position = vec3(-3.0, (index - systemSet.entityHandlers.length*0.5) * 0.65, 0.0);
     
     auto text = new Entity();
-    text["position"] = vec3(position.x + 0.5, position.y, text.id*0.001);
+    text["position"] = vec3(position.x + 0.5, position.y, 0)                                                                                                                                                                   ;
     text["graphicsource"] = "text";
     text["text"] = entityHandler.className;
     text["color"] = vec4(1.0, 1.0, 0.5, 1.0);
     text["size"] = 0.5;
     systemSet.addEntity(text);
-    systemSet.addEntity(text.createTextCover(systemSet.graphics.getComponent(text).aabb));
+    auto textCover = text.createTextCover(systemSet.graphics.getComponent(text).aabb);
+    systemSet.addEntity(textCover);
     
     auto debugEntity = new Entity();
     debugEntity["position"] = position;
@@ -84,5 +87,9 @@ void addDebugEntities(SystemSet systemSet)
     debugEntity["name"] = entityHandler.className;
     debugEntity["collider"] = ColliderType.GuiElement;
     systemSet.addEntity(debugEntity);
+    
+    entities ~= [text, textCover, debugEntity];
   }
+  
+  return entities;
 }
