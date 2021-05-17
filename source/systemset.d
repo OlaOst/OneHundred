@@ -8,15 +8,7 @@ import camera;
 import entity;
 import entityhandler;
 import renderer.renderer;
-import systems.accumulatorhandler;
-import systems.collisionhandler;
-import systems.inputhandler;
-import systems.networkhandler;
-import systems.physics;
-import systems.relationhandler;
-import systems.soundsystem;
-import systems.timehandler;
-import systems.graphics;
+import systems;
 import textrenderer.textrenderer;
 
 
