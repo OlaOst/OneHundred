@@ -1,6 +1,6 @@
 module renderer.textoutlinerenderer;
 
-import std.range;
+import std;
 
 import bindbc.opengl;
 import glamour.shader;
@@ -10,7 +10,8 @@ import gl3n.linalg;
 
 
 public void drawTextOutline(Shader[string] shaderSet, mat4 transform,
-                            vec3[] vertices, vec3[] controlVertices, vec2[] texCoords, vec4[] colors)
+                            vec3[] vertices, vec3[] controlVertices, 
+                            vec2[] texCoords, vec4[] colors)
 {
   assert(vertices.length == texCoords.length);
   assert(vertices.length == colors.length);
@@ -20,7 +21,8 @@ public void drawTextOutline(Shader[string] shaderSet, mat4 transform,
   auto colorsBuffer = new Buffer(colors);
   auto blankColorBuffer = new Buffer([vec4(0,0,0,0)].repeat(vertices.length).array);
   auto controlVerticesBuffer = new Buffer(controlVertices);
-  auto barycenterBuffer = new Buffer([vec3(1,0,0), vec3(0,1,0), vec3(0,0,1)].cycle.take(controlVertices.length).array);
+  auto barycenterBuffer = new Buffer([vec3(1,0,0), vec3(0,1,0), vec3(0,0,1)]
+                          .cycle.take(controlVertices.length).array);
   
   // First pass, run invert on every triangle to get winding number outline in the stencil buffer
   glEnable(GL_STENCIL_TEST);
@@ -48,7 +50,6 @@ public void drawTextOutline(Shader[string] shaderSet, mat4 transform,
     //verticesBuffer.remove();
   //colorsBuffer.remove();
   
-  
   // second pass, draw with updated stencil that should clip out anything outside the letter outline
   
   glStencilFunc(GL_NOTEQUAL, 0, 0xff);
@@ -62,7 +63,8 @@ public void drawTextOutline(Shader[string] shaderSet, mat4 transform,
   
   // third pass, draw curve corrections on top of triangle lines
   // assume only quadratic segments
-  // Given a point P = P0·s + P1·t + P2·(1-s-t) in the triangle (P0, P1, P2), the pixel in the triangle is only flipped if (s/2 + t)² < t
+  // Given a point P = P0·s + P1·t + P2·(1-s-t) in the triangle (P0, P1, P2), 
+  // the pixel in the triangle is only flipped if (s/2 + t)² < t
   // s and t are barycentric coords
   shaderSet["textquadratic"].bind();
   shaderSet["textquadratic"].uniform("transform", transform);
