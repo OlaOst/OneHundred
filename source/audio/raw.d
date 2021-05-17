@@ -4,8 +4,6 @@ import std.algorithm;
 import std.exception;
 import std.stdio;
 
-//import derelict.ogg.ogg;
-//import derelict.vorbis;
 import bindbc.openal;
 
 import audio.source;
