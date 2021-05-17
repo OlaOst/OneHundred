@@ -26,7 +26,9 @@ abstract class System(ComponentType) : SystemDebug, ComponentHandler!ComponentTy
   
   ComponentType getComponent(Entity entity)
   {
-    assert(entity in indexForEntity, "Could not find entity " ~ entity.id.to!string ~ " in " ~ indexForEntity.byKey.map!(e => e.id).to!string);
+    assert(entity in indexForEntity, 
+      "Could not find entity " ~ entity.id.to!string ~ 
+      " in " ~ indexForEntity.byKey.map!(e => e.id).to!string);
     return components[indexForEntity[entity]];
   }
 
