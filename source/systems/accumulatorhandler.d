@@ -36,7 +36,6 @@ class AccumulatorHandler : System!(ValueAccumulator[])
             entity[valueToAccumulate] = DefaultValue!vec4;
           if (doubleTypes.canFind(valueToAccumulate))
             entity[valueToAccumulate] = DefaultValue!double;
-          
           if (valueToAccumulate == "mass")
             entity["mass"] = 0.001;
         }
@@ -85,7 +84,8 @@ class AccumulatorHandler : System!(ValueAccumulator[])
   
   void updateValues()
   {
-    resolvedAccumulators = resolvedAccumulators.filter!(resolvedAccumulator => entityForAccumulator[resolvedAccumulator].get!bool("ToBeRemoved") == false).array;
+    resolvedAccumulators = resolvedAccumulators.filter!(resolvedAccumulator => 
+      entityForAccumulator[resolvedAccumulator].get!bool("ToBeRemoved") == false).array;
     resolvedAccumulators.each!(resolvedAccumulator => resolvedAccumulator.updateValues());
   }
   
