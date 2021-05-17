@@ -18,10 +18,6 @@ import systemset;
 Entity createMusic()
 {
   auto entity = new Entity();
-  entity["position"] = vec3(300.0, 0.0, 0.0);
-  entity["velocity"] = vec3(0.0, 3.0, 0.0);
-  entity["size"] = 0.1;
-  entity["mass"] = (0.1 + 0.1 ^^ 2);
   entity["sound"] = "audio/orbitalelevator.ogg";
   
   return entity;
