@@ -31,7 +31,7 @@ class GraphicSource
     
     this.data = data;
     
-    if (sourceName != "text" && sourceName != "textoutline")
+    if (sourceName != "text")
     {
       // ensure normalized vertices
       auto furthestVertex = data.vertices.minCount!((a, b) => a.magnitude > b.magnitude)[0];

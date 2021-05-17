@@ -23,7 +23,6 @@ class Graphics : System!GraphicSource
   this(Renderer renderer, TextRenderer textRenderer, Camera camera, Texture2D[string] textures)
   {
     this.shaders["coloredtexture"] = new Shader("shaders/coloredtexture.shader");
-    this.shaders["textoutline"] = new Shader("shaders/textoutline.shader");
     this.shaders["textquadratic"] = new Shader("shaders/textquadratic.shader");
 
     this.textures = textures;
@@ -57,7 +56,7 @@ class Graphics : System!GraphicSource
     if (source !in textures)
     {
       // these sources should have been preloaded in the textures from the constructor
-      assert(source != "polygon" && source != "text" && source != "textoutline");
+      assert(source != "polygon" && source != "text");
       textures[source] = Texture2D.from_image(source);
     }
     if (source !in blobs)
@@ -73,68 +72,6 @@ class Graphics : System!GraphicSource
     }
     else if (source == "text")
       data = textRenderer.getGraphicsData(entity.get!string("text"), entity.get!vec4("color"));
-    else if (source == "textoutline")
-    {
-      auto text = entity.get!string("text");
-      auto cursor = vec2(0,0);
-      vec3[] vertices;
-      vec4[] colors;
-      vec3[] controlVertices;
-      
-      auto lines = text.splitter("\n");
-      foreach (line; lines)
-      {
-        foreach (letter; line)
-        {
-          auto outline = textRenderer.outlineSet[letter];
-          auto glyph = textRenderer.getGlyphForLetter(letter);
-          
-          auto letterVertices = outline.contours.map!(contour => contour.curves.map!(curve => [vec3(0,0,0), vec3(curve.start,0), vec3(curve.end,0)]).joiner.array)
-                                                .map!(vertices => vertices ~ [vec3(0,0,0), vertices[$-1], vertices[0]])
-                                                .joiner;
-
-          if (letterVertices.empty)
-            continue;
-
-          auto normalizedLetterVertices = letterVertices.map!(vertex => vertex + vec3((glyph.offset * 0.0 + cursor), 0.0))
-                                                        .array;
-
-          auto letterControlVertices = outline.contours.map!(contour => contour.curves.map!(curve => [vec3(curve.start,0), vec3(curve.end,0), vec3(curve.controlPoints.length > 0 ? curve.controlPoints[0] : (curve.start+curve.end)*0.5,0)]).joiner.array)
-          //auto letterControlVertices = outline.contours.map!(contour => contour.curves.map!(curve => [vec3(curve.start,0), vec3(curve.end,0), vec3(curve.controlPoints.length > 0 ? curve.controlPoints[0] : vec2(0,0) ,0)]).joiner.array)
-          //auto letterControlVertices = outline.contours.map!(contour => contour.curves.map!(curve => [vec3(curve.controlPoints.length > 0 ? curve.controlPoints[0] : vec2(0,0) ,0), vec3(curve.start,0), vec3(curve.end,0)]).joiner.array)
-                                                       //.map!(vertices => vertices ~ [vec3(0,0,0), vertices[$-1], vertices[0]])
-                                                       .joiner;
-          auto normalizedLetterControlVertices = letterControlVertices.map!(vertex => vertex + vec3((glyph.offset * 0.0 + cursor), 0.0))
-                                                                      .array;
-                                                        
-          cursor += glyph.advance * 0.5;
-          
-          import std.stdio;
-          debug writeln("drawing ", letter, " at cursor ", cursor, " with glyph offset ", glyph.offset);
-          debug writeln("letter vertices: ");
-          debug std.range.chunks(normalizedLetterVertices, 3).each!writeln;
-          debug writeln("controlvertices: ");
-          debug std.range.chunks(normalizedLetterControlVertices, 3).each!writeln;
-          //auto vertices = outline.contours[0].curves.map!(curve => [vec3(0,0,0), vec3(curve.start,0), vec3(curve.end,0)]).joiner.array;
-          //vertices ~= [vec3(0,0,0), vertices[$-1], vertices[0]];
-          
-          auto letterColors = vec4(1,1,1,1).repeat.take(normalizedLetterVertices.length).array;
-          
-          //float red = 0.0;
-          //auto colors = outline.contours[0].curves.map!(curve => [vec4(1-red,1,1,0), vec4(red,0,0.5,1), vec4(red+=1.0/outline.contours[0].curves.length,0,0.5,1)]).joiner.array;
-          //auto colors = outline.contours[0].curves.map!(curve => [vec4(1,1,1,1), vec4(1,1,1,1), vec4(1,1,1,1)]).joiner.array;
-          //colors ~= [vec4(1,1,1,0), colors[$-1], colors[0]];
-          //auto vertices = outline.contours[0].curves.map!(curve => curve.start).array;
-          //vertices ~= outline.contours[0].curves[$-1].end;
-          
-          vertices ~= normalizedLetterVertices;
-          controlVertices ~= normalizedLetterControlVertices;
-          colors ~= letterColors;
-        }
-        cursor = vec2(0.0, cursor.y - 1.0);
-      }
-      data = new GraphicsData(vertices, controlVertices, colors);
-    }
     else
       data = new GraphicsData(baseSquare.dup.map!(vertex => vertex * mat3.zrotation(PI/2)).array, baseTexCoordsSquare.dup);
 
@@ -152,13 +89,8 @@ class Graphics : System!GraphicSource
     components.each!(component => blobs[component.sourceName].addData(component.transformedData));
     foreach (name, blob; blobs)
     {
-      if (name == "textoutline")
-        blob.renderTextOutline(shaders, camera.transform);
-      else
-        blob.render(shaders["coloredtexture"], name == "polygon", camera.transform);
+      blob.render(shaders["coloredtexture"], name == "polygon", camera.transform);
     }
-    //blobs.each!((name, blob) => blob.render(shaders["coloredtexture"], name == "polygon", camera.transform));
-    //blobs.each!((name, blob) => blob.renderTextOutline(shaders["textoutline"], camera.transform));
     renderer.toScreen();
   }
 

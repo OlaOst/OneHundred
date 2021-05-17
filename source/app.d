@@ -55,7 +55,6 @@ void main(string[] args)
 
   systemSet.addEntity(createStartupSound());
   systemSet.addEntity(createMusic());
-  //systemSet.addEntityCollection("data/testoutline.txt".createEntityCollectionFromFile);
   systemSet.addEntityCollection("data/testtext.txt".createEntityCollectionFromFile);
 
   auto gameController = createGameController();

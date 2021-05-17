@@ -34,9 +34,6 @@ class SystemSet
     textures["polygon"] = new Texture2D();
     textures["polygon"].set_data([0, 0, 0, 0], GL_RGBA, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE);
 
-    textures["textoutline"] = new Texture2D();
-    textures["textoutline"].set_data([0, 0, 0, 0], GL_RGBA, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE);
-
     textures["text"] = textRenderer.atlas;
 
     graphics = new Graphics(renderer, textRenderer, camera, textures);

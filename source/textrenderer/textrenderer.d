@@ -9,7 +9,6 @@ import loader = bindbc.loader.sharedlib;
 
 import textrenderer.atlas;
 import textrenderer.glyph;
-import textrenderer.outline;
 
 
 class TextRenderer
@@ -55,15 +54,6 @@ class TextRenderer
     }
 
     atlas = glyphSet.createFontAtlas(defaultFont, glyphSize);
-
-    foreach (size_t index; iota(32, 128))
-    {
-      outlineSet[index] = face.loadOutline(index.to!char);
-    }
-
-    //auto outline = face.loadOutline('e');
-    //outline.writeln;
-    //assert(0);
   }
 
   public void close()
@@ -102,6 +92,5 @@ class TextRenderer
 
   private static uint colorComponents = 4;
   private Glyph[256] glyphSet;
-  public Outline[256] outlineSet;
   public Texture2D atlas;
 }
