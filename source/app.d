@@ -1,9 +1,6 @@
 module app;
 
-import std.algorithm;
-import std.conv;
-import std.range;
-import std.stdio;
+import std;
 
 import gl3n.linalg;
 
@@ -65,7 +62,6 @@ void main(string[] args)
   systemSet.addEntity(gameController);
   auto editController = createEditController();
   systemSet.addEntity(editController);
-  //systemSet.addDebugEntities();
   Entity debugText;
 
   while (!quit)
@@ -96,6 +92,7 @@ void main(string[] args)
 
     systemSet.updateDebugEntities();
 
-    debug makeSpatialTreeBoxes(systemSet.collisionHandler.boxes).each!(box => systemSet.addEntity(box));
+    debug foreach(box; makeSpatialTreeBoxes(systemSet.collisionHandler.boxes))
+      systemSet.addEntity(box);
   }
 }
