@@ -53,13 +53,6 @@ class TextHandler : System!Text
 
   void updateValues()
   {
-    //blobs.byValue.each!(blob => blob.reset());
-    //components.each!(component => blobs[component.sourceName].addData(component.transformedData));
-    //foreach (name, blob; blobs)
-      //blob.render(shaders["coloredtexture"], name == "polygon", camera.transform);
-    //renderer.toScreen();
-    
-    //textRenderer.render?
     textBlob.reset();
     components.each!(component => textBlob.addData(component.transformedData));
     textBlob.render(shaders["coloredtexture"], false, camera.transform);

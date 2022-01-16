@@ -11,12 +11,10 @@ import onehundred;
 
 class Graphics : System!GraphicSource
 {
-  this(/*Renderer renderer, */Camera camera, Texture2D[string] textures)
+  this(Camera camera, Texture2D[string] textures)
   {
     this.shaders["coloredtexture"] = new Shader("shaders/coloredtexture.shader");
-    //this.shaders["textquadratic"] = new Shader("shaders/textquadratic.shader");
     this.textures = textures;
-    //this.renderer = renderer;
     this.camera = camera;
   }
 
@@ -72,7 +70,6 @@ class Graphics : System!GraphicSource
     components.each!(component => blobs[component.sourceName].addData(component.transformedData));
     foreach (name, blob; blobs)
       blob.render(shaders["coloredtexture"], name == "polygon", camera.transform);
-    //renderer.toScreen();
   }
 
   void updateFromEntities()
@@ -96,6 +93,5 @@ class Graphics : System!GraphicSource
   Texture2D[string] textures;
   GraphicsBlob[string] blobs;
 
-  //Renderer renderer;
   Camera camera;
 }
