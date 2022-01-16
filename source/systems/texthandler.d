@@ -1,4 +1,4 @@
-module systems.text;
+module systems.texthandler;
 
 import std;
 
@@ -9,7 +9,7 @@ import glamour.texture;
 import onehundred;
 
 
-class Text : System!TextComponent
+class TextHandler : System!Text
 {
   this(TextRenderer textRenderer, Camera camera, Texture2D textAtlas)
   {
@@ -37,7 +37,7 @@ class Text : System!TextComponent
       entity["text"] = entity["text"].replace("\\n", "\n");
   }
   
-  TextComponent makeComponent(Entity entity)
+  Text makeComponent(Entity entity)
   {
     auto text = entity.get!string("text");
 
@@ -48,7 +48,7 @@ class Text : System!TextComponent
     assert(entity.has("size"));
     auto size = entity.get!double("size", entity.get!float("size")); // TODO: should only be double
 
-    return new TextComponent(text, position, angle, size, data);
+    return new Text(text, position, angle, size, data);
   }
 
   void updateValues()

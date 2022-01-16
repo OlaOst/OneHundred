@@ -1,4 +1,4 @@
-module components.textcomponent;
+module components.text;
 
 import std;
 
@@ -8,7 +8,7 @@ import gl3n.linalg;
 import renderer.graphicsdata;
 
 
-class TextComponent
+class Text
 {
   invariant
   {

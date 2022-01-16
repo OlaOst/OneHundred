@@ -13,7 +13,7 @@ class SystemSet
   EntityHandler[] entityHandlers;
   Renderer renderer;
   
-  Text text;
+  TextHandler textHandler;
   Graphics graphics;
   Physics physics;
   InputHandler inputHandler;
@@ -36,7 +36,7 @@ class SystemSet
 
     textures["text"] = textRenderer.atlas;
 
-    text = new Text(textRenderer, camera, textRenderer.atlas);
+    textHandler = new TextHandler(textRenderer, camera, textRenderer.atlas);
     graphics = new Graphics(camera, textures);
     physics = new Physics();
     inputHandler = new InputHandler();
@@ -46,7 +46,7 @@ class SystemSet
     relationHandler = new RelationHandler();
     accumulatorHandler = new AccumulatorHandler();
     networkHandler = new NetworkHandler(listenPort);
-    entityHandlers = cast(EntityHandler[])[text, graphics, physics, soundSystem,
+    entityHandlers = cast(EntityHandler[])[textHandler, graphics, physics, soundSystem,
                                            inputHandler, collisionHandler, timeHandler,
                                            relationHandler, accumulatorHandler, networkHandler];
   }
