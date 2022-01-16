@@ -4,18 +4,16 @@ import std;
 
 import bindbc.opengl;
 
-import camera;
-import entity;
-import entityhandler;
-import renderer.renderer;
-import systems;
-import textrenderer.textrenderer;
+import onehundred;
 
 
 class SystemSet
 {
   Entity[] entities;
   EntityHandler[] entityHandlers;
+  Renderer renderer;
+  
+  Text text;
   Graphics graphics;
   Physics physics;
   InputHandler inputHandler;
@@ -31,12 +29,15 @@ class SystemSet
     import glamour.texture;
     Texture2D[string] textures;
 
+    this.renderer = renderer;
+
     textures["polygon"] = new Texture2D();
     textures["polygon"].set_data([0, 0, 0, 0], GL_RGBA, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE);
 
     textures["text"] = textRenderer.atlas;
 
-    graphics = new Graphics(renderer, textRenderer, camera, textures);
+    text = new Text(textRenderer, camera, textRenderer.atlas);
+    graphics = new Graphics(camera, textures);
     physics = new Physics();
     inputHandler = new InputHandler();
     collisionHandler = new CollisionHandler();
@@ -45,7 +46,7 @@ class SystemSet
     relationHandler = new RelationHandler();
     accumulatorHandler = new AccumulatorHandler();
     networkHandler = new NetworkHandler(listenPort);
-    entityHandlers = cast(EntityHandler[])[graphics, physics, soundSystem,
+    entityHandlers = cast(EntityHandler[])[text, graphics, physics, soundSystem,
                                            inputHandler, collisionHandler, timeHandler,
                                            relationHandler, accumulatorHandler, networkHandler];
   }
@@ -74,6 +75,7 @@ class SystemSet
   void update()
   {
     entityHandlers.each!(e => e.update());
+    renderer.toScreen();
   }
 
   Entity[] removeEntitiesToBeRemoved()

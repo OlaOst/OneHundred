@@ -79,6 +79,7 @@ string[string][string] createKeyValuesCollection(string[] lines, string[] previo
   
   foreach (sourceName, sourceKeyValues; allSourceKeyValuesByFullName)
   {
+    scope(failure) writeln("sourceName ", sourceName);
     sourceKeyValues.byKey.filter!(key => key !in keyValuesByFullName[sourceName])
                          .each!(key => keyValuesByFullName[sourceName][key]=sourceKeyValues[key]);
   }

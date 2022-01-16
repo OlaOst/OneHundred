@@ -6,28 +6,17 @@ import gl3n.linalg;
 import glamour.shader;
 import glamour.texture;
 
-import camera;
-import components.graphicsource;
-import entity;
-import renderer.baseshapes;
-import renderer.graphicsblob;
-import renderer.graphicsdata;
-import renderer.renderer;
-import textrenderer.textrenderer;
-import textrenderer.transform;
-import system;
+import onehundred;
 
 
 class Graphics : System!GraphicSource
 {
-  this(Renderer renderer, TextRenderer textRenderer, Camera camera, Texture2D[string] textures)
+  this(/*Renderer renderer, */Camera camera, Texture2D[string] textures)
   {
     this.shaders["coloredtexture"] = new Shader("shaders/coloredtexture.shader");
-    this.shaders["textquadratic"] = new Shader("shaders/textquadratic.shader");
-
+    //this.shaders["textquadratic"] = new Shader("shaders/textquadratic.shader");
     this.textures = textures;
-    this.renderer = renderer;
-    this.textRenderer = textRenderer;
+    //this.renderer = renderer;
     this.camera = camera;
   }
 
@@ -40,23 +29,17 @@ class Graphics : System!GraphicSource
   {
     return entity.has("graphicsource");
   }
-
-  override void tweakEntity(ref Entity entity)
-  {
-    if ("text" in entity.values)
-    {
-      entity["text"] = entity["text"].replace("\\n", "\n");
-    }
-  }
   
   GraphicSource makeComponent(Entity entity)
   {
     auto source = entity.get!string("graphicsource");
 
+    assert(source != "text", "Graphicsource text no longer supported, just having a text value is enough");
+
     if (source !in textures)
     {
       // these sources should have been preloaded in the textures from the constructor
-      assert(source != "polygon" && source != "text");
+      assert(source != "polygon");
       textures[source] = Texture2D.from_image(source);
     }
     if (source !in blobs)
@@ -66,12 +49,12 @@ class Graphics : System!GraphicSource
     if (source == "polygon")
     {
       if (entity.has("polygon.colors"))
-        data = new GraphicsData(entity.get!(vec3[])("polygon.vertices"), entity.get!(vec4[])("polygon.colors"));
+        data = new GraphicsData(entity.get!(vec3[])("polygon.vertices"), 
+                                entity.get!(vec4[])("polygon.colors"));
       else
-        data = new GraphicsData(entity.get!(vec3[])("polygon.vertices"), entity.get!vec4("color"));
+        data = new GraphicsData(entity.get!(vec3[])("polygon.vertices"), 
+                                entity.get!vec4("color"));
     }
-    else if (source == "text")
-      data = textRenderer.getGraphicsData(entity.get!string("text"), entity.get!vec4("color"));
     else
       data = new GraphicsData(baseSquare.dup.map!(vertex => vertex * mat3.zrotation(PI/2)).array, baseTexCoordsSquare.dup);
 
@@ -88,10 +71,8 @@ class Graphics : System!GraphicSource
     blobs.byValue.each!(blob => blob.reset());
     components.each!(component => blobs[component.sourceName].addData(component.transformedData));
     foreach (name, blob; blobs)
-    {
       blob.render(shaders["coloredtexture"], name == "polygon", camera.transform);
-    }
-    renderer.toScreen();
+    //renderer.toScreen();
   }
 
   void updateFromEntities()
@@ -101,10 +82,6 @@ class Graphics : System!GraphicSource
       components[index].position = entity.get!vec3("position");
       components[index].angle = entity.get!double("angle", entity.get!float("angle"));
       components[index].size = entity.get!double("size", entity.get!float("size"));
-
-      // TODO: should it be possible to change vertices, colors or texCoords for all kinds of components?
-      if (components[index].sourceName == "text")
-        components[index].data = textRenderer.getGraphicsData(entity.get!string("text"), entity.get!vec4("color"));
     }
   }
 
@@ -119,7 +96,6 @@ class Graphics : System!GraphicSource
   Texture2D[string] textures;
   GraphicsBlob[string] blobs;
 
-  Renderer renderer;
-  TextRenderer textRenderer;
+  //Renderer renderer;
   Camera camera;
 }
