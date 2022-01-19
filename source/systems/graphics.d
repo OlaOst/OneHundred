@@ -32,7 +32,7 @@ class Graphics : System!GraphicSource
   {
     auto source = entity.get!string("graphicsource");
 
-    assert(source != "text", "Graphicsource text no longer supported, just having a text value is enough");
+    assert(source != "text", "Graphicsource text no longer supported");
 
     if (source !in textures)
     {
@@ -54,7 +54,8 @@ class Graphics : System!GraphicSource
                                 entity.get!vec4("color"));
     }
     else
-      data = new GraphicsData(baseSquare.dup.map!(vertex => vertex * mat3.zrotation(PI/2)).array, baseTexCoordsSquare.dup);
+      data = new GraphicsData(baseSquare.dup.map!(vertex => vertex * mat3.zrotation(PI/2)).array, 
+                              baseTexCoordsSquare.dup);
 
     auto position = entity.get!vec3("position");
     auto angle = entity.get!double("angle", entity.get!float("angle"));
