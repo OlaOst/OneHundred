@@ -14,7 +14,6 @@ class TextHandler : System!Text
   this(TextRenderer textRenderer, Camera camera, Texture2D textAtlas)
   {
     this.shaders["coloredtexture"] = new Shader("shaders/coloredtexture.shader");
-    this.shaders["textquadratic"] = new Shader("shaders/textquadratic.shader");
     
     this.textBlob = new GraphicsBlob(textAtlas);
     
