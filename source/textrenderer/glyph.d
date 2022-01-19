@@ -42,7 +42,7 @@ Glyph loadGlyph(FT_Face face, char letter, uint glyphSize)
   glyph.bitmap = face.glyph.bitmap;
 
   glyph.offset = vec2(cast(int)face.glyph.bitmap_left / cast(float)glyphSize,
-                      cast(int)(face.glyph.bitmap_top - face.glyph.bitmap.rows) / cast(float)glyphSize);
+                      cast(int)(face.glyph.bitmap_top-face.glyph.bitmap.rows)/cast(float)glyphSize);
   glyph.advance = vec2(cast(int)face.glyph.advance.x / (64.0 * cast(float)glyphSize),
                        cast(int)face.glyph.advance.y / (64.0 * cast(float)glyphSize));
 
@@ -62,7 +62,8 @@ Glyph loadGlyph(FT_Face face, char letter, uint glyphSize)
 
       if (glyph.data.length <= coord + 3)
       {
-        std.stdio.stderr.writeln("Out of bounds error when creating glyph texture for character ", letter);
+        import std.stdio : stderr;
+        stderr.writeln("Out of bounds error when creating glyph texture for character ", letter);
         break;
       }
 
