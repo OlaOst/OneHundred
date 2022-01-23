@@ -25,6 +25,19 @@ SDL_Window* getWindow(int screenWidth, int screenHeight)
     auto loadedSDLImage = loadSDLImage("SDL2_Image.dll");
     enforce(loadedSDLImage == sdlImageSupport, "Failed to load SDLImage library");
   }
+  else
+  {
+    auto loadedSDLSupport = loadSDL();
+
+    if (loadedSDLSupport != sdlSupport)
+    {
+      enforce(loadedSDLSupport != SDLSupport.noLibrary, "Failed to load SDL library");
+      enforce(loadedSDLSupport != SDLSupport.badLibrary, "Error loading SDL library");
+    }
+
+    auto loadedSDLImage = loadSDLImage();    
+    enforce(loadedSDLImage == sdlImageSupport, "Failed to load SDLImage library");
+  }
 
   enforce(SDL_Init(SDL_INIT_VIDEO) == 0, "Failed to initialize SDL: " ~ SDL_GetError().to!string);
   //enforce(IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) & (IMG_INIT_JPG | IMG_INIT_PNG),
