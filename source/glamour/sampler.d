@@ -24,10 +24,10 @@ class ShaderException : Exception {
 
 version(OSX) {
     ///
-    alias EmulatedSampler Sampler;
+    alias Sampler = EmulatedSampler;
 } else {
     ///
-    alias RealSampler Sampler;
+    alias Sampler = RealSampler;
 }
 
 interface ISampler {
@@ -136,7 +136,7 @@ class EmulatedSampler : ISampler {
     float[] get_parameter(GLenum name)
         in { assert(name != GL_TEXTURE_BORDER_COLOR);
              assert(parameters[name].is_float); }
-        body {
+        do {
             if(auto param = name in parameters) {
                 return [param.f];
             } else {

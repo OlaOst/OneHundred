@@ -41,7 +41,7 @@ in
   //assert(z >= -2^^31 && z < 2^^31-1, 
          //"Tried to call deinterleave with z out of bounds: " ~ to!string(z));
 }
-body
+do
 {
   z = z & 0x55555555;
   
@@ -61,7 +61,7 @@ in
   //assert(x >= 0 && x < 2^^16, "Tried to call interleave with x out of bounds: " ~ x.to!string);
   //assert(y >= 0 && y < 2^^16, "Tried to call interleave with y out of bounds: " ~ y.to!string);
 }
-body
+do
 {
   // from http://graphics.stanford.edu/~seander/bithack.html#InterleaveBMN
   static immutable uint[] B = [0x55555555, 0x33333333, 0x0F0F0F0F, 0x00FF00FF];

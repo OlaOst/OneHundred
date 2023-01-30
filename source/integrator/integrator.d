@@ -22,7 +22,7 @@ out(result)
 {
   assert(&result);
 }
-body
+do
 {
   State state = initial;
   
@@ -57,7 +57,7 @@ out
 {
   assert(&state);
 }
-body
+do
 {
   Derivative a = evaluate(state, time, timestep * 0.0, Derivative());
   Derivative b = evaluate(state, time, timestep * 0.5, a);

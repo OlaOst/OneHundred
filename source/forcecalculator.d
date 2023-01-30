@@ -17,7 +17,7 @@ out (result)
 {
   assert(!result.isNaN);
 }
-body
+do
 {
   //import std.stdio;
   //debug writeln("calculateTorque for ", state.entity.id, " begin");
@@ -58,7 +58,7 @@ out (result)
 {
   assert(result.isFinite);
 }
-body
+do
 {
   //import std.stdio;
   //debug writeln("calculateForce for ", state.entity.id, " begin");
