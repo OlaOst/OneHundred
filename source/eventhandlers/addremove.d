@@ -15,7 +15,7 @@ void handleAddRemoveEntity(Input gameInput,
                            SystemSet systemSet, 
                            ref Entity[string][] npcEntityGroups)
 {
-  bool addEntity = gameInput.isActionSet("addEntity");
+  bool addEntity = gameInput.isActionToggled("addEntity");
   bool removeEntity = gameInput.isActionSet("removeEntity");
   if (addEntity)
   {

@@ -42,6 +42,8 @@ void main(string[] args)
 
   auto npcEntityGroups = "data/npcship.txt".createEntityCollectionFromFile.repeat(0).array;
   npcEntityGroups.each!(npcEntityGroup => systemSet.addEntityCollection(npcEntityGroup));
+  //auto npcEntityGroup = "data/npcship.txt".createEntityCollectionFromFile;  
+  ///systemSet.addEntityCollection(npcEntityGroup);
 
   auto playerSet = "data/playership.txt".createEntityCollectionFromFile;
 
@@ -84,6 +86,69 @@ void main(string[] args)
     addParticles(systemSet);
     addBullets(npcEntityGroups, systemSet);
     addNetworkEntities(systemSet);
+
+    // npc movement
+    foreach (npcEntityGroup; npcEntityGroups)
+    {
+      foreach (npcEngineEntity; npcEntityGroup.values.filter!(npcEntity => 
+                                npcEntity.get!string("fullName") == "npc.ship.engine"))
+      {
+        auto engineForce = npcEngineEntity.has("engineForce") ? npcEngineEntity.get!double("engineForce") : 1.0;
+        auto engineTorque = npcEngineEntity.has("engineTorque") ? npcEngineEntity.get!double("engineTorque") : 1.0;
+        
+        auto angle = npcEngineEntity.get!double("angle");
+        
+        auto torque = npcEngineEntity.get!double("torque");
+        
+        // points towrd angle 0 (up or left?)
+        
+        auto position = npcEngineEntity.get!vec3("position");
+        
+        auto angleFromCenter = atan2(position.y, position.x);
+        auto positionRelativeToPlayer = position - playerSet["player.ship"].get!vec3("position");
+        auto angleFromPlayer = atan2(positionRelativeToPlayer.y, positionRelativeToPlayer.x);
+        
+        //auto angleDiff = (angle - angleFromCenter);
+        auto angleDiff = (angle - angleFromPlayer);
+        //auto angleDiff = (angleFromPlayer - angle);
+        if (angleDiff > PI)
+          angleDiff -= PI*2;
+        else if (angleDiff < -PI)
+          angleDiff += PI*2;
+        
+        //if ((angleDiff < 0.1 && angleDiff > -0.1) || (angleDiff < (-PI * 0.9) && angleDiff > (PI * 0.9)))
+        if (angleDiff.abs < 0.1 || angleDiff.abs > PI*0.9)
+        {
+          debug writeln("slowing turn");
+          // dampen rotation when there is no rotation torque
+          torque -= npcEngineEntity.get!double("rotation") * engineTorque;
+        }
+        //if (angleDiff < (-PI * 0.1))// || angleDiff > (PI * 0.9))
+        else if (angleDiff < 0)
+        //if (angleDiff < -3)
+        {
+          debug writeln("turning right");
+          torque += engineTorque;
+        }
+        //else if (angleDiff > (PI * 0.1))// || angleDiff < (-PI * 0.9))
+        else if (angleDiff > 0)
+        //else if (angleDiff > 3)
+        {
+          debug writeln("turning left");
+          torque -= engineTorque;
+        }
+        else
+        {
+          debug writeln("wtf");
+          // dampen rotation when there is no rotation torque
+          //torque -= npcEngineEntity.get!double("rotation") * engineTorque;
+        }
+        
+        debug writeln("npc angle ", angle, ", position relative to player ", positionRelativeToPlayer, ", angle from center ", angleFromCenter, ", angleDiff ", angleDiff, " engine torque ", engineTorque, " final torque ", torque);
+        
+        npcEngineEntity["torque"] = torque;
+      }
+    }
 
     npcEntityGroups = npcEntityGroups.filter!(npcEntityGroup => !npcEntityGroup.values
       .all!(npcEntity => npcEntity.get!bool("ToBeRemoved"))).array;
