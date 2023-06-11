@@ -18,7 +18,7 @@ public:
   
   void incrementAccumulator() @nogc
   {
-    double newTime = (TickDuration.currSystemTick() - startTime).total!"usecs" * (1.0 / 1_000_000);
+    double newTime = cast(double)(MonoTime.currTime - startTime).ticks / MonoTime.ticksPerSecond;
     frameTime = min(newTime - currentTime, maxFrametime);
     
     currentTime = newTime;
