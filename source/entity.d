@@ -3,7 +3,7 @@ module entity;
 import std.algorithm;
 import std.conv;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import converters;
 import renderer.polygon;

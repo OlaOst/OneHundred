@@ -1,6 +1,6 @@
 module renderer.graphicsblob;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import glamour.shader;
 import glamour.texture;

@@ -2,8 +2,8 @@ module bitops;
 
 import std.conv;
 
-import gl3n.aabb;
-import gl3n.linalg;
+import inmath.aabb;
+import inmath.linalg;
 
 
 bool contains(AABB container, AABB content) pure nothrow @nogc

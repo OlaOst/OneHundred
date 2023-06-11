@@ -5,8 +5,8 @@ import std.conv;
 import std.math;
 import std.range;
 
-import gl3n.aabb;
-import gl3n.linalg;
+import inmath.aabb;
+import inmath.linalg;
 
 import entity;
 import renderer.polygon;
@@ -77,7 +77,7 @@ Entity[] makeSpatialTreeBoxes(AABB[][int] boxSet)
       
       entity["polygon.vertices"] = polygon.vertices.map!(vertex => vertex - box.center);
       entity["polygon.colors"] = polygon.colors;
-      entity["size"] = box.extent.magnitude * 0.5;
+      entity["size"] = box.extent.length * 0.5;
       
       entities ~= entity;
     }

@@ -1,6 +1,6 @@
 module renderer.baseshapes;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 
 // commonly used bases for triangles and rectangles

@@ -1,6 +1,6 @@
 module eventhandlers.game;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import app;
 import camera;

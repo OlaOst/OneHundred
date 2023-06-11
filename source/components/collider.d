@@ -3,8 +3,8 @@ module components.collider;
 import std.algorithm;
 import std.array;
 
-import gl3n.aabb;
-import gl3n.linalg;
+import inmath.aabb;
+import inmath.linalg;
 
 import collision.check;
 import converters;
@@ -42,7 +42,7 @@ class Collider
     if (vertices.length == 0)
       return AABB(position - vec3(radius, radius, 0.0), position + vec3(radius, radius, 0.0));
     else
-      return AABB.from_points(vertices.map!(v => v + position).array);
+      return AABB.fromPoints(vertices.map!(v => v + position).array);
   }
   
   // what entity did this collider spawn from? 
@@ -73,7 +73,7 @@ class Collider
   {
     //assert(other !is null);
     
-    if ((position - other.position).magnitude_squared < (radius + other.radius)^^2)
+    if ((position - other.position).lengthSquared < (radius + other.radius)^^2)
     {
       //auto firstCollider = this;
       //auto otherCollider = other;

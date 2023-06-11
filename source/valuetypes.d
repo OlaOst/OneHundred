@@ -1,6 +1,6 @@
 module valuetypes;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 
 auto immutable vec3Types = ["position", "velocity", "force"];

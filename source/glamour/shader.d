@@ -37,6 +37,9 @@ private {
     version(gl3n) {
         import gl3n.util : is_vector, is_matrix, is_quaternion;
     }
+    version(inmath) {
+      import inmath.util : isVector, isMatrix, isQuaternion;
+    }
 
     debug import std.stdio : stderr;
 }
@@ -358,6 +361,63 @@ class Shader {
     } else {
         void uniform(S, T)(S name, T value) {
             static assert(false, "you have to compile glamour with version=gl3n to use Shader.uniform");
+        }
+    }
+    
+    // inmath integration
+    version(inmath) {
+        /// If glamour gets compiled with version=inmath support for
+        /// vectors, matrices and quaternions is added
+        void uniform(T)(string name, T value) if(isVector!T) {
+            static if(is(T.vt : int)) {
+                static if(T.dimension == 2) {
+                    checkgl!glUniform2iv(get_uniform_location(name), 1, value.ptr);
+                } else static if(T.dimension == 3) {
+                    checkgl!glUniform3iv(get_uniform_location(name), 1, value.ptr);
+                } else static if(T.dimension == 4) {
+                    checkgl!glUniform4iv(get_uniform_location(name), 1, value.ptr);
+                } else static assert(false);
+            } else {
+                static if(T.dimension == 2) {
+                    checkgl!glUniform2fv(get_uniform_location(name), 1, value.ptr);
+                } else static if(T.dimension == 3) {
+                    checkgl!glUniform3fv(get_uniform_location(name), 1, value.ptr);
+                } else static if(T.dimension == 4) {
+                    checkgl!glUniform4fv(get_uniform_location(name), 1, value.ptr);
+                } else static assert(false);
+            }
+        }
+
+        /// ditto
+        void uniform(S : string, T)(S name, T value) if(isMatrix!T) {
+            static if((T.rows == 2) && (T.cols == 2)) {
+                checkgl!glUniformMatrix2fv(get_uniform_location(name), 1, GL_TRUE, value.ptr);
+            } else static if((T.rows == 3) && (T.cols == 3)) {
+                checkgl!glUniformMatrix3fv(get_uniform_location(name), 1, GL_TRUE, value.ptr);
+            } else static if((T.rows == 4) && (T.cols == 4)) {
+                checkgl!glUniformMatrix4fv(get_uniform_location(name), 1, GL_TRUE, value.ptr);
+            } else static if((T.rows == 2) && (T.cols == 3)) {
+                checkgl!glUniformMatrix2x3fv(get_uniform_location(name), 1, GL_TRUE, value.ptr);
+            } else static if((T.rows == 3) && (T.cols == 2)) {
+                checkgl!glUniformMatrix3x2fv(get_uniform_location(name), 1, GL_TRUE, value.ptr);
+            } else static if((T.rows == 2) && (T.cols == 4)) {
+                checkgl!glUniformMatrix2x4fv(get_uniform_location(name), 1, GL_TRUE, value.ptr);
+            } else static if((T.rows == 4) && (T.cols == 2)) {
+                checkgl!glUniformMatrix4x2fv(get_uniform_location(name), 1, GL_TRUE, value.ptr);
+            } else static if((T.rows == 3) && (T.cols == 4)) {
+                checkgl!glUniformMatrix3x4fv(get_uniform_location(name), 1, GL_TRUE, value.ptr);
+            } else static if((T.rows == 4) && (T.cols == 3)) {
+                checkgl!glUniformMatrix4x3fv(get_uniform_location(name), 1, GL_TRUE, value.ptr);
+            } else static assert(false, "Can not upload type " ~ T.stringof ~ " to GPU as uniform");
+        }
+
+        /// ditto
+        void uniform(S : string, T)(S name, T value) if(isQuaternion!T) {
+            checkgl!glUniform4fv(get_uniform_location(name), 1, value.ptr);
+        }
+    } else {
+        void uniform(S, T)(S name, T value) {
+            static assert(false, "you have to compile glamour with version=inmath to use Shader.uniform");
         }
     }
 

@@ -1,6 +1,6 @@
 module eventhandlers.debuginfo;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import components.input;
 import entity;

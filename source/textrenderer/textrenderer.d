@@ -4,7 +4,7 @@ import std;
 
 import bindbc.freetype;
 import glamour.texture;
-import gl3n.linalg;
+import inmath.linalg;
 import loader = bindbc.loader.sharedlib;
 
 import textrenderer.atlas;

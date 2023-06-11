@@ -5,8 +5,8 @@ import std.array;
 import std.conv;
 import std.math;
 
-import gl3n.aabb;
-import gl3n.linalg;
+import inmath.aabb;
+import inmath.linalg;
 
 
 type myTo(type : vec2)(string text)
@@ -42,7 +42,7 @@ type myTo(type : vec4[])(string text)
 type myTo(type : AABB)(string text)
 {
   auto points = text.myTo!(vec3[]);
-  return AABB.from_points(points);
+  return AABB.fromPoints(points);
 }
 
 vec2 vec2FromAngle(double angle)

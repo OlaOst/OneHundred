@@ -1,7 +1,7 @@
 module components.relations.relativevalue;
 
-import gl3n.aabb;
-import gl3n.linalg;
+import inmath.aabb;
+import inmath.linalg;
 
 import components.relation;
 import converters;
@@ -29,7 +29,7 @@ class RelativeValue(ValueType) : Relation
     {
       ValueType fixedRelativeValue = relativeValue;
       if (valueName == "position" && target.has("angle"))
-        fixedRelativeValue = mat3.zrotation(target.get!double("angle")) * relativeValue;
+        fixedRelativeValue = mat3.zRotation(target.get!double("angle")) * relativeValue;
         
       auto newValue = target.get!vec3(valueName) + fixedRelativeValue;
     }

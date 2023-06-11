@@ -2,7 +2,7 @@ module systems.relationhandler;
 
 import std;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import components.relation;
 import components.relations.dietogether;

@@ -8,7 +8,7 @@ import std.range;
 import std.stdio;
 import std.string;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import components.collider;
 import components.input;

@@ -3,7 +3,7 @@ module eventhandlers.toggleinputwindow;
 import std.algorithm;
 import std.array;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import components.collider;
 import components.input;

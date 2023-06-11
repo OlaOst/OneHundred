@@ -2,8 +2,8 @@ module components.relations.sameshape;
 
 import std.conv;
 
-import gl3n.aabb;
-import gl3n.linalg;
+import inmath.aabb;
+import inmath.linalg;
 
 import components.relation;
 import converters;

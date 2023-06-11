@@ -1,6 +1,6 @@
 module tests.spatialindex;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import spatialindex.spatialindex;
 

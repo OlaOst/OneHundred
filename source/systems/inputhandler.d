@@ -3,7 +3,7 @@ module systems.inputhandler;
 import std;
 
 import bindbc.sdl;
-import gl3n.linalg;
+import inmath.linalg;
 
 import components.input;
 import converters;

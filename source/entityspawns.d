@@ -4,7 +4,7 @@ import std.algorithm;
 import std.conv;
 import std.random;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import components.collider;
 import converters;

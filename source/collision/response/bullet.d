@@ -2,7 +2,7 @@ module collision.response.bullet;
 
 import std;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import collision.responsehandler;
 import components.collider;
@@ -61,7 +61,7 @@ Entity[] bulletCollisionResponse(Collision collision, CollisionHandler collision
       particle["position"] = position;
       auto angle = uniform(-PI, PI);
       
-      auto velocityMagnitude = uniform(momentum.magnitude * 3.0, momentum.magnitude * 6.0 + 0.001);
+      auto velocityMagnitude = uniform(momentum.length * 3.0, momentum.length * 6.0 + 0.001);
       particle["velocity"] = momentum + vec3(vec2FromAngle(angle), 0.0) * velocityMagnitude;
       particle["angle"] = angle;
       particle["rotation"] = (angle * 10.0);
@@ -84,8 +84,8 @@ Entity[] bulletCollisionResponse(Collision collision, CollisionHandler collision
     hitSound["sound"] = hitSounds.randomSample(1).front;
     hitEffectParticles ~= hitSound;
     
-    Entity hitText = createText(ceil(momentum.magnitude * 10.0).to!string, position);
-    hitText["size"] = min((momentum.magnitude / 4.0), 6.0);
+    Entity hitText = createText(ceil(momentum.length * 10.0).to!string, position);
+    hitText["size"] = min((momentum.length / 4.0), 6.0);
     hitText["lifeTime"] = 1.0;
     hitText["mass"] = 0.03;
     hitText["velocity"] = vec3(uniform(-0.5, 0.5), 5.0, 0.0);

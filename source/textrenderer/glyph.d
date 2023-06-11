@@ -4,7 +4,7 @@ import std;
 
 import bindbc.freetype;
 import bindbc.opengl;
-import gl3n.linalg;
+import inmath.linalg;
 
 
 struct Glyph

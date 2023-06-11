@@ -3,8 +3,8 @@ module spatialindex.rtree;
 import std.algorithm;
 import std.range;
 
-import gl3n.aabb;
-import gl3n.linalg;
+import inmath.aabb;
+import inmath.linalg;
 
 import spatialindex.spatialindex;
 

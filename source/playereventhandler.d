@@ -2,7 +2,7 @@ module playereventhandler;
 
 import std.algorithm;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import components.input;
 import converters;

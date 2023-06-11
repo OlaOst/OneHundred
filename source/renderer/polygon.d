@@ -5,7 +5,7 @@ import std.array;
 import std.math;
 import std.range;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import converters;
 

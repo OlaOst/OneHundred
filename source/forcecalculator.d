@@ -3,7 +3,7 @@ module forcecalculator;
 import std.math;
 import std.stdio;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import components.collider;
 import components.input;
@@ -70,8 +70,8 @@ do
 /*
   // twisty clockwise force close to center
   auto normalPos = vec3(state.position.y, -state.position.x, 0.0);
-  if (normalPos.magnitude() > 0.0)
-    force += normalPos.normalized() * ((1.0 / (normalPos.magnitude() + 0.1)) ^^2) * 0.05;
+  if (normalPos.length() > 0.0)
+    force += normalPos.normalized() * ((1.0 / (normalPos.length() + 0.1)) ^^2) * 0.05;
 
   // twisty counterclockwise force further out
   force += vec3(-state.position.y, state.position.x, 0.0) * 0.015;
@@ -89,7 +89,7 @@ do
   }*/
   
   // clamp force magnitude
-  if (force.magnitude > 1_000_000)
+  if (force.length > 1_000_000)
     force = force.normalized * 1_000_000;
   
   return force;

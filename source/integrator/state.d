@@ -4,7 +4,7 @@ import std.conv;
 import std.math;
 import std.stdio;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import converters;
 import entity;

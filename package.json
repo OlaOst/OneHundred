@@ -1,20 +1,27 @@
 {
-  "name": "onehundred",
-  "description": "An example project skeleton",
-  "homepage": "http://example.org",
-  "copyright": "Copyright © 2016, Ola Østtveit",
-  "authors": ["Ola Østtveit"],
-  "version": "0.0.1",
-  "mainSourceFile": "source/app.d",
-  "dependencies": {
-    "bindbc-sdl": "0.21.2",
-    "bindbc-opengl": "0.16.0",
-    "bindbc-freetype": "0.10.0",
-    "bindbc-openal": "0.5.0",
-    "derelict-ogg": "2.0.0-beta.1",
-    "derelict-vorbis": "2.0.0-beta.2",
-    "gl3n": "1.4.1",
-  },
-
-  "versions": ["gl3n", "VibeCustomMain", "SDL_Image", "SDL_214", "GL_41"],
+	"authors": [
+		"Ola Østtveit"
+	],
+	"copyright": "Copyright © 2016, Ola Østtveit",
+	"dependencies": {
+		"bindbc-freetype": "0.10.0",
+		"bindbc-openal": "0.5.0",
+		"bindbc-opengl": "0.16.0",
+		"bindbc-sdl": "0.21.2",
+		"derelict-ogg": "2.0.0-beta.1",
+		"derelict-vorbis": "2.0.0-beta.2",
+		"inmath": "~>1.0.5"
+	},
+	"description": "An example project skeleton",
+	"homepage": "http://example.org",
+	"mainSourceFile": "source/app.d",
+	"name": "onehundred",
+	"version": "0.0.1",
+	"versions": [
+    "inmath",
+		"VibeCustomMain",
+		"SDL_Image",
+		"SDL_214",
+		"GL_41"
+	]
 }

@@ -5,7 +5,7 @@ import std;
 import derelict.ogg.ogg;
 import derelict.vorbis;
 import bindbc.openal;
-import gl3n.linalg;
+import inmath.linalg;
 
 import audio.oggsource;
 import audio.source;

@@ -2,7 +2,7 @@ module app;
 
 import std;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import camera;
 import debugentities;

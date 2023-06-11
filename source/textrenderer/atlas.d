@@ -3,7 +3,7 @@ module textrenderer.atlas;
 import std;
 
 import bindbc.opengl;
-import gl3n.linalg;
+import inmath.linalg;
 import glamour.texture;
 
 import textrenderer.glyph;

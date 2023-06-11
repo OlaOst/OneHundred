@@ -3,7 +3,7 @@ module integrator.integrator;
 import std.math;
 import std.stdio;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import integrator.derivative;
 import integrator.state;

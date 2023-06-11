@@ -2,7 +2,7 @@ module collision.response.ship;
 
 import std;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import collision.responsehandler;
 import components.collider;
@@ -56,7 +56,7 @@ Entity[] shipCollisionResponse(Collision collision, CollisionHandler collisionHa
   
   auto momentumBefore = first.velocity * firstMass + other.velocity * otherMass;
   auto momentumAfter = firstVelocity * firstMass + otherVelocity * otherMass;
-  assert(isClose(momentumBefore.magnitude, momentumAfter.magnitude, 0.001), 
+  assert(isClose(momentumBefore.length, momentumAfter.length, 0.001), 
          "Momentum not conserved in collision: went from " ~ 
          momentumBefore.to!string ~ " to " ~ momentumAfter.to!string);    
 
@@ -64,8 +64,8 @@ Entity[] shipCollisionResponse(Collision collision, CollisionHandler collisionHa
   auto otherVel = other.velocity;
   
   // only change velocities if entities are moving towards each other
-  if (((other.position+other.velocity*0.01) - (first.position+first.velocity*0.01)).magnitude <
-      (other.position-first.position).magnitude)
+  if (((other.position+other.velocity*0.01) - (first.position+first.velocity*0.01)).length <
+      (other.position-first.position).length)
   {
     firstColliderEntity["velocity"] = firstVelocity;
     otherColliderEntity["velocity"] = otherVelocity;
@@ -76,7 +76,7 @@ Entity[] shipCollisionResponse(Collision collision, CollisionHandler collisionHa
   auto otherPos = otherColliderEntity.get!vec3("position");
 
   Entity[] hitEffectParticles;
-  if ((firstVelocity - otherVelocity).magnitude > 1.0)
+  if ((firstVelocity - otherVelocity).length > 1.0)
   {
     auto position = (first.contactPoint + other.contactPoint) * 0.5;
     Entity hitSound = new Entity();

@@ -2,7 +2,7 @@ module systems.graphics;
 
 import std;
 
-import gl3n.linalg;
+import inmath.linalg;
 import glamour.shader;
 import glamour.texture;
 
@@ -54,7 +54,7 @@ class Graphics : System!GraphicSource
                                 entity.get!vec4("color"));
     }
     else
-      data = new GraphicsData(baseSquare.dup.map!(vertex => vertex * mat3.zrotation(PI/2)).array, 
+      data = new GraphicsData(baseSquare.dup.map!(vertex => vertex * mat3.zRotation(PI/2)).array, 
                               baseTexCoordsSquare.dup);
 
     auto position = entity.get!vec3("position");

@@ -5,7 +5,7 @@ import std.array;
 import std.range;
 import std.string;
 
-import gl3n.linalg;
+import inmath.linalg;
 import glamour.texture;
 
 import renderer.baseshapes;

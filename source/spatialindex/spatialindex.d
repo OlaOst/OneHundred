@@ -1,7 +1,7 @@
 module spatialindex.spatialindex;
 
-import gl3n.aabb;
-import gl3n.linalg;
+import inmath.aabb;
+import inmath.linalg;
 
 
 interface SpatialIndex(Element)

@@ -2,7 +2,7 @@ module systems.physics;
 
 import std;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import accumulatortimer;
 import components.input;

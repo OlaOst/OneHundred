@@ -2,8 +2,8 @@ module components.text;
 
 import std;
 
-import gl3n.aabb;
-import gl3n.linalg;
+import inmath.aabb;
+import inmath.linalg;
 
 import renderer.graphicsdata;
 
@@ -46,7 +46,7 @@ class Text
   }
   do
   {
-    return data.vertices.map!(vertex => vertex * mat3.zrotation(-angle) * size + position).array;
+    return data.vertices.map!(vertex => vertex * mat3.zRotation(-angle) * size + position).array;
   }
   
   auto transformedControlVertices()
@@ -57,7 +57,7 @@ class Text
   }
   do
   {
-    return data.controlVertices.map!(vertex => vertex * mat3.zrotation(-angle) 
+    return data.controlVertices.map!(vertex => vertex * mat3.zRotation(-angle) 
                                                       * size + position).array;
   }
   
@@ -69,7 +69,7 @@ class Text
   }
   do
   {    
-    return AABB.from_points(transformedVertices);
+    return AABB.fromPoints(transformedVertices);
   }
   
   string text;

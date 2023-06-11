@@ -2,8 +2,8 @@ module components.graphicsource;
 
 import std;
 
-import gl3n.aabb;
-import gl3n.linalg;
+import inmath.aabb;
+import inmath.linalg;
 
 import renderer.graphicsdata;
 
@@ -34,8 +34,8 @@ class GraphicSource
     if (sourceName != "text")
     {
       // ensure normalized vertices
-      auto furthestVertex = data.vertices.minCount!((a, b) => a.magnitude > b.magnitude)[0];
-      this.data.vertices = data.vertices.map!(vertex => vertex / furthestVertex.magnitude).array;
+      auto furthestVertex = data.vertices.minCount!((a, b) => a.length > b.length)[0];
+      this.data.vertices = data.vertices.map!(vertex => vertex / furthestVertex.length).array;
     }
   }
   
@@ -53,7 +53,7 @@ class GraphicSource
   }
   do
   {
-    return data.vertices.map!(vertex => vertex * mat3.zrotation(-angle) * size + position).array;
+    return data.vertices.map!(vertex => vertex * mat3.zRotation(-angle) * size + position).array;
   }
   
   auto transformedControlVertices()
@@ -64,7 +64,7 @@ class GraphicSource
   }
   do
   {
-    return data.controlVertices.map!(vertex => vertex * mat3.zrotation(-angle) 
+    return data.controlVertices.map!(vertex => vertex * mat3.zRotation(-angle) 
                                                       * size + position).array;
   }
   
@@ -76,7 +76,7 @@ class GraphicSource
   }
   do
   {    
-    return AABB.from_points(transformedVertices);
+    return AABB.fromPoints(transformedVertices);
   }
   
   string sourceName;

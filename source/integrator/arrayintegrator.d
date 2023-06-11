@@ -4,7 +4,7 @@ import std.algorithm;
 import std.range;
 import std.stdio;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import integrator.derivative;
 import integrator.state;

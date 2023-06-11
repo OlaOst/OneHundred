@@ -4,7 +4,7 @@ import std;
 
 import bindbc.opengl;
 import bindbc.sdl;
-import gl3n.linalg;
+import inmath.linalg;
 import glamour.shader;
 import glamour.texture;
 import glamour.vao;

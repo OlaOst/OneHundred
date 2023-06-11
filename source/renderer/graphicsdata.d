@@ -3,7 +3,7 @@ module renderer.graphicsdata;
 import std.algorithm;
 import std.range;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 
 class GraphicsData

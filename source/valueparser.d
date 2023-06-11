@@ -10,7 +10,7 @@ import std.range;
 import std.regex : matchAll;
 import std.string;
   
-import gl3n.linalg;
+import inmath.linalg;
 
 import converters;
 import entity;

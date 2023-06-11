@@ -4,7 +4,7 @@ import bindbc.opengl;
 import glamour.shader;
 import glamour.util;
 import glamour.vbo;
-import gl3n.linalg;
+import inmath.linalg;
 
 
 public void drawColoredTexture(Shader shader, mat4 transform,

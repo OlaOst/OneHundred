@@ -2,8 +2,8 @@ module systems.collisionhandler;
 
 import std;
 
-import gl3n.aabb;
-import gl3n.linalg;
+import inmath.aabb;
+import inmath.linalg;
 
 import collision.responsehandler;
 import components.collider;

@@ -3,7 +3,7 @@ module audio.source;
 import std;
 
 import bindbc.openal;
-import gl3n.linalg;
+import inmath.linalg;
 
 
 interface Source

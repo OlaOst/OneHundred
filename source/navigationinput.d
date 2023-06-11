@@ -6,7 +6,7 @@ import std.math;
 import std.random;
 import std.range;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import components.input;
 import converters;

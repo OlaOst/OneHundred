@@ -2,7 +2,7 @@ module systems.accumulatorhandler;
 
 import std;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import components.valueaccumulator;
 import entity;

@@ -3,7 +3,7 @@ module collision.check;
 import std.algorithm;
 import std.range;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import components.collider;
 

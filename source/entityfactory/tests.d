@@ -2,7 +2,7 @@ module entityfactory.tests;
 
 import std;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 import components.collider;
 import components.sound;

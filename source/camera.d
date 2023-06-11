@@ -1,6 +1,6 @@
 module camera;
 
-import gl3n.linalg;
+import inmath.linalg;
 
 
 class Camera
