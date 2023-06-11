@@ -139,7 +139,7 @@ class Texture1D : ITexture {
     /// The OpenGL texture name.
     GLuint texture;
     /// Alias this to texture.
-    alias texture this;
+    //alias texture this;
     
     /// Holds the internal format passed to the constructor.
     GLint internal_format;
@@ -202,7 +202,7 @@ class Texture2D : ITexture {
     /// The OpenGL texture name.
     GLuint texture;
     /// Alias this to texture.
-    alias texture this;
+    //alias texture this;
 
     /// Holds the internal format passed to the constructor.
     GLint internal_format;
@@ -359,7 +359,7 @@ class Texture3DBase(GLenum target_) : ITexture {
     /// The OpenGL texture name.
     GLuint texture;
     /// Alias this to texture.
-    alias texture this;
+    //alias texture this;
 
     /// Holds the internal format passed to the constructor.
     GLint internal_format;

@@ -31,7 +31,7 @@ class ElementBuffer : IBuffer {
     /// The OpenGL buffer name.
     GLuint buffer;
     /// Alias this to buffer.
-    alias buffer this;
+    //alias buffer this;
 
     /// Specifies the expected usage pattern of the data store.
     GLenum hint;
@@ -117,7 +117,7 @@ class Buffer : IBuffer {
     /// The OpenGL buffer name.
     GLuint buffer;
     /// Alias this to buffer.
-    alias buffer this;
+    //alias buffer this;
 
     /// Specifies the expected usage pattern of the data store.
     GLenum hint;

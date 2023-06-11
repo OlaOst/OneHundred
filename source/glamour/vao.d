@@ -25,7 +25,7 @@ class VAO : IVAO {
     /// The OpenGL vao name
     GLuint vao;
     /// Alias this to vao
-    alias vao this;
+    //alias vao this;
 
     /// Initializes the VAO
     this() {

@@ -44,7 +44,7 @@ class RealSampler : ISampler {
     /// The OpenGL sampler name.
     GLuint sampler;
     /// Alias this to sampler.
-    alias sampler this;
+    //alias sampler this;
        
     /// Creates the OpenGL sampler.
     this() {

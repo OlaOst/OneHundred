@@ -138,7 +138,7 @@ class Shader {
     /// The OpenGL program.
     GLuint program;
     /// Alias this to program.
-    alias program this;
+    //alias program this;
 
     private GLuint[] _shaders;
     /// Holds every shaders source.

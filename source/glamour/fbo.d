@@ -30,7 +30,7 @@ class FrameBuffer {
     /// The OpenGL FBO name
     GLuint fbo;
     /// Alias this to fbo
-    alias fbo this;
+    //alias fbo this;
 
     /// Creates an OpenGL FBO
     this() {
@@ -61,7 +61,7 @@ class FrameBuffer {
     /// Calls validate
     void attach(Texture1D texture, GLenum attachment_point, GLint level=0) {
         bind();
-        checkgl!glFramebufferTexture1D(target, attachment_point, GL_TEXTURE_1D, texture, level);
+        checkgl!glFramebufferTexture1D(target, attachment_point, GL_TEXTURE_1D, texture.texture, level);
         validate();
     }
 
@@ -80,7 +80,7 @@ class FrameBuffer {
     /// Calls validate
     void attach(Texture2D texture, GLenum attachment_point, GLint level=0) {
         bind();
-        checkgl!glFramebufferTexture2D(target, attachment_point, GL_TEXTURE_2D, texture, level);
+        checkgl!glFramebufferTexture2D(target, attachment_point, GL_TEXTURE_2D, texture.texture, level);
         validate();
     }
 
@@ -100,7 +100,7 @@ class FrameBuffer {
     /// Calls validate
     void attach(RenderBuffer rbuffer, GLenum attachment_point) {
         bind();
-        checkgl!glFramebufferRenderbuffer(target, attachment_point, rbuffer.target, rbuffer);
+        checkgl!glFramebufferRenderbuffer(target, attachment_point, rbuffer.target, rbuffer.renderbuffer);
         validate();
     }
 
@@ -136,7 +136,7 @@ class RenderBuffer {
     /// The OpenGL RenderBuffer name
     GLuint renderbuffer;
     /// Alias this to renderbuffer
-    alias renderbuffer this;
+    //alias renderbuffer this;
 
     /// Creates an OpenGL RenderBuffer
     this() {
