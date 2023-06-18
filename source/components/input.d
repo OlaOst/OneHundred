@@ -59,10 +59,14 @@ class Input
     return (action in actionState) ? actionState[action] : ActionState.Unknown;
   }
 
-  void setAction(string action, ref bool value)
+  void setAction(string action)
   {
-    value = getActionState(action) == ActionState.Pressed ||
-            getActionState(action) == ActionState.Held;
+    actionState[action] = ActionState.Pressed;
+  }
+  
+  void resetAction(string action)
+  {
+    actionState[action] = ActionState.Released;
   }
 
   bool isActionSet(string action)

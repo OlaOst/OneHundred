@@ -81,9 +81,9 @@ class InputHandler : System!Input
       auto buttonAction = (event.button.button in input.inputForAction.button);
       if (buttonAction !is null)
       {
-        if (event.type == SDL_MOUSEBUTTONDOWN)
-          input.actionState[*buttonAction] = Input.ActionState.Released;
         if (event.type == SDL_MOUSEBUTTONUP)
+          input.actionState[*buttonAction] = Input.ActionState.Released;
+        if (event.type == SDL_MOUSEBUTTONDOWN)
           input.actionState[*buttonAction] = Input.ActionState.Pressed;
       }
     }
