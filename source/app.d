@@ -113,15 +113,12 @@ void main(string[] args)
         auto velocityRelativeToPlayer = velocity - playerSet["player.ship"].get!vec3("velocity");
         auto angleFromPlayer = atan2(positionRelativeToPlayer.y, positionRelativeToPlayer.x);
         
-        //auto angleDiff = (angle - angleFromCenter);
         auto angleDiff = (angle - angleFromPlayer);
-        //auto angleDiff = (angleFromPlayer - angle);
         if (angleDiff > PI)
           angleDiff -= PI*2;
         else if (angleDiff < -PI)
           angleDiff += PI*2;
         
-        //if ((angleDiff < 0.1 && angleDiff > -0.1) || (angleDiff < (-PI * 0.9) && angleDiff > (PI * 0.9)))
         if (angleDiff.abs < 0.1 || angleDiff.abs > PI*0.9)
         {
           debug writeln("slowing turn");
@@ -133,14 +130,14 @@ void main(string[] args)
           
           // accelerate towards set distance from target
           
-          if (positionRelativeToPlayer.length > 5.0 && velocityRelativeToPlayer.length < 4.0)
+          if (positionRelativeToPlayer.length > 5.0 && (velocityRelativeToPlayer.length < 4.0 || velocityRelativeToPlayer.dot(positionRelativeToPlayer) > 0.0))
           {
             debug writeln("accelerating towards target");
             //force += engineForce;
             inputComponent.setAction("accelerate");
             inputComponent.resetAction("decelerate");
           }
-          else if (positionRelativeToPlayer.length < 2.0 && velocityRelativeToPlayer.length < 4.0)
+          else if (positionRelativeToPlayer.length < 2.0 && (velocityRelativeToPlayer.length < 4.0) || velocityRelativeToPlayer.dot(positionRelativeToPlayer) < 0.0)
           {
             debug writeln("accelerating away from target");
             //force -= engineForce;
@@ -155,18 +152,14 @@ void main(string[] args)
             inputComponent.resetAction("decelerate");
           }
         }
-        //if (angleDiff < (-PI * 0.1))// || angleDiff > (PI * 0.9))
-        else if (angleDiff < 0 && rotation.abs < 1.0)
-        //if (angleDiff < -3)
+        else if (angleDiff < 0 && rotation < 1.0)
         {
           debug writeln("turning right");
           //torque += engineTorque;
           inputComponent.setAction("rotateClockwise");
           inputComponent.resetAction("rotateCounterClockwise");
         }
-        //else if (angleDiff > (PI * 0.1))// || angleDiff < (-PI * 0.9))
-        else if (angleDiff > 0 && rotation.abs < 1.0)
-        //else if (angleDiff > 3)
+        else if (angleDiff > 0 && rotation > -1.0)
         {
           debug writeln("turning left");
           //torque -= engineTorque;
