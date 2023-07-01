@@ -44,7 +44,7 @@ class InputHandler : System!Input
     }
 
     foreach (size_t index, Entity entity; entityForIndex)
-      process(entity, eventsSinceLastUpdate);
+      processSDLEvents(entity, eventsSinceLastUpdate);
   }
 
   void updateEntities()
@@ -58,7 +58,7 @@ class InputHandler : System!Input
 
   void updateFromEntities() {}
 
-  void process(Entity entity, SDL_Event[] events)
+  void processSDLEvents(Entity entity, SDL_Event[] events)
   {
     auto input = getComponent(entity);
 

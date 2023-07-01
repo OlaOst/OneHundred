@@ -16,6 +16,7 @@ class SystemSet
   TextHandler textHandler;
   Graphics graphics;
   Physics physics;
+  NpcHandler npcHandler;
   InputHandler inputHandler;
   CollisionHandler collisionHandler;
   SoundSystem soundSystem;
@@ -38,6 +39,7 @@ class SystemSet
     graphics = new Graphics(camera, textures);
     physics = new Physics();
     inputHandler = new InputHandler();
+    npcHandler = new NpcHandler(inputHandler);
     collisionHandler = new CollisionHandler();
     soundSystem = new SoundSystem();
     timeHandler = new TimeHandler();
@@ -45,7 +47,7 @@ class SystemSet
     accumulatorHandler = new AccumulatorHandler();
     networkHandler = new NetworkHandler(listenPort);
     entityHandlers = cast(EntityHandler[])[textHandler, graphics, physics, soundSystem,
-                                           inputHandler, collisionHandler, timeHandler,
+                                           npcHandler, inputHandler, collisionHandler, timeHandler,
                                            relationHandler, accumulatorHandler, networkHandler];
   }
 

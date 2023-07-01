@@ -1,5 +1,7 @@
 npc.source = data/defaultship.txt
 
+#npc.npcTarget = player
+
 npc.ship.position = [-5.0, -5.0, 0.0] to [5.0, 5.0, 0.0]
 npc.ship.angle = -PI to PI
 npc.ship.velocity = [-0.5, -0.5, 0.0] to [0.5, 0.5, 0.0]
@@ -7,11 +9,14 @@ npc.ship.velocity = [-0.5, -0.5, 0.0] to [0.5, 0.5, 0.0]
 npc.ship.hull.collider = Npc
 npc.ship.hull.size = 0.65
 
+npc.ship.engine.npcTarget = player
 npc.ship.engine.inputType = npcEngine
+#npc.ship.engine.npcTarget = player
 npc.ship.engine.collider = Npc
 npc.ship.engine.size = 0.125
 npc.ship.engine.relation.value.position = [-0.425, 0.0, 0.0]
 
+#npc.ship.gun.npcTarget = player
 npc.ship.gun.inputType = npcGun
 npc.ship.gun.collider = Npc
 npc.ship.gun.size = 0.125

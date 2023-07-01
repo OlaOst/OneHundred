@@ -75,6 +75,7 @@ public import
   systems.collisionhandler,
   systems.collisionhandlerdebughelper,
   systems.graphics,
+  systems.npchandler,
   systems.inputhandler,
   systems.networkhandler,
   //systems.package,
