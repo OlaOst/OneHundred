@@ -93,7 +93,8 @@ Entity[string] createEntityCollection(string[string][string] keyValuesByFullName
   
   foreach (fullName, keyValues; keyValuesByFullName)
   {
-    keyValues["fullName"] = fullName;
+    if (fullName.length > 0)
+      keyValues["fullName"] = fullName;
     result[fullName] = new Entity(keyValues);
   }
   return result;

@@ -21,21 +21,24 @@ class NpcHandler : System!Npc
     this.inputHandler = inputHandler;
   }
   
-  void setTargetEntity(Entity targetEntity)
-  {
-    this.targetEntity = targetEntity;
-  }
-  
   bool canAddEntity(Entity entity)
   {
+    if (entity.has("fullName"))
+    {
+      potentialTargetEntities ~= entity; // TODO: register all entities or add a TargetType value and only register those with a TargetType?
+    }
+    
     return entity.has("npcTarget");
   }
 
   Npc makeComponent(Entity entity)
   {
-    auto npcTargetName = entity.get!string("npcTarget");
-    entity.values.keys.zip(entity.values.values).each!writeln;
-    return new Npc(npcTargetName);
+    auto targetEntityMatches = potentialTargetEntities.filter!(potentialTargetEntity => potentialTargetEntity.get!string("fullName") == entity.get!string("npcTarget")).array;
+    
+    enforce(!targetEntityMatches.empty);
+    auto targetEntity = targetEntityMatches.front;
+    
+    return new Npc(targetEntity);
   }
 
   void updateValues()
@@ -47,11 +50,13 @@ class NpcHandler : System!Npc
     foreach (index, entity; entityForIndex)
     {
       auto npcComponent = components[index];
+      
+      auto targetEntity = npcComponent.target;
+      
       if (entity.get!string("fullName").endsWith(".engine"))
       {
         auto inputComponent = inputHandler.getComponent(entity);
         
-        debug writeln("npchandler updating npcengineentity ", entity.get!string("fullname"));
         auto engineForce = entity.has("engineForce") ? entity.get!double("engineForce") : 1.0;
         auto engineTorque = entity.has("engineTorque") ? entity.get!double("engineTorque") : 1.0;
         
@@ -77,7 +82,6 @@ class NpcHandler : System!Npc
         
         if (angleDiff.abs < 0.1 || angleDiff.abs > PI*0.9)
         {
-          debug writeln("slowing turn");
           // dampen rotation when there is no rotation torque
           torque -= entity.get!double("rotation") * engineTorque;
           
@@ -87,19 +91,16 @@ class NpcHandler : System!Npc
           // accelerate towards set distance from target
           if (positionRelativeToTarget.length > 5.0 && (velocityRelativeToTarget.length < 4.0 || velocityRelativeToTarget.dot(positionRelativeToTarget) > 0.0))
           {
-            debug writeln("accelerating towards target");
             inputComponent.setAction("accelerate");
             inputComponent.resetAction("decelerate");
           }
           else if (positionRelativeToTarget.length < 2.0 && (velocityRelativeToTarget.length < 4.0) || velocityRelativeToTarget.dot(positionRelativeToTarget) < 0.0)
           {
-            debug writeln("accelerating away from target");
             inputComponent.resetAction("accelerate");
             inputComponent.setAction("decelerate");
           }
           else // TODO: adjust speed relative to target speed
           {
-            debug writeln("slowing down");
             force -= entity.get!double("velocity") * engineForce;
             inputComponent.resetAction("accelerate");
             inputComponent.resetAction("decelerate");
@@ -107,22 +108,14 @@ class NpcHandler : System!Npc
         }
         else if (angleDiff < 0 && rotation < 1.0)
         {
-          debug writeln("turning right");
           inputComponent.setAction("rotateClockwise");
           inputComponent.resetAction("rotateCounterClockwise");
         }
         else if (angleDiff > 0 && rotation > -1.0)
         {
-          debug writeln("turning left");
           inputComponent.resetAction("rotateClockwise");
           inputComponent.setAction("rotateCounterClockwise");
         }
-        else
-        {
-          debug writeln("wtf");
-        }
-        
-        debug writeln("npc angle ", angle, ", position relative to target ", positionRelativeToTarget, ", angle from center ", angleFromCenter, ", angleDiff ", angleDiff, " engine torque ", engineTorque, " final torque ", torque, " final force ", force);
         
         entity["torque"] = torque;
         entity["force"] = force;
@@ -132,6 +125,6 @@ class NpcHandler : System!Npc
 
   void updateFromEntities() {}
   
-  Entity targetEntity;  
+  Entity[] potentialTargetEntities;
   InputHandler inputHandler;
 }

@@ -54,7 +54,6 @@ void main(string[] args)
 
   scope(failure)
     playerSet.keys.each!writeln;
-  systemSet.npcHandler.setTargetEntity(playerSet["player.ship"]);
 
   Entity inputWindow = null;
   auto mouseCursor = createMouseCursor();

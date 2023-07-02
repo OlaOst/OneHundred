@@ -10,14 +10,11 @@ import inputdefaults;
 
 class Npc
 {
-  //Entity target;
-  string targetName;
+  Entity target;
   
   // TODO: behaviour rule heuristics, weights, etc
-  //this(Entity target)
-  this(string targetName)
+  this(Entity target)
   {
-    //this.target = target;
-    this.targetName = targetName;
+    this.target = target;
   }
 }
