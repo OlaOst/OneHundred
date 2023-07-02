@@ -10,19 +10,8 @@ import inputdefaults;
 
 class Npc
 {
-  enum ActionState
-  {
-    Unknown,
-    Inactive,
-    Pressed,
-    Held,
-    Released,
-  }
-  
   //Entity target;
   string targetName;
-  
-  ActionState[string] actionState;
   
   // TODO: behaviour rule heuristics, weights, etc
   //this(Entity target)
@@ -30,15 +19,5 @@ class Npc
   {
     //this.target = target;
     this.targetName = targetName;
-  }
-  
-  void setAction(string action)
-  {
-    actionState[action] = ActionState.Pressed;
-  }
-  
-  void resetAction(string action)
-  {
-    actionState[action] = ActionState.Released;
   }
 }
