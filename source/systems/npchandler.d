@@ -21,9 +21,9 @@ class NpcHandler : System!Npc
     this.inputHandler = inputHandler;
   }
   
-  void setPlayerEntity(Entity playerEntity)
+  void setTargetEntity(Entity targetEntity)
   {
-    this.playerEntity = playerEntity;
+    this.targetEntity = targetEntity;
   }
   
   bool canAddEntity(Entity entity)
@@ -65,11 +65,11 @@ class NpcHandler : System!Npc
         auto velocity = entity.get!vec3("velocity");
         
         auto angleFromCenter = atan2(position.y, position.x);
-        auto positionRelativeToPlayer = position - playerEntity.get!vec3("position");
-        auto velocityRelativeToPlayer = velocity - playerEntity.get!vec3("velocity");
-        auto angleFromPlayer = atan2(positionRelativeToPlayer.y, positionRelativeToPlayer.x);
+        auto positionRelativeToTarget = position - targetEntity.get!vec3("position");
+        auto velocityRelativeToTarget = velocity - targetEntity.get!vec3("velocity");
+        auto angleFromTarget = atan2(positionRelativeToTarget.y, positionRelativeToTarget.x);
         
-        auto angleDiff = (angle - angleFromPlayer);
+        auto angleDiff = (angle - angleFromTarget);
         if (angleDiff > PI)
           angleDiff -= PI*2;
         else if (angleDiff < -PI)
@@ -85,13 +85,13 @@ class NpcHandler : System!Npc
           inputComponent.resetAction("rotateCounterClockwise");
           
           // accelerate towards set distance from target
-          if (positionRelativeToPlayer.length > 5.0 && (velocityRelativeToPlayer.length < 4.0 || velocityRelativeToPlayer.dot(positionRelativeToPlayer) > 0.0))
+          if (positionRelativeToTarget.length > 5.0 && (velocityRelativeToTarget.length < 4.0 || velocityRelativeToTarget.dot(positionRelativeToTarget) > 0.0))
           {
             debug writeln("accelerating towards target");
             inputComponent.setAction("accelerate");
             inputComponent.resetAction("decelerate");
           }
-          else if (positionRelativeToPlayer.length < 2.0 && (velocityRelativeToPlayer.length < 4.0) || velocityRelativeToPlayer.dot(positionRelativeToPlayer) < 0.0)
+          else if (positionRelativeToTarget.length < 2.0 && (velocityRelativeToTarget.length < 4.0) || velocityRelativeToTarget.dot(positionRelativeToTarget) < 0.0)
           {
             debug writeln("accelerating away from target");
             inputComponent.resetAction("accelerate");
@@ -122,7 +122,7 @@ class NpcHandler : System!Npc
           debug writeln("wtf");
         }
         
-        debug writeln("npc angle ", angle, ", position relative to player ", positionRelativeToPlayer, ", angle from center ", angleFromCenter, ", angleDiff ", angleDiff, " engine torque ", engineTorque, " final torque ", torque, " final force ", force);
+        debug writeln("npc angle ", angle, ", position relative to target ", positionRelativeToTarget, ", angle from center ", angleFromCenter, ", angleDiff ", angleDiff, " engine torque ", engineTorque, " final torque ", torque, " final force ", force);
         
         entity["torque"] = torque;
         entity["force"] = force;
@@ -132,6 +132,6 @@ class NpcHandler : System!Npc
 
   void updateFromEntities() {}
   
-  Entity playerEntity;  
+  Entity targetEntity;  
   InputHandler inputHandler;
 }
