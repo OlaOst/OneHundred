@@ -33,12 +33,8 @@ class NpcHandler : System!Npc
 
   Npc makeComponent(Entity entity)
   {
-    auto npcTargetName = entity.get!string("npcTarget");    
-    
-    entity.values.keys.zip(entity.values.values).each!writeln; //.map!(kv => kv.key ~ ": " ~ kv.value).each!writeln;
-    
-    //debug writeln("npchandler makeComponent for entity ", entity.get!string("fullname"), " with npcTargetName ", npcTargetName);
-    
+    auto npcTargetName = entity.get!string("npcTarget");
+    entity.values.keys.zip(entity.values.values).each!writeln;
     return new Npc(npcTargetName);
   }
 
@@ -89,18 +85,15 @@ class NpcHandler : System!Npc
           inputComponent.resetAction("rotateCounterClockwise");
           
           // accelerate towards set distance from target
-          
           if (positionRelativeToPlayer.length > 5.0 && (velocityRelativeToPlayer.length < 4.0 || velocityRelativeToPlayer.dot(positionRelativeToPlayer) > 0.0))
           {
             debug writeln("accelerating towards target");
-            //force += engineForce;
             inputComponent.setAction("accelerate");
             inputComponent.resetAction("decelerate");
           }
           else if (positionRelativeToPlayer.length < 2.0 && (velocityRelativeToPlayer.length < 4.0) || velocityRelativeToPlayer.dot(positionRelativeToPlayer) < 0.0)
           {
             debug writeln("accelerating away from target");
-            //force -= engineForce;
             inputComponent.resetAction("accelerate");
             inputComponent.setAction("decelerate");
           }
@@ -115,22 +108,18 @@ class NpcHandler : System!Npc
         else if (angleDiff < 0 && rotation < 1.0)
         {
           debug writeln("turning right");
-          //torque += engineTorque;
           inputComponent.setAction("rotateClockwise");
           inputComponent.resetAction("rotateCounterClockwise");
         }
         else if (angleDiff > 0 && rotation > -1.0)
         {
           debug writeln("turning left");
-          //torque -= engineTorque;
           inputComponent.resetAction("rotateClockwise");
           inputComponent.setAction("rotateCounterClockwise");
         }
         else
         {
           debug writeln("wtf");
-          // dampen rotation when there is no rotation torque
-          //torque -= entity.get!double("rotation") * engineTorque;
         }
         
         debug writeln("npc angle ", angle, ", position relative to player ", positionRelativeToPlayer, ", angle from center ", angleFromCenter, ", angleDiff ", angleDiff, " engine torque ", engineTorque, " final torque ", torque, " final force ", force);
