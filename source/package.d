@@ -38,6 +38,7 @@ public import
   components.graphicsource,
   components.input,
   components.networkinfo,
+  components.npc,
   components.relation,
   components.sound,
   components.valueaccumulator,

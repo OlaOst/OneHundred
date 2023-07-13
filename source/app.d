@@ -4,24 +4,7 @@ import std;
 
 import inmath.linalg;
 
-import camera;
-import debugentities;
-import entity;
-import entityfactory.controllers;
-import entityfactory.entities;
-import entityfactory.entitycollection;
-import entityfactory.tests;
-import entityspawns;
-import eventhandlers.addremove;
-import eventhandlers.debuginfo;
-import eventhandlers.editabletext;
-import eventhandlers.game;
-import eventhandlers.toggleinputwindow;
-import playereventhandler;
-import renderer.renderer;
-import systems.npchandler;
-import systemset;
-import textrenderer.textrenderer;
+import onehundred;
 
 
 void main(string[] args)

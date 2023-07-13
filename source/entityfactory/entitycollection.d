@@ -8,8 +8,7 @@ import std.range;
 import std.stdio;
 import std.string;
 
-import entity;
-import valueparser;
+import onehundred;
 
 
 Entity[string] createEntityCollectionFromFile(string fileName)

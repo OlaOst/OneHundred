@@ -89,7 +89,6 @@ class Input
       if (actionState[action] == Input.ActionState.Pressed)
         actionState[action] = Input.ActionState.Held;
     }
-
     foreach (Uint8 button, string action; inputForAction.button)
     {
       if (actionState[action] == Input.ActionState.Released)
