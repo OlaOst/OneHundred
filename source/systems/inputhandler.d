@@ -67,6 +67,9 @@ class InputHandler : System!Input
 
     input.updateActionStates();
 
+    input.actionState["zoomIn"] = Input.ActionState.Released;
+    input.actionState["zoomOut"] = Input.ActionState.Released;
+
     foreach (event; events)
     {
       auto keyAction = (event.key.keysym.sym in input.inputForAction.key);
@@ -85,6 +88,27 @@ class InputHandler : System!Input
           input.actionState[*buttonAction] = Input.ActionState.Released;
         if (event.type == SDL_MOUSEBUTTONDOWN)
           input.actionState[*buttonAction] = Input.ActionState.Pressed;
+      }
+      
+      if (event.type == SDL_MOUSEWHEEL)
+      {
+        Input.InputEvent inputEvent;
+        
+        debug writeln("mousewheel event, y ", event.wheel.y);
+        
+        if (event.wheel.y > 0) // up
+          inputEvent = Input.InputEvent.WHEELUP;
+        if (event.wheel.y < 0) // down
+          inputEvent = Input.InputEvent.WHEELDOWN;
+          
+        auto wheelAction = (inputEvent in input.inputForAction.wheel);
+        if (wheelAction !is null)
+        {
+          if (event.wheel.y == 0)
+            input.actionState[*wheelAction] = Input.ActionState.Released;
+          else
+            input.actionState[*wheelAction] = Input.ActionState.Pressed;
+        }
       }
     }
   }

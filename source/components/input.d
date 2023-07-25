@@ -18,6 +18,12 @@ class Input
     Released,
   }
 
+  enum InputEvent
+  {
+    WHEELUP = 33000,
+    WHEELDOWN = 33001,
+  }
+
   struct InputForAction
   {
     string[SDL_Keycode] key;
@@ -25,6 +31,7 @@ class Input
     string[SDL_Scancode] scancode;
     // TODO: mouse left/right/middle button codes are typed as anonymous enums in SDL2 and derelict
     string[Uint8] button;
+    string[InputEvent] wheel;
   }
 
   InputForAction inputForAction;

@@ -40,6 +40,8 @@ static this()
   gameControls.key[SDLK_F2] = "toggleDebugEntities";
   gameControls.button[SDL_BUTTON_LEFT] = "focusInputWindow";
   gameControls.button[SDL_BUTTON_RIGHT] = "toggleInputWindow";
+  gameControls.wheel[Input.InputEvent.WHEELUP] = "zoomIn";
+  gameControls.wheel[Input.InputEvent.WHEELDOWN] = "zoomOut";
 
   textInput.key[SDLK_BACKSPACE] = "backspace";
   textInput.key[SDLK_RETURN] = "newline";
