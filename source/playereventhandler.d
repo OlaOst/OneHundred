@@ -20,6 +20,9 @@ void handlePlayerFireAction(Entity playerGun, SystemSet systemSet) //, ref Entit
   {
     auto angle = playerGun.get!double("angle");
     
+    import std.stdio;
+    debug writeln("creating bullet");
+    
     auto bulletEntityGroup = createBulletEntityGroup(playerGun.get!vec3("position"), 
                                                      angle, 
                                                      playerGun.get!vec3("velocity") + 

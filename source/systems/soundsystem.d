@@ -61,7 +61,7 @@ final class SoundSystem : System!Sound
     return new Sound(sourceCache[fileName]);
   }
   
-  void updateValues()
+  void updateValues(bool paused)
   {
     if (stopPlaying)
       components.each!(sound => sound.stopPlaying());

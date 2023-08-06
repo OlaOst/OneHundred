@@ -55,7 +55,7 @@ class NetworkHandler : System!(NetworkInfo)
         component.valuesToWrite[key] = entityForIndex[index].get!string(key);
   }
 
-  void updateValues()
+  void updateValues(bool paused)
   {
     if (connection.sendingData && requestedChangedValues)
     {

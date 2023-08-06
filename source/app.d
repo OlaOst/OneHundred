@@ -55,11 +55,12 @@ void main(string[] args)
   while (!quit)
   {
     systemSet.inputHandler.spawnEntities.each!(spawn => systemSet.addEntity(spawn));
-    systemSet.update();
+    systemSet.update(paused);
 
     auto gameControllerInput = systemSet.inputHandler.getComponent(gameController);
     gameControllerInput.handleQuit();
     gameControllerInput.handleZoom(camera);
+    gameControllerInput.handlePause();
     gameControllerInput.handleAddRemoveEntity(systemSet, npcEntityGroups);
     gameControllerInput.handleToggleInputWindow(systemSet, inputWindow, mouseCursor);
     gameControllerInput.handleNetworking(systemSet, listenPort);

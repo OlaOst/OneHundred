@@ -59,7 +59,7 @@ class Physics : System!State
     }
   }
 
-  void updateValues() @nogc
+  void updateValues(bool paused) @nogc
   {
     timer.incrementAccumulator();
 
@@ -91,5 +91,11 @@ class Physics : System!State
       entity["previousForce"] = components[index].force;
       entity["previousTorque"] = components[index].torque;
     }
+  }
+  
+  override void update(bool paused)
+  {
+    if (!paused)
+      super.update(paused);
   }
 }

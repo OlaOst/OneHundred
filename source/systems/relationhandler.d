@@ -77,7 +77,7 @@ class RelationHandler : System!(Relation[])
   // ie mouse drag to change relativePosition of an entity
   void updateFromEntities() {}
   
-  void updateValues()
+  void updateValues(bool paused)
   {
     foreach (relationComponents; components)
     {
@@ -91,6 +91,12 @@ class RelationHandler : System!(Relation[])
   
   // entity values should have been updated by the relation components
   void updateEntities() {}
+  
+  override void update(bool paused)
+  {
+    if (!paused)
+      super.update(paused);
+  }
   
   Entity[string] entityNameMapping;
   Entity[long] entityIdMapping;

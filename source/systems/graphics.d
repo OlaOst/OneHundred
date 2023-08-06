@@ -65,7 +65,7 @@ class Graphics : System!GraphicSource
     return new GraphicSource(source, position, angle, size, data);
   }
 
-  void updateValues()
+  void updateValues(bool paused)
   {
     blobs.byValue.each!(blob => blob.reset());
     components.each!(component => blobs[component.sourceName].addData(component.transformedData));

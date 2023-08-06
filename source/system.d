@@ -77,14 +77,14 @@ abstract class System(ComponentType) : SystemDebug, ComponentHandler!ComponentTy
     return this.classinfo.name.split(".")[$-1];
   }
 
-  void update()
+  void update(bool paused)
   {
     import std.datetime.stopwatch;
   
     debugTextInternal = "";
     auto debugTimer = StopWatch(AutoStart.yes);
     updateFromEntities();
-    updateValues();
+    updateValues(paused);
     updateEntities();
     debugTimingInternal = debugTimer.peek.total!"usecs"*0.001;
     // systems may want to write their own debugtext in updateValues

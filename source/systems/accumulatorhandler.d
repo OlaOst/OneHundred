@@ -82,7 +82,7 @@ class AccumulatorHandler : System!(ValueAccumulator[])
     unresolvedAccumulators = null;
   }
   
-  void updateValues()
+  void updateValues(bool paused)
   {
     resolvedAccumulators = resolvedAccumulators.filter!(resolvedAccumulator => 
       entityForAccumulator[resolvedAccumulator].get!bool("ToBeRemoved") == false).array;
@@ -91,6 +91,12 @@ class AccumulatorHandler : System!(ValueAccumulator[])
   
   // entity values should have been updated by the relation components
   void updateEntities() {}
+  
+  override void update(bool paused)
+  {
+    if (!paused)
+      super.update(paused);
+  }
   
   ValueAccumulator[] unresolvedAccumulators;
   ValueAccumulator[] resolvedAccumulators;

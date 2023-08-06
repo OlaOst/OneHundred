@@ -30,7 +30,7 @@ class NpcHandler : System!Npc
     return new Npc(targetEntityMatches.front);
   }
 
-  void updateValues() {}
+  void updateValues(bool paused) {}
 
   void updateEntities()
   {

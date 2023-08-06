@@ -13,17 +13,20 @@ static Input.InputForAction textInput;
 
 static this()
 {
+  playerInput.ignoreWhenPaused = true;
   playerInput.key[SDLK_UP] = "accelerate";
   playerInput.key[SDLK_DOWN] = "decelerate";
   playerInput.key[SDLK_LEFT] = "rotateCounterClockwise";
   playerInput.key[SDLK_RIGHT] = "rotateClockwise";
   playerInput.key[SDLK_SPACE] = "fire";
 
+  playerEngine.ignoreWhenPaused = true;
   playerEngine.key[SDLK_UP] = "accelerate";
   playerEngine.key[SDLK_DOWN] = "decelerate";
   playerEngine.key[SDLK_LEFT] = "rotateCounterClockwise";
   playerEngine.key[SDLK_RIGHT] = "rotateClockwise";
   
+  playerGun.ignoreWhenPaused = true;
   playerGun.key[SDLK_SPACE] = "fire";
   
   gameControls.key[SDLK_PAGEUP] = "zoomIn";
@@ -34,6 +37,8 @@ static this()
   gameControls.key[SDLK_DELETE] = "removeEntity";
   gameControls.scancode[SDL_SCANCODE_TAB] = "addEntity";
   gameControls.scancode[SDL_SCANCODE_MINUS] = "removeEntity";
+  gameControls.key[SDLK_PAUSE] = "pause";
+  gameControls.key[SDLK_p] = "pause";
 
   gameControls.key[SDLK_F4] = "attemptNetworkConnection";
   gameControls.key[SDLK_F1] = "toggleDebugInfo";

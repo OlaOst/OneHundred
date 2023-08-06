@@ -23,6 +23,12 @@ void handleZoom(Input gameInput, Camera camera)
     camera.zoom -= camera.zoom * 1.0/60.0;
 }
 
+void handlePause(Input gameInput)
+{
+  if (gameInput.isActionToggled("pause"))
+    paused = !paused;
+}
+
 void handleNetworking(Input gameInput, SystemSet systemSet, ushort listenPort)
 {
   if (gameInput.isActionSet("attemptNetworkConnection"))
@@ -34,3 +40,4 @@ void handleNetworking(Input gameInput, SystemSet systemSet, ushort listenPort)
 bool quit = false;
 bool zoomIn = false;
 bool zoomOut = false;
+bool paused = false;

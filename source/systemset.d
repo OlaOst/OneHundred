@@ -72,9 +72,9 @@ class SystemSet
                                 .each!(entity => addEntity(entity));
   }
 
-  void update()
+  void update(bool paused)
   {
-    entityHandlers.each!(e => e.update());
+    entityHandlers.each!(e => e.update(paused));
     renderer.toScreen();
   }
 

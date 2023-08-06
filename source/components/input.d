@@ -20,6 +20,7 @@ class Input
 
   struct InputForAction
   {
+    bool ignoreWhenPaused = false;
     string[SDL_Keycode] key;
     string[SDL_EventType] event;
     string[SDL_Scancode] scancode;
@@ -80,7 +81,7 @@ class Input
     return getActionState(action) == Input.ActionState.Pressed;
   }
 
-  void updateActionStates()
+  void updateActionStates(bool paused)
   {
     foreach (SDL_Keycode key, string action; inputForAction.key)
     {

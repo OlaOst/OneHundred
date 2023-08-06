@@ -26,7 +26,7 @@ final class TimeHandler : System!double
     return entity.get!double("lifeTime");
   }
   
-  void updateValues()
+  void updateValues(bool paused)
   {
     timer.incrementAccumulator();
     
@@ -45,6 +45,12 @@ final class TimeHandler : System!double
     {
       entityForIndex[index]["lifeTime"] = lifeTime;
     }
+  }
+  
+  override void update(bool paused)
+  {
+    if (!paused)
+      super.update(paused);
   }
   
   void updateFromEntities() {}

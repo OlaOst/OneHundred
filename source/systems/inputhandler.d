@@ -24,7 +24,7 @@ class InputHandler : System!Input
     return new Input(entity.get!string("inputType"));
   }
 
-  void updateValues()
+  void updateValues(bool paused)
   {
     textInput = "";
     eventsSinceLastUpdate.length = 0;
@@ -44,7 +44,7 @@ class InputHandler : System!Input
     }
 
     foreach (size_t index, Entity entity; entityForIndex)
-      processSDLEvents(entity, eventsSinceLastUpdate);
+      processSDLEvents(entity, eventsSinceLastUpdate, paused);
   }
 
   void updateEntities()
@@ -58,14 +58,21 @@ class InputHandler : System!Input
 
   void updateFromEntities() {}
 
-  void processSDLEvents(Entity entity, SDL_Event[] events)
-  {
+  void processSDLEvents(Entity entity, SDL_Event[] events, bool paused)
+  {      
     auto input = getComponent(entity);
 
     // TODO: only set edittext for components that want to edit text
     entity["editText"] = textInput;
 
-    input.updateActionStates();
+    input.updateActionStates(paused);
+
+    if (paused && input.inputForAction.ignoreWhenPaused)
+    {
+      foreach (SDL_Keycode key, string action; input.inputForAction.key)
+        input.actionState[action] = Input.ActionState.Inactive;
+      return;
+    }
 
     foreach (event; events)
     {

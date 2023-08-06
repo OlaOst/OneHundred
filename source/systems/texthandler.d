@@ -50,7 +50,7 @@ class TextHandler : System!Text
     return new Text(text, position, angle, size, data);
   }
 
-  void updateValues()
+  void updateValues(bool paused)
   {
     textBlob.reset();
     components.each!(component => textBlob.addData(component.transformedData));

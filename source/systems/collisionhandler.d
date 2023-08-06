@@ -49,7 +49,7 @@ class CollisionHandler : System!Collider
   
   AABB[][int] boxes;
   
-  void updateValues()
+  void updateValues(bool paused)
   {
     auto index = new RTree!Collider;
 
@@ -91,5 +91,11 @@ class CollisionHandler : System!Collider
   {
     foreach (index, entity; entityForIndex)
       components[index].updateFromEntity(entity);
+  }
+  
+  override void update(bool paused)
+  {
+    if (!paused)
+      super.update(paused);
   }
 }

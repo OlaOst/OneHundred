@@ -8,7 +8,7 @@ interface EntityHandler
   void tweakEntity(ref Entity entity);
   void addEntity(Entity entity);
   void removeEntity(Entity entity);
-  void update();
+  void update(bool paused);
 
   void close();
   
