@@ -307,40 +307,39 @@ class Texture2D : ITexture {
 
             // make sure the texture has the right side up
             //thanks to tito http://stackoverflow.com/questions/5862097/sdl-opengl-screenshot-is-black
-            // SDL_Texture* flip(SDL_Texture* texture) {
-            //      SDL_Texture* result = SDL_CreateSurface(texture.w, texture.h, texture.format);
+            SDL_Surface* flip(SDL_Surface* surface) {
+                SDL_Surface* result = SDL_CreateSurface(surface.w, surface.h, surface.format);
 
-            //     ubyte* pixels = cast(ubyte*) texture.pixels;
-            //     ubyte* rpixels = cast(ubyte*) result.pixels;
-            //     uint pitch = texture.pitch;
-            //     uint pxlength = pitch * texture.h;
+                ubyte* pixels = cast(ubyte*) surface.pixels;
+                ubyte* rpixels = cast(ubyte*) result.pixels;
+                uint pitch = surface.pitch;
+                uint pxlength = pitch * surface.h;
 
-            //     assert(result != null);
+                assert(result != null);
 
-            //     for(uint line = 0; line < texture.h; ++line) {
-            //         uint pos = line * pitch;
-            //         rpixels[pos..pos+pitch] = pixels[(pxlength-pos)-pitch..pxlength-pos];
-            //     }
+                for(uint line = 0; line < surface.h; ++line) {
+                    uint pos = line * pitch;
+                    rpixels[pos..pos+pitch] = pixels[(pxlength-pos)-pitch..pxlength-pos];
+                }
 
-            //     return result;
-            // }
+                return result;
+            }
 
-            auto texture = IMG_LoadTexture(renderer, filename.toStringz());
+            auto image = IMG_Load(filename.toStringz());
 
-            enforce(texture, new TextureException("Error loading image " ~ filename ~ ": " ~ to!string(SDL_GetError().fromStringz())));
-            scope(exit) SDL_DestroyTexture(texture);
+            enforce(image, new TextureException("Error loading image " ~ filename ~ ": " ~ to!string(SDL_GetError().fromStringz())));
+            scope(exit) SDL_DestroySurface(image);
 
-            // enforce(texture.format.BytesPerPixel == 3 || texture.format.BytesPerPixel == 4, "With SDLImage Glamour supports loading images only with 3 or 4 bytes per pixel format.");
-            // auto image_format = GL_RGB;
+            enforce(image.format.bytesPerPixel == 3 || image.format.bytesPerPixel == 4, "With SDLImage Glamour supports loading images only with 3 or 4 bytes per pixel format.");
+            auto glFormat = GL_RGB;
 
-            // if (texture.format.BytesPerPixel == 4) {
-            //     image_format = GL_RGBA;
-            // }
+            if (image.format.bytesPerPixel == 4) {
+                glFormat = GL_RGBA;
+            }
 
-            //auto flipped = flip(texture);
-            //auto flipped = texture;
-            //tex.set_data(flipped.pixels, image_format, texture.w, texture.h, image_format, GL_UNSIGNED_BYTE);
-            //SDL_DestroyTexture(flipped);
+            auto flipped = flip(image);
+            tex.set_data(cast(ubyte*)flipped.pixels, glFormat, flipped.w, flipped.h, glFormat, GL_UNSIGNED_BYTE);
+            SDL_DestroySurface(image);
 
             return tex;
         }
