@@ -62,7 +62,7 @@ Entity[] addDebugEntities(SystemSet systemSet)
     text["color"] = vec4(1.0, 1.0, 0.5, 1.0);
     text["size"] = 0.5;
     systemSet.addEntity(text);
-    auto textCover = text.createTextCover(systemSet.graphics.getComponent(text).aabb);
+    auto textCover = text.createTextCover(systemSet.textHandler.getComponent(text).aabb);
     systemSet.addEntity(textCover);
     
     auto debugEntity = new Entity();

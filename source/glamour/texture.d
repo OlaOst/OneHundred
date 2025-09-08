@@ -302,46 +302,45 @@ class Texture2D : ITexture {
         }
     //} else version (_glad_sdl) {
     } else {
-        static Texture2D from_image(string filename) {
+        static Texture2D from_image(SDL_Renderer* renderer, string filename) {
             auto tex = new Texture2D();
 
             // make sure the texture has the right side up
             //thanks to tito http://stackoverflow.com/questions/5862097/sdl-opengl-screenshot-is-black
-            SDL_Surface* flip(SDL_Surface* surface) {
-                SDL_Surface* result = SDL_CreateRGBSurface(surface.flags, surface.w, surface.h,
-                                                        surface.format.BytesPerPixel * 8, surface.format.Rmask, surface.format.Gmask,
-                                                        surface.format.Bmask, surface.format.Amask);
+            // SDL_Texture* flip(SDL_Texture* texture) {
+            //      SDL_Texture* result = SDL_CreateSurface(texture.w, texture.h, texture.format);
 
-                ubyte* pixels = cast(ubyte*) surface.pixels;
-                ubyte* rpixels = cast(ubyte*) result.pixels;
-                uint pitch = surface.pitch;
-                uint pxlength = pitch * surface.h;
+            //     ubyte* pixels = cast(ubyte*) texture.pixels;
+            //     ubyte* rpixels = cast(ubyte*) result.pixels;
+            //     uint pitch = texture.pitch;
+            //     uint pxlength = pitch * texture.h;
 
-                assert(result != null);
+            //     assert(result != null);
 
-                for(uint line = 0; line < surface.h; ++line) {
-                    uint pos = line * pitch;
-                    rpixels[pos..pos+pitch] = pixels[(pxlength-pos)-pitch..pxlength-pos];
-                }
+            //     for(uint line = 0; line < texture.h; ++line) {
+            //         uint pos = line * pitch;
+            //         rpixels[pos..pos+pitch] = pixels[(pxlength-pos)-pitch..pxlength-pos];
+            //     }
 
-                return result;
-            }
+            //     return result;
+            // }
 
-            auto surface = IMG_Load(filename.toStringz());
+            auto texture = IMG_LoadTexture(renderer, filename.toStringz());
 
-            enforce(surface, new TextureException("Error loading image " ~ filename ~ ": " ~ to!string(SDL_GetError().fromStringz())));
-            scope(exit) SDL_FreeSurface(surface);
+            enforce(texture, new TextureException("Error loading image " ~ filename ~ ": " ~ to!string(SDL_GetError().fromStringz())));
+            scope(exit) SDL_DestroyTexture(texture);
 
-            enforce(surface.format.BytesPerPixel == 3 || surface.format.BytesPerPixel == 4, "With SDLImage Glamour supports loading images only with 3 or 4 bytes per pixel format.");
-            auto image_format = GL_RGB;
+            // enforce(texture.format.BytesPerPixel == 3 || texture.format.BytesPerPixel == 4, "With SDLImage Glamour supports loading images only with 3 or 4 bytes per pixel format.");
+            // auto image_format = GL_RGB;
 
-            if (surface.format.BytesPerPixel == 4) {
-            image_format = GL_RGBA;
-            }
+            // if (texture.format.BytesPerPixel == 4) {
+            //     image_format = GL_RGBA;
+            // }
 
-            auto flipped = flip(surface);
-            tex.set_data(flipped.pixels, image_format, surface.w, surface.h, image_format, GL_UNSIGNED_BYTE);
-            SDL_FreeSurface(flipped);
+            //auto flipped = flip(texture);
+            //auto flipped = texture;
+            //tex.set_data(flipped.pixels, image_format, texture.w, texture.h, image_format, GL_UNSIGNED_BYTE);
+            //SDL_DestroyTexture(flipped);
 
             return tex;
         }

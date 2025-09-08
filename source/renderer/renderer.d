@@ -26,6 +26,8 @@ class Renderer
     this.yres = yres;
     
     window = getWindow(xres, yres);
+    sdlRenderer = SDL_CreateRenderer(window, null);
+
     shaderSet = dirEntries("shaders", "*.shader", SpanMode.breadth).
                 map!(dirEntry => tuple(dirEntry.name.chompPrefix("shaders\\")
                                                     .chompPrefix("shaders/")
@@ -51,7 +53,13 @@ class Renderer
     checkgl!glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
   }
 
+  public SDL_Renderer* getSDLRenderer()
+  {
+    return sdlRenderer;
+  }
+
   private SDL_Window *window;
+  private SDL_Renderer* sdlRenderer;
   private VAO vao;
   private Shader[string] shaderSet;
 }

@@ -33,10 +33,10 @@ class InputHandler : System!Input
     while (SDL_PollEvent(&event))
     {
       eventsSinceLastUpdate ~= event;
-      if (event.type == SDL_MOUSEMOTION)
+      if (event.type == SDL_EventType.mouseMotion)
         mouseScreenPosition = vec2(event.motion.x, event.motion.y);
-      if (event.type == SDL_TEXTINPUT)
-        textInput ~= event.text.text.toStringz.to!string;
+      if (event.type == SDL_EventType.textInput)
+        textInput ~= event.text.text.to!string;
 
       import std.stdio;
       if (textInput.canFind("\r"))
@@ -76,21 +76,21 @@ class InputHandler : System!Input
 
     foreach (event; events)
     {
-      auto keyAction = (event.key.keysym.sym in input.inputForAction.key);
+      auto keyAction = (event.key.key in input.inputForAction.key);
       if (keyAction !is null)
       {
-        if (event.type == SDL_KEYUP)
+        if (event.type == SDL_EventType.keyUp)
           input.actionState[*keyAction] = Input.ActionState.Released;
-        if (event.type == SDL_KEYDOWN)
+        if (event.type == SDL_EventType.keyDown)
           input.actionState[*keyAction] = Input.ActionState.Pressed;
       }
 
       auto buttonAction = (event.button.button in input.inputForAction.button);
       if (buttonAction !is null)
       {
-        if (event.type == SDL_MOUSEBUTTONUP)
+        if (event.type == SDL_EventType.mouseButtonUp)
           input.actionState[*buttonAction] = Input.ActionState.Released;
-        if (event.type == SDL_MOUSEBUTTONDOWN)
+        if (event.type == SDL_EventType.mouseButtonDown)
           input.actionState[*buttonAction] = Input.ActionState.Pressed;
       }
     }

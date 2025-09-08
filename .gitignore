@@ -3,9 +3,12 @@
 *.obj
 *.exe
 *.lib
+*.pdb
 /.dub
 /Frame*
+/.vscode
 gli*
 trace*
 README-SDL.txt
 onehundred
+dub.selections.json

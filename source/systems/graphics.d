@@ -2,6 +2,8 @@ module systems.graphics;
 
 import std;
 
+import bindbc.sdl;
+
 import inmath.linalg;
 import glamour.shader;
 import glamour.texture;
@@ -11,11 +13,12 @@ import onehundred;
 
 class Graphics : System!GraphicSource
 {
-  this(Camera camera, Texture2D[string] textures)
+  this(SDL_Renderer* sdlRenderer, Camera camera, Texture2D[string] textures)
   {
     this.shaders["coloredtexture"] = new Shader("shaders/coloredtexture.shader");
     this.textures = textures;
     this.camera = camera;
+    this.sdlRenderer = sdlRenderer;
   }
 
   override void close()
@@ -38,7 +41,7 @@ class Graphics : System!GraphicSource
     {
       // these sources should have been preloaded in the textures from the constructor
       assert(source != "polygon");
-      textures[source] = Texture2D.from_image(source);
+      textures[source] = Texture2D.from_image(sdlRenderer, source);
     }
     if (source !in blobs)
       blobs[source] = new GraphicsBlob(textures[source]);
@@ -95,4 +98,6 @@ class Graphics : System!GraphicSource
   GraphicsBlob[string] blobs;
 
   Camera camera;
+
+  SDL_Renderer* sdlRenderer;
 }

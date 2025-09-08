@@ -36,7 +36,7 @@ class SystemSet
     textures["polygon"].set_data([0, 0, 0, 0], GL_RGBA, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE);
 
     textHandler = new TextHandler(textRenderer, camera, textRenderer.atlas);
-    graphics = new Graphics(camera, textures);
+    graphics = new Graphics(renderer.getSDLRenderer(), camera, textures);
     physics = new Physics();
     inputHandler = new InputHandler();
     npcHandler = new NpcHandler(inputHandler);

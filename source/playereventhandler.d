@@ -19,10 +19,7 @@ void handlePlayerFireAction(Entity playerGun, SystemSet systemSet) //, ref Entit
   if (fire && reloadTimeLeft <= 0.0)
   {
     auto angle = playerGun.get!double("angle");
-    
-    import std.stdio;
-    debug writeln("creating bullet");
-    
+        
     auto bulletEntityGroup = createBulletEntityGroup(playerGun.get!vec3("position"), 
                                                      angle, 
                                                      playerGun.get!vec3("velocity") + 

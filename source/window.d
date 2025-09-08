@@ -4,6 +4,7 @@ import std;
 
 import bindbc.opengl;
 import bindbc.sdl;
+import bindbc.loader;
 import loader = bindbc.loader.sharedlib;
 
 
@@ -14,32 +15,32 @@ SDL_Window* getWindow(int screenWidth, int screenHeight)
       
   version (Windows)
   {        
-    auto loadedSDLSupport = loadSDL("SDL2.dll");
+    auto loadedSDLSupport = loadSDL("SDL3.dll");
     
-    if (loadedSDLSupport != sdlSupport)
+    if (loadedSDLSupport != LoadMsg.success)
     {
-      enforce(loadedSDLSupport != SDLSupport.noLibrary, "Failed to load SDL library");
-      enforce(loadedSDLSupport != SDLSupport.badLibrary, "Error loading SDL library");
+      enforce(loadedSDLSupport != LoadMsg.noLibrary, "Failed to load SDL library");
+      enforce(loadedSDLSupport != LoadMsg.badLibrary, "Error loading SDL library");
     }
     
-    auto loadedSDLImage = loadSDLImage("SDL2_Image.dll");
-    enforce(loadedSDLImage == sdlImageSupport, "Failed to load SDLImage library");
+    auto loadedSDLImage = loadSDLImage("SDL3_Image.dll");
+    enforce(loadedSDLImage == LoadMsg.success, "Failed to load SDLImage library");
   }
   else
   {
     auto loadedSDLSupport = loadSDL();
 
-    if (loadedSDLSupport != sdlSupport)
+    if (loadedSDLSupport != LoadMsg.success)
     {
-      enforce(loadedSDLSupport != SDLSupport.noLibrary, "Failed to load SDL library");
-      enforce(loadedSDLSupport != SDLSupport.badLibrary, "Error loading SDL library");
+      enforce(loadedSDLSupport != LoadMsg.noLibrary, "Failed to load SDL library");
+      enforce(loadedSDLSupport != LoadMsg.badLibrary, "Error loading SDL library");
     }
 
     auto loadedSDLImage = loadSDLImage();    
-    enforce(loadedSDLImage == sdlImageSupport, "Failed to load SDLImage library");
+    enforce(loadedSDLImage == LoadMsg.success, "Failed to load SDLImage library");
   }
 
-  enforce(SDL_Init(SDL_INIT_VIDEO) == 0, "Failed to initialize SDL: " ~ SDL_GetError().to!string);
+  enforce(SDL_Init(SDL_INIT_VIDEO), "Failed to initialize SDL: " ~ SDL_GetError().to!string);
   //enforce(IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) & (IMG_INIT_JPG | IMG_INIT_PNG),
           //"IMG_Init failed: " ~ IMG_GetError().to!string);
 
@@ -51,11 +52,9 @@ SDL_Window* getWindow(int screenWidth, int screenHeight)
   SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
   auto window = SDL_CreateWindow("OneHundred",
-                                 SDL_WINDOWPOS_CENTERED,
-                                 SDL_WINDOWPOS_CENTERED,
                                  screenWidth,
                                  screenHeight,
-                                 SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+                                 SDL_WINDOW_OPENGL);
 
   enforce(window !is null, "Error creating window");
 

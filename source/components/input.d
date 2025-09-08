@@ -25,7 +25,7 @@ class Input
     string[SDL_EventType] event;
     string[SDL_Scancode] scancode;
     // TODO: mouse left/right/middle button codes are typed as anonymous enums in SDL2 and derelict
-    string[Uint8] button;
+    string[SDL_MouseButton] button;
   }
 
   InputForAction inputForAction;
@@ -90,7 +90,7 @@ class Input
       if (actionState[action] == Input.ActionState.Pressed)
         actionState[action] = Input.ActionState.Held;
     }
-    foreach (Uint8 button, string action; inputForAction.button)
+    foreach (SDL_MouseButton button, string action; inputForAction.button)
     {
       if (actionState[action] == Input.ActionState.Released)
         actionState[action] = Input.ActionState.Inactive;
