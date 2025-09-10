@@ -22,13 +22,20 @@ class Entity
       return vec4Values.get(valueName, defaultValue);
     else static if (is(ValueType == double))
       return doubleValues.get(valueName, defaultValue);
-    else if (auto value = valueName in values)
-      static if (__traits(compiles, (*value).to!ValueType))
-        return (*value).to!ValueType;
-      else
-        return (*value).myTo!ValueType;
     else
-      return defaultValue;
+    {
+      if (auto value = valueName in values)
+      {
+        static if (__traits(compiles, (*value).myTo!ValueType))
+          return (*value).myTo!ValueType;
+        else
+          return (*value).to!ValueType;
+      }
+      else
+      {
+        return defaultValue;
+      }
+    }
   }
   
   void set(ValueType)(string valueName, ValueType value)
