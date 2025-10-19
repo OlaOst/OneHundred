@@ -15,8 +15,9 @@ void main(string[] args)
 
   auto renderer = new Renderer(xres, yres);
   auto textRenderer = new TextRenderer();
-  auto camera = new Camera();
-  auto systemSet = new SystemSet(renderer, textRenderer, camera, listenPort);
+  auto worldCamera = new Camera();
+  auto uiCamera = new Camera();
+  auto systemSet = new SystemSet(renderer, textRenderer, worldCamera, uiCamera, listenPort);
 
   scope(exit)
   {
@@ -25,6 +26,7 @@ void main(string[] args)
   }
 
   auto npcEntityGroups = "data/npcship.txt".createEntityCollectionFromFile.repeat(0).array;
+
   npcEntityGroups.each!(npcEntityGroup => systemSet.addEntityCollection(npcEntityGroup));
   //auto npcEntityGroup = "data/npcship.txt".createEntityCollectionFromFile;  
   ///systemSet.addEntityCollection(npcEntityGroup);
@@ -59,7 +61,7 @@ void main(string[] args)
 
     auto gameControllerInput = systemSet.inputHandler.getComponent(gameController);
     gameControllerInput.handleQuit();
-    gameControllerInput.handleZoom(camera);
+    gameControllerInput.handleZoom(worldCamera);
     gameControllerInput.handlePause();
     gameControllerInput.handleAddRemoveEntity(systemSet, npcEntityGroups);
     gameControllerInput.handleToggleInputWindow(systemSet, inputWindow, mouseCursor);
@@ -67,8 +69,8 @@ void main(string[] args)
     gameControllerInput.handleToggleDebugInfo(systemSet, debugText);
     systemSet.inputHandler.getComponent(editController).handleEditableText(inputWindow);
     playerSet["player.ship.gun"].handlePlayerFireAction(systemSet);
-    camera.position = playerSet["player.ship"].get!vec3("position");
-    mouseCursor["position"] = camera.getWorldPositionFromScreenCoordinates(
+    worldCamera.position = playerSet["player.ship"].get!vec3("position");
+    mouseCursor["position"] = worldCamera.getWorldPositionFromScreenCoordinates(
       systemSet.inputHandler.mouseScreenPosition, xres, yres);
 
     addParticles(systemSet);

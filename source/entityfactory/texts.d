@@ -33,10 +33,14 @@ Entity createTextCover(Entity textEntity, AABB textAABB)
 {
   auto textCover = new Entity();
   auto position = textEntity.get!vec3("position");
+  
+  if (textEntity.has("positionRelativeTo"))
+    textCover["positionRelativeTo"] = textEntity.get!string("positionRelativeTo");
+
   //position.z -= 1.0;
   textCover["position"] = position;
   textCover["angle"] = 0.0.to!string;
-  textCover["size"] = textAABB.extent.length;
+  textCover["size"] = textAABB.extent.length * 1.0;
   
   textCover["graphicsource"] = "polygon";  
   auto polygon = new Polygon([vec3(textAABB.min.x, textAABB.min.y, 0.0), 

@@ -20,11 +20,12 @@ class Text
     assert(size >= 0.0);
   }
   
-  this(string text, vec3 position, double angle, double size, GraphicsData data)
+  this(string text, string positionRelativeTo, vec3 position, double angle, double size, GraphicsData data)
   out(result) { assert(this); }
   do
   {
     this.text = text;
+    this.positionRelativeTo = positionRelativeTo;
     this.position = position;
     this.angle = angle;
     this.size = size;
@@ -73,6 +74,7 @@ class Text
   }
   
   string text;
+  string positionRelativeTo;
   vec3 position;
   double angle;
   double size = 1.0;

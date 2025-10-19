@@ -53,21 +53,22 @@ Entity[] addDebugEntities(SystemSet systemSet)
   
   foreach (index, entityHandler; systemSet.entityHandlers)
   {
-    auto position = vec3(-3.0, (index - systemSet.entityHandlers.length*0.5) * 0.65, 0.0);
+    auto position = vec3(-3.0, (index - systemSet.entityHandlers.length*0.5) * 0.4, 1.0);
     
     auto text = new Entity();
-    text["position"] = vec3(position.x + 0.5, position.y, 0);
-    //text["graphicsource"] = "text";
+    text["position"] = vec3(position.x + 0.5, position.y, position.z);
+    text["positionRelativeTo"] = "screen";
     text["text"] = entityHandler.className;
     text["color"] = vec4(1.0, 1.0, 0.5, 1.0);
-    text["size"] = 0.5;
+    text["size"] = 0.25;
     systemSet.addEntity(text);
     auto textCover = text.createTextCover(systemSet.textHandler.getComponent(text).aabb);
     systemSet.addEntity(textCover);
     
     auto debugEntity = new Entity();
     debugEntity["position"] = position;
-    debugEntity["size"] = 0.3;
+    debugEntity["positionRelativeTo"] = "screen";
+    debugEntity["size"] = 0.1;
     auto polygon = new Polygon(0.25, 16, vec4(0.0, 0.67, 0.33, 1.0));
     debugEntity["polygon.vertices"] = polygon.vertices;
     debugEntity["polygon.colors"] = polygon.colors;

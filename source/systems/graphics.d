@@ -13,17 +13,19 @@ import onehundred;
 
 class Graphics : System!GraphicSource
 {
-  this(SDL_Renderer* sdlRenderer, Camera camera, Texture2D[string] textures)
+  this(SDL_Renderer* sdlRenderer, Camera worldCamera, Camera uiCamera, Texture2D[string] textures)
   {
     this.shaders["coloredtexture"] = new Shader("shaders/coloredtexture.shader");
     this.textures = textures;
-    this.camera = camera;
+    this.worldCamera = worldCamera;
+    this.uiCamera = uiCamera;
     this.sdlRenderer = sdlRenderer;
   }
 
   override void close()
   {
-    blobs.byValue.each!(blob => blob.texture.remove());
+    worldBlobs.byValue.each!(blob => blob.texture.remove());
+    uiBlobs.byValue.each!(blob => blob.texture.remove());
   }
 
   bool canAddEntity(Entity entity)
@@ -34,8 +36,13 @@ class Graphics : System!GraphicSource
   GraphicSource makeComponent(Entity entity)
   {
     auto source = entity.get!string("graphicsource");
+    auto positionRelativeTo = entity.get!string("positionRelativeTo");
 
     assert(source != "text", "Graphicsource text no longer supported");
+
+    Camera cameraForComponent = worldCamera;
+    if (positionRelativeTo == "screen")
+      cameraForComponent = uiCamera;
 
     if (source !in textures)
     {
@@ -43,8 +50,10 @@ class Graphics : System!GraphicSource
       assert(source != "polygon");
       textures[source] = Texture2D.from_image(sdlRenderer, source);
     }
-    if (source !in blobs)
-      blobs[source] = new GraphicsBlob(textures[source]);
+    if (cameraForComponent == worldCamera)
+      worldBlobs[source] = new GraphicsBlob(textures[source]);
+    if (cameraForComponent == uiCamera)
+      uiBlobs[source] = new GraphicsBlob(textures[source]);
 
     GraphicsData data;
     if (source == "polygon")
@@ -61,19 +70,29 @@ class Graphics : System!GraphicSource
                               baseTexCoordsSquare.dup);
 
     auto position = entity.get!vec3("position");
+
     auto angle = entity.get!double("angle", entity.get!float("angle"));
     assert(entity.has("size"));
     auto size = entity.get!double("size", entity.get!float("size")); // TODO: should only be double
 
-    return new GraphicSource(source, position, angle, size, data);
+    return new GraphicSource(source, positionRelativeTo, position, angle, size, data);
   }
 
   void updateValues(bool paused)
   {
-    blobs.byValue.each!(blob => blob.reset());
-    components.each!(component => blobs[component.sourceName].addData(component.transformedData));
-    foreach (name, blob; blobs)
-      blob.render(shaders["coloredtexture"], name == "polygon", camera.transform);
+    worldBlobs.byValue.each!(blob => blob.reset());
+    uiBlobs.byValue.each!(blob => blob.reset());
+
+    auto worldComponents = components.filter!(component => component.positionRelativeTo != "screen");
+    auto uiComponents = components.filter!(component => component.positionRelativeTo == "screen");
+
+    worldComponents.each!(component => worldBlobs[component.sourceName].addData(component.transformedData));
+    uiComponents.each!(component => uiBlobs[component.sourceName].addData(component.transformedData));
+
+    foreach (name, blob; worldBlobs)
+      blob.render(shaders["coloredtexture"], name == "polygon", worldCamera.transform);
+    foreach (name, blob; uiBlobs)
+      blob.render(shaders["coloredtexture"], name == "polygon", uiCamera.transform);
   }
 
   void updateFromEntities()
@@ -95,9 +114,11 @@ class Graphics : System!GraphicSource
 
   Shader[string] shaders;
   Texture2D[string] textures;
-  GraphicsBlob[string] blobs;
+  GraphicsBlob[string] worldBlobs;
+  GraphicsBlob[string] uiBlobs;
 
-  Camera camera;
+  Camera worldCamera;
+  Camera uiCamera;
 
   SDL_Renderer* sdlRenderer;
 }

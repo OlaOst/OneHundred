@@ -20,11 +20,12 @@ class GraphicSource
     assert(size >= 0.0);
   }
   
-  this(string sourceName, vec3 position, double angle, double size, GraphicsData data)
+  this(string sourceName, string positionRelativeTo, vec3 position, double angle, double size, GraphicsData data)
   out(result) { assert(this); }
   do
   {
     this.sourceName = sourceName;
+    this.positionRelativeTo = positionRelativeTo;
     this.position = position;
     this.angle = angle;
     this.size = size;
@@ -80,6 +81,7 @@ class GraphicSource
   }
   
   string sourceName;
+  string positionRelativeTo;
   vec3 position;
   double angle;
   double size = 1.0;

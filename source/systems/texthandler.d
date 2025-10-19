@@ -11,14 +11,16 @@ import onehundred;
 
 class TextHandler : System!Text
 {
-  this(TextRenderer textRenderer, Camera camera, Texture2D textAtlas)
+  this(TextRenderer textRenderer, Camera worldCamera, Camera uiCamera, Texture2D textAtlas)
   {
     this.shaders["coloredtexture"] = new Shader("shaders/coloredtexture.shader");
     
-    this.textBlob = new GraphicsBlob(textAtlas);
+    this.worldTextBlob = new GraphicsBlob(textAtlas);
+    this.uiTextBlob = new GraphicsBlob(textAtlas);
     
     this.textRenderer = textRenderer;
-    this.camera = camera;
+    this.worldCamera = worldCamera;
+    this.uiCamera = uiCamera;
   }
 
   override void close()
@@ -39,6 +41,11 @@ class TextHandler : System!Text
   Text makeComponent(Entity entity)
   {
     auto text = entity.get!string("text");
+    auto positionRelativeTo = entity.get!string("positionRelativeTo");
+
+    Camera cameraForComponent = worldCamera;
+    if (positionRelativeTo == "screen")
+      cameraForComponent = uiCamera;
 
     auto data = textRenderer.getGraphicsData(text, entity.get!vec4("color"));
 
@@ -47,14 +54,22 @@ class TextHandler : System!Text
     assert(entity.has("size"));
     auto size = entity.get!double("size", entity.get!float("size")); // TODO: should only be double
 
-    return new Text(text, position, angle, size, data);
+    return new Text(text, positionRelativeTo, position, angle, size, data);
   }
 
   void updateValues(bool paused)
   {
-    textBlob.reset();
-    components.each!(component => textBlob.addData(component.transformedData));
-    textBlob.render(shaders["coloredtexture"], false, camera.transform);
+    worldTextBlob.reset();
+    uiTextBlob.reset();
+
+    auto worldComponents = components.filter!(component => component.positionRelativeTo != "screen");
+    auto uiComponents = components.filter!(component => component.positionRelativeTo == "screen");
+
+    worldComponents.each!(component => worldTextBlob.addData(component.transformedData));
+    uiComponents.each!(component => uiTextBlob.addData(component.transformedData));
+    
+    worldTextBlob.render(shaders["coloredtexture"], false, worldCamera.transform);
+    uiTextBlob.render(shaders["coloredtexture"], false, uiCamera.transform);
   }
 
   void updateFromEntities()
@@ -79,8 +94,10 @@ class TextHandler : System!Text
 
   Shader[string] shaders;
   Texture2D[string] textures;
-  GraphicsBlob textBlob;
+  GraphicsBlob worldTextBlob;
+  GraphicsBlob uiTextBlob;
   
   TextRenderer textRenderer;
-  Camera camera;
+  Camera worldCamera;
+  Camera uiCamera;
 }
