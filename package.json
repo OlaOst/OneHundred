@@ -4,7 +4,7 @@
 	],
 	"copyright": "Copyright © 2016, Ola Østtveit",
 	"dependencies": {
-		"bindbc-freetype": "1.3.2",
+		"bindbc-freetype": "1.3.3",
 		"bindbc-openal": "1.1.0",
 		"bindbc-opengl": "1.1.1",
 		"bindbc-sdl": "2.2.2",
@@ -23,7 +23,6 @@
 		"SDL_Image",
 		"SDL_3_2_18",
 		"SDL_Image_3_2",
-		"GL_41",
-		"FT_2_13"
+		"GL_41"
 	]
 }
