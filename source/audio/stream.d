@@ -72,6 +72,8 @@ private:
       if (isActive)
         source.alSourceQueueBuffers(1, &buffer);
     }
+    import core.thread.osthread;
+    Thread.sleep(dur!"msecs"(2));
     return isActive;
   }
   
