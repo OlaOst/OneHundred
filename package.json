@@ -24,5 +24,10 @@
 		"SDL_3_2_18",
 		"SDL_Image_3_2",
 		"GL_41"
-	]
+	],
+	"buildTypes": {
+		"profile-release": {
+			"buildOptions": ["profile", "releaseMode"]
+		}
+	}
 }
