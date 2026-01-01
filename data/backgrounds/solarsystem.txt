@@ -7,7 +7,7 @@ mercury.velocity = [0.0, 20.0, 0.0]
 mercury.relation.types = ["RelativeConstraints"]
 mercury.relation.targetName = sun
 mercury.relation.value.distance = 15.0
-mercury.relation.value.speed = 20.0
+mercury.relation.value.speed = 10.0
 
 venus.source = data/backgrounds/venus.txt
 venus.position = [35.0, 0.0, -1]
@@ -30,11 +30,11 @@ earth.relation.value.speed = 10.0
 earth.moon.source = data/backgrounds/moon.txt
 earth.moon.position = [50.0, 10.0, -1]
 earth.moon.mass = 0.167
-earth.moon.velocity = [2.0, 0.0, 0.0]
+earth.moon.velocity = [1.0, 0.0, 0.0]
 earth.moon.relation.types = ["RelativeConstraints"]
 earth.moon.relation.targetName = earth
-earth.moon.relation.value.distance = 10.0
-earth.moon.relation.value.speed = 20.0
+earth.moon.relation.value.distance = 8.0
+earth.moon.relation.value.speed = 0.2
 
 mars.source = data/backgrounds/mars.txt
 mars.position = [65.0, 0.0, -1]
@@ -44,3 +44,39 @@ mars.relation.types = ["RelativeConstraints"]
 mars.relation.targetName = sun
 mars.relation.value.distance = 65.0
 mars.relation.value.speed = 10.0
+
+jupiter.source = data/backgrounds/jupiter.txt
+jupiter.position = [165.0, 0.0, -1]
+jupiter.mass = 1
+jupiter.velocity = [0.0, 10.0, 0.0]
+jupiter.relation.types = ["RelativeConstraints"]
+jupiter.relation.targetName = sun
+jupiter.relation.value.distance = 165.0
+jupiter.relation.value.speed = 10.0
+
+saturn.source = data/backgrounds/saturn.txt
+saturn.position = [250.0, 0.0, -1]
+saturn.mass = 1
+saturn.velocity = [0.0, 10.0, 0.0]
+saturn.relation.types = ["RelativeConstraints"]
+saturn.relation.targetName = sun
+saturn.relation.value.distance = 250.0
+saturn.relation.value.speed = 10.0
+
+uranus.source = data/backgrounds/uranus.txt
+uranus.position = [350.0, 0.0, -1]
+uranus.mass = 1
+uranus.velocity = [0.0, 10.0, 0.0]
+uranus.relation.types = ["RelativeConstraints"]
+uranus.relation.targetName = sun
+uranus.relation.value.distance = 350.0
+uranus.relation.value.speed = 10.0
+
+neptune.source = data/backgrounds/neptune.txt
+neptune.position = [500.0, 0.0, -1]
+neptune.mass = 1
+neptune.velocity = [0.0, 10.0, 0.0]
+neptune.relation.types = ["RelativeConstraints"]
+neptune.relation.targetName = sun
+neptune.relation.value.distance = 500.0
+neptune.relation.value.speed = 10.0

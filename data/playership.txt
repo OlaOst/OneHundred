@@ -1,4 +1,5 @@
 player.source = data/defaultship.txt
+player.ship.hull.graphicsource = images/playerShip2_red.png
 
 player.ship.position = [0.0, 0.0, 0.0]
 player.ship.angle = 0.0

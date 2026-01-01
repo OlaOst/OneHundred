@@ -1,0 +1,3 @@
+size = 55
+graphicsource = images/jupiter.png
+angle = 1.57

@@ -1,0 +1,3 @@
+size = 45
+graphicsource = images/saturn.png
+angle = 1.57

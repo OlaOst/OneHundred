@@ -1,0 +1,3 @@
+size = 30
+graphicsource = images/neptune.png
+angle = 1.57
