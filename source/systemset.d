@@ -46,7 +46,7 @@ class SystemSet
     relationHandler = new RelationHandler();
     accumulatorHandler = new AccumulatorHandler();
     networkHandler = new NetworkHandler(listenPort);
-    entityHandlers = cast(EntityHandler[])[textHandler, graphics, physics, soundSystem,
+    entityHandlers = cast(EntityHandler[])[graphics, textHandler, physics, soundSystem,
                                            npcHandler, inputHandler, collisionHandler, timeHandler,
                                            relationHandler, accumulatorHandler, networkHandler];
   }
