@@ -6,7 +6,8 @@ import inmath.linalg;
 auto immutable vec3Types = ["position", "velocity", "force"];
 auto immutable vec4Types = ["color"];
 auto immutable doubleTypes = ["size", "angle", "rotation", "torque", "mass", 
-                              "lifeTime", "engineForce", "engineTorque", "reloadTime"];
+                              "lifeTime", "engineForce", "engineTorque", "reloadTime",
+                              "distance", "speed"];
 //auto immutable fileTypes = ["sprite", "sound"];
 auto immutable fileTypes = ["graphicsource", "sound"];
 

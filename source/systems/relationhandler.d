@@ -8,6 +8,7 @@ import components.relation;
 import components.relations.dietogether;
 import components.relations.inspectvalues;
 import components.relations.relativevalue;
+import components.relations.relativeconstraint;
 import components.relations.sameshape;
 import entity;
 import system;
@@ -38,7 +39,7 @@ class RelationHandler : System!(Relation[])
                                  (key => key.startsWith("relation.value.")))
       {
         auto relationValueName = relationValueKey.chompPrefix("relation.value.");
-        
+
         if (vec3Types.canFind(relationValueName))
           relationComponents ~= new RelativeValue!vec3(entity, relationValueName, 
                                                        entity.get!vec3(relationValueKey));
@@ -53,6 +54,15 @@ class RelationHandler : System!(Relation[])
       relationComponents ~= new InspectValues(entity);
     if (relationTypes.canFind("SameShape"))
       relationComponents ~= new SameShape(entity);
+    if (relationTypes.canFind("RelativeConstraints"))
+    {
+      foreach (relationValueKey; entity.values.byKey.filter!
+                                 (key => key.startsWith("relation.value.")))
+      {
+        auto relationValueName = relationValueKey.chompPrefix("relation.value.");
+        relationComponents ~= new RelativeConstraint!double(entity, relationValueName, entity.get!double(relationValueKey));
+      }
+    }
     
     foreach (relationComponent; relationComponents)
     {
