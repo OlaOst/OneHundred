@@ -1,0 +1,3 @@
+size = 2.5
+graphicsource = images/mercury.gif
+angle = 1.57

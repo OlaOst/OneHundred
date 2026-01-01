@@ -1,0 +1,4 @@
+size = 10.0
+graphicsource = images/planet-x.png
+position = [50.0, 100.0, -1]
+angle = 1.57

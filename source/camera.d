@@ -6,7 +6,7 @@ import inmath.linalg;
 class Camera
 {
   vec3 position = vec3(0.0, 0.0, 0.0);
-  double zoom = 0.3;
+  double zoom = 0.1;
   
   vec3 transform(vec3 vector)
   {

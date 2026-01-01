@@ -24,27 +24,26 @@ void main(string[] args)
     renderer.close();
   }
 
-  auto npcEntityGroups = "data/npcship.txt".createEntityCollectionFromFile.repeat(0).array;
-  npcEntityGroups.each!(npcEntityGroup => systemSet.addEntityCollection(npcEntityGroup));
-  //auto npcEntityGroup = "data/npcship.txt".createEntityCollectionFromFile;  
-  ///systemSet.addEntityCollection(npcEntityGroup);
-
-  auto playerSet = "data/playership.txt".createEntityCollectionFromFile;
-
-  if (listenPort == 5578)
-    playerSet["player.ship.hull"]["graphicsource"] = "images/playerShip1_red.png";
-  systemSet.addEntityCollection(playerSet);
-
-  scope(failure)
-    playerSet.keys.each!writeln;
-
   Entity inputWindow = null;
   auto mouseCursor = createMouseCursor();
   systemSet.addEntity(mouseCursor);
 
   systemSet.addEntity(createStartupSound());
   systemSet.addEntity(createMusic());
+  systemSet.addEntityCollection("data/backgrounds/solarsystem.txt".createEntityCollectionFromFile);
   systemSet.addEntityCollection("data/testtext.txt".createEntityCollectionFromFile);
+
+  auto npcEntityGroups = "data/npcship.txt".createEntityCollectionFromFile.repeat(0).array;
+  npcEntityGroups.each!(npcEntityGroup => systemSet.addEntityCollection(npcEntityGroup));
+  
+  auto playerSet = "data/playership.txt".createEntityCollectionFromFile;
+
+  if (listenPort == 5578)
+    playerSet["player.ship.hull"]["graphicsource"] = "images/playerShip1_red.png";
+  systemSet.addEntityCollection(playerSet);
+
+  //scope(failure)
+    //playerSet.keys.each!writeln;
 
   auto gameController = createGameController();
   systemSet.addEntity(gameController);

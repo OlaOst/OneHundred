@@ -1,0 +1,4 @@
+size = 4.5
+graphicsource = images/venus.gif
+position = [35.0, 0.0, -1]
+angle = 1.57

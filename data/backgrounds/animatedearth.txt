@@ -1,0 +1,4 @@
+size = 5.0
+graphicsource = images/earth.gif
+position = [50.0, 0.0, -1]
+angle = 1.57

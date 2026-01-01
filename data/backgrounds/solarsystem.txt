@@ -1,0 +1,37 @@
+sun.source = data/backgrounds/sun.txt
+
+mercury.source = data/backgrounds/mercury.txt
+mercury.position = [15.0, 0.0, -1]
+mercury.mass = 1
+mercury.velocity = [0.0, 20.0, 0.0]
+mercury.relation.types = ["RelativeConstraints"]
+mercury.relation.targetName = sun
+mercury.relation.value.distance = 15.0
+mercury.relation.value.speed = 20.0
+
+venus.source = data/backgrounds/venus.txt
+venus.position = [35.0, 0.0, -1]
+venus.mass = 1
+venus.velocity = [0.0, 10.0, 0.0]
+venus.relation.types = ["RelativeConstraints"]
+venus.relation.targetName = sun
+venus.relation.value.distance = 35.0
+venus.relation.value.speed = 10.0
+
+earth.source = data/backgrounds/animatedearth.txt
+earth.position = [50.0, 0.0, -1]
+earth.mass = 1
+earth.velocity = [0.0, 10.0, 0.0]
+earth.relation.types = ["RelativeConstraints"]
+earth.relation.targetName = sun
+earth.relation.value.distance = 50.0
+earth.relation.value.speed = 10.0
+
+mars.source = data/backgrounds/mars.txt
+mars.position = [65.0, 0.0, -1]
+mars.mass = 1
+mars.velocity = [0.0, 10.0, 0.0]
+mars.relation.types = ["RelativeConstraints"]
+mars.relation.targetName = sun
+mars.relation.value.distance = 65.0
+mars.relation.value.speed = 10.0

@@ -1,0 +1,4 @@
+size = 3.5
+graphicsource = images/mars.gif
+position = [65.0, 0.0, -1]
+angle = 1.57
