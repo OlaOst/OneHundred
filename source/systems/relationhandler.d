@@ -48,21 +48,27 @@ class RelationHandler : System!(Relation[])
                                                          entity.get!double(relationValueKey));
       }
     }
-    if (relationTypes.canFind("DieTogether"))
-      relationComponents ~= new DieTogether(entity);
-    if (relationTypes.canFind("InspectValues"))
-      relationComponents ~= new InspectValues(entity);
-    if (relationTypes.canFind("SameShape"))
-      relationComponents ~= new SameShape(entity);
     if (relationTypes.canFind("RelativeConstraints"))
     {
       foreach (relationValueKey; entity.values.byKey.filter!
                                  (key => key.startsWith("relation.value.")))
       {
         auto relationValueName = relationValueKey.chompPrefix("relation.value.");
-        relationComponents ~= new RelativeConstraint!double(entity, relationValueName, entity.get!double(relationValueKey));
+
+        if (vec3Types.canFind(relationValueName))
+          relationComponents ~= new RelativeConstraint!vec3(entity, relationValueName,
+                                                            entity.get!vec3(relationValueKey));
+        if (doubleTypes.canFind(relationValueName))
+          relationComponents ~= new RelativeConstraint!double(entity, relationValueName,
+                                                              entity.get!double(relationValueKey));
       }
     }
+    if (relationTypes.canFind("DieTogether"))
+      relationComponents ~= new DieTogether(entity);
+    if (relationTypes.canFind("InspectValues"))
+      relationComponents ~= new InspectValues(entity);
+    if (relationTypes.canFind("SameShape"))
+      relationComponents ~= new SameShape(entity);
     
     foreach (relationComponent; relationComponents)
     {
@@ -93,6 +99,7 @@ class RelationHandler : System!(Relation[])
     {
       foreach (relationComponent; relationComponents)
       {
+        //scope(failure) writeln("Error finding target ", relationComponent, " in targetIdForComponentMapping keys ", targetIdForComponentMapping.keys);
         long targetId = targetIdForComponentMapping[relationComponent];
         relationComponent.updateValues(entityIdMapping[targetId]);
       }

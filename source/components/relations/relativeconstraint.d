@@ -30,11 +30,14 @@ class RelativeConstraint(ValueType) : Relation
       if (constraintName == "distance")
       {
         auto position = source.get!vec3("position");
-        // assume physics etc systems have updated position here
-        auto newPosition = position.normalized * constraintValue;
+        auto targetPosition = target.get!vec3("position");
 
+        auto positionDiff = position - targetPosition;
+        auto newPositionDiff = positionDiff.normalized * constraintValue;
+        auto newPosition = targetPosition + newPositionDiff;
         source["position"] = newPosition;
-
+        
+        // change velocity vector to keep same relative speed
         auto velocity = source.get!vec3("velocity");
         velocity += newPosition - position;
         source["velocity"] = velocity;

@@ -18,7 +18,7 @@ venus.relation.targetName = sun
 venus.relation.value.distance = 35.0
 venus.relation.value.speed = 10.0
 
-earth.source = data/backgrounds/animatedearth.txt
+earth.source = data/backgrounds/earth.txt
 earth.position = [50.0, 0.0, -1]
 earth.mass = 1
 earth.velocity = [0.0, 10.0, 0.0]
@@ -26,6 +26,15 @@ earth.relation.types = ["RelativeConstraints"]
 earth.relation.targetName = sun
 earth.relation.value.distance = 50.0
 earth.relation.value.speed = 10.0
+
+earth.moon.source = data/backgrounds/moon.txt
+earth.moon.position = [50.0, 10.0, -1]
+earth.moon.mass = 0.167
+earth.moon.velocity = [2.0, 0.0, 0.0]
+earth.moon.relation.types = ["RelativeConstraints"]
+earth.moon.relation.targetName = earth
+earth.moon.relation.value.distance = 10.0
+earth.moon.relation.value.speed = 20.0
 
 mars.source = data/backgrounds/mars.txt
 mars.position = [65.0, 0.0, -1]

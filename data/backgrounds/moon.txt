@@ -1,0 +1,4 @@
+size = 1.5
+graphicsource = images/moon.gif
+position = [50.0, 0.0, -1]
+angle = 1.57
