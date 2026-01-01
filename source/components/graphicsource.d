@@ -12,7 +12,7 @@ class GraphicSource
 {
   invariant
   {
-    scope(failure) writeln("invariant failed for GraphSource with sourceName ", sourceName);
+    scope(failure) writeln("invariant failed for GraphicSource with sourceName ", sourceName);
     
     assert(data);
     assert(position.isFinite);
@@ -45,7 +45,12 @@ class GraphicSource
                             data.texCoords, data.colors);
   }
   
-  auto transformedVertices()
+  mat4 verticesTransform() 
+  {
+    return mat4.identity.translate(position).rotateZ(-angle).scale(cast(float)size, cast(float)size, cast(float)size);
+  }
+
+  private auto transformedVertices()
   in { assert(this); }
   out(result)
   {

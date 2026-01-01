@@ -6,18 +6,11 @@ import glamour.util;
 import glamour.vbo;
 import inmath.linalg;
 
-
 public void drawColoredTexture(Shader shader, mat4 transform,
                                vec3[] vertices, vec2[] texCoords, vec4[] colors,
+                               Buffer verticesBuffer, Buffer textureBuffer, Buffer colorsBuffer,
                                bool ignoreTexture)
 {
-  assert(vertices.length == texCoords.length);
-  assert(vertices.length == colors.length);
-
-  auto verticesBuffer = new Buffer(vertices);
-  auto textureBuffer = new Buffer(texCoords);
-  auto colorsBuffer = new Buffer(colors);
-
   glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
   glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
   
@@ -31,8 +24,4 @@ public void drawColoredTexture(Shader shader, mat4 transform,
   colorsBuffer.bind(shader, "color", GL_FLOAT, 4, 0, 0);
 
   checkgl!glDrawArrays(GL_TRIANGLES, 0, cast(int)(vertices.length));
-
-  verticesBuffer.remove();
-  textureBuffer.remove();
-  colorsBuffer.remove();
 }
