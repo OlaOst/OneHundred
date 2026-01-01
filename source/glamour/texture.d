@@ -343,6 +343,62 @@ class Texture2D : ITexture {
 
             return tex;
         }
+
+        import std;
+        static Tuple!(Texture2D, int)[] from_gif(SDL_Renderer* renderer, string filename) {
+            enforce(filename.endsWith(".gif"));
+            //auto tex = new Texture2D();
+
+            // make sure the texture has the right side up
+            //thanks to tito http://stackoverflow.com/questions/5862097/sdl-opengl-screenshot-is-black
+            SDL_Surface* flip(SDL_Surface* surface) {
+                SDL_Surface* result = SDL_CreateSurface(surface.w, surface.h, surface.format);
+
+                ubyte* pixels = cast(ubyte*) surface.pixels;
+                ubyte* rpixels = cast(ubyte*) result.pixels;
+                uint pitch = surface.pitch;
+                uint pxlength = pitch * surface.h;
+
+                assert(result != null);
+
+                for(uint line = 0; line < surface.h; ++line) {
+                    uint pos = line * pitch;
+                    rpixels[pos..pos+pitch] = pixels[(pxlength-pos)-pitch..pxlength-pos];
+                }
+
+                return result;
+            }
+
+            auto animation = IMG_LoadAnimation(filename.toStringz());
+            enforce(animation, new TextureException("Error loading gif " ~ filename ~ ": " ~ to!string(SDL_GetError().fromStringz())));
+
+            auto frames = animation.frames[0..animation.count];
+            auto delays = animation.delays[0..animation.count];
+            auto framesAndDelays = frames.zip(delays).map!((frameAndDelay)
+            {
+                auto frame = frameAndDelay[0];
+                auto delay = frameAndDelay[1];
+
+                auto tex = new Texture2D();
+                //enforce(image, new TextureException("Error loading image " ~ filename ~ ": " ~ to!string(SDL_GetError().fromStringz())));
+                scope(exit) SDL_DestroySurface(frame);
+
+                enforce(frame.format.bytesPerPixel == 3 || frame.format.bytesPerPixel == 4, "With SDLImage Glamour supports loading images only with 3 or 4 bytes per pixel format.");
+                auto glFormat = GL_RGB;
+
+                if (frame.format.bytesPerPixel == 4) {
+                    glFormat = GL_RGBA;
+                }
+
+                auto flipped = flip(frame);
+                tex.set_data(cast(ubyte*)flipped.pixels, glFormat, flipped.w, flipped.h, glFormat, GL_UNSIGNED_BYTE);
+                SDL_DestroySurface(frame);
+
+                return tuple(tex, delay);
+            }).array;
+
+            return framesAndDelays;
+        }
     }
 }
 

@@ -1,5 +1,7 @@
 module renderer.graphicsblob;
 
+import std;
+
 import inmath.linalg;
 
 import glamour.shader;
@@ -62,7 +64,19 @@ class GraphicsBlob
   void render(Shader shader, bool ignoreTexture, mat4 cameraTransform)
   {
     assert(data);
-    
+
+    Texture2D texture;
+    if (framesAndDelays.length > 0)
+    {
+      currentFrameIndex++;
+      currentFrameIndex = cast(int)(currentFrameIndex % framesAndDelays.length);
+
+      texture = framesAndDelays[currentFrameIndex][0];
+    }
+    else
+    {
+      texture = this.texture;
+    }
     texture.bind();
 
     verticesBuffer.set_data(data.vertices);
@@ -82,7 +96,17 @@ class GraphicsBlob
     texture.unbind();
   }
   
+  void setFramesAndDelays(Tuple!(Texture2D, int)[] framesAndDelays)
+  {
+    this.framesAndDelays = framesAndDelays;
+    animationTime = framesAndDelays.map!(fd => fd[1]).sum;
+  }
+
   Texture2D texture;
+  MonoTime animationStartTime;
+  Tuple!(Texture2D, int)[] framesAndDelays;
+  int animationTime;
+  int currentFrameIndex = -1;
   GraphicsData data;
   mat4 verticesTransform;
   Buffer verticesBuffer;
